@@ -20,7 +20,7 @@ namespace GamingCommunityApi.Tools.NLog
             if (isWindows)
                 logRootFolder = @"D:\Projects\GamingCommunity\GamingCommunityApi\Logs";
             else
-                logRootFolder = @"/home/bitianist/Bitiano/GamingCommunity/GamingCommunityApi/Logs";
+                logRootFolder = @"/home/bitianist/Projects/GamingCommunity/GamingCommunityApi/Logs";
 
             //Utils.CreateParentDirectoriesOfFileIfNotExists(logRootFolder);
             NLogBuilder.ConfigureNLog(@"Tools/NLog/nlog.config");
