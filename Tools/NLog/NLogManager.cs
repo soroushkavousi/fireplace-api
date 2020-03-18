@@ -18,7 +18,7 @@ namespace GamingCommunityApi.Tools.NLog
             var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
             string logRootFolder;
             if (isWindows)
-                logRootFolder = @"C:\Bitiano\GamingCommunity\GamingCommunityApi\Logs";
+                logRootFolder = @"D:\Projects\GamingCommunity\GamingCommunityApi\Logs";
             else
                 logRootFolder = @"/home/bitianist/Bitiano/GamingCommunity/GamingCommunityApi/Logs";
 
