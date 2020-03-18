@@ -18,12 +18,16 @@ namespace GamingCommunityApi.Entities
 {
     public class ErrorEntity
     {
-        
+        [Column(Order = 1)]
         public string Name { get; set; }
+        [Column(Order = 2)]
         public int Code { get; set; }
+        [Column(Order = 3)]
         public string ClientMessage { get; set; }
+        [Column(Order = 4)]
         public int HttpStatusCode { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column(Order = 0)]
         public int? Id { get; set; }
 
         private ErrorEntity() { }
