@@ -150,7 +150,7 @@ namespace GamingCommunityApi
             services.AddHttpsRedirection(options =>
             {
                 options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-                options.HttpsPort = 5011;
+                options.HttpsPort = 5021;
             });
             
             services.Configure<ApiBehaviorOptions>(options =>
