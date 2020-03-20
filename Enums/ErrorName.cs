@@ -20,6 +20,8 @@ namespace GamingCommunityApi.Enums
 
 
         // Existing errors
+        USER_ID_EXISTS,
+        USER_ID_DOES_NOT_EXIST,
         USERNAME_EXISTS,
         USERNAME_DOES_NOT_EXIST,
         EMAIL_ADDRESS_EXISTS,

@@ -176,7 +176,7 @@ namespace GamingCommunityApi.Validators
             if (await _userOperator.DoesUserIdExistAsync(id) == false)
             {
                 var serverMessage = $"User {id} doesn't exists!";
-                throw new ApiException(ErrorName.USERNAME_DOES_NOT_EXIST, serverMessage);
+                throw new ApiException(ErrorName.USER_ID_DOES_NOT_EXIST, serverMessage);
             }
         }
 
