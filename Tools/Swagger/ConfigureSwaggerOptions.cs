@@ -44,20 +44,22 @@ namespace GamingCommunityApi.Tools.Swagger
 
         static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description, IWebHostEnvironment env)
         {
-            var description_html = "A simple ASP.NET Core Web Api currently under version 0.2.";
+            var description_html = ""
+                + "<h5><strong>Gamers</strong>, Do you want a big community just for ourselves? Let's make it together.</h5>"
+                + "<h5>This is the place where we can communicate together with our beloved games.</h5><br>"
+                + "";
+
             if (env.IsProduction())
             {
-                description_html += "<h5>Sample urls:</h5>" +
-                "<div><a href=\"https://api.gaming-community.bitiano.com/users\">https://api.gaming-community.bitiano.com/users</a></div>" +
-                "<div><a href=\"https://api.gaming-community.bitiano.com/v0.2/users\">https://api.gaming-community.bitiano.com/v0.2/users</a></div>" +
-                "<div><a href=\"https://api.gaming-community.bitiano.com/v0.1/users\">https://api.gaming-community.bitiano.com/v0.1/users</a></div>";
+                description_html += "<h5>Sample urls:</h5>"
+                    + "<div><a href=\"https://api.gaming-community.bitiano.com/users/{your-id}\">https://api.gaming-community.bitiano.com/users/{your-id}</a></div>"
+                    + "<div><a href=\"https://api.gaming-community.bitiano.com/v0.1/users/{your-id}\">https://api.gaming-community.bitiano.com/v0.1/users/{your-id}</a></div>";
             }
             else
             {
-                description_html += "<h5>Sample urls:</h5>" +
-                "<div><a href=\"https://localhost:5011/users\">https://localhost:5011/users</a></div>" +
-                "<div><a href=\"https://localhost:5011/v0.2/users\">https://localhost:5011/v0.2/users</a></div>" +
-                "<div><a href=\"https://localhost:5011/v0.1/users\">https://localhost:5011/v0.1/users</a></div>";
+                description_html += "<h5>Sample urls:</h5>"
+                    + "<div><a href=\"https://localhost:5021/users/{your-id}\">https://localhost:5021/users/{your-id}</a></div>"
+                    + "<div><a href=\"https://localhost:5021/v0.1/users/{your-id}\">https://localhost:5021/v0.1/users/{your-id}</a></div>";
             }
 
             var info = new OpenApiInfo()
