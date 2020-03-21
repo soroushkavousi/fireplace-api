@@ -26,25 +26,32 @@ namespace GamingCommunityApi.Gateways
         {
             await Task.Run(() =>
             {
-                var from = new MailAddress(fromEmailAddress, "Gaming Community");
-                var to = new MailAddress(toEmailAddress, "User");
+                try
+                {
+                    var from = new MailAddress(fromEmailAddress, "Gaming Community");
+                    var to = new MailAddress(toEmailAddress, "User");
 
-                var smtp = new SmtpClient
+                    var smtp = new SmtpClient
+                    {
+                        Host = smtpServerAddress,
+                        Port = smtpServerPort,
+                        EnableSsl = true,
+                        DeliveryMethod = SmtpDeliveryMethod.Network,
+                        UseDefaultCredentials = false,
+                        Credentials = new NetworkCredential(from.Address, fromEmailPassword),
+                        Timeout = 20000
+                    };
+                    using var message = new MailMessage(from, to)
+                    {
+                        Subject = subject,
+                        Body = body
+                    };
+                    smtp.Send(message);
+                }
+                catch(Exception ex)
                 {
-                    Host = smtpServerAddress,
-                    Port = smtpServerPort,
-                    EnableSsl = true,
-                    DeliveryMethod = SmtpDeliveryMethod.Network,
-                    UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential(from.Address, fromEmailPassword),
-                    Timeout = 20000
-                };
-                using var message = new MailMessage(from, to)
-                {
-                    Subject = subject,
-                    Body = body
-                };
-                smtp.Send(message);
+                    _logger.LogError(ex, $"Can't send email from {fromEmailAddress} to {fromEmailPassword}! body: {body.Substring(0, 20)}...");
+                }
             });
             
             _logger.LogInformation($"Sending mail from {fromEmailAddress} to {fromEmailPassword} successfully completed. body: {body.Substring(0, 20)}...");
