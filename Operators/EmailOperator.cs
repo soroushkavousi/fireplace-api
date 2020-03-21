@@ -145,7 +145,12 @@ namespace GamingCommunityApi.Operators
 
         public async Task<Email> SendActivationCodeAsync(Email email)
         {
-            await _emailGateway.Send(email.Address, email.Activation.Message);
+            var global = await _globalRepository.GetGlobalByIdAsync(GlobalId.RELEASE);
+            var globalValues = global.Values;
+            var sendEmailTask = _emailGateway.SendEmailMessage(globalValues.ApiEmailSmtpServerAddress,
+                globalValues.ApiEmailSmtpServerPort, globalValues.ApiEmailAddress, 
+                globalValues.ApiEmailPassword, email.Address, 
+                globalValues.EmailActivationSubject, email.Activation.Message);
             email.Activation.Status = ActivationStatus.SENT;
             email = await _emailRepository.UpdateEmailAsync(email);
             return email;
@@ -168,7 +173,7 @@ namespace GamingCommunityApi.Operators
         public async Task<string> GenerateNewActivationMessageAsync(int activationCode)
         {
             var global = await _globalRepository.GetGlobalByIdAsync(GlobalId.RELEASE);
-            var messageFormat = global.Values.SignUpWithEmailMessageFormat;
+            var messageFormat = global.Values.EmailActivationMessageFormat;
             var activationMessage = string.Format(messageFormat, activationCode);
             return activationMessage;
         }
