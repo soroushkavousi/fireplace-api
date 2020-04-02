@@ -20,7 +20,7 @@ namespace GamingCommunityApi.Api.Controllers
 {
     [ApiController]
     [ApiVersion("0.1")]
-    [Route("v{version:apiVersion}/accessTokens")]
+    [Route("v{version:apiVersion}/access-tokens")]
     [Produces("application/json")]
     public class AccessTokenController : ApiController
     {
