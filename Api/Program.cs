@@ -11,34 +11,19 @@ using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Web;
 using GamingCommunityApi.Api.Tools.NLog;
+using GamingCommunityApi.Api.Tools;
 
-namespace GamingCommunityApi
+namespace GamingCommunityApi.Api
 {
     public class Program
     {
-        
         public static void Main(string[] args)
         {
-            var logger = SetupLogger();
+            var logger = Utils.SetupLogger();
             if (logger == null)
                 return;
 
             StartApi(logger, args);
-        }
-
-        public static Logger SetupLogger()
-        {
-            Logger logger = null;
-            try
-            {
-                NLogManager.ConfigureNLog();
-                logger = NLogManager.GetLogger();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Can't setup logger: {ex.ToString()}");
-            }
-            return logger;
         }
 
         public static void StartApi(Logger logger, string[] args)

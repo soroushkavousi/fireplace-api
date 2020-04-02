@@ -40,7 +40,7 @@ using Microsoft.AspNetCore.Authentication;
 using GamingCommunityApi.Infrastructure.Entities;
 using GamingCommunityApi.Api.Tools.TextJsonSerializer;
 
-namespace GamingCommunityApi
+namespace GamingCommunityApi.Api
 {
     public class Startup
     {
@@ -55,7 +55,9 @@ namespace GamingCommunityApi
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IObjectModelValidator, NullObjectModelValidator>();
-            services.AddDbContext<GamingCommunityApiContext>();
+            services.AddDbContext<GamingCommunityApiContext>(
+                optionsBuilder => optionsBuilder.UseNpgsql(Configuration.GetConnectionString("MainDatabase"))
+            );
             services.AddInfrastructurConverters();
             services.AddRepositories();
             services.AddGateways();

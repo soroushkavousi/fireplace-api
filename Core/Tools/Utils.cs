@@ -8,7 +8,7 @@ using System.Text.Json;
 using GamingCommunityApi.Core.Extensions;
 using GamingCommunityApi.Core.Models;
 using Microsoft.Extensions.Configuration;
-
+using System.Runtime.InteropServices;
 
 namespace GamingCommunityApi.Core.Tools
 {
@@ -34,6 +34,17 @@ namespace GamingCommunityApi.Core.Tools
         public static void CreateParentDirectoriesOfFileIfNotExists(string filePath)
         {
             Directory.CreateDirectory(Directory.GetParent(filePath).FullName);
+        }
+
+        public static string GetSolutionDirectory()
+        {
+            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            string solutionDirectory;
+            if (isWindows)
+                solutionDirectory = @"D:\Projects\GamingCommunity\GamingCommunityApi\";
+            else
+                solutionDirectory = @"/home/bitianist/Projects/GamingCommunity/GamingCommunityApi/";
+            return solutionDirectory;
         }
     }
 }

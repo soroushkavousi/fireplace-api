@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using GamingCommunityApi.Core.Tools;
+using NLog;
 using NLog.Web;
 using System;
 using System.Collections.Generic;
@@ -15,15 +16,14 @@ namespace GamingCommunityApi.Api.Tools.NLog
 
         public static void ConfigureNLog()
         {
-            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-            string logRootFolder;
-            if (isWindows)
-                logRootFolder = @"D:\Projects\GamingCommunity\GamingCommunityApi\Logs";
-            else
-                logRootFolder = @"/home/bitianist/Projects/GamingCommunity/GamingCommunityApi/Logs";
+            var relativeLogConfigPath = @"Codes\Api\Tools\NLog\nlog.config";
+            var relativeLogRootFolder = @"Logs";
+            var solutionDirectory = Core.Tools.Utils.GetSolutionDirectory();
+            var logConfigPath = Path.Combine(solutionDirectory, relativeLogConfigPath);
+            var logRootFolder = Path.Combine(solutionDirectory, relativeLogRootFolder);
 
             //Utils.CreateParentDirectoriesOfFileIfNotExists(logRootFolder);
-            NLogBuilder.ConfigureNLog(@"Tools/NLog/nlog.config");
+            NLogBuilder.ConfigureNLog(logConfigPath);
             LogManager.Configuration.Variables["logRootFolder"] = logRootFolder;
         }
 

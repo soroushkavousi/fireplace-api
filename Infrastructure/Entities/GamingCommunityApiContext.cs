@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using GamingCommunityApi.Infrastructure.Entities.UserInformationEntities;
+using GamingCommunityApi.Core.ValueObjects;
 
 namespace GamingCommunityApi.Infrastructure.Entities
 {
@@ -15,7 +16,8 @@ namespace GamingCommunityApi.Infrastructure.Entities
         public DbSet<FileEntity> FileEntities { get; set; }
         public DbSet<GlobalEntity> GlobalEntities { get; set; }
 
-        public GamingCommunityApiContext(DbContextOptions<GamingCommunityApiContext> options, IConfiguration configuration) : base(options)
+        public GamingCommunityApiContext(DbContextOptions<GamingCommunityApiContext> options, IConfiguration configuration) 
+            : base(options)
         {
             Configuration = configuration;
             //ChangeTracker.LazyLoadingEnabled = false;
@@ -26,7 +28,7 @@ namespace GamingCommunityApi.Infrastructure.Entities
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
+            //optionsBuilder.UseNpgsql(Configuration.GetConnectionString("MainDatabase"));
             //optionsBuilder.EnableSensitiveDataLogging();
             //optionsBuilder.EnableDetailedErrors();
             //optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);

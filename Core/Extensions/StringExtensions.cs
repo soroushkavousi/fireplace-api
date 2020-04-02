@@ -1,4 +1,5 @@
 ﻿using GamingCommunityApi.Core.Tools;
+using GamingCommunityApi.Core.Tools.NewtonsoftSerializer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -13,6 +14,20 @@ namespace GamingCommunityApi.Core.Extensions
 {
     public static class StringExtensions
     {
+        private static readonly JsonSerializerSettings _jsonSerializerSettings;
+
+        static StringExtensions()
+        {
+            _jsonSerializerSettings = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                ContractResolver = CoreContractResolver.Instance,
+                //NullValueHandling = NullValueHandling.Ignore,
+            };
+        }
+
+        public static T FromJson<T>(this string json) => JsonConvert.DeserializeObject<T>(json, _jsonSerializerSettings);
+
         public static bool IsJson(this string strInput)
         {
             strInput = strInput.Trim();
@@ -102,5 +117,13 @@ namespace GamingCommunityApi.Core.Extensions
             isUsername = match.Success;
             return isUsername;
         }
+
+        public static string RemoveLineBreaks(this string str)
+        {
+            string result;
+            result = str.Replace("\r\n", "").Replace("\n", "").Replace("\r", "");
+            return Regex.Replace(result, @"\s+", " ");
+        }
+
     }
 }
