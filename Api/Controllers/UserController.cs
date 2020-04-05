@@ -21,7 +21,6 @@ using GamingCommunityApi.Core.Models.UserInformations;
 
 namespace GamingCommunityApi.Api.Controllers
 {
-    //[Authorize]
     [ApiController]
     [ApiVersion("0.1")]
     [Route("v{version:apiVersion}/users")]
@@ -45,6 +44,7 @@ namespace GamingCommunityApi.Api.Controllers
         /// <response code="200">Returns the newly created item</response>
         [AllowAnonymous]
         [HttpPost("sign-up-with-email")]
+        [Consumes("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> SignUpWithEmailAsync(
             [BindNever] [FromHeader] ControllerInputHeaderParameters inputHeaderParameters,
@@ -66,6 +66,7 @@ namespace GamingCommunityApi.Api.Controllers
         /// <response code="200">Returns the newly created item</response>
         [AllowAnonymous]
         [HttpPost("log-in-with-email")]
+        [Consumes("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> LogInWithEmailAsync(
             [BindNever] [FromHeader] ControllerInputHeaderParameters inputHeaderParameters,
@@ -87,6 +88,7 @@ namespace GamingCommunityApi.Api.Controllers
         /// <response code="200">Returns the newly created item</response>
         [AllowAnonymous]
         [HttpPost("log-in-with-username")]
+        [Consumes("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> LogInWithUsernameAsync(
             [BindNever] [FromHeader] ControllerInputHeaderParameters inputHeaderParameters,
@@ -144,6 +146,7 @@ namespace GamingCommunityApi.Api.Controllers
         /// <returns>Updated user</returns>
         /// <response code="200">The user was successfully updated.</response>
         [HttpPatch("{id}")]
+        [Consumes("application/merge-patch+json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> PatchUserAsync(
             [BindNever] [FromHeader] User requesterUser,

@@ -38,6 +38,7 @@ namespace GamingCommunityApi.Api.Controllers
         /// <returns>Created basic authentication</returns>
         /// <response code="200">Returns the newly registered email.</response>
         [HttpPost("{id}/activate")]
+        [Consumes("application/json")]
         [ProducesResponseType(typeof(EmailDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<EmailDto>> ActivateEmail(
             [BindNever] [FromHeader] User requesterUser,
