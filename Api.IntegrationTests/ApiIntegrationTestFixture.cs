@@ -11,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NLog.Web;
 using System;
 using System.Collections.Generic;
@@ -35,6 +37,7 @@ namespace GamingCommunityApi.Api.IntegrationTests
         public IServiceProvider ServiceProvider { get; }
         public GamingCommunityApiContext GamingCommunityApiContext { get; }
         public ErrorOperator ErrorOperator { get; }
+        public object SampleObject { get; }
 
         public ApiIntegrationTestFixture()
         {
@@ -75,7 +78,7 @@ namespace GamingCommunityApi.Api.IntegrationTests
             _clientOptions = new WebApplicationFactoryClientOptions
             {
                 AllowAutoRedirect = true,
-                BaseAddress = new Uri("http://localhost:5020"),
+                BaseAddress = new Uri("https://localhost:5021"),
                 HandleCookies = true,
                 MaxAutomaticRedirections = 7
             };
@@ -87,6 +90,8 @@ namespace GamingCommunityApi.Api.IntegrationTests
             Logger = ServiceProvider.GetRequiredService<ILogger<ApiIntegrationTestFixture>>();
             ErrorOperator = ServiceProvider.GetRequiredService<ErrorOperator>();
 
+            SampleObject = new { Property1 = "value1" };
+
             Logger.LogInformation($"ApiIntegrationTestFixture initialized successfully.");
         }
 
@@ -94,33 +99,62 @@ namespace GamingCommunityApi.Api.IntegrationTests
         {
             GuestClient = _apiFactory.CreateClient(_clientOptions);
         }
-
-        public async Task AssertResponseHasErrorNameAsync(ErrorName expectedErrorName, HttpResponseMessage response, string testName)
+        
+        public async Task AssertResponseContainsErrorAsync(ErrorName expectedErrorName, HttpResponseMessage response, string testName)
         {
-            Logger.LogInformation($"{testName} | Checking response.StatusCode is bad request. ({response.StatusCode})");
+            Logger.LogInformation($"{testName} | Checking response status code is bad request. ({response.StatusCode})");
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var responseJsonObject = responseBody.FromJson<dynamic>();
-            string responseJsonString = responseJsonObject.ToString();
-            responseJsonString = responseJsonString.RemoveLineBreaks();
+            var responseBodyJObject = await ReadResponseBodyAsJObject(response, testName);
+            var responseBodyJson = responseBodyJObject.ToString(Formatting.None);
 
-            Logger.LogInformation($"{testName} | Checking response body contains code. ({responseJsonString})");
-            Assert.Contains("code", responseJsonObject);
+            Logger.LogInformation($"{testName} | Checking response body contains code. ({responseBodyJson})");
+            Assert.Contains("code", responseBodyJObject);
 
-            Logger.LogInformation($"{testName} | Checking response body contains message. ({responseJsonString})");
-            Assert.Contains("message", responseJsonObject);
+            Logger.LogInformation($"{testName} | Checking response body contains message. ({responseBodyJson})");
+            Assert.Contains("message", responseBodyJObject);
 
-            int responseErrorCode = responseJsonObject["code"];
-            var responseError = await ErrorOperator.GetErrorByCodeAsync(responseErrorCode);
+            var responseError = await ErrorOperator.GetErrorByCodeAsync(responseBodyJObject.Value<int>("code"));
 
             Logger.LogInformation($"{testName} | Checking response is {expectedErrorName.ToString()}. ({responseError.Name.ToString()})");
             Assert.Equal(expectedErrorName, responseError.Name);
         }
 
-        public HttpContent GetRequestHttpContentFromDynamic(dynamic dynamicObject)
+        public async Task AssertResponseDoesNotContainErrorAsync(ErrorName notExpectedErrorName, HttpResponseMessage response, string testName)
         {
-            return new StringContent(dynamicObject.ToJson(), Encoding.UTF8, "application/json");
+            var responseBodyJObject = await ReadResponseBodyAsJObject(response, testName);
+            var responseBodyJson = responseBodyJObject.ToString(Formatting.None);
+            Logger.LogInformation($"{testName} | responseBodyJson: {responseBodyJson}");
+
+            var responseErrorCode = responseBodyJObject.Value<int?>("code");
+            if(responseErrorCode.HasValue)
+            {
+                var responseError = await ErrorOperator.GetErrorByCodeAsync(responseErrorCode.Value);
+
+                Logger.LogInformation($"{testName} | Checking response is not {notExpectedErrorName.ToString()}. ({responseError.Name.ToString()})");
+                Assert.NotEqual(notExpectedErrorName, responseError.Name);
+            }
+        }
+
+        public HttpContent MakeRequestContent(HttpMethod httpMethod, object requestContent)
+        {
+            if (httpMethod == HttpMethod.Post || httpMethod == HttpMethod.Put)
+                return new StringContent(requestContent.ToJson(), Encoding.UTF8, "application/json");
+            else if (httpMethod == HttpMethod.Patch)
+                return new StringContent(requestContent.ToJson(), Encoding.UTF8, "application/merge-patch+json");
+            else
+                return null;
+        }
+
+        public async Task<JObject> ReadResponseBodyAsJObject(HttpResponseMessage response, string testName)
+        {
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            Logger.LogInformation($"{testName} | Checking response body is not null. ({responseBody})");
+            Assert.NotNull(responseBody);
+
+            var responseBodyJObject = JObject.Parse(responseBody);
+            return responseBodyJObject;
         }
 
         public void Dispose()
