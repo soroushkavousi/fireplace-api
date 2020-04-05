@@ -37,9 +37,9 @@ namespace GamingCommunityApi.Api.Controllers.Parameters.UserParameters
         public static OpenApiObject PureUserExample1 { get; } = new OpenApiObject
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiInteger(1000000),
-            [nameof(FirstName).ToSnakeCase()] = new OpenApiString("Barney"),
-            [nameof(LastName).ToSnakeCase()] = new OpenApiString("Stinson"),
-            [nameof(Username).ToSnakeCase()] = new OpenApiString("barneystinson@gmail.com"),
+            [nameof(FirstName).ToSnakeCase()] = new OpenApiString("Ted"),
+            [nameof(LastName).ToSnakeCase()] = new OpenApiString("Mosby"),
+            [nameof(Username).ToSnakeCase()] = new OpenApiString("tedmosby"),
             [nameof(State).ToSnakeCase()] = new OpenApiString(Core.Enums.UserState.VERIFIED.ToString()),
             [nameof(Email).ToSnakeCase()] = new OpenApiNull(),
             [nameof(AccessToken).ToSnakeCase()] = new OpenApiNull(),
@@ -48,14 +48,15 @@ namespace GamingCommunityApi.Api.Controllers.Parameters.UserParameters
         public static OpenApiObject PureUserExample2 { get; } = new OpenApiObject
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiInteger(2000000),
-            [nameof(FirstName).ToSnakeCase()] = new OpenApiString("Ted"),
-            [nameof(LastName).ToSnakeCase()] = new OpenApiString("Mosby"),
-            [nameof(Username).ToSnakeCase()] = new OpenApiString("tedmosby"),
+            [nameof(FirstName).ToSnakeCase()] = new OpenApiString("Barney"),
+            [nameof(LastName).ToSnakeCase()] = new OpenApiString("Stinson"),
+            [nameof(Username).ToSnakeCase()] = new OpenApiString("barneystinson"),
             [nameof(State).ToSnakeCase()] = new OpenApiString(Core.Enums.UserState.NOT_VERIFIED.ToString()),
             [nameof(Email).ToSnakeCase()] = new OpenApiNull(),
             [nameof(AccessToken).ToSnakeCase()] = new OpenApiNull(),
             [nameof(Sessions).ToSnakeCase()] = new OpenApiNull(),
         };
+        
         public static OpenApiArray ListOfPureUsersExample1 { get; } = new OpenApiArray
         {
             PureUserExample1, PureUserExample2

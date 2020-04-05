@@ -31,7 +31,7 @@ namespace GamingCommunityApi.Api.Controllers.Parameters.EmailParameters
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiInteger(1000001),
             [nameof(UserId).ToSnakeCase()] = null,
-            [nameof(Address).ToSnakeCase()] = new OpenApiString("josepharmstrong@gmail.com"),
+            [nameof(Address).ToSnakeCase()] = new OpenApiString("tedmosby@gmail.com"),
             [nameof(ActivationStatus).ToSnakeCase()] = new OpenApiString(Core.Enums.ActivationStatus.COMPLETED.ToString()),
             [nameof(User).ToSnakeCase()] = new OpenApiNull(),
         };
@@ -39,8 +39,8 @@ namespace GamingCommunityApi.Api.Controllers.Parameters.EmailParameters
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiInteger(2000001),
             [nameof(UserId).ToSnakeCase()] = null,
-            [nameof(Address).ToSnakeCase()] = new OpenApiString("jamesdavis@gmail.com"),
-            [nameof(ActivationStatus).ToSnakeCase()] = new OpenApiString(Core.Enums.ActivationStatus.COMPLETED.ToString()),
+            [nameof(Address).ToSnakeCase()] = new OpenApiString("barneystinson@gmail.com"),
+            [nameof(ActivationStatus).ToSnakeCase()] = new OpenApiString(Core.Enums.ActivationStatus.SENT.ToString()),
             [nameof(User).ToSnakeCase()] = new OpenApiNull(),
         };
         public static OpenApiArray ListOfPureEmailsExample1 { get; } = new OpenApiArray
