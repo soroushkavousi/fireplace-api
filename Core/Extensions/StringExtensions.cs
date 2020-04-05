@@ -26,7 +26,12 @@ namespace GamingCommunityApi.Core.Extensions
             };
         }
 
-        public static T FromJson<T>(this string json) => JsonConvert.DeserializeObject<T>(json, _jsonSerializerSettings);
+        public static T FromJson<T>(this string json)
+        {
+            if (json == null)
+                return default;
+            return JsonConvert.DeserializeObject<T>(json, _jsonSerializerSettings);
+        }
 
         public static bool IsJson(this string strInput)
         {

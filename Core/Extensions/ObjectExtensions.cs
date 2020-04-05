@@ -28,7 +28,12 @@ namespace GamingCommunityApi.Core.Extensions
                 //NullValueHandling = NullValueHandling.Ignore,
             };
         }
-        public static string ToJson(this object obj) => JsonConvert.SerializeObject(obj, _jsonSerializerSettings);
+        public static string ToJson(this object obj)
+        {
+            if (obj == null)
+                return null;
+            return JsonConvert.SerializeObject(obj, _jsonSerializerSettings);
+        }
 
         //public static string ToJson(this object obj)
         //{
