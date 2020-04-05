@@ -27,6 +27,20 @@ namespace GamingCommunityApi.Core.Tools
             _sessionOperator = sessionOperator;
         }
 
+        public void CheckRequestContentType(HttpRequest request)
+        {
+            if (request.ContentType == null
+                || (
+                    request.ContentType.Contains("application/json") == false
+                    && request.ContentType.Contains("multipart/form-data") == false
+                    && request.ContentType.Contains("application/merge-patch+json") == false
+                    ))
+            {
+                var serverMessage = $"Input request content type is not valid! request.ContentType: {request.ContentType}";
+                throw new ApiException(ErrorName.REQUEST_CONTENT_TYPE_IS_NOT_VALID, serverMessage);
+            }
+        }
+
         public void CheckRequestJsonBody(string requestJsonBody)
         {
             if(requestJsonBody.IsJson() == false)

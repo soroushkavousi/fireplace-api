@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using GamingCommunityApi.Core.Tools;
+using System.Net.Http;
 
 namespace GamingCommunityApi.Api.Middlewares
 {
@@ -25,10 +26,19 @@ namespace GamingCommunityApi.Api.Middlewares
 
         public async Task InvokeAsync(HttpContext httpContext, Firewall firewall)
         {
-            if (httpContext.Request.ContentType == "application/json")
+            var httpMethod = new HttpMethod(httpContext.Request.Method);
+            if (httpMethod == HttpMethod.Post
+                || httpMethod == HttpMethod.Put
+                || httpMethod == HttpMethod.Patch)
             {
-                var requestBody = await httpContext.Request.ReadRequestBodyAsync();
-                firewall.CheckRequestJsonBody(requestBody);
+                firewall.CheckRequestContentType(httpContext.Request);
+
+                if (httpContext.Request.ContentType == "application/json"
+                    || httpContext.Request.ContentType == "application/merge-patch+json")
+                {
+                    var requestBody = await httpContext.Request.ReadRequestBodyAsync();
+                    firewall.CheckRequestJsonBody(requestBody);
+                }
             }
 
             var inputHeaderParameters = httpContext.GetInputHeaderParameters();

@@ -31,6 +31,7 @@ namespace GamingCommunityApi.Core.Enums
 
 
         // Format errors
+        REQUEST_CONTENT_TYPE_IS_NOT_VALID,
         REQUEST_BODY_IS_NOT_JSON,
         PASSWORD_MIN_LENGTH,
         PASSWORD_MAX_LENGTH,
