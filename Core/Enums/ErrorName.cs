@@ -16,18 +16,26 @@ namespace GamingCommunityApi.Core.Enums
 
         // Access Denied errors
         ACCESS_DENIED,
-        EMAIL_ACCESS_DENIED,
 
 
         // Existing errors
         USER_ID_EXISTS,
-        USER_ID_DOES_NOT_EXIST,
+        USER_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED,
+        
         USERNAME_EXISTS,
-        USERNAME_DOES_NOT_EXIST,
+        USERNAME_DOES_NOT_EXIST_OR_ACCESS_DENIED,
+        
         EMAIL_ADDRESS_EXISTS,
-        EMAIL_ADDRESS_DOES_NOT_EXIST,
+        EMAIL_ADDRESS_DOES_NOT_EXIST_OR_ACCESS_DENIED,
+        
         EMAIL_ID_EXISTS,
-        EMAIL_ID_DOES_NOT_EXIST,
+        EMAIL_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED,
+        
+        ERROR_CODE_DOES_NOT_EXIST_OR_ACCESS_DENIED,
+        
+        ACCESS_TOKEN_VALUE_DOES_NOT_EXIST_OR_ACCESS_DENIED,
+
+        SESSION_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED,
 
 
         // Format errors
@@ -52,6 +60,10 @@ namespace GamingCommunityApi.Core.Enums
         FIRST_NAME_NOT_VALID,
         LAST_NAME_NOT_VALID,
 
+        ERROR_CLIENT_MESSAGE_NOT_VALID,
+
+        ACCESS_TOKEN_VALUE_IS_NOT_VALID,
+
 
         // Missing parameter(s) errors
         FIRST_NAME_IS_NULL,
@@ -63,6 +75,9 @@ namespace GamingCommunityApi.Core.Enums
         REQUIRED_BOTH_OF_OLD_PASSWORD_AND_PASSWORD,
         EMAIL_ID_IS_NULL,
         ACTIVATION_CODE_IS_NULL,
+        ERROR_CODE_IS_NULL,
+        ACCESS_TOKEN_VALUE_IS_NULL,
+        SESSION_ID_IS_NULL,
 
         INTERNAL_SERVER,
     }

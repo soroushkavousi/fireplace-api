@@ -33,6 +33,22 @@ namespace GamingCommunityApi.Core.Validators
             _emailOperator = emailOperator;
         }
 
+        public async Task ValidateGetEmailByIdInputParametersAsync(User requesterUser, long? id, bool? includeUser)
+        {
+            ValidateParameterIsNotNull(id, nameof(id), ErrorName.EMAIL_ID_IS_NULL);
+            await ValidateEmailIdExistsAsync(id.Value);
+            await ValidateRequesterUserCanAccessToEmailIdAsync(requesterUser, id.Value);
+        }
+
+        public async Task ValidateActivateEmailByIdInputParametersAsync(User requesterUser, long? id, long? activationCode)
+        {
+            ValidateParameterIsNotNull(id, nameof(id), ErrorName.EMAIL_ID_IS_NULL);
+            ValidateParameterIsNotNull(activationCode, nameof(activationCode), ErrorName.ACTIVATION_CODE_IS_NULL);
+            await ValidateEmailIdExistsAsync(id.Value);
+            await ValidateRequesterUserCanAccessToEmailIdAsync(requesterUser, id.Value);
+            await ValidateActivationCodeIsCorrectAsync(id.Value, activationCode.Value);
+        }
+
         public void ValidateEmailAddressFormat(string address)
         {
             if (Regexes.EmailAddress.IsMatch(address) == false)
@@ -56,7 +72,7 @@ namespace GamingCommunityApi.Core.Validators
             if (await _emailOperator.DoesEmailAddressExistAsync(address) == false)
             {
                 var serverMessage = $"Email address {address} doesn't exist!";
-                throw new ApiException(ErrorName.EMAIL_ADDRESS_DOES_NOT_EXIST, serverMessage);
+                throw new ApiException(ErrorName.EMAIL_ADDRESS_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
         }
 
@@ -74,7 +90,7 @@ namespace GamingCommunityApi.Core.Validators
             if (await _emailOperator.DoesEmailIdExistAsync(id) == false)
             {
                 var serverMessage = $"Email id {id} doesn't exist!";
-                throw new ApiException(ErrorName.EMAIL_ID_DOES_NOT_EXIST, serverMessage);
+                throw new ApiException(ErrorName.EMAIL_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
         }
 
@@ -94,46 +110,13 @@ namespace GamingCommunityApi.Core.Validators
             }
         }
 
-        public async Task ValidateEmailExists(long id, string field)
-        {
-            //if (await _emailOperator.EmailExists(id) == false)
-            //{
-            //    var serverMessage = $"Field {field} => Email {id} not found.";
-            //    throw new ApiException(ErrorId.ITEM_NOT_FOUND, serverMessage, field);
-            //}
-            await Task.CompletedTask;
-        }
-
-        public void ValidateEmailAddressIsValid(string emailAddress, string field)
-        {
-            //if (emailAddress.IsEmailAddress() == false)
-            //{
-            //    var serverMessage = $"Field {field} => Email address {emailAddress} is not valid.";
-            //    throw new ApiException(ErrorId.MOBILE_NUMBER_NOT_VALID, serverMessage, field);
-            //}
-        }
-
-        public async Task ValidateGetEmailByIdInputParametersAsync(User requesterUser, long? id, bool? includeUser)
-        {
-            await Task.CompletedTask;
-        }
-
-        public async Task ValidateActivateEmailByIdInputParametersAsync(User requesterUser, long? id, long? activationCode)
-        {
-            ValidateParameterIsNotNull(id, nameof(id), ErrorName.EMAIL_ID_IS_NULL);
-            ValidateParameterIsNotNull(activationCode, nameof(activationCode), ErrorName.ACTIVATION_CODE_IS_NULL);
-            await ValidateEmailIdExistsAsync(id.Value);
-            await ValidateRequesterUserCanAccessToEmailIdAsync(requesterUser, id.Value);
-            await ValidateActivationCodeIsCorrectAsync(id.Value, activationCode.Value);
-        }
-
         public async Task ValidateRequesterUserCanAccessToEmailIdAsync(User requesterUser, long id)
         {
             var email = await _emailOperator.GetEmailByIdAsync(id);
             if (email.UserId != requesterUser.Id)
             {
                 var serverMessage = $"User id {requesterUser.Id} can't access to email id {id}";
-                throw new ApiException(ErrorName.EMAIL_ACCESS_DENIED, serverMessage);
+                throw new ApiException(ErrorName.EMAIL_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
         }
 

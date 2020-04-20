@@ -11,20 +11,25 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using GamingCommunityApi.Core.Interfaces.IRepositories;
+using GamingCommunityApi.Core.Operators;
+using GamingCommunityApi.Core.Tools;
 
 namespace GamingCommunityApi.Core.Validators
 {
-    public class ErrorValidator
+    public class ErrorValidator : ApiValidator
     {
         private readonly ILogger<ErrorValidator> _logger;
         private readonly IConfiguration _configuration;
-        private readonly IErrorRepository _errorRepository;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly ErrorOperator _errorOperator;
 
-        public ErrorValidator(ILogger<ErrorValidator> logger, IConfiguration configuration, IErrorRepository errorRepository)
+        public ErrorValidator(ILogger<ErrorValidator> logger, IConfiguration configuration,
+            IServiceProvider serviceProvider, ErrorOperator errorOperator)
         {
             _logger = logger;
             _configuration = configuration;
-            _errorRepository = errorRepository;
+            _serviceProvider = serviceProvider;
+            _errorOperator = errorOperator;
         }
 
         public async Task ValidateListErrorsInputParametersAsync(User requesterUser)
@@ -34,35 +39,38 @@ namespace GamingCommunityApi.Core.Validators
 
         public async Task ValidateGetErrorByCodeInputParametersAsync(User requesterUser, int? code)
         {
-            await Task.CompletedTask;
+            ValidateParameterIsNotNull(code, nameof(code), ErrorName.ERROR_CODE_IS_NULL);
+            await ValidateErrorCodeExists(code.Value);
         }
 
         public async Task ValidatePatchErrorInputParametersAsync(User requesterUser, int? code, string clientMessage)
         {
-            //ApiValidator.ValidateRouteParametersAreNotNull(routeParameters);
-            //ApiValidator.ValidateBodyParametersAreNotNull(bodyParameters);
-            //await ValidateErrorExists(routeParameters.Code.Value, "code");
-            await Task.CompletedTask;
+            ValidateParameterIsNotNull(code, nameof(code), ErrorName.ERROR_CODE_IS_NULL);
+            await ValidateErrorCodeExists(code.Value);
+
+            if (clientMessage != null)
+            {
+                ValidateClientMessageFormat(clientMessage);
+            }
         }
 
-        public async Task ValidateErrorExists(int code)
+        public async Task ValidateErrorCodeExists(int code)
         {
-            //if (await _errorRepository.DoesErrorCodeExistAsync(code) == false)
-            //{
-            //    var serverMessage = $"Field => Error {code} not found.";
-            //    throw new ApiException(ErrorId.ITEM_NOT_FOUND, serverMessage);
-            //}
+            if (await _errorOperator.DoesErrorCodeExistAsync(code) == false)
+            {
+                var serverMessage = $"Error {code} doesn't exists!";
+                throw new ApiException(ErrorName.ERROR_CODE_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
+            }
             await Task.CompletedTask;
         }
-
-        public async Task ValidateErrorNotExists(int code)
+      
+        public void ValidateClientMessageFormat(string clientMessage)
         {
-            //if (await _errorRepository.DoesErrorCodeExistAsync(code) == true)
-            //{
-            //    var serverMessage = $"Field => Error {code} exists.";
-            //    throw new ApiException(ErrorId.ITEM_EXISTS, serverMessage);
-            //}
-            await Task.CompletedTask;
+            if (Regexes.ErrorClientMessage.IsMatch(clientMessage) == false)
+            {
+                var serverMessage = $"Error client message ({clientMessage}) doesn't have correct format!";
+                throw new ApiException(ErrorName.ERROR_CLIENT_MESSAGE_NOT_VALID, serverMessage);
+            }
         }
     }
 }

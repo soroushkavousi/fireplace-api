@@ -34,7 +34,7 @@ namespace GamingCommunityApi.Core.Services
 
         public async Task<AccessToken> GetAccessTokenByValueAsync(User requesterUser, string accessTokenValue, bool? includeUser)
         {
-            await _accessTokenValidator.ValidateGetAccessTokenByValueInputParametersAsync(requesterUser, includeUser);
+            await _accessTokenValidator.ValidateGetAccessTokenByValueInputParametersAsync(requesterUser, accessTokenValue, includeUser);
             var accessToken = await _accessTokenOperator.GetAccessTokenByValueAsync(accessTokenValue, includeUser.Value);
             return accessToken;
         }

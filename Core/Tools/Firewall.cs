@@ -71,17 +71,17 @@ namespace GamingCommunityApi.Core.Tools
         public async Task<AccessToken> ValidateAccessTokenAsync(string accessTokenValue)
         {
             if (string.IsNullOrWhiteSpace(accessTokenValue))
-                throw new ApiException(Enums.ErrorName.AUTHENTICATION_FAILED,
+                throw new ApiException(ErrorName.AUTHENTICATION_FAILED,
                     $"There isn't any authorization in input header parameters! accessTokenValue: {accessTokenValue}");
 
-            if (Regexes.AccessToken.IsMatch(accessTokenValue) == false)
-                throw new ApiException(Enums.ErrorName.AUTHENTICATION_FAILED,
+            if (Regexes.AccessTokenValue.IsMatch(accessTokenValue) == false)
+                throw new ApiException(ErrorName.AUTHENTICATION_FAILED,
                     $"Input access token doesn't have valid format! accessTokenValue: {accessTokenValue}");
 
             var accessToken = await _accessTokenOperator
                 .GetAccessTokenByValueAsync(accessTokenValue, true);
             if (accessToken == null)
-                throw new ApiException(Enums.ErrorName.AUTHENTICATION_FAILED,
+                throw new ApiException(ErrorName.AUTHENTICATION_FAILED,
                     $"Input access token does not exist! accessTokenValue: {accessTokenValue}");
 
             return accessToken;
@@ -90,8 +90,8 @@ namespace GamingCommunityApi.Core.Tools
         public async Task<Session> ValidateSessionAsync(long userId, IPAddress ipAddress)
         {
             var session = await _sessionOperator.FindSessionAsync(userId, ipAddress);
-            if (session != null && session.State == Enums.SessionState.CLOSED)
-                throw new ApiException(Enums.ErrorName.AUTHENTICATION_FAILED,
+            if (session != null && session.State == SessionState.CLOSED)
+                throw new ApiException(ErrorName.AUTHENTICATION_FAILED,
                     $"User session was closed! userId: {userId}, ipAddress: {ipAddress}");
 
             session = await _sessionOperator.CreateOrUpdateSessionAsync(userId, ipAddress);

@@ -120,6 +120,14 @@ namespace GamingCommunityApi.Infrastructure.Repositories
                 .Where(e => e.Id == id)
                 .AnyAsync();
         }
+
+        public async Task<bool> DoesAccessTokenValueExistAsync(string value)
+        {
+            return await _accessTokenEntities
+                .AsNoTracking()
+                .Where(e => e.Value == value)
+                .AnyAsync();
+        }
     }
 
     public static class AccessTokenRepositoryExtensions

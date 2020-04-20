@@ -34,7 +34,7 @@ namespace GamingCommunityApi.Core.Services
 
         public async Task RevokeSessionByIdAsync(User requesterUser, long? id)
         {
-            await _sessionValidator.ValidateActivateSessionByIdInputParametersAsync(requesterUser, id);
+            await _sessionValidator.ValidateRevokeSessionByIdInputParametersAsync(requesterUser, id);
             await _sessionOperator.RevokeSessionByIdAsync(id.Value);
         }
 

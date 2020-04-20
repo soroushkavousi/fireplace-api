@@ -18,5 +18,6 @@ namespace GamingCommunityApi.Core.Interfaces.IRepositories
         public Task<AccessToken> UpdateAccessTokenAsync(AccessToken accessToken);
         public Task DeleteAccessTokenAsync(long id);
         public Task<bool> DoesAccessTokenIdExistAsync(long id);
+        public Task<bool> DoesAccessTokenValueExistAsync(string value);
     }
 }

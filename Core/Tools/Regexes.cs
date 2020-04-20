@@ -25,9 +25,10 @@ namespace GamingCommunityApi.Core.Tools
         public static Regex UsernameSafeConsecutives { get; } = new Regex(@"^(?!.*[_.]{2}).*$");
         public static Regex UsernameValidCharacters { get; } = new Regex(@"^[a-zA-Z0-9_.]+$");
         public static Regex AuthorizationHeaderValue { get; } = new Regex(@"Bearer\s+(.+)", RegexOptions.IgnoreCase);
-        public static Regex AccessToken { get; } = new Regex(@"([\d|a-f]{32})", RegexOptions.IgnoreCase);
+        public static Regex AccessTokenValue { get; } = new Regex(@"([\d|a-f]{32})", RegexOptions.IgnoreCase);
         public static Regex FirstName { get; } = new Regex(@"^(?=.*\S).*$");
         public static Regex LastName { get; } = new Regex(@"^(?=.*\S).*$");
+        public static Regex ErrorClientMessage { get; } = new Regex(@"^(?=.*\S).*$");
 
     }
 }

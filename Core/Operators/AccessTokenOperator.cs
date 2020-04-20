@@ -85,6 +85,12 @@ namespace GamingCommunityApi.Core.Operators
             return accessTokenIdExists;
         }
 
+        public async Task<bool> DoesAccessTokenValueExistAsync(string value)
+        {
+            var accessTokenValueExists = await _accessTokenRepository.DoesAccessTokenValueExistAsync(value);
+            return accessTokenValueExists;
+        }
+
         public async Task<AccessToken> ApplyAccessTokenChangesAsync(AccessToken accessToken, long? userId = null, 
             string value = null)
         {

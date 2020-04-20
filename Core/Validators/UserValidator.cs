@@ -83,14 +83,14 @@ namespace GamingCommunityApi.Core.Validators
         {
             ValidateParameterIsNotNull(id, nameof(id), ErrorName.USER_ID_IS_NULL);
             await ValidateUserIdExists(id.Value);
-            await ValidateUserCanAccessToUserId(requesterUser, id.Value);
+            ValidateUserCanAccessToUserId(requesterUser, id.Value);
         }
 
         public async Task ValidateDeleteProcutInputParametersAsync(User requesterUser, long? id)
         {
             ValidateParameterIsNotNull(id, nameof(id), ErrorName.USER_ID_IS_NULL);
             await ValidateUserIdExists(id.Value);
-            await ValidateUserCanAccessToUserId(requesterUser, id.Value);
+            ValidateUserCanAccessToUserId(requesterUser, id.Value);
         }
 
         public async Task ValidatePatchUserInputParametersAsync(User requesterUser, long? id, string firstName, 
@@ -98,7 +98,7 @@ namespace GamingCommunityApi.Core.Validators
         {
             ValidateParameterIsNotNull(id, nameof(id), ErrorName.USER_ID_IS_NULL);
             await ValidateUserIdExists(id.Value);
-            await ValidateUserCanAccessToUserId(requesterUser, id.Value);
+            ValidateUserCanAccessToUserId(requesterUser, id.Value);
 
             if(firstName != null)
             {
@@ -173,7 +173,7 @@ namespace GamingCommunityApi.Core.Validators
             if (await _userOperator.DoesUserIdExistAsync(id) == false)
             {
                 var serverMessage = $"User {id} doesn't exists!";
-                throw new ApiException(ErrorName.USER_ID_DOES_NOT_EXIST, serverMessage);
+                throw new ApiException(ErrorName.USER_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
         }
 
@@ -225,7 +225,7 @@ namespace GamingCommunityApi.Core.Validators
             if (await _userOperator.DoesUsernameExistAsync(username) == false)
             {
                 var serverMessage = $"Username {username} doesn't exist!";
-                throw new ApiException(ErrorName.USERNAME_DOES_NOT_EXIST, serverMessage);
+                throw new ApiException(ErrorName.USERNAME_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
         }
 
@@ -279,14 +279,13 @@ namespace GamingCommunityApi.Core.Validators
             }
         }
 
-        public async Task ValidateUserCanAccessToUserId(User requesterUser, long id)
+        public void ValidateUserCanAccessToUserId(User requesterUser, long id)
         {
             if(requesterUser.Id != id)
             {
                 var serverMessage = $"requesterUser {requesterUser.Id} can't access to user id {id}";
-                throw new ApiException(ErrorName.ACCESS_DENIED, serverMessage);
+                throw new ApiException(ErrorName.USER_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
-            await Task.CompletedTask;
         }
         //public async Task ValidatePassword(string username, string password)
         //{
