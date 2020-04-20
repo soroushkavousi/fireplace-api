@@ -23,6 +23,7 @@ namespace GamingCommunityApi.Api.Tools
         public static string RequesterUserActionArgumentKey { get; } = "requesterUser";
         public static string InputHeaderParametersActionArgumentKey { get; } = "inputHeaderParameters";
         public static string InputCookieParametersActionArgumentKey { get; } = "inputCookieParameters";
-        public static object RequesterUserKey { get; internal set; } = "User";
+        public static string RequesterUserKey { get; } = "User";
+        public static string X_FORWARDED_FOR { get;} = "X-Forwarded-For";
     }
 }

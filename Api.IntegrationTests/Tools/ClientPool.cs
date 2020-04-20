@@ -42,6 +42,7 @@ namespace GamingCommunityApi.Api.IntegrationTests.Tools
             _emailRepository = testFixture.ServiceProvider.GetRequiredService<IEmailRepository>();
             _accessTokenRepository = testFixture.ServiceProvider.GetRequiredService<IAccessTokenRepository>();
             _accessTokenOperator = testFixture.ServiceProvider.GetRequiredService<AccessTokenOperator>();
+            ClearDatabase();
             GuestClient = CreateGuestClient();
             TheHulkClient = CreateTheHulkClientAsync().GetAwaiter().GetResult();
         }
@@ -49,6 +50,8 @@ namespace GamingCommunityApi.Api.IntegrationTests.Tools
         private HttpClient CreateGuestClient()
         {
             var guestClient = _apiFactory.CreateClient(_clientOptions);
+            var defaultRequestHeaders = guestClient.DefaultRequestHeaders;
+            defaultRequestHeaders.Add(Api.Tools.Constants.X_FORWARDED_FOR, @"::1");
             _logger.LogInformation($"Guest client initialized successfully.");
             return guestClient;
         }
@@ -64,13 +67,19 @@ namespace GamingCommunityApi.Api.IntegrationTests.Tools
             var theHulkClient = _apiFactory.CreateClient(_clientOptions);
             var defaultRequestHeaders = theHulkClient.DefaultRequestHeaders;
             defaultRequestHeaders.Add(Api.Tools.Constants.AuthorizationHeaderKey, $"Bearer {newAccessTokenValue}");
-            _logger.LogInformation($"Guest client initialized successfully.");
+            defaultRequestHeaders.Add(Api.Tools.Constants.X_FORWARDED_FOR, @"::1");
+            _logger.LogInformation($"The Hulk client initialized successfully.");
             return theHulkClient;
+        }
+
+        public void ClearDatabase()
+        {
+            _gamingCommunityApiContext.Database.ExecuteSqlRaw(@"TRUNCATE TABLE public.""UserEntities"" CASCADE;");
         }
 
         public void Dispose()
         {
-            _gamingCommunityApiContext.Database.ExecuteSqlRaw(@"TRUNCATE TABLE public.""UserEntities"" CASCADE;");
+            ClearDatabase();
         }
     }
 }
