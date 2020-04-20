@@ -14,7 +14,8 @@ using Xunit.Abstractions;
 
 namespace GamingCommunityApi.Api.IntegrationTests
 {
-    public class FirewallTests : IClassFixture<ApiIntegrationTestFixture>
+    [Collection("Api Integration Test Collection")]
+    public class FirewallTests
     {
         private readonly ILogger<FirewallTests> _logger;
         private readonly ClientPool _clientPool;
@@ -97,10 +98,10 @@ namespace GamingCommunityApi.Api.IntegrationTests
         [InlineData("PATCH", "/v0.1/users/999")]
         [InlineData("DELETE", "/v0.1/users/999")]
         [Theory]
-        public async Task TestGuestClientCantAccessToPrivateMethods(
+        public async Task TestGuestCantAccessToPrivateMethods(
             string httpMethodName, string requestUri)
         {
-            _logger.LogInformation($"{nameof(TestGuestClientCantAccessToPrivateMethods)} | Start | ({httpMethodName}, {requestUri})");
+            _logger.LogInformation($"{nameof(TestGuestCantAccessToPrivateMethods)} | Start | ({httpMethodName}, {requestUri})");
             var httpMethod = new HttpMethod(httpMethodName);
             var request = new HttpRequestMessage(httpMethod, requestUri)
             {
@@ -108,18 +109,18 @@ namespace GamingCommunityApi.Api.IntegrationTests
             };
 
             var response = await _clientPool.GuestClient.SendAsync(request);
-            await _testUtils.AssertResponseContainsErrorAsync(ErrorName.AUTHENTICATION_FAILED, response, nameof(TestGuestClientCantAccessToPrivateMethods));
-            _logger.LogInformation($"{nameof(TestGuestClientCantAccessToPrivateMethods)} | End");
+            await _testUtils.AssertResponseContainsErrorAsync(ErrorName.AUTHENTICATION_FAILED, response, nameof(TestGuestCantAccessToPrivateMethods));
+            _logger.LogInformation($"{nameof(TestGuestCantAccessToPrivateMethods)} | End");
         }
 
         [InlineData("POST", "/v0.1/users/sign-up-with-email")]
         [InlineData("POST", "/v0.1/users/log-in-with-email")]
         [InlineData("POST", "/v0.1/users/log-in-with-username")]
         [Theory]
-        public async Task TestGuestClientCanAccessToPublicMethods(
+        public async Task TestGuestCanAccessToPublicMethods(
             string httpMethodName, string requestUri)
         {
-            _logger.LogInformation($"{nameof(TestGuestClientCanAccessToPublicMethods)} | Start | ({httpMethodName}, {requestUri})");
+            _logger.LogInformation($"{nameof(TestGuestCanAccessToPublicMethods)} | Start | ({httpMethodName}, {requestUri})");
             var httpMethod = new HttpMethod(httpMethodName);
             var request = new HttpRequestMessage(httpMethod, requestUri)
             {
@@ -127,8 +128,8 @@ namespace GamingCommunityApi.Api.IntegrationTests
             };
 
             var response = await _clientPool.GuestClient.SendAsync(request);
-            await _testUtils.AssertResponseDoesNotContainErrorAsync(ErrorName.AUTHENTICATION_FAILED, response, nameof(TestGuestClientCantAccessToPrivateMethods));
-            _logger.LogInformation($"{nameof(TestGuestClientCanAccessToPublicMethods)} | End");
+            await _testUtils.AssertResponseDoesNotContainErrorAsync(ErrorName.AUTHENTICATION_FAILED, response, nameof(TestGuestCantAccessToPrivateMethods));
+            _logger.LogInformation($"{nameof(TestGuestCanAccessToPublicMethods)} | End");
         }
 
         [InlineData("GET", "/v0.1/access-tokens/some-token")]

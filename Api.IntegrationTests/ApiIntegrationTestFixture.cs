@@ -27,6 +27,9 @@ using Xunit.Abstractions;
 
 namespace GamingCommunityApi.Api.IntegrationTests
 {
+    [CollectionDefinition("Api Integration Test Collection")]
+    public class DatabaseCollection : ICollectionFixture<ApiIntegrationTestFixture> { }
+
     public class ApiIntegrationTestFixture : IDisposable
     {
         private readonly ILogger<ApiIntegrationTestFixture> _logger;
