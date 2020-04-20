@@ -51,7 +51,12 @@ namespace GamingCommunityApi.Api.IntegrationTests.Tools
 
         public async Task AssertResponseDoesNotContainErrorAsync(ErrorName notExpectedErrorName, HttpResponseMessage response, string testName)
         {
-            var responseBodyJObject = await ReadResponseBodyAsJObject(response, testName);
+            var responseBodyJToken = await ReadResponseBodyAsJToken(response, testName);
+            if (responseBodyJToken.Type != JTokenType.Object)
+                return;
+
+            var responseBodyJObject = responseBodyJToken.To<JObject>();
+
             var responseBodyJson = responseBodyJObject.ToString(Formatting.None);
             _logger.LogInformation($"{testName} | responseBodyJson: {responseBodyJson}");
 
@@ -75,14 +80,31 @@ namespace GamingCommunityApi.Api.IntegrationTests.Tools
                 return null;
         }
 
+        public async Task<string> ReadResponseBodyAsString(HttpResponseMessage response, string testName)
+        {
+            var responseBodyString = await response.Content.ReadAsStringAsync();
+
+            _logger.LogInformation($"{testName} | Checking response body is not null or empty. ({responseBodyString})");
+            Assert.False(responseBodyString.IsNullOrEmpty(), $"responseBody.IsNullOrEmpty(), responseBody: ({responseBodyString})");
+
+            return responseBodyString;
+        }
+
+        public async Task<JToken> ReadResponseBodyAsJToken(HttpResponseMessage response, string testName)
+        {
+            var responseBodyString = await ReadResponseBodyAsString(response, testName);
+            var responseBodyJToken = JToken.Parse(responseBodyString);
+            return responseBodyJToken;
+        }
+
         public async Task<JObject> ReadResponseBodyAsJObject(HttpResponseMessage response, string testName)
         {
-            var responseBody = await response.Content.ReadAsStringAsync();
+            var responseBodyJToken = await ReadResponseBodyAsJToken(response, testName);
 
-            _logger.LogInformation($"{testName} | Checking response body is not null. ({responseBody})");
-            Assert.NotNull(responseBody);
+            _logger.LogInformation($"{testName} | Checking response body is json object. ({responseBodyJToken.ToString(Formatting.None)})");
+            Assert.Equal(JTokenType.Object, responseBodyJToken.Type);
 
-            var responseBodyJObject = JObject.Parse(responseBody);
+            var responseBodyJObject = responseBodyJToken.To<JObject>();
             return responseBodyJObject;
         }
     }
