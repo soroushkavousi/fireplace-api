@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace GamingCommunityApi.Api.IntegrationTests.Tools
 {
-    public class ClientPool : IDisposable
+    public class ClientPool
     {
         private readonly ILogger<ClientPool> _logger;
         private readonly WebApplicationFactory<Startup> _apiFactory;
@@ -42,7 +42,6 @@ namespace GamingCommunityApi.Api.IntegrationTests.Tools
             _emailRepository = testFixture.ServiceProvider.GetRequiredService<IEmailRepository>();
             _accessTokenRepository = testFixture.ServiceProvider.GetRequiredService<IAccessTokenRepository>();
             _accessTokenOperator = testFixture.ServiceProvider.GetRequiredService<AccessTokenOperator>();
-            ClearDatabase();
             GuestClient = CreateGuestClient();
             TheHulkClient = CreateTheHulkClientAsync().GetAwaiter().GetResult();
         }
@@ -70,16 +69,6 @@ namespace GamingCommunityApi.Api.IntegrationTests.Tools
             defaultRequestHeaders.Add(Api.Tools.Constants.X_FORWARDED_FOR, @"::1");
             _logger.LogInformation($"The Hulk client initialized successfully.");
             return theHulkClient;
-        }
-
-        public void ClearDatabase()
-        {
-            _gamingCommunityApiContext.Database.ExecuteSqlRaw(@"TRUNCATE TABLE public.""UserEntities"" CASCADE;");
-        }
-
-        public void Dispose()
-        {
-            ClearDatabase();
         }
     }
 }
