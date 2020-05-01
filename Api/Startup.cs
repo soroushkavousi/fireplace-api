@@ -39,6 +39,8 @@ using GamingCommunityApi.Api.Attributes.ActionFilterAttributes;
 using Microsoft.AspNetCore.Authentication;
 using GamingCommunityApi.Infrastructure.Entities;
 using GamingCommunityApi.Api.Tools.TextJsonSerializer;
+using GamingCommunityApi.Core.Enums;
+using GamingCommunityApi.Core.Extensions;
 
 namespace GamingCommunityApi.Api
 {
@@ -116,13 +118,38 @@ namespace GamingCommunityApi.Api
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
 
-                options.AddSecurityDefinition("Bearer", //Name the security scheme
+                options.AddSecurityDefinition("Bearer",
                     new OpenApiSecurityScheme
                     {
                         Description = "Authorization header using the Bearer scheme.",
-                        Type = SecuritySchemeType.Http, //We set the scheme type to http since we're using bearer authentication
-                        Scheme = "bearer", //The name of the HTTP Authorization scheme to be used in the Authorization header. In this case "bearer".
+                        Type = SecuritySchemeType.Http,
+                        Scheme = "bearer",
                         In = ParameterLocation.Header,
+                    });
+
+                options.AddSecurityDefinition("oauth2", 
+                    new OpenApiSecurityScheme
+                    {
+                        Type = SecuritySchemeType.OAuth2,
+                        Scheme = "bearer",
+                        In = ParameterLocation.Header,
+                        Flows = new OpenApiOAuthFlows
+                        {
+                            AuthorizationCode = new OpenApiOAuthFlow
+                            //Implicit = new OpenApiOAuthFlow
+                            //ClientCredentials = new OpenApiOAuthFlow
+                            //Password = new OpenApiOAuthFlow
+                            {
+                                AuthorizationUrl = new Uri("https://accounts.google.com/o/oauth2/v2/auth"),
+                                TokenUrl = new Uri("https://www.googleapis.com/oauth2/v4/token"),
+                                Scopes = new Dictionary<string, string>
+                                {
+                                    { "profile", "View your basic profile info" },
+                                    { "email", "View your email address" },
+                                    { "openid", "Authenticate using OpenID Connect" }
+                                },
+                            },
+                        }
                     });
 
                 //options.DocInclusionPredicate((docName, apiDesc) =>
@@ -159,6 +186,20 @@ namespace GamingCommunityApi.Api
                 options.SuppressModelStateInvalidFilter = true;
                 options.SuppressMapClientErrors = true;
             });
+
+            var gamingCommunityApiContext = new GamingCommunityApiContext(Configuration.GetConnectionString("MainDatabase"));
+            var globalValues = gamingCommunityApiContext.GlobalEntities.AsNoTracking().Where(e => e.Id == GlobalId.RELEASE.To<int>()).Single().Values;
+            services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    options.ClientId = globalValues.GoogleClientId;
+                    options.ClientSecret = globalValues.GoogleClientSecret;
+                    options.AccessType = "offline";
+                });
+            //var gamingCommunityApiContext = services.BuildServiceProvider()
+            //           .GetService<GamingCommunityApiContext>();
+
+            //services.AddAuthenticationCore().AddGoogle();
 
             //services.AddAuthentication("ApiAuthentication")
             //    .AddScheme<AuthenticationSchemeOptions, ApiAuthenticationHandler>("ApiAuthentication", null);
@@ -213,6 +254,14 @@ namespace GamingCommunityApi.Api
                     options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
                 }
                 options.DocExpansion(DocExpansion.List);
+                options.OAuthClientId("850788234195-6f0f934vgiqj8uet7q418r383llgluba.apps.googleusercontent.com");
+                options.OAuthAppName("Gaming Community");
+                options.OAuth2RedirectUrl("https://localhost:5021/v0.1/users/sign-up-with-google");
+                var relativeApiSwaggerJavascriptPath = @"Codes\Api\Tools\Swagger\nlog.config";
+                var solutionDirectory = Core.Tools.Utils.GetSolutionDirectory();
+                //var logConfigPath = Path.Combine(solutionDirectory, relativeLogConfigPath);
+                //options.InjectJavascript("")
+                //options.OAuthAdditionalQueryStringParams(new Dictionary<string, string> { ["response_type"] = "code" });
             });
             app.UseRequestResponseLoggingMiddleware();
             app.UseExceptionMiddleware();

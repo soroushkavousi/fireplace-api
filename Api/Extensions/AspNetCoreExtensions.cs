@@ -53,6 +53,7 @@ namespace GamingCommunityApi.Api.Extensions
         {
             services.AddScoped<IEmailGateway, EmailGateway>();
             services.AddScoped<IFileGateway, FileGateway>();
+            services.AddScoped<IGoogleGateway, GoogleGateway>();
             return services;
         }
 

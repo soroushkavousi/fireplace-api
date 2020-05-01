@@ -26,7 +26,8 @@ namespace GamingCommunityApi.Api.Tools.Swagger.OperationFilters
                 {
                     Reference = new OpenApiReference
                     {
-                        Id = "Bearer", //The name of the previously defined security scheme.
+                        Id = "Bearer",
+                        //Id = "oauth2",
                         Type = ReferenceType.SecurityScheme,
                     },
                 },

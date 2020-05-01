@@ -5,6 +5,8 @@
 
 # User-secrets
 secrets.json
+appsettings.json
+appsettings.Development.json
 
 # User-specific files
 *.rsuser

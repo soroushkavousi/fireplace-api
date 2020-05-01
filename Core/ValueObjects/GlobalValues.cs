@@ -13,13 +13,15 @@ namespace GamingCommunityApi.Core.ValueObjects
         public int ApiEmailSmtpServerPort { get; set; }
         public string EmailActivationMessageFormat { get; set; }
         public string EmailActivationSubject { get; set; }
+        public string GoogleClientId { get; set; }
+        public string GoogleClientSecret { get; set; }
 
 
         private GlobalValues() { }
 
-        public GlobalValues(string apiEmailAddress, string apiEmailPassword, 
-            string apiEmailSmtpServerAddress, int apiEmailSmtpServerPort, 
-            string emailActivationMessageFormat, string emailActivationSubject)
+        public GlobalValues(string apiEmailAddress, string apiEmailPassword, string apiEmailSmtpServerAddress, 
+            int apiEmailSmtpServerPort, string emailActivationMessageFormat, string emailActivationSubject, 
+            string googleClientId, string googleClientSecret)
         {
             ApiEmailAddress = apiEmailAddress ?? throw new ArgumentNullException(nameof(apiEmailAddress));
             ApiEmailPassword = apiEmailPassword ?? throw new ArgumentNullException(nameof(apiEmailPassword));
@@ -27,6 +29,8 @@ namespace GamingCommunityApi.Core.ValueObjects
             ApiEmailSmtpServerPort = apiEmailSmtpServerPort;
             EmailActivationMessageFormat = emailActivationMessageFormat ?? throw new ArgumentNullException(nameof(emailActivationMessageFormat));
             EmailActivationSubject = emailActivationSubject ?? throw new ArgumentNullException(nameof(emailActivationSubject));
+            GoogleClientId = googleClientId ?? throw new ArgumentNullException(nameof(googleClientId));
+            GoogleClientSecret = googleClientSecret ?? throw new ArgumentNullException(nameof(googleClientSecret));
         }
     }
 }

@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authorization;
 using GamingCommunityApi.Core.Services;
 using GamingCommunityApi.Core.ValueObjects;
 using GamingCommunityApi.Core.Models.UserInformations;
+using GamingCommunityApi.Core.Extensions;
 
 namespace GamingCommunityApi.Api.Controllers
 {
@@ -36,6 +37,44 @@ namespace GamingCommunityApi.Api.Controllers
             _userService = userService;
         }
 
+        /// <summary>
+        /// Sign up with google.
+        /// </summary>
+        /// <returns>Created user</returns>
+        /// <response code="200">Returns the newly created item</response>
+        [AllowAnonymous]
+        [HttpGet("open-google-log-in-page")]
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<UserDto>> OpenGoogleLogInPage(
+            [BindNever] [FromHeader] ControllerInputHeaderParameters inputHeaderParameters)
+        {
+            //var googleLogInPageUrl = await _userService.GetGoogleLogInPageUrlAsync(inputHeaderParameters.IpAddress);
+            //return Redirect(googleLogInPageUrl);
+            return Redirect("https://google.com");
+        }
+
+        /// <summary>
+        /// Sign up with google.
+        /// </summary>
+        /// <returns>Created user</returns>
+        /// <response code="200">Returns the newly created item</response>
+        [AllowAnonymous]
+        [HttpGet("sign-up-with-google")]
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<UserDto>> SignUpWithGoogleAsync(
+            [BindNever] [FromHeader] ControllerInputHeaderParameters inputHeaderParameters,
+            [FromQuery] ControllerSignUpWithGoogleInputQueryParameters inputQueryParameters)
+        {
+            var user = await _userService.SignUpWithGoogleAsync(inputHeaderParameters.IpAddress, 
+                inputQueryParameters.State, inputQueryParameters.Code, inputQueryParameters.Scope,
+                inputQueryParameters.AuthUser, inputQueryParameters.Prompt);
+            return Redirect("https://localhost:5021/docs");
+            return Ok();
+            var userDto = _userConverter.ConvertToDto(user);
+            var outputCookieParameters = new ControllerSignUpWithEmailOutputCookieParameters(userDto?.AccessToken);
+            SetOutputCookieParameters(outputCookieParameters);
+            return userDto;
+        }
 
         /// <summary>
         /// Sign up with email.
@@ -134,7 +173,7 @@ namespace GamingCommunityApi.Api.Controllers
             [FromRoute] ControllerGetUserByIdInputRouteParameters inputRouteParameters,
             [FromQuery] ControllerGetUserByIdInputQueryParameters inputQueryParameters)
         {
-            var user = await _userService.GetUserByIdAsync(requesterUser, inputRouteParameters.Id, 
+            var user = await _userService.GetUserByIdAsync(requesterUser, inputRouteParameters.Id,
                 inputQueryParameters.IncludeEmail, inputQueryParameters.IncludeSessions);
             var userDto = _userConverter.ConvertToDto(user);
             return userDto;

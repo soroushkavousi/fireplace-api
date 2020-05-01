@@ -45,8 +45,11 @@ namespace GamingCommunityApi.Api.Tools.Swagger
         static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description, IWebHostEnvironment env)
         {
             var description_html = ""
+                //+ "<script src=\"https://apis.google.com/js/platform.js\" async defer></script>"
                 + "<h5><strong>Gamers</strong>, Do you want a big community just for ourselves? Let's make it together.</h5>"
                 + "<h5>This is the place where we can communicate together with our beloved games.</h5><br>"
+                + "<meta name=\"google-signin-client_id\" content=\"850788234195-6f0f934vgiqj8uet7q418r383llgluba.apps.googleusercontent.com\">"
+                + "<div class=\"g-signin2\" data-onsuccess=\"onSignIn\"></div>"
                 + "";
 
             if (env.IsProduction())

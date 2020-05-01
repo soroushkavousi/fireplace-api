@@ -16,13 +16,27 @@ namespace GamingCommunityApi.Api.Tools.NLog
 
         public static void ConfigureNLog()
         {
-            var relativeLogConfigPath = @"Codes\Api\Tools\NLog\nlog.config";
-            var relativeLogRootFolder = @"Logs";
+            //var relativeLogConfigPath = @"Codes\Api\Tools\NLog\nlog.config";
+            //var relativeLogRootFolder = @"Logs";
             var solutionDirectory = Core.Tools.Utils.GetSolutionDirectory();
-            var logConfigPath = Path.Combine(solutionDirectory, relativeLogConfigPath);
-            var logRootFolder = Path.Combine(solutionDirectory, relativeLogRootFolder);
+            //var logConfigPath = Path.Combine(solutionDirectory, relativeLogConfigPath);
+            //var logRootFolder = Path.Combine(solutionDirectory, relativeLogRootFolder);
+
 
             //Utils.CreateParentDirectoriesOfFileIfNotExists(logRootFolder);
+
+
+
+
+
+
+            var logConfigPath = Core.Tools.Utils.ReadFromConfig("Logging:ConfigPath");
+
+            var logRootFolder = Core.Tools.Utils.IsOsWindows() ?
+                Core.Tools.Utils.ReadFromConfig("Logging:WindowsLogRootDirectory")
+                : Core.Tools.Utils.ReadFromConfig("Logging:LinuxLogRootDirectory");
+
+            NLogBuilder.ConfigureNLog(logConfigPath);
             NLogBuilder.ConfigureNLog(logConfigPath);
             LogManager.Configuration.Variables["logRootFolder"] = logRootFolder;
         }

@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 using System.Net;
 using GamingCommunityApi.Core.ValueObjects;
 using GamingCommunityApi.Core.Interfaces.IRepositories;
+using GamingCommunityApi.Core.Interfaces.IGateways;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace GamingCommunityApi.Core.Operators
 {
@@ -24,14 +26,78 @@ namespace GamingCommunityApi.Core.Operators
         private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly IUserRepository _userRepository;
-        
+        private readonly IGoogleGateway _googleGateway;
+        private readonly string _googleClientId;
+        private readonly string _googleClientSecret;
+
         public UserOperator(ILogger<UserOperator> logger, IConfiguration configuration,
-            IServiceProvider serviceProvider, IUserRepository userRepository)
+            IServiceProvider serviceProvider, IUserRepository userRepository,
+            IGoogleGateway googleGateway, IGlobalRepository globalRepository)
         {
             _logger = logger;
             _configuration = configuration;
             _serviceProvider = serviceProvider;
             _userRepository = userRepository;
+            _googleGateway = googleGateway;
+            var global = globalRepository.GetGlobalByIdAsync(GlobalId.RELEASE).GetAwaiter().GetResult();
+            var globalValues = global.Values;
+            _googleClientId = global.Values.GoogleClientId;
+            _googleClientSecret = global.Values.GoogleClientSecret;
+        }
+
+        public async Task<User> OpenGoogleLogInPage(IPAddress ipAddress, string accessToken, 
+            string refreshToken, string tokenType, int? expiresIn, string idToken)
+        {
+            await Task.CompletedTask;
+            return default;
+        }
+
+        public async Task<User> SignUpWithGoogleAsync(IPAddress ipAddress, string state,
+            string code, string scope, string authUser, string prompt)
+        {
+            _logger.LogInformation($"User access code: {code}. Ip address: {ipAddress}");
+            //var global = await _globalRepository.GetGlobalByIdAsync(GlobalId.RELEASE);
+            //var globalValues = global.Values;
+            await _googleGateway.RequestToken(_googleClientId,
+                _googleClientSecret, code);
+            await Task.CompletedTask;
+            return default;
+            var firstName = "first55";
+            var lastName = "last55";
+            var username = "user55";
+            var password = Password.OfValue(code);
+            var emailAddress = "email55@gmail.com";
+
+            return await SignUpWithEmailAsync(ipAddress, firstName, lastName, username, password, emailAddress);
+        }
+
+        public async Task<string> GetGoogleLogInPageUrlAsync(IPAddress ipAddress)
+        {
+            await Task.CompletedTask;
+            var baseGoogleLogInPageUrl = "https://accounts.google.com/o/oauth2/v2/auth";
+            var queryParameters = new Dictionary<string, string>()
+            {
+                { "client_id", _googleClientId },
+                { "redirect_uri", @"https://localhost:5021/v0.1/users/sign-up-with-google" },
+                { "response_type", "code" },
+                { "scope", "openid profile email" },
+                { "access_type", "offline" },
+                { "state", "swagger" },
+                { "include_granted_scopes", "true" },
+                { "display", "page" }
+            };
+
+            var googleLogInPageUrl = new Uri(QueryHelpers.AddQueryString(baseGoogleLogInPageUrl, queryParameters)).AbsoluteUri;
+            _logger.LogInformation($"googleLogInPageUrl: {googleLogInPageUrl}");
+            return googleLogInPageUrl;
+            //return Redirect(@$"https://accounts.google.com/o/oauth2/v2/auth?
+            //     scope=openid profile email&
+            //     access_type=offline&
+            //     include_granted_scopes=true&
+            //     response_type=code&
+            //     state=state_parameter_passthrough_value&
+            //     redirect_uri={@"https://localhost:5021/v0.1/users/sign-up-with-google".ToUrlEncoded()}&
+            //     client_id=client_id".RemoveLineBreaks());
         }
 
         public async Task<User> SignUpWithEmailAsync(IPAddress ipAddress, string firstName,

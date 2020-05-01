@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace GamingCommunityApi.Core.Extensions
 {
@@ -42,5 +43,7 @@ namespace GamingCommunityApi.Core.Extensions
 
         public static string ToKebabCase(this string str) =>
             KebabCaseNamingPolicy.Instance.ConvertName(str);
+
+        public static string ToUrlEncoded(this string str) => HttpUtility.UrlEncode(str);
     }
 }

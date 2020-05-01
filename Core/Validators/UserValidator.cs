@@ -35,6 +35,18 @@ namespace GamingCommunityApi.Core.Validators
             _userOperator = userOperator;
         }
 
+        public async Task ValidateOpenGoogleLogInPagenputParametersAsync(IPAddress ipAddress, string accessToken, 
+            string refreshToken, string tokenType, int? expiresIn, string idToken)
+        {
+            await Task.CompletedTask;
+        }
+
+        public async Task ValidateSignUpWithGoogleInputParametersAsync(IPAddress ipAddress, string state,
+            string code, string scope, string authUser, string prompt)
+        {
+            await Task.CompletedTask;
+        }
+
         public async Task ValidateSignUpWithEmailInputParametersAsync(IPAddress ipAddress, 
             string firstName, string lastName, string username, Password password, 
             string emailAddress)

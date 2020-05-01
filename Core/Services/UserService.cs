@@ -24,6 +24,20 @@ namespace GamingCommunityApi.Core.Services
             _userValidator = userValidator;
             _userOperator = userOperator;
         }
+        
+        public async Task<User> OpenGoogleLogInPage(IPAddress ipAddress, string accessToken,
+            string refreshToken, string tokenType, int? expiresIn, string idToken)
+        {
+            await _userValidator.ValidateOpenGoogleLogInPagenputParametersAsync(ipAddress, accessToken, refreshToken, tokenType, expiresIn, idToken);
+            return await _userOperator.OpenGoogleLogInPage(ipAddress, accessToken, refreshToken, tokenType, expiresIn, idToken);
+        }
+
+        public async Task<User> SignUpWithGoogleAsync(IPAddress ipAddress, string state, 
+            string code, string scope, string authUser, string prompt)
+        {
+            await _userValidator.ValidateSignUpWithGoogleInputParametersAsync(ipAddress, state, code, scope, authUser, prompt);
+            return await _userOperator.SignUpWithGoogleAsync(ipAddress, state, code, scope, authUser, prompt);
+        }
 
         public async Task<User> SignUpWithEmailAsync(IPAddress ipAddress, string firstName, 
             string lastName, string username, Password password, string emailAddress)
@@ -33,6 +47,11 @@ namespace GamingCommunityApi.Core.Services
             return await _userOperator.SignUpWithEmailAsync(ipAddress, firstName, lastName,
                 username, password, emailAddress);
             
+        }
+
+        public async Task<string> GetGoogleLogInPageUrlAsync(IPAddress ipAddress)
+        {
+            return await _userOperator.GetGoogleLogInPageUrlAsync(ipAddress);
         }
 
         public async Task<User> LogInWithEmailAsync(IPAddress ipAddress, string emailAddress, Password password)
@@ -48,7 +67,7 @@ namespace GamingCommunityApi.Core.Services
             var user = await _userOperator.LogInWithUsernameAsync(ipAddress, username, password);
             return user;
         }
-     
+
         public async Task<List<User>> ListUsersAsync(User requesterUser, bool? includeEmail, bool? includeSessions)
         {
             await _userValidator.ValidateListUsersInputParametersAsync(requesterUser, includeEmail, includeSessions);
