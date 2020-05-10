@@ -15,63 +15,44 @@ namespace GamingCommunityApi.Infrastructure.Entities.UserInformationEntities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Username { get; set; }
-        public string PasswordHash { get; set; }
         public string State { get; set; }
+        public string PasswordHash { get; set; }
         public long? Id { get; set; }
         public EmailEntity EmailEntity { get; set; }
+        public GoogleUserEntity GoogleUserEntity { get; set; }
         public List<AccessTokenEntity> AccessTokenEntities { get; set; }
         public List<SessionEntity> SessionEntities { get; set; }
 
         private UserEntity() { }
 
         public UserEntity(string firstName, string lastName,
-            string username, string passwordHash, string state, long? id = null,
-            EmailEntity emailEntity = null,
+            string username, string state, string passwordHash = null, long? id = null,
+            EmailEntity emailEntity = null, GoogleUserEntity googleUserEntity = null,
             List<AccessTokenEntity> accessTokenEntities = null, List<SessionEntity> sessionEntities = null)
         {
             FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
             LastName = lastName ?? throw new ArgumentNullException(nameof(lastName));
             Username = username ?? throw new ArgumentNullException(nameof(username));
-            PasswordHash = passwordHash ?? throw new ArgumentNullException(nameof(passwordHash));
             State = state ?? throw new ArgumentNullException(nameof(state));
+            PasswordHash = passwordHash;
             Id = id;
             EmailEntity = emailEntity;
+            GoogleUserEntity = googleUserEntity;
             AccessTokenEntities = accessTokenEntities;
             SessionEntities = sessionEntities;
         }
 
-        public UserEntity PureCopy() => new UserEntity(FirstName, LastName, Username,
-            PasswordHash, State, Id, null,
-            null, null);
-
-        public UserEntity Copy(bool deep = false)
-        {
-            var copy = new UserEntity(FirstName, LastName, Username,
-                PasswordHash, State, Id, EmailEntity, 
-                AccessTokenEntities, SessionEntities);
-            return copy;
-        }
+        public UserEntity PureCopy() => new UserEntity(FirstName, LastName, 
+            Username, State, PasswordHash, Id, null, null, null, null);
 
         public void RemoveLoopReferencing()
         {
-            var pureUserEntity = new UserEntity(FirstName, LastName, Username,
-                PasswordHash, State, Id, null,
-                null, null);
-
-            if (EmailEntity != null && EmailEntity.UserEntity != null)
-                EmailEntity.UserEntity = pureUserEntity;
-
-            if(AccessTokenEntities.IsNullOrEmpty() == false)
-            {
-                AccessTokenEntities.ForEach(
-                    accessTokenEntity => accessTokenEntity.UserEntity = pureUserEntity);
-            }
-
-            if (SessionEntities.IsNullOrEmpty() == false)
-            {
-                SessionEntities.ForEach(
-                    sessionEntity => sessionEntity.UserEntity = pureUserEntity);
-            }
+            EmailEntity = EmailEntity?.PureCopy();
+            GoogleUserEntity = GoogleUserEntity?.PureCopy();
+            AccessTokenEntities?.ForEach(
+                    accessTokenEntity => accessTokenEntity?.PureCopy());
+            SessionEntities?.ForEach(
+                    sessionEntity => sessionEntity?.PureCopy());
         }
     }
 

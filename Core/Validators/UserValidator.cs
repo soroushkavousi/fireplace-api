@@ -41,9 +41,14 @@ namespace GamingCommunityApi.Core.Validators
             await Task.CompletedTask;
         }
 
-        public async Task ValidateSignUpWithGoogleInputParametersAsync(IPAddress ipAddress, string state,
-            string code, string scope, string authUser, string prompt)
+        public async Task ValidateLogInWithGoogleInputParametersAsync(IPAddress ipAddress, string state,
+            string code, string scope, string authUser, string prompt, string error)
         {
+            if (string.IsNullOrWhiteSpace(error) == false)
+            {
+                var serverMessage = $"Google error message: {error}";
+                throw new ApiException(ErrorName.BAD_REQUEST, serverMessage);
+            }
             await Task.CompletedTask;
         }
 

@@ -33,25 +33,9 @@ namespace GamingCommunityApi.Infrastructure.Entities.UserInformationEntities
         public SessionEntity PureCopy() => new SessionEntity(UserEntityId, IpAddress,
             State, Id, null);
 
-        public SessionEntity Copy(bool deep = false)
-        {
-            var copy = new SessionEntity(UserEntityId, IpAddress,
-                State, Id, UserEntity);
-            return copy;
-        }
-
         public void RemoveLoopReferencing()
         {
-            var pureSessionEntity = new SessionEntity(UserEntityId, IpAddress,
-                State, Id, null);
-
-            if (UserEntity != null && UserEntity.SessionEntities.IsNullOrEmpty() == false)
-            {
-                var index = UserEntity.SessionEntities.FindIndex(
-                    sessionEntity => sessionEntity.Id == Id);
-                if (index != -1)
-                    UserEntity.SessionEntities[index] = pureSessionEntity;
-            }
+            UserEntity = UserEntity?.PureCopy();
         }
     }
 

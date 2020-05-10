@@ -49,9 +49,9 @@ namespace GamingCommunityApi.Api.Middlewares
         private async Task<Error> CreateErrorAsync(ApiException apiException, ErrorOperator errorOperator)
         {
             Error error;
-            if (await errorOperator.DoesErrorIdExistAsync(apiException.ErrorId))
+            if (await errorOperator.DoesErrorNameExistAsync(apiException.ErrorName))
             {
-                error = await errorOperator.GetErrorByNameAsync(apiException.ErrorId);
+                error = await errorOperator.GetErrorByNameAsync(apiException.ErrorName);
             }
             else
             {

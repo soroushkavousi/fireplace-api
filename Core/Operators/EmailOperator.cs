@@ -25,18 +25,16 @@ namespace GamingCommunityApi.Core.Operators
         private readonly IServiceProvider _serviceProvider;
         private readonly IEmailRepository _emailRepository;
         private readonly IEmailGateway _emailGateway;
-        private readonly IGlobalRepository _globalRepository;
 
         public EmailOperator(ILogger<EmailOperator> logger, IConfiguration configuration,
             IServiceProvider serviceProvider, IEmailRepository emailRepository,
-            IEmailGateway emailGateway, IGlobalRepository globalRepository)
+            IEmailGateway emailGateway)
         {
             _logger = logger;
             _configuration = configuration;
             _serviceProvider = serviceProvider;
             _emailRepository = emailRepository;
             _emailGateway = emailGateway;
-            _globalRepository = globalRepository;
         }
 
         public async Task<Email> ActivateEmailByIdAsync(long id)
@@ -75,27 +73,32 @@ namespace GamingCommunityApi.Core.Operators
 
         public async Task<Email> CreateEmailAsync(long userId, string address)
         {
-            var activation = await GenerateNewActivationAsync();
+            var activation = GenerateNewActivationAsync();
             var email = await _emailRepository.CreateEmailAsync(userId, address, activation);
+            email.Activation.Subject = activation.Subject;
             email.Activation.Message = activation.Message;
             email = await SendActivationCodeAsync(email);
             return email;
         }
 
-        public async Task<Email> PatchEmailByIdAsync(long id, long? userId = null, string address = null, 
+        public async Task<Email> PatchEmailByIdAsync(long id, long? userId = null,
+            string address = null, string activationSubject = null,
             string activationMessage = null, ActivationStatus? activationStatus = null)
         {
             var email = await _emailRepository.GetEmailByIdAsync(id, true);
-            email = await ApplyEmailChangesAsync(email, userId, address, activationMessage, activationStatus);
+            email = await ApplyEmailChangesAsync(email, userId, address, activationSubject,
+                activationMessage, activationStatus);
             email = await GetEmailByIdAsync(email.Id, true);
             return email;
         }
 
-        public async Task<Email> PatchEmailByAddressAsync(string existingAddress, long? userId = null, string address = null,
+        public async Task<Email> PatchEmailByAddressAsync(string existingAddress, long? userId = null, 
+            string address = null, string activationSubject = null,
             string activationMessage = null, ActivationStatus? activationStatus = null)
         {
             var email = await _emailRepository.GetEmailByAddressAsync(existingAddress, true);
-            email = await ApplyEmailChangesAsync(email, userId, address, activationMessage, activationStatus);
+            email = await ApplyEmailChangesAsync(email, userId, address, activationSubject,
+                activationMessage, activationStatus);
             email = await GetEmailByIdAsync(email.Id, true);
             return email;
         }
@@ -111,12 +114,18 @@ namespace GamingCommunityApi.Core.Operators
             return emailIdExists;
         }
 
-        public async Task<Email> ApplyEmailChangesAsync(Email email, long? userId = null, string address = null,
+        public async Task<Email> ApplyEmailChangesAsync(Email email, long? userId = null, 
+            string address = null, string activationSubject = null,
             string activationMessage = null, ActivationStatus? activationStatus = null)
         {
             if (userId != null)
             {
                 email.UserId = userId.Value;
+            }
+
+            if (activationSubject != null)
+            {
+                email.Activation.Subject = activationSubject;
             }
 
             if (activationMessage != null)
@@ -132,7 +141,7 @@ namespace GamingCommunityApi.Core.Operators
             if (address != null)
             {
                 email.Address = address;
-                email.Activation = await GenerateNewActivationAsync();
+                email.Activation = GenerateNewActivationAsync();
                 email = await SendActivationCodeAsync(email);
                 email.User.State = UserState.NOT_VERIFIED;
             }
@@ -143,22 +152,20 @@ namespace GamingCommunityApi.Core.Operators
 
         public async Task<Email> SendActivationCodeAsync(Email email)
         {
-            var global = await _globalRepository.GetGlobalByIdAsync(GlobalId.RELEASE);
-            var globalValues = global.Values;
-            var sendEmailTask = _emailGateway.SendEmailMessage(globalValues.ApiEmailSmtpServerAddress,
-                globalValues.ApiEmailSmtpServerPort, globalValues.ApiEmailAddress, 
-                globalValues.ApiEmailPassword, email.Address, 
-                globalValues.EmailActivationSubject, email.Activation.Message);
+            var sendEmailTask = _emailGateway.SendEmailMessage(email.Address,
+                email.Activation.Subject, email.Activation.Message);
             email.Activation.Status = ActivationStatus.SENT;
             email = await _emailRepository.UpdateEmailAsync(email);
             return email;
         }
 
-        public async Task<Activation> GenerateNewActivationAsync()
+        public Activation GenerateNewActivationAsync()
         {
             var activationCode = GenerateNewActivationCode();
-            var activationMessage = await GenerateNewActivationMessageAsync(activationCode);
-            var activation = new Activation(activationCode, ActivationStatus.CREATED, activationMessage);
+            var activationMessage = GenerateNewActivationMessageAsync(activationCode);
+            var activationSubject = GlobalOperator.GlobalValues.Email.ActivationSubject;
+            var activation = new Activation(activationCode, ActivationStatus.CREATED,
+                activationSubject, activationMessage);
             return activation;
         }
 
@@ -168,10 +175,9 @@ namespace GamingCommunityApi.Core.Operators
             return activationCode;
         }
 
-        public async Task<string> GenerateNewActivationMessageAsync(int activationCode)
+        public string GenerateNewActivationMessageAsync(int activationCode)
         {
-            var global = await _globalRepository.GetGlobalByIdAsync(GlobalId.RELEASE);
-            var messageFormat = global.Values.EmailActivationMessageFormat;
+            var messageFormat = GlobalOperator.GlobalValues.Email.ActivationMessageFormat;
             var activationMessage = string.Format(messageFormat, activationCode);
             return activationMessage;
         }

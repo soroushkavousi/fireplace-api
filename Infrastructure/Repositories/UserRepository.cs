@@ -39,13 +39,14 @@ namespace GamingCommunityApi.Infrastructure.Repositories
         }
 
         public async Task<List<User>> ListUsersAsync(
-                    bool includeEmail = false, bool includeAccessTokens = false, 
-                    bool includeSessions = false)
+                    bool includeEmail = false, bool includeGoogleUser = false,
+                    bool includeAccessTokens = false, bool includeSessions = false)
         {
             var userEntities = await _userEntities
                 .AsNoTracking()
                 .Include(
                     emailEntity: includeEmail,
+                    googleUserEntity: includeGoogleUser,
                     accessTokenEntities: includeAccessTokens,
                     sessionEntities: includeSessions
                 )
@@ -54,7 +55,8 @@ namespace GamingCommunityApi.Infrastructure.Repositories
             return userEntities.Select(e => _userConverter.ConvertToModel(e)).ToList();
         }
 
-        public async Task<User> GetUserByIdAsync(long id, bool includeEmail = false, 
+        public async Task<User> GetUserByIdAsync(long id, 
+            bool includeEmail = false, bool includeGoogleUser = false, 
             bool includeAccessTokens = false, bool includeSessions = false)
         {
             var userEntity = await _userEntities
@@ -62,6 +64,7 @@ namespace GamingCommunityApi.Infrastructure.Repositories
                 .Where(e => e.Id == id)
                 .Include(
                     emailEntity: includeEmail,
+                    googleUserEntity: includeGoogleUser,
                     accessTokenEntities: includeAccessTokens,
                     sessionEntities: includeSessions
                 )
@@ -71,14 +74,15 @@ namespace GamingCommunityApi.Infrastructure.Repositories
         }
 
         public async Task<User> GetUserByUsernameAsync(string username,
-            bool includeEmail = false, bool includeAccessTokens = false,
-            bool includeSessions = false)
+            bool includeEmail = false, bool includeGoogleUser = false, 
+            bool includeAccessTokens = false, bool includeSessions = false)
         {
             var userEntity = await _userEntities
                 .AsNoTracking()
                 .Where(e => e.Username == username)
                 .Include(
                     emailEntity: includeEmail,
+                    googleUserEntity: includeGoogleUser,
                     accessTokenEntities: includeAccessTokens,
                     sessionEntities: includeSessions
                 )
@@ -88,10 +92,10 @@ namespace GamingCommunityApi.Infrastructure.Repositories
         }
 
         public async Task<User> CreateUserAsync(string firstName, string lastName,
-            string username, Password password, UserState state)
+            string username, UserState state, Password password = null)
         {
             var userEntity = new UserEntity(firstName, lastName,
-                username, password.Hash, state.ToString());
+                username, state.ToString(), password?.Hash);
             _userEntities.Add(userEntity);
             await _gamingCommunityApiContext.SaveChangesAsync();
             _gamingCommunityApiContext.DetachAllEntries();
@@ -147,11 +151,14 @@ namespace GamingCommunityApi.Infrastructure.Repositories
     {
         public static IQueryable<UserEntity> Include(
                     [NotNull] this IQueryable<UserEntity> userEntitiesQuery,
-                    bool emailEntity, bool accessTokenEntities,
-                    bool sessionEntities)
+                    bool emailEntity, bool googleUserEntity,
+                    bool accessTokenEntities, bool sessionEntities)
         {
             if (emailEntity)
                 userEntitiesQuery = userEntitiesQuery.Include(e => e.EmailEntity);
+
+            if (googleUserEntity)
+                userEntitiesQuery = userEntitiesQuery.Include(e => e.GoogleUserEntity);
 
             if (accessTokenEntities)
                 userEntitiesQuery = userEntitiesQuery.Include(e => e.AccessTokenEntities);

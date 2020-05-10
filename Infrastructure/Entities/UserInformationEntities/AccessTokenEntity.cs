@@ -27,28 +27,12 @@ namespace GamingCommunityApi.Infrastructure.Entities.UserInformationEntities
             UserEntity = userEntity;
         }
 
-        public AccessTokenEntity PureCopy() => new AccessTokenEntity(UserEntityId, Value,
-            Id, null);
-
-        public AccessTokenEntity Copy(bool deep = false)
-        {
-            var copy = new AccessTokenEntity(UserEntityId, Value,
-                Id, UserEntity);
-            return copy;
-        }
+        public AccessTokenEntity PureCopy() => new AccessTokenEntity(UserEntityId, 
+            Value, Id, null);
 
         public void RemoveLoopReferencing()
         {
-            var pureAccessTokenEntity = new AccessTokenEntity(UserEntityId, Value,
-                Id, null);
-
-            if (UserEntity != null && UserEntity.AccessTokenEntities.IsNullOrEmpty() == false)
-            {
-                var index = UserEntity.AccessTokenEntities.FindIndex(
-                    accessTokenEntity => accessTokenEntity.Id == Id);
-                if (index != -1)
-                    UserEntity.AccessTokenEntities[index] = pureAccessTokenEntity;
-            }
+            UserEntity = UserEntity?.PureCopy();
         }
     }
 

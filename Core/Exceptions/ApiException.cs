@@ -11,23 +11,15 @@ namespace GamingCommunityApi.Core.Exceptions
 {
     public class ApiException : Exception
     {
-        //public Error Error { get; set; }
-        public ErrorName ErrorId { get; set; }
+        public ErrorName ErrorName { get; set; }
         public string ErrorServerMessage { get; set; }
         public Exception Exception { get; set; }
 
-        public ApiException(ErrorName errorId, string errorServerMessage = null, Exception systemException = null) : base(errorServerMessage, systemException)
+        public ApiException(ErrorName errorName, string errorServerMessage = null, Exception systemException = null) : base(errorServerMessage, systemException)
         {
-            ErrorId = errorId;
+            ErrorName = errorName;
             ErrorServerMessage = errorServerMessage;
             Exception = systemException ?? this;
-            //Error = new Error(errorId)
-            //{
-            //    Id = errorId.To<int>(),
-            //    Field = field,
-            //    ServerMessage = errorServerMessage,
-            //    Exception = systemException ?? this
-            //};
         }
     }
 }

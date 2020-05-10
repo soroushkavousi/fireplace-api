@@ -17,7 +17,7 @@ namespace GamingCommunityApi.Core.Models.UserInformations
         public User User { get; set; }
 
         public Session(long id, long userId, IPAddress ipAddress, 
-            SessionState state, User user)
+            SessionState state, User user = null)
         {
             Id = id;
             IpAddress = ipAddress ?? throw new ArgumentNullException(nameof(ipAddress));
@@ -30,16 +30,7 @@ namespace GamingCommunityApi.Core.Models.UserInformations
 
         public void RemoveLoopReferencing()
         {
-            var pureSession = new Session(Id, UserId, IpAddress,
-                State, null);
-
-            if (User != null && User.Sessions.IsNullOrEmpty() == false)
-            {
-                var index = User.Sessions.FindIndex(
-                    session => session.Id == Id);
-                if (index != -1)
-                    User.Sessions[index] = pureSession;
-            }
+            User = User?.PureCopy();
         }
     }
 }

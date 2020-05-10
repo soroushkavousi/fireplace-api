@@ -44,7 +44,8 @@ namespace GamingCommunityApi.Api.IntegrationTests
 
         public ApiIntegrationTestFixture()
         {
-            var logger = Utils.SetupLogger();
+            ProjectInitializer.Start();
+            var logger = ProjectInitializer.Logger;
             ApiFactory = new WebApplicationFactory<Startup>()
                 .WithWebHostBuilder(builder =>
                 {

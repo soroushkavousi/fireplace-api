@@ -4,15 +4,17 @@ using GamingCommunityApi.Core.ValueObjects;
 using GamingCommunityApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace GamingCommunityApi.Infrastructure.Migrations
 {
     [DbContext(typeof(GamingCommunityApiContext))]
-    partial class GamingCommunityApiContextModelSnapshot : ModelSnapshot
+    [Migration("20200510081953_AddGoogleUserEntity")]
+    partial class AddGoogleUserEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

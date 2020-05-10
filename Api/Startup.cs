@@ -58,7 +58,9 @@ namespace GamingCommunityApi.Api
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IObjectModelValidator, NullObjectModelValidator>();
             services.AddDbContext<GamingCommunityApiContext>(
-                optionsBuilder => optionsBuilder.UseNpgsql(Configuration.GetConnectionString("MainDatabase"))
+                optionsBuilder => optionsBuilder.UseNpgsql(
+                    Configuration.GetConnectionString("MainDatabase"),
+                    optionsBuilder => optionsBuilder.MigrationsAssembly("GamingCommunityApi.Infrastructure"))
             );
             services.AddInfrastructurConverters();
             services.AddRepositories();
@@ -90,25 +92,18 @@ namespace GamingCommunityApi.Api
 
             services.AddApiVersioning(options =>
             {
-                // reporting api versions will return the headers "api-supported-versions" and "api-deprecated-versions"
                 options.ReportApiVersions = true;
             });
 
             services.AddVersionedApiExplorer(options =>
             {
-                // add the versioned api explorer, which also adds IApiVersionDescriptionProvider service
-                // note: the specified format code will format the version as "'v'major[.minor][-status]"
                 options.GroupNameFormat = "'v'VVV";
-
-                // note: this option is only necessary when versioning by url segment. the SubstitutionFormat
-                // can also be used to control the format of the API version in route templates
                 options.SubstituteApiVersionInUrl = true;
             });
 
             services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
             services.AddSwaggerGen(options =>
             {
-                // add a custom operation filter which sets default values
                 options.EnableAnnotations(false);
                 options.OperationFilter<SwaggerDefaultValues>();
                 options.OperationFilter<ActionResponseExampleProvider>();
@@ -125,31 +120,6 @@ namespace GamingCommunityApi.Api
                         Type = SecuritySchemeType.Http,
                         Scheme = "bearer",
                         In = ParameterLocation.Header,
-                    });
-
-                options.AddSecurityDefinition("oauth2", 
-                    new OpenApiSecurityScheme
-                    {
-                        Type = SecuritySchemeType.OAuth2,
-                        Scheme = "bearer",
-                        In = ParameterLocation.Header,
-                        Flows = new OpenApiOAuthFlows
-                        {
-                            AuthorizationCode = new OpenApiOAuthFlow
-                            //Implicit = new OpenApiOAuthFlow
-                            //ClientCredentials = new OpenApiOAuthFlow
-                            //Password = new OpenApiOAuthFlow
-                            {
-                                AuthorizationUrl = new Uri("https://accounts.google.com/o/oauth2/v2/auth"),
-                                TokenUrl = new Uri("https://www.googleapis.com/oauth2/v4/token"),
-                                Scopes = new Dictionary<string, string>
-                                {
-                                    { "profile", "View your basic profile info" },
-                                    { "email", "View your email address" },
-                                    { "openid", "Authenticate using OpenID Connect" }
-                                },
-                            },
-                        }
                     });
 
                 //options.DocInclusionPredicate((docName, apiDesc) =>
@@ -187,15 +157,6 @@ namespace GamingCommunityApi.Api
                 options.SuppressMapClientErrors = true;
             });
 
-            var gamingCommunityApiContext = new GamingCommunityApiContext(Configuration.GetConnectionString("MainDatabase"));
-            var globalValues = gamingCommunityApiContext.GlobalEntities.AsNoTracking().Where(e => e.Id == GlobalId.RELEASE.To<int>()).Single().Values;
-            services.AddAuthentication()
-                .AddGoogle(options =>
-                {
-                    options.ClientId = globalValues.GoogleClientId;
-                    options.ClientSecret = globalValues.GoogleClientSecret;
-                    options.AccessType = "offline";
-                });
             //var gamingCommunityApiContext = services.BuildServiceProvider()
             //           .GetService<GamingCommunityApiContext>();
 
@@ -254,20 +215,11 @@ namespace GamingCommunityApi.Api
                     options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
                 }
                 options.DocExpansion(DocExpansion.List);
-                options.OAuthClientId("850788234195-6f0f934vgiqj8uet7q418r383llgluba.apps.googleusercontent.com");
-                options.OAuthAppName("Gaming Community");
-                options.OAuth2RedirectUrl("https://localhost:5021/v0.1/users/sign-up-with-google");
-                var relativeApiSwaggerJavascriptPath = @"Codes\Api\Tools\Swagger\nlog.config";
-                var solutionDirectory = Core.Tools.Utils.GetSolutionDirectory();
-                //var logConfigPath = Path.Combine(solutionDirectory, relativeLogConfigPath);
-                //options.InjectJavascript("")
-                //options.OAuthAdditionalQueryStringParams(new Dictionary<string, string> { ["response_type"] = "code" });
             });
             app.UseRequestResponseLoggingMiddleware();
             app.UseExceptionMiddleware();
             app.UseHeaderParametersMiddleware();
             app.UseCookieParametersMiddleware();
-            //app.UseAuthentication();
             app.UseFirewallMiddleware();
             app.UseEndpoints(endpoints =>
             {

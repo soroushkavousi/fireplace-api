@@ -10,7 +10,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Web;
-using GamingCommunityApi.Api.Tools.NLog;
 using GamingCommunityApi.Api.Tools;
 
 namespace GamingCommunityApi.Api
@@ -19,11 +18,8 @@ namespace GamingCommunityApi.Api
     {
         public static void Main(string[] args)
         {
-            var logger = Utils.SetupLogger();
-            if (logger == null)
-                return;
-
-            StartApi(logger, args);
+            ProjectInitializer.Start();
+            StartApi(ProjectInitializer.Logger, args);
         }
 
         public static void StartApi(Logger logger, string[] args)
@@ -48,11 +44,6 @@ namespace GamingCommunityApi.Api
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((hostingContext, config) =>
-                {
-                    config.AddJsonFile(
-                        "secrets.json", optional: false, reloadOnChange: true);
-                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseKestrel((context, serverOptions) =>

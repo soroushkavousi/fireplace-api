@@ -12,6 +12,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using GamingCommunityApi.Core.Interfaces.IRepositories;
+using GamingCommunityApi.Core.Operators;
 
 namespace GamingCommunityApi.Core.Validators
 {
@@ -19,13 +20,13 @@ namespace GamingCommunityApi.Core.Validators
     {
         private readonly ILogger<FileValidator> _logger;
         private readonly IConfiguration _configuration;
-        private readonly IFileRepository _fileRepository;
+        private readonly FileOperator _fileOperator;
 
-        public FileValidator(ILogger<FileValidator> logger, IConfiguration configuration, IFileRepository fileRepository)
+        public FileValidator(ILogger<FileValidator> logger, IConfiguration configuration, FileOperator fileOperator)
         {
             _logger = logger;
             _configuration = configuration;
-            _fileRepository = fileRepository;
+            _fileOperator = fileOperator;
         }
 
         public async Task ValidatePostFileInputParametersAsync(User requesterUser, IFormFile file)

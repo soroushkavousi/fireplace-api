@@ -9,6 +9,7 @@ namespace GamingCommunityApi.Infrastructure.Entities
     {
         public DbSet<AccessTokenEntity> AccessTokenEntities { get; set; }
         public DbSet<EmailEntity> EmailEntities { get; set; }
+        public DbSet<GoogleUserEntity> GoogleUserEntities { get; set; }
         public DbSet<SessionEntity> SessionEntities { get; set; }
         public DbSet<UserEntity> UserEntities { get; set; }
         public DbSet<ErrorEntity> ErrorEntities { get; set; }
@@ -21,7 +22,6 @@ namespace GamingCommunityApi.Infrastructure.Entities
             //ChangeTracker.LazyLoadingEnabled = false;
             //ChangeTracker.AutoDetectChangesEnabled = false;
             ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-
         }
 
         public GamingCommunityApiContext(string connectionString)
@@ -43,6 +43,7 @@ namespace GamingCommunityApi.Infrastructure.Entities
         {
             modelBuilder.ApplyConfiguration(new AccessTokenEntityConfiguration());
             modelBuilder.ApplyConfiguration(new EmailEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new GoogleUserEntityConfiguration());
             modelBuilder.ApplyConfiguration(new SessionEntityConfiguration());
             modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
             modelBuilder.ApplyConfiguration(new ErrorEntityConfiguration());

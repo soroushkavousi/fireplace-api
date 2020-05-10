@@ -37,6 +37,10 @@ namespace GamingCommunityApi.Infrastructure.Converters
             if(user.Email != null)
                 emailEntity = _serviceProvider.GetService<EmailConverter>().ConvertToEntity(user.Email.PureCopy());
 
+            GoogleUserEntity googleUserEntity = null;
+            if (user.GoogleUser != null)
+                googleUserEntity = _serviceProvider.GetService<GoogleUserConverter>().ConvertToEntity(user.GoogleUser.PureCopy());
+
             List<AccessTokenEntity> accessTokenEntities = null;
             if(user.AccessTokens != null && user.AccessTokens.Count != 0)
                 accessTokenEntities = user.AccessTokens.Select(
@@ -48,8 +52,8 @@ namespace GamingCommunityApi.Infrastructure.Converters
                     session => _serviceProvider.GetService<SessionConverter>().ConvertToEntity(session.PureCopy())).ToList();
 
             var userEntity = new UserEntity(user.FirstName, user.LastName,
-                user.Username, user.Password.Hash, user.State.ToString(), user.Id,
-                emailEntity, accessTokenEntities, sessionEntities);
+                user.Username, user.State.ToString(), user.Password?.Hash, user.Id,
+                emailEntity, googleUserEntity, accessTokenEntities, sessionEntities);
 
             return userEntity;
         }
@@ -63,6 +67,10 @@ namespace GamingCommunityApi.Infrastructure.Converters
             if (userEntity.EmailEntity != null)
                 email = _serviceProvider.GetService<EmailConverter>().ConvertToModel(userEntity.EmailEntity.PureCopy());
 
+            GoogleUser googleUser = null;
+            if (userEntity.GoogleUserEntity != null)
+                googleUser = _serviceProvider.GetService<GoogleUserConverter>().ConvertToModel(userEntity.GoogleUserEntity.PureCopy());
+
             List<AccessToken> accessTokens = null;
             if (userEntity.AccessTokenEntities != null && userEntity.AccessTokenEntities.Count != 0)
                 accessTokens = userEntity.AccessTokenEntities.Select(
@@ -74,8 +82,8 @@ namespace GamingCommunityApi.Infrastructure.Converters
                     sessionEntity => _serviceProvider.GetService<SessionConverter>().ConvertToModel(sessionEntity.PureCopy())).ToList();
 
             var user = new User(userEntity.Id.Value, userEntity.FirstName, userEntity.LastName,
-                userEntity.Username, Password.OfHash(userEntity.PasswordHash), userEntity.State.ToEnum<UserState>(),
-                email, accessTokens, sessions);
+                userEntity.Username, userEntity.State.ToEnum<UserState>(), Password.OfHash(userEntity.PasswordHash),
+                email, googleUser, accessTokens, sessions);
 
             return user;
         }

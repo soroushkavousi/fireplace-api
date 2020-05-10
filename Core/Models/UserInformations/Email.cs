@@ -26,23 +26,9 @@ namespace GamingCommunityApi.Core.Models.UserInformations
 
         public Email PureCopy() => new Email(Id, UserId, Address, Activation, null);
 
-        public Email Copy(bool deep = false)
-        {
-            var copy = new Email(Id, UserId, Address, 
-                Activation, User);
-            return copy;
-        }
-
         public void RemoveLoopReferencing()
         {
-            var pureEmail = new Email(Id, UserId, Address,
-                Activation, null);
-
-            if (User != null && User.Email == this)
-            {
-                User = User.Copy();
-                User.Email = null;
-            }
+            User = User?.PureCopy();
         }
     }
 }

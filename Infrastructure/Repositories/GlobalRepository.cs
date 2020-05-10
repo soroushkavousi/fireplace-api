@@ -97,7 +97,7 @@ namespace GamingCommunityApi.Infrastructure.Repositories
             _gamingCommunityApiContext.DetachAllEntries();
         }
 
-        public async Task<bool> DoesGlobalIdExist(GlobalId globalId)
+        public async Task<bool> DoesGlobalIdExistAsync(GlobalId globalId)
         {
             return await _globalEntities
                 .AsNoTracking()

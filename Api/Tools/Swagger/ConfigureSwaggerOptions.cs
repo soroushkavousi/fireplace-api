@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using GamingCommunityApi.Core.Operators;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,26 +45,33 @@ namespace GamingCommunityApi.Api.Tools.Swagger
 
         static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description, IWebHostEnvironment env)
         {
-            var description_html = ""
-                //+ "<script src=\"https://apis.google.com/js/platform.js\" async defer></script>"
-                + "<h5><strong>Gamers</strong>, Do you want a big community just for ourselves? Let's make it together.</h5>"
-                + "<h5>This is the place where we can communicate together with our beloved games.</h5><br>"
-                + "<meta name=\"google-signin-client_id\" content=\"850788234195-6f0f934vgiqj8uet7q418r383llgluba.apps.googleusercontent.com\">"
-                + "<div class=\"g-signin2\" data-onsuccess=\"onSignIn\"></div>"
-                + "";
+            var description_html = "<div>";
+            
+            description_html += @"
+                <div style=""display: block; margin: 0px 0px 10px 0px;"">
+                    <h5><strong>Gamers</strong>! Gaming Community is the place where you can communicate with each other about your beloved games.</h5>
+                </div>";
 
-            if (env.IsProduction())
-            {
-                description_html += "<h5>Sample urls:</h5>"
-                    + "<div><a href=\"https://api.gaming-community.bitiano.com/users/{your-id}\">https://api.gaming-community.bitiano.com/users/{your-id}</a></div>"
-                    + "<div><a href=\"https://api.gaming-community.bitiano.com/v0.1/users/{your-id}\">https://api.gaming-community.bitiano.com/v0.1/users/{your-id}</a></div>";
-            }
-            else
-            {
-                description_html += "<h5>Sample urls:</h5>"
-                    + "<div><a href=\"https://localhost:5021/users/{your-id}\">https://localhost:5021/users/{your-id}</a></div>"
-                    + "<div><a href=\"https://localhost:5021/v0.1/users/{your-id}\">https://localhost:5021/v0.1/users/{your-id}</a></div>";
-            }
+            description_html += $@"
+                <div style=""display: block; margin: 0px 0px 60px 0px;"">
+                    <h5 style=""margin-bottom:10px"">Sample urls:</h5>
+                    <div style=""margin-left: 30px;""><a href=""{GlobalOperator.GlobalValues.Api.BaseUrlPath}users/{{your-id}}\"">{GlobalOperator.GlobalValues.Api.BaseUrlPath}users/{{your-id}}</a></div>
+                    <div style=""margin-left: 30px;""><a href=""{GlobalOperator.GlobalValues.Api.BaseUrlPath}v0.1/users/{{your-id}}\"">{GlobalOperator.GlobalValues.Api.BaseUrlPath}v0.1/users/{{your-id}}</a></div>
+                </div>";
+
+            description_html += $@"
+                <div style=""display: block; margin: 0px 0px 25px 0px;"">
+                    <a class=""btn"" href=""{GlobalOperator.GlobalValues.Api.BaseUrlPath}v0.1/users/open-google-log-in-page"" 
+                                style=""display: inline; text-transform: none; padding: 15px 8px 15px 8px; font-size: 10px; text-decoration: none"" target=""_blank"">
+                        <div style=""display: inline;"">
+                            <img width=""20px"" style=""margin: 0px 5px -5px 0px"" alt=""Google sign-in""
+                                    src=""https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"" />
+                        </div>
+                        Login with Google
+                    </a>
+                </div>";
+
+            description_html += "</div>";
 
             var info = new OpenApiInfo()
             {

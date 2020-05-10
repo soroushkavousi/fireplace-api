@@ -93,7 +93,7 @@ namespace GamingCommunityApi.Api.Controllers.Parameters.UserParameters
         public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
         {
             [nameof(UserController.OpenGoogleLogInPage)] = UserExample1,
-            [nameof(UserController.SignUpWithGoogleAsync)] = UserExample1,
+            [nameof(UserController.LogInWithGoogleAsync)] = UserExample1,
             [nameof(UserController.SignUpWithEmailAsync)] = UserExample1,
             [nameof(UserController.LogInWithEmailAsync)] = UserExample1,
             [nameof(UserController.LogInWithUsernameAsync)] = UserExample1,

@@ -26,15 +26,7 @@ namespace GamingCommunityApi.Core.Models.UserInformations
 
         public void RemoveLoopReferencing()
         {
-            var pureAccessToken = new AccessToken(Id, UserId, Value, null);
-
-            if (User != null && User.AccessTokens.IsNullOrEmpty() == false)
-            {
-                var index = User.AccessTokens.FindIndex(
-                    accessToken => accessToken.Id == Id);
-                if (index != -1)
-                    User.AccessTokens[index] = pureAccessToken;
-            }
+            User = User?.PureCopy();
         }
     }
 }

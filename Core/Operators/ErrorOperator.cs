@@ -86,9 +86,9 @@ namespace GamingCommunityApi.Core.Operators
 
         }
 
-        public async Task<bool> DoesErrorIdExistAsync(ErrorName id)
+        public async Task<bool> DoesErrorNameExistAsync(ErrorName name)
         {
-            var errorIdExists = await _errorRepository.DoesErrorNameExistAsync(id);
+            var errorIdExists = await _errorRepository.DoesErrorNameExistAsync(name);
             return errorIdExists;
         }
 

@@ -34,20 +34,9 @@ namespace GamingCommunityApi.Infrastructure.Entities.UserInformationEntities
         public EmailEntity PureCopy() => new EmailEntity(UserEntityId, Address,
             ActivationCode, ActivationStatus, Id, null);
 
-        public EmailEntity Copy(bool deep = false)
-        {
-            var copy = new EmailEntity(UserEntityId, Address,
-                ActivationCode, ActivationStatus, Id, UserEntity);
-            return copy;
-        }
-
         public void RemoveLoopReferencing()
         {
-            var pureEmailEntity = new EmailEntity(UserEntityId, Address,
-                ActivationCode, ActivationStatus, Id, null);
-
-            if (UserEntity != null && UserEntity.EmailEntity != null)
-                UserEntity.EmailEntity = pureEmailEntity;
+            UserEntity = UserEntity?.PureCopy();
         }
     }
 

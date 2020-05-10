@@ -32,6 +32,7 @@ namespace GamingCommunityApi.Api.Extensions
             services.AddScoped<Infrastructure.Converters.ErrorConverter>();
             services.AddScoped<Infrastructure.Converters.FileConverter>();
             services.AddScoped<Infrastructure.Converters.GlobalConverter>();
+            services.AddScoped<Infrastructure.Converters.GoogleUserConverter>();
             services.AddScoped<Infrastructure.Converters.SessionConverter>();
             services.AddScoped<Infrastructure.Converters.UserConverter>();
             return services;
@@ -44,6 +45,7 @@ namespace GamingCommunityApi.Api.Extensions
             services.AddScoped<IErrorRepository, ErrorRepository>();
             services.AddScoped<IFileRepository, FileRepository>();
             services.AddScoped<IGlobalRepository, GlobalRepository>();
+            services.AddScoped<IGoogleUserRepository, GoogleUserRepository>();
             services.AddScoped<ISessionRepository, SessionRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             return services;
@@ -69,6 +71,8 @@ namespace GamingCommunityApi.Api.Extensions
             services.AddScoped<EmailOperator>();
             services.AddScoped<ErrorOperator>();
             services.AddScoped<FileOperator>();
+            services.AddScoped<GlobalOperator>();
+            services.AddScoped<GoogleUserOperator>();
             services.AddScoped<SessionOperator>();
             services.AddScoped<UserOperator>();
             return services;

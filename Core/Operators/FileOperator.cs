@@ -22,20 +22,18 @@ namespace GamingCommunityApi.Core.Operators
         private readonly ILogger<FileOperator> _logger;
         private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
-        private readonly FileValidator _fileValidator;
         private readonly IFileRepository _fileRepository;
         private readonly IFileGateway _fileGateway;
         private readonly Uri _baseUri;
         private readonly string _basePhysicalPath;
 
         public FileOperator(ILogger<FileOperator> logger, IConfiguration configuration,
-            IServiceProvider serviceProvider, FileValidator fileValidator,
-            IFileRepository fileRepository, IFileGateway fileGateway)
+            IServiceProvider serviceProvider, IFileRepository fileRepository, 
+            IFileGateway fileGateway)
         {
             _logger = logger;
             _configuration = configuration;
             _serviceProvider = serviceProvider;
-            _fileValidator = fileValidator;
             _fileRepository = fileRepository;
             _fileGateway = fileGateway;
             _baseUri = new Uri(_configuration.GetValue<string>(Constants.FilesBaseUrlPathKey));

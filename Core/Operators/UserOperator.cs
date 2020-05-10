@@ -17,6 +17,7 @@ using GamingCommunityApi.Core.ValueObjects;
 using GamingCommunityApi.Core.Interfaces.IRepositories;
 using GamingCommunityApi.Core.Interfaces.IGateways;
 using Microsoft.AspNetCore.WebUtilities;
+using GamingCommunityApi.Core.Tools;
 
 namespace GamingCommunityApi.Core.Operators
 {
@@ -27,77 +28,94 @@ namespace GamingCommunityApi.Core.Operators
         private readonly IServiceProvider _serviceProvider;
         private readonly IUserRepository _userRepository;
         private readonly IGoogleGateway _googleGateway;
-        private readonly string _googleClientId;
-        private readonly string _googleClientSecret;
 
         public UserOperator(ILogger<UserOperator> logger, IConfiguration configuration,
             IServiceProvider serviceProvider, IUserRepository userRepository,
-            IGoogleGateway googleGateway, IGlobalRepository globalRepository)
+            IGoogleGateway googleGateway)
         {
             _logger = logger;
             _configuration = configuration;
             _serviceProvider = serviceProvider;
             _userRepository = userRepository;
             _googleGateway = googleGateway;
-            var global = globalRepository.GetGlobalByIdAsync(GlobalId.RELEASE).GetAwaiter().GetResult();
-            var globalValues = global.Values;
-            _googleClientId = global.Values.GoogleClientId;
-            _googleClientSecret = global.Values.GoogleClientSecret;
         }
 
-        public async Task<User> OpenGoogleLogInPage(IPAddress ipAddress, string accessToken, 
-            string refreshToken, string tokenType, int? expiresIn, string idToken)
+        private async Task<User> SignUpWithGoogleAsync(IPAddress ipAddress, 
+            GoogleUserInformations googleUserInformations, string state,
+            string scope, string authUser, string prompt)
         {
-            await Task.CompletedTask;
-            return default;
+            var emailOperator = _serviceProvider.GetService<EmailOperator>();
+            var googleUserOperator = _serviceProvider.GetService<GoogleUserOperator>();
+            Email email;
+            User user;
+            if (await emailOperator.DoesEmailAddressExistAsync(googleUserInformations.GmailAddress))
+            {
+                email = await emailOperator
+                    .GetEmailByAddressAsync(googleUserInformations.GmailAddress);
+            }
+            else
+            {
+                var username = await GenerateNewUsername();
+                user = await CreateUserAsync(googleUserInformations.FirstName,
+                    googleUserInformations.LastName, username);
+
+                email = await emailOperator.CreateEmailAsync(user.Id, googleUserInformations.GmailAddress);
+            }
+
+            var redirectToUserUrl = await googleUserOperator.GetRedirectToUserUrlFromState();
+            var googleUser = await googleUserOperator.CreateGoogleUserAsync(email.UserId,
+                googleUserInformations.Code, googleUserInformations.AccessToken,
+                googleUserInformations.TokenType, googleUserInformations.AccessTokenExpiresInSeconds,
+                googleUserInformations.RefreshToken, googleUserInformations.Scope,
+                googleUserInformations.IdToken, googleUserInformations.AccessTokenIssuedTime,
+                googleUserInformations.GmailAddress, googleUserInformations.GmailVerified,
+                googleUserInformations.GmailIssuedTimeInSeconds, googleUserInformations.FullName,
+                googleUserInformations.FirstName, googleUserInformations.LastName,
+                googleUserInformations.Locale, googleUserInformations.PictureUrl, state,
+                authUser, prompt, redirectToUserUrl);
+
+            user = await GetUserByIdAsync(email.UserId, true, true, true, false);
+            return user;
         }
 
-        public async Task<User> SignUpWithGoogleAsync(IPAddress ipAddress, string state,
+        public async Task<User> LogInWithGoogleAsync(IPAddress ipAddress, string state,
             string code, string scope, string authUser, string prompt)
         {
-            _logger.LogInformation($"User access code: {code}. Ip address: {ipAddress}");
-            //var global = await _globalRepository.GetGlobalByIdAsync(GlobalId.RELEASE);
-            //var globalValues = global.Values;
-            await _googleGateway.RequestToken(_googleClientId,
-                _googleClientSecret, code);
-            await Task.CompletedTask;
-            return default;
-            var firstName = "first55";
-            var lastName = "last55";
-            var username = "user55";
-            var password = Password.OfValue(code);
-            var emailAddress = "email55@gmail.com";
+            var googleUserOperator = _serviceProvider.GetService<GoogleUserOperator>();
+            User user;
+            long userId;
+            var googleUserInformations = await _googleGateway.GetGoogleUserInformations(code);
 
-            return await SignUpWithEmailAsync(ipAddress, firstName, lastName, username, password, emailAddress);
+            if (await googleUserOperator
+                .DoesGoogleUserGmailAddressExistAsync(googleUserInformations.GmailAddress))
+            {
+                var googleUser = await googleUserOperator
+                    .GetGoogleUserByGmailAddressAsync(googleUserInformations.GmailAddress);
+                userId = googleUser.UserId;
+            }
+            else
+            {
+                user = await SignUpWithGoogleAsync(ipAddress, googleUserInformations,
+                    state, scope, authUser, prompt);
+                userId = user.Id;
+            }
+            
+            var sessionOperator = _serviceProvider.GetService<SessionOperator>();
+            var session = await sessionOperator.CreateOrUpdateSessionAsync(userId, ipAddress);
+
+            var accessTokenOperator = _serviceProvider.GetService<AccessTokenOperator>();
+            var accessToken = await accessTokenOperator.CreateAccessTokenAsync(userId);
+
+            user = await GetUserByIdAsync(userId, true, true, true, false);
+            return user;
         }
 
-        public async Task<string> GetGoogleLogInPageUrlAsync(IPAddress ipAddress)
+        public async Task<string> GetGoogleAuthUrlAsync(IPAddress ipAddress)
         {
             await Task.CompletedTask;
-            var baseGoogleLogInPageUrl = "https://accounts.google.com/o/oauth2/v2/auth";
-            var queryParameters = new Dictionary<string, string>()
-            {
-                { "client_id", _googleClientId },
-                { "redirect_uri", @"https://localhost:5021/v0.1/users/sign-up-with-google" },
-                { "response_type", "code" },
-                { "scope", "openid profile email" },
-                { "access_type", "offline" },
-                { "state", "swagger" },
-                { "include_granted_scopes", "true" },
-                { "display", "page" }
-            };
-
-            var googleLogInPageUrl = new Uri(QueryHelpers.AddQueryString(baseGoogleLogInPageUrl, queryParameters)).AbsoluteUri;
-            _logger.LogInformation($"googleLogInPageUrl: {googleLogInPageUrl}");
-            return googleLogInPageUrl;
-            //return Redirect(@$"https://accounts.google.com/o/oauth2/v2/auth?
-            //     scope=openid profile email&
-            //     access_type=offline&
-            //     include_granted_scopes=true&
-            //     response_type=code&
-            //     state=state_parameter_passthrough_value&
-            //     redirect_uri={@"https://localhost:5021/v0.1/users/sign-up-with-google".ToUrlEncoded()}&
-            //     client_id=client_id".RemoveLineBreaks());
+            var googleAuthUrl = _googleGateway.GetAuthUrl();
+            _logger.LogInformation($"googleLogInPageUrl: {googleAuthUrl}");
+            return googleAuthUrl;
         }
 
         public async Task<User> SignUpWithEmailAsync(IPAddress ipAddress, string firstName,
@@ -107,7 +125,7 @@ namespace GamingCommunityApi.Core.Operators
             //var user = new User(10, "Joseph", "Armstrong", "josepharmstrong", Password.OfValue("P@ssw0rd"), UserState.NOT_VERIFIED);
 
             var emailOperator = _serviceProvider.GetService<EmailOperator>();
-            var emailActivation = await emailOperator.CreateEmailAsync(user.Id, emailAddress);
+            var email = await emailOperator.CreateEmailAsync(user.Id, emailAddress);
 
             var sessionOperator = _serviceProvider.GetService<SessionOperator>();
             var session = await sessionOperator.CreateSessionAsync(user.Id, ipAddress);
@@ -115,7 +133,7 @@ namespace GamingCommunityApi.Core.Operators
             var accessTokenOperator = _serviceProvider.GetService<AccessTokenOperator>();
             var accessToken = await accessTokenOperator.CreateAccessTokenAsync(user.Id);
 
-            user = await GetUserByIdAsync(user.Id, true, true, false);
+            user = await GetUserByIdAsync(user.Id, true, false, true, false);
             return user;
         }
 
@@ -130,9 +148,8 @@ namespace GamingCommunityApi.Core.Operators
             var accessTokenOperator = _serviceProvider.GetService<AccessTokenOperator>();
             var accessToken = await accessTokenOperator.CreateAccessTokenAsync(email.UserId);
 
-            var user = await GetUserByIdAsync(email.UserId, true, true, false);
+            var user = await GetUserByIdAsync(email.UserId, true, false, true, false);
             return user;
-
         }
 
         public async Task<User> LogInWithUsernameAsync(IPAddress ipAddress, string username, Password password)
@@ -145,15 +162,16 @@ namespace GamingCommunityApi.Core.Operators
             var accessTokenOperator = _serviceProvider.GetService<AccessTokenOperator>();
             var accessToken = await accessTokenOperator.CreateAccessTokenAsync(user.Id);
 
-            user = await GetUserByIdAsync(user.Id, true, true, false);
+            user = await GetUserByIdAsync(user.Id, true, false, true, false);
             return user;
         }
 
         public async Task<List<User>> ListUsersAsync(bool includeEmail = false, 
-            bool includeAccessTokens = false, bool includeSessions = false)
+            bool includeGoogleUser = false, bool includeAccessTokens = false, 
+            bool includeSessions = false)
         {
             var users = await _userRepository.ListUsersAsync(includeEmail,
-                includeAccessTokens, includeSessions);
+                includeGoogleUser, includeAccessTokens, includeSessions);
 
             foreach (var user in users)
             {
@@ -169,11 +187,12 @@ namespace GamingCommunityApi.Core.Operators
             return users;
         }
 
-        public async Task<User> GetUserByIdAsync(long id, bool includeEmail = false,
+        public async Task<User> GetUserByIdAsync(long id, 
+            bool includeEmail = false, bool includeGoogleUser = false, 
             bool includeAccessTokens = false, bool includeSessions = false)
         {
-            var user = await _userRepository.GetUserByIdAsync(id, includeEmail, 
-                includeAccessTokens, includeSessions);
+            var user = await _userRepository.GetUserByIdAsync(id, includeEmail,
+                includeGoogleUser, includeAccessTokens, includeSessions);
 
             if (user == null)
                 return user;
@@ -189,11 +208,12 @@ namespace GamingCommunityApi.Core.Operators
             return user;
         }
 
-        public async Task<User> GetUserByUsernameAsync(string username, bool includeEmail = false, 
+        public async Task<User> GetUserByUsernameAsync(string username, 
+            bool includeEmail = false, bool includeGoogleUser = false, 
             bool includeAccessTokens = false, bool includeSessions = false)
         {
             var user = await _userRepository.GetUserByUsernameAsync(username, includeEmail,
-                 includeAccessTokens, includeSessions);
+                 includeGoogleUser, includeAccessTokens, includeSessions);
 
             if (user == null)
                 return user;
@@ -210,10 +230,10 @@ namespace GamingCommunityApi.Core.Operators
         }
 
         public async Task<User> CreateUserAsync(string firstName, string lastName,
-            string username, Password password)
+            string username, Password password = null)
         {
-            var user = await _userRepository.CreateUserAsync(firstName, lastName, username,
-                 password, UserState.NOT_VERIFIED);
+            var user = await _userRepository.CreateUserAsync(firstName, lastName,
+                username, UserState.NOT_VERIFIED, password);
             return user;
         }
 
@@ -224,7 +244,7 @@ namespace GamingCommunityApi.Core.Operators
             var user = await _userRepository.GetUserByIdAsync(id, true);
             user = await ApplyUserChanges(user, firstName, lastName, username, password, 
                 state, emailAddress);
-            user = await GetUserByIdAsync(user.Id, true, false, false);
+            user = await GetUserByIdAsync(user.Id, true, false, false, false);
             return user;
         }
 
@@ -282,6 +302,19 @@ namespace GamingCommunityApi.Core.Operators
         public async Task<bool> DoesUsernameExistAsync(string username)
         {
             return await _userRepository.DoesUsernameExistAsync(username);
+        }
+
+        public async Task<string> GenerateNewUsername()
+        {
+            int randomNumber;
+            string newUsername;
+            do
+            {
+                randomNumber = Utils.RandomNumber(1000000, 9999999);
+                newUsername = $"gamer{randomNumber}";
+            }
+            while (await DoesUsernameExistAsync(newUsername));
+            return newUsername;
         }
     }
 }

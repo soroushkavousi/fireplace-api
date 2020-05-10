@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Mail;
 using GamingCommunityApi.Core.Interfaces.IGateways;
+using GamingCommunityApi.Core.Operators;
 
 namespace GamingCommunityApi.Infrastructure.Gateways
 {
@@ -21,6 +22,16 @@ namespace GamingCommunityApi.Infrastructure.Gateways
             _configuration = configuration;
         }
 
+        public async Task SendEmailMessage(string toEmailAddress,
+            string subject, string body)
+        {
+            var emailGlobalValues = GlobalOperator.GlobalValues.Email;
+            await SendEmailMessage(emailGlobalValues.SmtpServerAddress,
+                emailGlobalValues.SmtpServerPort, emailGlobalValues.Address,
+                emailGlobalValues.Password, toEmailAddress,
+                subject, body);
+        }
+
         public async Task SendEmailMessage(string smtpServerAddress, int smtpServerPort,
             string fromEmailAddress, string fromEmailPassword, string toEmailAddress, 
             string subject, string body)
@@ -30,7 +41,7 @@ namespace GamingCommunityApi.Infrastructure.Gateways
                 try
                 {
                     var from = new MailAddress(fromEmailAddress, "Gaming Community");
-                    var to = new MailAddress(toEmailAddress, "User");
+                    var to = new MailAddress(toEmailAddress, "Gamer");
 
                     var smtp = new SmtpClient
                     {
@@ -40,7 +51,7 @@ namespace GamingCommunityApi.Infrastructure.Gateways
                         DeliveryMethod = SmtpDeliveryMethod.Network,
                         UseDefaultCredentials = false,
                         Credentials = new NetworkCredential(from.Address, fromEmailPassword),
-                        Timeout = 20000
+                        Timeout = 30000,
                     };
                     using var message = new MailMessage(from, to)
                     {

@@ -17,6 +17,6 @@ namespace GamingCommunityApi.Core.Interfaces.IRepositories
         public Task<Global> CreateGlobalAsync(GlobalId globalId, GlobalValues globalValues);
         public Task<Global> UpdateGlobalAsync(Global global);
         public Task DeleteGlobalAsync(GlobalId globalId);
-        public Task<bool> DoesGlobalIdExist(GlobalId globalId);
+        public Task<bool> DoesGlobalIdExistAsync(GlobalId globalId);
     }
 }

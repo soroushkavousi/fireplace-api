@@ -58,7 +58,7 @@ namespace GamingCommunityApi.Api.IntegrationTests.Tools
         private async Task<HttpClient> CreateTheHulkClientAsync()
         {
             var user = await _userRepository.CreateUserAsync("Bruce", "Banner",
-                "TheHulk", Password.OfValue("TheHulkP0"), Core.Enums.UserState.NOT_VERIFIED);
+                "TheHulk", Core.Enums.UserState.NOT_VERIFIED, Password.OfValue("TheHulkP0"));
             var emailActivation = new Activation(12345, Core.Enums.ActivationStatus.SENT, "Code: 12345");
             var email = await _emailRepository.CreateEmailAsync(user.Id, "TheHulk", emailActivation);
             var newAccessTokenValue = _accessTokenOperator.GenerateNewAccessTokenValue();

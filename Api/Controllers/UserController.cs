@@ -48,32 +48,8 @@ namespace GamingCommunityApi.Api.Controllers
         public async Task<ActionResult<UserDto>> OpenGoogleLogInPage(
             [BindNever] [FromHeader] ControllerInputHeaderParameters inputHeaderParameters)
         {
-            //var googleLogInPageUrl = await _userService.GetGoogleLogInPageUrlAsync(inputHeaderParameters.IpAddress);
-            //return Redirect(googleLogInPageUrl);
-            return Redirect("https://google.com");
-        }
-
-        /// <summary>
-        /// Sign up with google.
-        /// </summary>
-        /// <returns>Created user</returns>
-        /// <response code="200">Returns the newly created item</response>
-        [AllowAnonymous]
-        [HttpGet("sign-up-with-google")]
-        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<UserDto>> SignUpWithGoogleAsync(
-            [BindNever] [FromHeader] ControllerInputHeaderParameters inputHeaderParameters,
-            [FromQuery] ControllerSignUpWithGoogleInputQueryParameters inputQueryParameters)
-        {
-            var user = await _userService.SignUpWithGoogleAsync(inputHeaderParameters.IpAddress, 
-                inputQueryParameters.State, inputQueryParameters.Code, inputQueryParameters.Scope,
-                inputQueryParameters.AuthUser, inputQueryParameters.Prompt);
-            return Redirect("https://localhost:5021/docs");
-            return Ok();
-            var userDto = _userConverter.ConvertToDto(user);
-            var outputCookieParameters = new ControllerSignUpWithEmailOutputCookieParameters(userDto?.AccessToken);
-            SetOutputCookieParameters(outputCookieParameters);
-            return userDto;
+            var googleLogInPageUrl = await _userService.GetGoogleAuthUrlAsync(inputHeaderParameters.IpAddress);
+            return Redirect(googleLogInPageUrl);
         }
 
         /// <summary>
@@ -96,6 +72,31 @@ namespace GamingCommunityApi.Api.Controllers
             var outputCookieParameters = new ControllerSignUpWithEmailOutputCookieParameters(userDto.AccessToken);
             SetOutputCookieParameters(outputCookieParameters);
             return userDto;
+        }
+
+
+        /// <summary>
+        /// Sign up with google.
+        /// </summary>
+        /// <returns>Created user</returns>
+        /// <response code="200">Returns the newly created item</response>
+        [AllowAnonymous]
+        [HttpGet("log-in-with-google")]
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<UserDto>> LogInWithGoogleAsync(
+            [BindNever] [FromHeader] ControllerInputHeaderParameters inputHeaderParameters,
+            [FromQuery] ControllerLogInWithGoogleInputQueryParameters inputQueryParameters)
+        {
+            var user = await _userService.LogInWithGoogleAsync(inputHeaderParameters.IpAddress,
+                inputQueryParameters.State, inputQueryParameters.Code, inputQueryParameters.Scope,
+                inputQueryParameters.AuthUser, inputQueryParameters.Prompt, inputQueryParameters.Error);
+            var userDto = _userConverter.ConvertToDto(user);
+            var outputCookieParameters = new ControllerSignUpWithEmailOutputCookieParameters(userDto?.AccessToken);
+            SetOutputCookieParameters(outputCookieParameters);
+            if(string.IsNullOrWhiteSpace(user.GoogleUser.RedirectToUserUrl))
+                return userDto;
+            else
+                return Redirect(user.GoogleUser.RedirectToUserUrl);
         }
 
         /// <summary>

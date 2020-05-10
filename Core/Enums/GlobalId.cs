@@ -7,6 +7,8 @@ namespace GamingCommunityApi.Core.Enums
 {
     public enum GlobalId
     {
-        RELEASE,
+        A,
+        B,
+        C
     }
 }
