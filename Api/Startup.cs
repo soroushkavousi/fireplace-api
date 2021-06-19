@@ -62,6 +62,7 @@ namespace GamingCommunityApi.Api
                     Configuration.GetConnectionString("MainDatabase"),
                     optionsBuilder => optionsBuilder.MigrationsAssembly("GamingCommunityApi.Infrastructure"))
             );
+            services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddInfrastructurConverters();
             services.AddRepositories();
             services.AddGateways();
@@ -104,7 +105,7 @@ namespace GamingCommunityApi.Api
             services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
             services.AddSwaggerGen(options =>
             {
-                options.EnableAnnotations(false);
+                options.EnableAnnotations(false, true);
                 options.OperationFilter<SwaggerDefaultValues>();
                 options.OperationFilter<ActionResponseExampleProvider>();
                 options.DocumentFilter<CustomModelDocumentFilter<ApiExceptionErrorDto>>();
@@ -181,7 +182,7 @@ namespace GamingCommunityApi.Api
             else
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                app.UseMigrationsEndPoint();
             }
 
             app.UseHttpsRedirection();
@@ -202,6 +203,7 @@ namespace GamingCommunityApi.Api
                     var x = swaggerDoc;
                     var y = httpRequest;
                 });
+                options.RouteTemplate = "docs/{documentName}/swagger.json";
             });
             app.UseSwaggerUI(options =>
             {
@@ -212,9 +214,14 @@ namespace GamingCommunityApi.Api
                 // build a swagger endpoint for each discovered API version
                 foreach (var description in provider.ApiVersionDescriptions.OrderByDescending(x => x.ApiVersion).ToList())
                 {
-                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+                    options.SwaggerEndpoint($"/docs/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
                 }
                 options.DocExpansion(DocExpansion.List);
+                //Console.WriteLine($"System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceNames();: \n{String.Join("\n", typeof(Startup).Assembly.GetManifestResourceNames())}");
+                //options.InjectStylesheet(@"D:\Projects\GamingCommunity\GamingCommunityApi\Codes\Api\Tools\Swagger\custom-swagger-ui.css");
+                options.DisplayRequestDuration();
+                options.InjectStylesheet("/swagger-ui/custom-swagger-ui.css");
+                options.InjectJavascript("/swagger-ui/custom-swagger-ui.js");
             });
             app.UseRequestResponseLoggingMiddleware();
             app.UseExceptionMiddleware();

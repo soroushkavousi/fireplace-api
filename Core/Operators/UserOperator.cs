@@ -81,7 +81,7 @@ namespace GamingCommunityApi.Core.Operators
         public async Task<User> LogInWithGoogleAsync(IPAddress ipAddress, string state,
             string code, string scope, string authUser, string prompt)
         {
-            var googleUserOperator = _serviceProvider.GetService<GoogleUserOperator>();
+            var googleUserOperator = _serviceProvider.GetService<GoogleUserOperator>(); //todo
             User user;
             long userId;
             var googleUserInformations = await _googleGateway.GetGoogleUserInformations(code);
