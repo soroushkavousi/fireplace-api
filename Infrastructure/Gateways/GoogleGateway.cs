@@ -38,18 +38,18 @@ namespace GamingCommunityApi.Infrastructure.Gateways
             _configuration = configuration;
         }
 
-        public async Task<GoogleUserInformations> GetGoogleUserInformations(string code)
+        public async Task<GoogleUserToken> GetgoogleUserToken(string code)
         {
             var googleGlobalValues = GlobalOperator.GlobalValues.Google;
             var redirectUrl = GlobalOperator.GlobalValues.Api.BaseUrlPath
                     + googleGlobalValues.RelativeRedirectUrl;
 
-            return await GetGoogleUserInformations(googleGlobalValues.ClientId,
+            return await GetgoogleUserToken(googleGlobalValues.ClientId,
                 googleGlobalValues.ClientSecret, redirectUrl,
                 code);
         }
 
-        public async Task<GoogleUserInformations> GetGoogleUserInformations(string clientId, 
+        public async Task<GoogleUserToken> GetgoogleUserToken(string clientId, 
             string clientSecret, string redirectUrl, string code)
         {
             try
@@ -80,7 +80,7 @@ namespace GamingCommunityApi.Infrastructure.Gateways
                 //var validPayload = await GoogleJsonWebSignature.ValidateAsync(tokenResponse.IdToken, new ValidateSettings);
 
                 var idTokenPayload = new Jwt(tokenResponse.IdToken).ExtractPayload<Payload>();
-                var googleUser = new GoogleUserInformations(code, tokenResponse.AccessToken,
+                var googleUser = new GoogleUserToken(code, tokenResponse.AccessToken,
                     tokenResponse.TokenType, tokenResponse.ExpiresInSeconds.Value,
                     tokenResponse.RefreshToken, tokenResponse.Scope, tokenResponse.IdToken,
                     tokenResponse.IssuedUtc, idTokenPayload.Email, idTokenPayload.EmailVerified,

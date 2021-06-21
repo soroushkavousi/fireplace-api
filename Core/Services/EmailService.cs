@@ -32,7 +32,7 @@ namespace GamingCommunityApi.Core.Services
             _emailOperator = emailOperator;
         }
 
-        public async Task<Email> ActivateEmailByIdAsync(User requesterUser, long? id, long? activationCode)
+        public async Task<Email> ActivateEmailByIdAsync(User requesterUser, long? id, int? activationCode)
         {
             await _emailValidator.ValidateActivateEmailByIdInputParametersAsync(requesterUser, id, activationCode);
             var email = await _emailOperator.ActivateEmailByIdAsync(id.Value);

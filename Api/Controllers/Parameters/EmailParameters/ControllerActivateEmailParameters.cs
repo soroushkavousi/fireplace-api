@@ -25,7 +25,7 @@ namespace GamingCommunityApi.Api.Controllers.Parameters.EmailParameters
     public class ControllerActivateEmailInputBodyParameters
     {
         [Required]
-        public long? ActivationCode { get; set; }
+        public int? ActivationCode { get; set; }
 
         public static IOpenApiAny Example { get; } = new OpenApiObject
         {

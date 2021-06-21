@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GamingCommunityApi.Core.ValueObjects
 {
-    public class GoogleUserInformations
+    public class GoogleUserToken
     {
         public string Code { get; set; }
         public string AccessToken { get; set; }
@@ -23,7 +23,7 @@ namespace GamingCommunityApi.Core.ValueObjects
         public string Locale { get; set; }
         public string PictureUrl { get; set; }
 
-        public GoogleUserInformations(string code, string accessToken, 
+        public GoogleUserToken(string code, string accessToken, 
             string tokenType, long accessTokenExpiresInSeconds, 
             string refreshToken, string scope, string idToken, 
             DateTime accessTokenIssuedTime, string gmailAddress, 

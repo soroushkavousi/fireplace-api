@@ -80,8 +80,8 @@ namespace GamingCommunityApi.Infrastructure.Repositories
         public async Task<Email> CreateEmailAsync(long userId, string address,
             Activation activation)
         {
-            var emailEntity = new EmailEntity(userId, address, activation.Code,
-                activation.Status.ToString());
+            var emailEntity = new EmailEntity(userId, address,
+                activation.Status.ToString(), activation.Code);
             _emailEntities.Add(emailEntity);
             await _gamingCommunityApiContext.SaveChangesAsync();
             _gamingCommunityApiContext.DetachAllEntries();

@@ -40,7 +40,7 @@ namespace GamingCommunityApi.Infrastructure.Converters
                 userEntity = _serviceProvider.GetService<UserConverter>().ConvertToEntity(email.User.PureCopy());
 
             var emailEntity = new EmailEntity(email.UserId, email.Address,
-                email.Activation.Code, email.Activation.Status.ToString(), 
+                email.Activation.Status.ToString(), email.Activation.Code, 
                 email.Id, userEntity);
 
             return emailEntity;
@@ -55,8 +55,8 @@ namespace GamingCommunityApi.Infrastructure.Converters
             if (emailEntity.UserEntity != null)
                 user = _serviceProvider.GetService<UserConverter>().ConvertToModel(emailEntity.UserEntity.PureCopy());
 
-            var activation = new Activation(emailEntity.ActivationCode,
-                emailEntity.ActivationStatus.ToEnum<ActivationStatus>());
+            var activation = new Activation(emailEntity.ActivationStatus.ToEnum<ActivationStatus>(),
+                emailEntity.ActivationCode);
 
             var email = new Email(emailEntity.Id.Value, emailEntity.UserEntityId, emailEntity.Address,
                 activation, user);

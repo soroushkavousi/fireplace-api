@@ -13,26 +13,26 @@ namespace GamingCommunityApi.Infrastructure.Entities.UserInformationEntities
     {
         public long UserEntityId { get; set; }
         public string Address { get; set; }
-        public long ActivationCode { get; set; }
         public string ActivationStatus { get; set; }
+        public int? ActivationCode { get; set; }
         public long? Id { get; set; }
         public UserEntity UserEntity { get; set; }
 
         private EmailEntity() { }
 
-        public EmailEntity(long userEntityId, string address, long activationCode,
-            string activationStatus, long? id = null, UserEntity userEntity = null)
+        public EmailEntity(long userEntityId, string address, string activationStatus,
+            int? activationCode = null, long? id = null, UserEntity userEntity = null)
         {
             UserEntityId = userEntityId;
             Address = address ?? throw new ArgumentNullException(nameof(address));
-            ActivationCode = activationCode;
             ActivationStatus = activationStatus ?? throw new ArgumentNullException(nameof(activationStatus));
+            ActivationCode = activationCode;
             Id = id;
             UserEntity = userEntity;
         }
 
         public EmailEntity PureCopy() => new EmailEntity(UserEntityId, Address,
-            ActivationCode, ActivationStatus, Id, null);
+            ActivationStatus, ActivationCode, Id, null);
 
         public void RemoveLoopReferencing()
         {

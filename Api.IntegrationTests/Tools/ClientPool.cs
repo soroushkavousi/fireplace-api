@@ -59,7 +59,7 @@ namespace GamingCommunityApi.Api.IntegrationTests.Tools
         {
             var user = await _userRepository.CreateUserAsync("Bruce", "Banner",
                 "TheHulk", Core.Enums.UserState.NOT_VERIFIED, Password.OfValue("TheHulkP0"));
-            var emailActivation = new Activation(12345, Core.Enums.ActivationStatus.SENT, "Code: 12345");
+            var emailActivation = new Activation(Core.Enums.ActivationStatus.SENT, 12345, "Code: 12345");
             var email = await _emailRepository.CreateEmailAsync(user.Id, "TheHulk", emailActivation);
             var newAccessTokenValue = _accessTokenOperator.GenerateNewAccessTokenValue();
             var accessToken = await _accessTokenRepository.CreateAccessTokenAsync(user.Id, newAccessTokenValue);

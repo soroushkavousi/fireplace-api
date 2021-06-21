@@ -52,7 +52,7 @@ namespace GamingCommunityApi.Core.Operators
             return googleUser;
         }
 
-        public async Task<GoogleUser> GetGoogleUserByGmailAddressAsync(string gmailAddress, 
+        public async Task<GoogleUser> GetGoogleUserByGmailAddressAsync(string gmailAddress,
             bool includeUser = false)
         {
             var googleUser = await _googleUserRepository
@@ -63,19 +63,20 @@ namespace GamingCommunityApi.Core.Operators
             return googleUser;
         }
 
-        public async Task<GoogleUser> CreateGoogleUserAsync(long userId, string code,
-            string accessToken, string tokenType, long accessTokenExpiresInSeconds,
-            string refreshToken, string scope, string idToken,
-            DateTime accessTokenIssuedTime, string gmailAddress, bool gmailVerified,
-            long gmailIssuedTimeInSeconds, string fullName, string firstName,
-            string lastName, string locale, string pictureUrl, string state, 
+        public async Task<GoogleUser> CreateGoogleUserAsync(long userId, 
+            GoogleUserToken googleUserToken, string state,
             string authUser, string prompt, string redirectToUserUrl)
         {
-            var googleUser = await _googleUserRepository.CreateGoogleUserAsync(userId, 
-                code, accessToken, tokenType, accessTokenExpiresInSeconds, refreshToken, 
-                scope, idToken, accessTokenIssuedTime, gmailAddress, gmailVerified, 
-                gmailIssuedTimeInSeconds, fullName, firstName, lastName, locale, pictureUrl,
-                state, authUser, prompt, redirectToUserUrl);
+            var googleUser = await _googleUserRepository.CreateGoogleUserAsync(userId,
+                googleUserToken.Code, googleUserToken.AccessToken,
+                googleUserToken.TokenType, googleUserToken.AccessTokenExpiresInSeconds,
+                googleUserToken.RefreshToken, googleUserToken.Scope,
+                googleUserToken.IdToken, googleUserToken.AccessTokenIssuedTime,
+                googleUserToken.GmailAddress, googleUserToken.GmailVerified,
+                googleUserToken.GmailIssuedTimeInSeconds, googleUserToken.FullName,
+                googleUserToken.FirstName, googleUserToken.LastName,
+                googleUserToken.Locale, googleUserToken.PictureUrl, state,
+                authUser, prompt, redirectToUserUrl);
             return googleUser;
         }
 

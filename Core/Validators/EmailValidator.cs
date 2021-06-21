@@ -40,7 +40,7 @@ namespace GamingCommunityApi.Core.Validators
             await ValidateRequesterUserCanAccessToEmailIdAsync(requesterUser, id.Value);
         }
 
-        public async Task ValidateActivateEmailByIdInputParametersAsync(User requesterUser, long? id, long? activationCode)
+        public async Task ValidateActivateEmailByIdInputParametersAsync(User requesterUser, long? id, int? activationCode)
         {
             ValidateParameterIsNotNull(id, nameof(id), ErrorName.EMAIL_ID_IS_NULL);
             ValidateParameterIsNotNull(activationCode, nameof(activationCode), ErrorName.ACTIVATION_CODE_IS_NULL);
@@ -120,7 +120,7 @@ namespace GamingCommunityApi.Core.Validators
             }
         }
 
-        public async Task ValidateActivationCodeIsCorrectAsync(long id, long activationCode)
+        public async Task ValidateActivationCodeIsCorrectAsync(long id, int activationCode)
         {
             var email = await _emailOperator.GetEmailByIdAsync(id);
             if (activationCode != email.Activation.Code && activationCode != 55555)

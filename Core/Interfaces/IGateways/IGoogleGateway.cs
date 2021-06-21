@@ -12,8 +12,8 @@ namespace GamingCommunityApi.Core.Interfaces.IGateways
 {
     public interface IGoogleGateway
     {
-        public Task<GoogleUserInformations> GetGoogleUserInformations(string userCode);
-        public Task<GoogleUserInformations> GetGoogleUserInformations(string clientId,
+        public Task<GoogleUserToken> GetgoogleUserToken(string userCode);
+        public Task<GoogleUserToken> GetgoogleUserToken(string clientId,
             string clientSecret, string redirectUrl, string userCode);
         public string GetTokenUrl(string code);
         public string GetTokenUrl(string baseTokenUrl,

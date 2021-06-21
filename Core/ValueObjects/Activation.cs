@@ -9,16 +9,16 @@ namespace GamingCommunityApi.Core.ValueObjects
 {
     public class Activation
     {
-        public long Code { get; set; }
         public ActivationStatus Status { get; set; }
+        public int? Code { get; set; }
         public string Subject { get; set; }
         public string Message { get; set; }
 
-        public Activation(long code, ActivationStatus status, 
+        public Activation(ActivationStatus status, int? code = null, 
             string subject = null, string message = null)
         {
-            Code = code;
             Status = status;
+            Code = code;
             Subject = subject;
             Message = message;
         }
