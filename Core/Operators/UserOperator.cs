@@ -145,10 +145,10 @@ namespace GamingCommunityApi.Core.Operators
             string lastName, string username, Password password, string emailAddress)
         {
             var user = await CreateUserAsync(firstName, lastName, username, password);
-            //var user = new User(10, "Joseph", "Armstrong", "josepharmstrong", Password.OfValue("P@ssw0rd"), UserState.NOT_VERIFIED);
 
             var emailOperator = _serviceProvider.GetService<EmailOperator>();
             var email = await emailOperator.CreateEmailAsync(user.Id, emailAddress);
+            email = await emailOperator.SendActivationCodeAsync(email);
 
             var sessionOperator = _serviceProvider.GetService<SessionOperator>();
             var session = await sessionOperator.CreateSessionAsync(user.Id, ipAddress);
