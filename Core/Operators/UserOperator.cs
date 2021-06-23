@@ -100,9 +100,11 @@ namespace GamingCommunityApi.Core.Operators
 
             if (await googleUserOperator.DoesGoogleUserGmailAddressExistAsync(gmailAddress))
             {
+                var redirectToUserUrl = await googleUserOperator.GetRedirectToUserUrlFromState();
                 var googleUser = await googleUserOperator
-                    .GetGoogleUserByGmailAddressAsync(gmailAddress);
-                // TODO update google user informations
+                    .PatchGoogleUserByGmailAddressAsync(gmailAddress, googleUserToken: googleUserToken,
+                        state: state, scope: scope, authUser: authUser, prompt: prompt,
+                        redirectToUserUrl: redirectToUserUrl);
                 userId = googleUser.UserId;
             }
             else

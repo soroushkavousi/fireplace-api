@@ -69,7 +69,7 @@ namespace GamingCommunityApi.Infrastructure.Gateways
 
                 var authorizationCodeRequest = flow.CreateAuthorizationCodeRequest(redirectUrl);
 
-                authorizationCodeRequest.State = "swagger";
+                authorizationCodeRequest.State = "docs";
                 var urlTest = authorizationCodeRequest.Build();
                 var url = urlTest.AbsoluteUri;
 
@@ -128,7 +128,7 @@ namespace GamingCommunityApi.Infrastructure.Gateways
 
             //var authorizationCodeRequest = flow.CreateAuthorizationCodeRequest(redirectUrl);
 
-            //authorizationCodeRequest.State = "swagger";
+            //authorizationCodeRequest.State = "docs";
             //var urlTest = authorizationCodeRequest.Build();
             //var url = urlTest.AbsoluteUri;
 
@@ -155,7 +155,7 @@ namespace GamingCommunityApi.Infrastructure.Gateways
 
             return GetAuthUrl(googleGlobalValues.BaseAuthUrl,
                 googleGlobalValues.ClientId, redirectUrl, "code",
-                "openid profile email", "offline", "swagger", "true", "page");
+                "openid profile email", "offline", "docs", "true", "page");
         }
 
         public string GetAuthUrl(string baseAuthUrl,

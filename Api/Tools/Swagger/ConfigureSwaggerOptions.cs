@@ -54,7 +54,7 @@ namespace GamingCommunityApi.Api.Tools.Swagger
 
             description_html += $@"
                 <div style=""display: block; margin: 0px 0px 60px 0px;"">
-                    <h5 style=""margin-bottom:10px"">Sample urls:</h5>
+                    <div style=""margin-bottom:10px"">Sample urls:</div>
                     <div style=""margin-left: 30px;""><a href=""{GlobalOperator.GlobalValues.Api.BaseUrlPath}users/{{your-id}}\"">{GlobalOperator.GlobalValues.Api.BaseUrlPath}users/{{your-id}}</a></div>
                     <div style=""margin-left: 30px;""><a href=""{GlobalOperator.GlobalValues.Api.BaseUrlPath}v0.1/users/{{your-id}}\"">{GlobalOperator.GlobalValues.Api.BaseUrlPath}v0.1/users/{{your-id}}</a></div>
                 </div>";
@@ -63,11 +63,11 @@ namespace GamingCommunityApi.Api.Tools.Swagger
                 <div style=""display: block; margin: 0px 0px 25px 0px;"">
                     <a class=""btn"" href=""{GlobalOperator.GlobalValues.Api.BaseUrlPath}v0.1/users/open-google-log-in-page"" 
                                 style=""display: inline; text-transform: none; padding: 15px 8px 15px 8px; font-size: 10px; text-decoration: none"" target=""_blank"">
-                        <div style=""display: inline;"">
+                        <h2 style=""display: inline;"">
                             <img width=""20px"" style=""margin: 0px 5px -5px 0px"" alt=""Google sign-in""
                                     src=""https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"" />
-                        </div>
                         Login with Google
+                        </h2>
                     </a>
                 </div>";
 

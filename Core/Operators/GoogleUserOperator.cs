@@ -63,7 +63,7 @@ namespace GamingCommunityApi.Core.Operators
             return googleUser;
         }
 
-        public async Task<GoogleUser> CreateGoogleUserAsync(long userId, 
+        public async Task<GoogleUser> CreateGoogleUserAsync(long userId,
             GoogleUserToken googleUserToken, string state,
             string authUser, string prompt, string redirectToUserUrl)
         {
@@ -80,6 +80,11 @@ namespace GamingCommunityApi.Core.Operators
             return googleUser;
         }
 
+        public async Task DeleteGoogleUserAsync(long id)
+        {
+            await _googleUserRepository.DeleteGoogleUserAsync(id);
+        }
+
         public async Task<string> GetRedirectToUserUrlFromState()
         {
             string redirectToUserUrl;
@@ -88,60 +93,73 @@ namespace GamingCommunityApi.Core.Operators
             return redirectToUserUrl;
         }
 
-        public async Task<GoogleUser> PatchGoogleUserByIdAsync(long id, long? userId = null, 
+        public async Task<GoogleUser> PatchGoogleUserByIdAsync(long id,
+            long? userId = null, GoogleUserToken googleUserToken = null,
             string code = null, string accessToken = null, string tokenType = null,
-            long? accessTokenExpiresInSeconds = null, string refreshToken = null, 
-            string scope = null, string idToken = null, DateTime? accessTokenIssuedTime = null, 
-            string gmailAddress = null, bool? gmailVerified = null, 
-            long? gmailIssuedTimeInSeconds = null, string fullName = null, string firstName = null, 
-            string lastName = null, string locale = null, string pictureUrl = null)
+            long? accessTokenExpiresInSeconds = null, string refreshToken = null, string scope = null,
+            string idToken = null, DateTime? accessTokenIssuedTime = null, string gmailAddress = null,
+            bool? gmailVerified = null, long? gmailIssuedTimeInSeconds = null, string fullName = null,
+            string firstName = null, string lastName = null, string locale = null, string pictureUrl = null,
+            string state = null, string authUser = null, string prompt = null, string redirectToUserUrl = null)
         {
             var googleUser = await _googleUserRepository.GetGoogleUserByIdAsync(id, true);
-            googleUser = await ApplyGoogleUserChangesAsync(googleUser, userId,
+            googleUser = await PatchGoogleUserAsync(googleUser, userId, googleUserToken,
                 code, accessToken, tokenType, accessTokenExpiresInSeconds, refreshToken,
                 scope, idToken, accessTokenIssuedTime, gmailAddress, gmailVerified,
-                gmailIssuedTimeInSeconds, fullName, firstName, lastName, locale, pictureUrl);
-            googleUser = await GetGoogleUserByIdAsync(googleUser.Id, true);
+                gmailIssuedTimeInSeconds, fullName, firstName, lastName, locale, pictureUrl,
+                state, authUser, prompt, redirectToUserUrl);
             return googleUser;
         }
 
-        public async Task<GoogleUser> PatchGoogleUserByGmailAddressAsync(string existingGmailAddress, 
-            long? userId = null, string code = null, string accessToken = null, string tokenType = null,
-            long? accessTokenExpiresInSeconds = null, string refreshToken = null,
-            string scope = null, string idToken = null, DateTime? accessTokenIssuedTime = null,
-            string gmailAddress = null, bool? gmailVerified = null,
-            long? gmailIssuedTimeInSeconds = null, string fullName = null, string firstName = null,
-            string lastName = null, string locale = null, string pictureUrl = null)
+        public async Task<GoogleUser> PatchGoogleUserByGmailAddressAsync(string existingGmailAddress,
+            long? userId = null, GoogleUserToken googleUserToken = null,
+            string code = null, string accessToken = null, string tokenType = null,
+            long? accessTokenExpiresInSeconds = null, string refreshToken = null, string scope = null,
+            string idToken = null, DateTime? accessTokenIssuedTime = null, string gmailAddress = null,
+            bool? gmailVerified = null, long? gmailIssuedTimeInSeconds = null, string fullName = null,
+            string firstName = null, string lastName = null, string locale = null, string pictureUrl = null,
+            string state = null, string authUser = null, string prompt = null, string redirectToUserUrl = null)
         {
             var googleUser = await _googleUserRepository.GetGoogleUserByGmailAddressAsync(existingGmailAddress, true);
-            googleUser = await ApplyGoogleUserChangesAsync(googleUser, userId,
+            googleUser = await PatchGoogleUserAsync(googleUser, userId, googleUserToken,
                 code, accessToken, tokenType, accessTokenExpiresInSeconds, refreshToken,
                 scope, idToken, accessTokenIssuedTime, gmailAddress, gmailVerified,
-                gmailIssuedTimeInSeconds, fullName, firstName, lastName, locale, pictureUrl);
-            googleUser = await GetGoogleUserByIdAsync(googleUser.Id, true);
+                gmailIssuedTimeInSeconds, fullName, firstName, lastName, locale, pictureUrl,
+                state, authUser, prompt, redirectToUserUrl);
             return googleUser;
         }
 
-        public async Task DeleteGoogleUserAsync(long id)
-        {
-            await _googleUserRepository.DeleteGoogleUserAsync(id);
-        }
-
-        public async Task<bool> DoesGoogleUserIdExistAsync(long id)
-        {
-            var googleUserIdExists = await _googleUserRepository.DoesGoogleUserIdExistAsync(id);
-            return googleUserIdExists;
-        }
-
-        public async Task<GoogleUser> ApplyGoogleUserChangesAsync(GoogleUser googleUser, 
-            long? userId, string code, string accessToken, string tokenType,
-            long? accessTokenExpiresInSeconds, string refreshToken, string scope, 
-            string idToken, DateTime? accessTokenIssuedTime, string gmailAddress, 
-            bool? gmailVerified, long? gmailIssuedTimeInSeconds, string fullName, 
-            string firstName, string lastName, string locale, string pictureUrl)
+        public async Task<GoogleUser> PatchGoogleUserAsync(GoogleUser googleUser,
+            long? userId = null, GoogleUserToken googleUserToken = null, 
+            string code = null, string accessToken = null, string tokenType = null,
+            long? accessTokenExpiresInSeconds = null, string refreshToken = null, string scope = null,
+            string idToken = null, DateTime? accessTokenIssuedTime = null, string gmailAddress = null,
+            bool? gmailVerified = null, long? gmailIssuedTimeInSeconds = null, string fullName = null,
+            string firstName = null, string lastName = null, string locale = null, string pictureUrl = null,
+            string state = null, string authUser = null, string prompt = null, string redirectToUserUrl = null)
         {
             if (userId != null)
                 googleUser.UserId = userId.Value;
+
+            if (googleUser != null)
+            {
+                googleUser.Code = googleUserToken.Code;
+                googleUser.AccessToken = googleUserToken.AccessToken;
+                googleUser.TokenType = googleUserToken.TokenType;
+                googleUser.AccessTokenExpiresInSeconds = googleUserToken.AccessTokenExpiresInSeconds;
+                googleUser.RefreshToken = googleUserToken.RefreshToken;
+                googleUser.Scope = googleUserToken.Scope;
+                googleUser.IdToken = googleUserToken.IdToken;
+                googleUser.AccessTokenIssuedTime = googleUserToken.AccessTokenIssuedTime;
+                googleUser.GmailAddress = googleUserToken.GmailAddress;
+                googleUser.GmailVerified = googleUserToken.GmailVerified;
+                googleUser.GmailIssuedTimeInSeconds = googleUserToken.GmailIssuedTimeInSeconds;
+                googleUser.FullName = googleUserToken.FullName;
+                googleUser.FirstName = googleUserToken.FirstName;
+                googleUser.LastName = googleUserToken.LastName;
+                googleUser.Locale = googleUserToken.Locale;
+                googleUser.PictureUrl = googleUserToken.PictureUrl;
+            }
 
             if (code != null)
                 googleUser.Code = code;
@@ -191,8 +209,27 @@ namespace GamingCommunityApi.Core.Operators
             if (pictureUrl != null)
                 googleUser.PictureUrl = pictureUrl;
 
+            if (state != null)
+                googleUser.State = state;
+
+            if (authUser != null)
+                googleUser.AuthUser = authUser;
+
+            if (prompt != null)
+                googleUser.Prompt = prompt;
+
+            if (redirectToUserUrl != null)
+                googleUser.RedirectToUserUrl = redirectToUserUrl;
+
             googleUser = await _googleUserRepository.UpdateGoogleUserAsync(googleUser);
+            googleUser = await GetGoogleUserByIdAsync(googleUser.Id, true);
             return googleUser;
+        }
+
+        public async Task<bool> DoesGoogleUserIdExistAsync(long id)
+        {
+            var googleUserIdExists = await _googleUserRepository.DoesGoogleUserIdExistAsync(id);
+            return googleUserIdExists;
         }
 
         public async Task<bool> DoesGoogleUserGmailAddressExistAsync(string gmailAddress)
