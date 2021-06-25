@@ -112,41 +112,40 @@ namespace GamingCommunityApi.Api.Tools.Swagger.OperationFilters
 
             operation.Security = new List<OpenApiSecurityRequirement> { SecurityRequirement };
 
-        //var x = new OpenApiSecurityRequirement
-        //    {
-        //        {
-        //            new OpenApiSecurityScheme
-        //            {
-        //                Reference = new OpenApiReference
-        //                {
-        //                    Id = "Bearer", //The name of the previously defined security scheme.
-        //                    Type = ReferenceType.SecurityScheme,
-        //                },
-        //            },
-        //            new List<string>()
-        //        }
-        //    };
-        //    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-        //    {
-        //        {
-        //            new OpenApiSecurityScheme
-        //            {
-        //                Reference = new OpenApiReference
-        //                {
-        //                    Id = "Bearer", //The name of the previously defined security scheme.
-        //                    Type = ReferenceType.SecurityScheme,
-        //                },
-        //            },
-        //            new List<string>()
-        //        }
-        //    });
+            //var x = new OpenApiSecurityRequirement
+            //    {
+            //        {
+            //            new OpenApiSecurityScheme
+            //            {
+            //                Reference = new OpenApiReference
+            //                {
+            //                    Id = "Bearer", //The name of the previously defined security scheme.
+            //                    Type = ReferenceType.SecurityScheme,
+            //                },
+            //            },
+            //            new List<string>()
+            //        }
+            //    };
+            //    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            //    {
+            //        {
+            //            new OpenApiSecurityScheme
+            //            {
+            //                Reference = new OpenApiReference
+            //                {
+            //                    Id = "Bearer", //The name of the previously defined security scheme.
+            //                    Type = ReferenceType.SecurityScheme,
+            //                },
+            //            },
+            //            new List<string>()
+            //        }
+            //    });
             //operation.Security = new List<IDictionary<string, IEnumerable<string>>>();
             //operation.Security.Add(new Dictionary<string, IEnumerable<string>>
             //{
             //    { "Bearer", new string[] { } }
             //});
         }
-
 
         // Just for knowledge
 

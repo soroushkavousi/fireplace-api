@@ -2,6 +2,10 @@
 //    alert('ok');
 //});​
 
+$(document).ready(function () {
+    console.log("ready!");
+});
+
 function codeAddress1() {
     //alert('ok1');
 }

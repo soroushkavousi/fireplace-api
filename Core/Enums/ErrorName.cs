@@ -7,6 +7,9 @@ namespace GamingCommunityApi.Core.Enums
 {
     public enum ErrorName
     {
+        // Internal server error
+        INTERNAL_SERVER,
+
         // Main business logic errors
         BAD_REQUEST,
         AUTHENTICATION_FAILED,
@@ -14,11 +17,9 @@ namespace GamingCommunityApi.Core.Enums
         EMAIL_ACTIVATION_CODE_NOT_CORRECT,
 
 
-        // Access Denied errors
+        // Access Denied and Existance errors
         ACCESS_DENIED,
 
-
-        // Existing errors
         USER_ID_EXISTS,
         USER_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED,
         
@@ -78,7 +79,5 @@ namespace GamingCommunityApi.Core.Enums
         ERROR_CODE_IS_NULL,
         ACCESS_TOKEN_VALUE_IS_NULL,
         SESSION_ID_IS_NULL,
-
-        INTERNAL_SERVER,
     }
 }

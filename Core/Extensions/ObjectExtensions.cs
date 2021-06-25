@@ -27,7 +27,9 @@ namespace GamingCommunityApi.Core.Extensions
                 ContractResolver = CoreContractResolver.Instance,
                 //NullValueHandling = NullValueHandling.Ignore,
             };
+            _jsonSerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
         }
+
         public static string ToJson(this object obj)
         {
             if (obj == null)

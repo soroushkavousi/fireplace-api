@@ -220,7 +220,10 @@ namespace GamingCommunityApi.Api
                 //Console.WriteLine($"System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceNames();: \n{String.Join("\n", typeof(Startup).Assembly.GetManifestResourceNames())}");
                 //options.InjectStylesheet(@"D:\Projects\GamingCommunity\GamingCommunityApi\Codes\Api\Tools\Swagger\custom-swagger-ui.css");
                 options.DisplayRequestDuration();
+                options.InjectStylesheet("https://fonts.googleapis.com/css?family=Roboto");
                 options.InjectStylesheet("/swagger-ui/custom-swagger-ui.css");
+                options.InjectJavascript("https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js");
+                options.InjectJavascript("https://apis.google.com/js/platform.js");
                 options.InjectJavascript("/swagger-ui/custom-swagger-ui.js");
             });
             app.UseRequestResponseLoggingMiddleware();
