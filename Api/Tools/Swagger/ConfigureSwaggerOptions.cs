@@ -1,4 +1,4 @@
-﻿using GamingCommunityApi.Core.Operators;
+﻿using FireplaceApi.Core.Operators;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -9,7 +9,7 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 
-namespace GamingCommunityApi.Api.Tools.Swagger
+namespace FireplaceApi.Api.Tools.Swagger
 {
     /// <summary>
     /// Configures the Swagger generation options.
@@ -49,7 +49,7 @@ namespace GamingCommunityApi.Api.Tools.Swagger
             
             description_html += @"
                 <div>
-                    <h5><strong>Gamers</strong>! Gaming Community is the place where you can communicate with each other about your beloved games.</h5>
+                    <h5><strong>Welcome</strong>! Fireplace is a place where you can communicate with others wisely.</h5>
                 </div>";
 
             description_html += $@"
@@ -72,7 +72,7 @@ namespace GamingCommunityApi.Api.Tools.Swagger
 
             var info = new OpenApiInfo()
             {
-                Title = "Gaming Community Api",
+                Title = "Fireplace Api",
                 Version = description.ApiVersion.ToString(),
                 Description = description_html,
                 Contact = new OpenApiContact

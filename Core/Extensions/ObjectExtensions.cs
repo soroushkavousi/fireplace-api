@@ -9,9 +9,9 @@ using System.Text.Unicode;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Reflection;
-using GamingCommunityApi.Core.Tools.NewtonsoftSerializer;
+using FireplaceApi.Core.Tools.NewtonsoftSerializer;
 
-namespace GamingCommunityApi.Core.Extensions
+namespace FireplaceApi.Core.Extensions
 {
     public static class ObjectExtensions
     {

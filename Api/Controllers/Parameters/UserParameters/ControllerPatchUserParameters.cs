@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.OpenApi.Any;
-using GamingCommunityApi.Api.Controllers.Parameters.EmailParameters;
-using GamingCommunityApi.Api.Extensions;
-using GamingCommunityApi.Api.Tools.Swagger.SchemaFilters;
+using FireplaceApi.Api.Controllers.Parameters.EmailParameters;
+using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Tools.Swagger.SchemaFilters;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
@@ -11,9 +11,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Extensions;
+using FireplaceApi.Core.Extensions;
 
-namespace GamingCommunityApi.Api.Controllers.Parameters.UserParameters
+namespace FireplaceApi.Api.Controllers.Parameters.UserParameters
 {
     public class ControllerPatchUserInputRouteParameters
     {

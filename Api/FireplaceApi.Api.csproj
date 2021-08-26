@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Apis.Auth" Version="1.52.0" />
-    <PackageReference Include="Google.Apis.Core" Version="1.52.0" />
+    <PackageReference Include="Google.Apis.Core" Version="1.54.0" />
     <PackageReference Include="Google.Apis.Oauth2.v2" Version="1.52.0.1869" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.7" />
@@ -56,8 +56,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\GamingCommunityApi.Core.csproj" />
-    <ProjectReference Include="..\Infrastructure\GamingCommunityApi.Infrastructure.csproj" />
+    <ProjectReference Include="..\Core\FireplaceApi.Core.csproj" />
+    <ProjectReference Include="..\Infrastructure\FireplaceApi.Infrastructure.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

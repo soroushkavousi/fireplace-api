@@ -1,18 +1,18 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Exceptions;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Core.Models;
-using GamingCommunityApi.Core.Validators;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Validators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Interfaces.IRepositories;
+using FireplaceApi.Core.Interfaces.IRepositories;
 
-namespace GamingCommunityApi.Core.Operators
+namespace FireplaceApi.Core.Operators
 {
     public class ErrorOperator
     {

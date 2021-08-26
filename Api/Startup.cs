@@ -19,30 +19,30 @@ using Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.Extensions.Options;
-using GamingCommunityApi.Api.Tools.Swagger;
+using FireplaceApi.Api.Tools.Swagger;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Rewrite;
 using System.Net;
-using GamingCommunityApi.Api.Middlewares;
-using GamingCommunityApi.Api.Extensions;
+using FireplaceApi.Api.Middlewares;
+using FireplaceApi.Api.Extensions;
 using System.Text.Json;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.Text.Json.Serialization;
-using GamingCommunityApi.Api.Tools.AspDotNetCore;
+using FireplaceApi.Api.Tools.AspDotNetCore;
 using Swashbuckle.AspNetCore.SwaggerUI;
-using GamingCommunityApi.Api.Controllers.Parameters.ErrorParameters;
-using GamingCommunityApi.Api.Tools.Swagger.OperationFilters;
-using GamingCommunityApi.Api.Tools.Swagger.DocumentFilters;
-using GamingCommunityApi.Api.Attributes.ActionFilterAttributes;
+using FireplaceApi.Api.Controllers.Parameters.ErrorParameters;
+using FireplaceApi.Api.Tools.Swagger.OperationFilters;
+using FireplaceApi.Api.Tools.Swagger.DocumentFilters;
+using FireplaceApi.Api.Attributes.ActionFilterAttributes;
 using Microsoft.AspNetCore.Authentication;
-using GamingCommunityApi.Infrastructure.Entities;
-using GamingCommunityApi.Api.Tools.TextJsonSerializer;
-using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Extensions;
+using FireplaceApi.Infrastructure.Entities;
+using FireplaceApi.Api.Tools.TextJsonSerializer;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
 
-namespace GamingCommunityApi.Api
+namespace FireplaceApi.Api
 {
     public class Startup
     {
@@ -57,10 +57,10 @@ namespace GamingCommunityApi.Api
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IObjectModelValidator, NullObjectModelValidator>();
-            services.AddDbContext<GamingCommunityApiContext>(
+            services.AddDbContext<FireplaceApiContext>(
                 optionsBuilder => optionsBuilder.UseNpgsql(
                     Configuration.GetConnectionString("MainDatabase"),
-                    optionsBuilder => optionsBuilder.MigrationsAssembly("GamingCommunityApi.Infrastructure"))
+                    optionsBuilder => optionsBuilder.MigrationsAssembly("FireplaceApi.Infrastructure"))
             );
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddInfrastructurConverters();
@@ -159,7 +159,7 @@ namespace GamingCommunityApi.Api
             });
 
             //var gamingCommunityApiContext = services.BuildServiceProvider()
-            //           .GetService<GamingCommunityApiContext>();
+            //           .GetService<FireplaceApiContext>();
 
             //services.AddAuthenticationCore().AddGoogle();
 
@@ -218,7 +218,7 @@ namespace GamingCommunityApi.Api
                 }
                 options.DocExpansion(DocExpansion.List);
                 //Console.WriteLine($"System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceNames();: \n{String.Join("\n", typeof(Startup).Assembly.GetManifestResourceNames())}");
-                //options.InjectStylesheet(@"D:\Projects\GamingCommunity\GamingCommunityApi\Codes\Api\Tools\Swagger\custom-swagger-ui.css");
+                //options.InjectStylesheet(@"D:\Projects\Fireplace\FireplaceApi\Codes\Api\Tools\Swagger\custom-swagger-ui.css");
                 options.DisplayRequestDuration();
                 options.InjectStylesheet("https://fonts.googleapis.com/css?family=Roboto");
                 options.InjectStylesheet("/swagger-ui/custom-swagger-ui.css");

@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
-using GamingCommunityApi.Api.Extensions;
+using FireplaceApi.Api.Extensions;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
@@ -11,12 +11,12 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Models;
-using GamingCommunityApi.Core.Operators;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Operators;
 
-namespace GamingCommunityApi.Api.Tools.Swagger.SchemaFilters
+namespace FireplaceApi.Api.Tools.Swagger.SchemaFilters
 {
     public class TypeExampleProvider : ISchemaFilter
     {

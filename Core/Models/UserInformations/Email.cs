@@ -1,11 +1,11 @@
-﻿using GamingCommunityApi.Core.ValueObjects;
+﻿using FireplaceApi.Core.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Core.Models.UserInformations
+namespace FireplaceApi.Core.Models.UserInformations
 {
     public class Email
     {

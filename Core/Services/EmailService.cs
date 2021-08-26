@@ -2,22 +2,22 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
-using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Exceptions;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Core.Models;
-using GamingCommunityApi.Core.Models.UserInformations;
-using GamingCommunityApi.Core.Tools;
-using GamingCommunityApi.Core.Validators;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Tools;
+using FireplaceApi.Core.Validators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Net;
-using GamingCommunityApi.Core.Operators;
+using FireplaceApi.Core.Operators;
 
-namespace GamingCommunityApi.Core.Services
+namespace FireplaceApi.Core.Services
 {
     public class EmailService
     {

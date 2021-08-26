@@ -5,10 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Interfaces.IGateways;
-using GamingCommunityApi.Core.Tools;
+using FireplaceApi.Core.Interfaces.IGateways;
+using FireplaceApi.Core.Tools;
 
-namespace GamingCommunityApi.Infrastructure.Gateways
+namespace FireplaceApi.Infrastructure.Gateways
 {
     public class FileGateway : IFileGateway
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Api.Tools
+namespace FireplaceApi.Api.Tools
 {
     public static class Constants
     {

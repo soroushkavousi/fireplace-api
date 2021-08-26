@@ -6,26 +6,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Mail;
-using GamingCommunityApi.Core.Interfaces.IGateways;
+using FireplaceApi.Core.Interfaces.IGateways;
 using Google.Apis.Auth.OAuth2;
 using static Google.Apis.Oauth2.v2.Oauth2Service;
 using Microsoft.AspNetCore.Authentication.Google;
 using System.Net.Http;
 using Google.Apis.Auth.OAuth2.Flows;
 using System.Threading;
-using GamingCommunityApi.Core.Operators;
-using GamingCommunityApi.Core.ValueObjects;
+using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.ValueObjects;
 using Microsoft.AspNetCore.WebUtilities;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Infrastructure.ValueObjects;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Infrastructure.ValueObjects;
 using JWT;
 using JWT.Algorithms;
 using JWT.Serializers;
 using Google.Apis.Auth;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
-using GamingCommunityApi.Core.Exceptions;
+using FireplaceApi.Core.Exceptions;
 
-namespace GamingCommunityApi.Infrastructure.Gateways
+namespace FireplaceApi.Infrastructure.Gateways
 {
     public class GoogleGateway : IGoogleGateway
     {

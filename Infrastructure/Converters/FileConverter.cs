@@ -2,16 +2,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using GamingCommunityApi.Infrastructure.Entities;
-using GamingCommunityApi.Infrastructure.Repositories;
+using FireplaceApi.Infrastructure.Entities;
+using FireplaceApi.Infrastructure.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Tools;
-using GamingCommunityApi.Core.Models;
+using FireplaceApi.Core.Tools;
+using FireplaceApi.Core.Models;
 
-namespace GamingCommunityApi.Infrastructure.Converters
+namespace FireplaceApi.Infrastructure.Converters
 {
     public class FileConverter
     {

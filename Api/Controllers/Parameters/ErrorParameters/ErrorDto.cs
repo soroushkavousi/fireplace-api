@@ -1,17 +1,17 @@
 ﻿using Microsoft.OpenApi.Any;
-using GamingCommunityApi.Api.Extensions;
-using GamingCommunityApi.Api.Interfaces;
-using GamingCommunityApi.Api.Tools.Swagger;
-using GamingCommunityApi.Api.Tools.Swagger.SchemaFilters;
+using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Interfaces;
+using FireplaceApi.Api.Tools.Swagger;
+using FireplaceApi.Api.Tools.Swagger.SchemaFilters;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Enums;
+using FireplaceApi.Core.Enums;
 
-namespace GamingCommunityApi.Api.Controllers.Parameters.ErrorParameters
+namespace FireplaceApi.Api.Controllers.Parameters.ErrorParameters
 {
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
     public class ErrorDto

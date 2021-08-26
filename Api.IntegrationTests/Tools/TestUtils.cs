@@ -1,6 +1,6 @@
-﻿using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Core.Operators;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Operators;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace GamingCommunityApi.Api.IntegrationTests.Tools
+namespace FireplaceApi.Api.IntegrationTests.Tools
 {
     public class TestUtils
     {

@@ -2,17 +2,17 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using GamingCommunityApi.Infrastructure.Entities;
-using GamingCommunityApi.Infrastructure.Repositories;
+using FireplaceApi.Infrastructure.Entities;
+using FireplaceApi.Infrastructure.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Models;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Core.Enums;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Enums;
 
-namespace GamingCommunityApi.Infrastructure.Converters
+namespace FireplaceApi.Infrastructure.Converters
 {
     public class ErrorConverter
     {

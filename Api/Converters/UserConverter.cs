@@ -3,17 +3,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
-using GamingCommunityApi.Api.Controllers.Parameters.UserParameters;
+using FireplaceApi.Api.Controllers.Parameters.UserParameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GamingCommunityApi.Api.Extensions;
-using GamingCommunityApi.Api.Controllers.Parameters.EmailParameters;
-using GamingCommunityApi.Api.Controllers.Parameters.SessionParameters;
-using GamingCommunityApi.Core.Models.UserInformations;
+using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Controllers.Parameters.EmailParameters;
+using FireplaceApi.Api.Controllers.Parameters.SessionParameters;
+using FireplaceApi.Core.Models.UserInformations;
 
-namespace GamingCommunityApi.Api.Converters
+namespace FireplaceApi.Api.Converters
 {
     public class UserConverter
     {

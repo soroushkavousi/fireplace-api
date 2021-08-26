@@ -1,5 +1,5 @@
-﻿using GamingCommunityApi.Api.Tools.TextJsonSerializer;
-using GamingCommunityApi.Core.Tools;
+﻿using FireplaceApi.Api.Tools.TextJsonSerializer;
+using FireplaceApi.Core.Tools;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace GamingCommunityApi.Core.Extensions
+namespace FireplaceApi.Core.Extensions
 {
     public static class StringExtensions
     {

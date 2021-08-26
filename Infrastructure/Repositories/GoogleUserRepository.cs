@@ -1,34 +1,34 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using GamingCommunityApi.Infrastructure.Converters;
-using GamingCommunityApi.Infrastructure.Entities;
-using GamingCommunityApi.Infrastructure.Entities.UserInformationEntities;
+using FireplaceApi.Infrastructure.Converters;
+using FireplaceApi.Infrastructure.Entities;
+using FireplaceApi.Infrastructure.Entities.UserInformationEntities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Models.UserInformations;
-using GamingCommunityApi.Core.Exceptions;
-using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Core.Interfaces.IRepositories;
-using GamingCommunityApi.Core.ValueObjects;
+using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Interfaces.IRepositories;
+using FireplaceApi.Core.ValueObjects;
 
-namespace GamingCommunityApi.Infrastructure.Repositories
+namespace FireplaceApi.Infrastructure.Repositories
 {
     public class GoogleUserRepository : IGoogleUserRepository
     {
         private readonly ILogger<GoogleUserRepository> _logger;
         private readonly IConfiguration _configuration;
-        private readonly GamingCommunityApiContext _gamingCommunityApiContext;
+        private readonly FireplaceApiContext _gamingCommunityApiContext;
         private readonly DbSet<GoogleUserEntity> _googleUserEntities;
         private readonly GoogleUserConverter _googleUserConverter;
 
         public GoogleUserRepository(ILogger<GoogleUserRepository> logger, IConfiguration configuration, 
-            GamingCommunityApiContext gamingCommunityApiContext, GoogleUserConverter googleUserConverter
+            FireplaceApiContext gamingCommunityApiContext, GoogleUserConverter googleUserConverter
             )
         {
             _logger = logger;

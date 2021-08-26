@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Api.Converters
+namespace FireplaceApi.Api.Converters
 {
     public class GlobalConverter
     {

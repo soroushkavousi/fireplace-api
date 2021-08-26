@@ -10,9 +10,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Web;
-using GamingCommunityApi.Api.Tools;
+using FireplaceApi.Api.Tools;
 
-namespace GamingCommunityApi.Api
+namespace FireplaceApi.Api
 {
     public class Program
     {

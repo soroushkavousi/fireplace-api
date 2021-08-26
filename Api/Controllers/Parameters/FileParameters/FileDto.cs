@@ -1,17 +1,17 @@
 ﻿using Microsoft.OpenApi.Any;
-using GamingCommunityApi.Api.Extensions;
-using GamingCommunityApi.Api.Interfaces;
-using GamingCommunityApi.Api.Tools.Swagger;
-using GamingCommunityApi.Api.Tools.Swagger.SchemaFilters;
+using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Interfaces;
+using FireplaceApi.Api.Tools.Swagger;
+using FireplaceApi.Api.Tools.Swagger.SchemaFilters;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Extensions;
+using FireplaceApi.Core.Extensions;
 
-namespace GamingCommunityApi.Api.Controllers.Parameters.FileParameters
+namespace FireplaceApi.Api.Controllers.Parameters.FileParameters
 {
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
     public class FileDto

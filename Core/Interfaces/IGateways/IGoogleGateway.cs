@@ -6,9 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Mail;
-using GamingCommunityApi.Core.ValueObjects;
+using FireplaceApi.Core.ValueObjects;
 
-namespace GamingCommunityApi.Core.Interfaces.IGateways
+namespace FireplaceApi.Core.Interfaces.IGateways
 {
     public interface IGoogleGateway
     {

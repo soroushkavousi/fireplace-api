@@ -1,7 +1,7 @@
-﻿using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Core.Operators;
-using GamingCommunityApi.Infrastructure.Entities;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Operators;
+using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using NLog;
@@ -12,7 +12,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Api.Tools
+namespace FireplaceApi.Api.Tools
 {
     public static class ProjectInitializer
     {
@@ -34,7 +34,7 @@ namespace GamingCommunityApi.Api.Tools
         {
             var globalId = ReadFromConfig("GlobalId").ToEnum<GlobalId>();
             var connectionString = _config.GetConnectionString("MainDatabase");
-            var gamingCommunityApiContext = new GamingCommunityApiContext(connectionString);
+            var gamingCommunityApiContext = new FireplaceApiContext(connectionString);
             GlobalOperator.GlobalValues = gamingCommunityApiContext.GlobalEntities
                 .AsNoTracking().Where(e => e.Id == globalId.To<int>()).Single().Values;
         }

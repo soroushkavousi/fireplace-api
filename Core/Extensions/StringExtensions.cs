@@ -1,5 +1,5 @@
-﻿using GamingCommunityApi.Core.Tools;
-using GamingCommunityApi.Core.Tools.NewtonsoftSerializer;
+﻿using FireplaceApi.Core.Tools;
+using FireplaceApi.Core.Tools.NewtonsoftSerializer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -10,7 +10,7 @@ using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Core.Extensions
+namespace FireplaceApi.Core.Extensions
 {
     public static class StringExtensions
     {

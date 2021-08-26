@@ -8,10 +8,10 @@ using System.Linq;
 using System.Net;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Enums;
 
-namespace GamingCommunityApi.Core.Models
+namespace FireplaceApi.Core.Models
 {
     public class Error
     {

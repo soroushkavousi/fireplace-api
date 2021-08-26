@@ -5,12 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text.Json;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Core.Models;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Models;
 using Microsoft.Extensions.Configuration;
 using System.Runtime.InteropServices;
 
-namespace GamingCommunityApi.Core.Tools
+namespace FireplaceApi.Core.Tools
 {
     public static class Utils
     {

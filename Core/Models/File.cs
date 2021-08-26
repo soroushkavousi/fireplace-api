@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Core.Models
+namespace FireplaceApi.Core.Models
 {
     public class File
     {

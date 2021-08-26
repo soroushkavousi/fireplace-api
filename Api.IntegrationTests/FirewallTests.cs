@@ -1,6 +1,6 @@
-﻿using GamingCommunityApi.Api.IntegrationTests.Tools;
-using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Extensions;
+﻿using FireplaceApi.Api.IntegrationTests.Tools;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace GamingCommunityApi.Api.IntegrationTests
+namespace FireplaceApi.Api.IntegrationTests
 {
     [Collection("Api Integration Test Collection")]
     public class FirewallTests

@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Apis.Auth" Version="1.52.0" />
-    <PackageReference Include="Google.Apis.Core" Version="1.52.0" />
+    <PackageReference Include="Google.Apis.Core" Version="1.54.0" />
     <PackageReference Include="Google.Apis.Oauth2.v2" Version="1.52.0.1869" />
     <PackageReference Include="JWT" Version="8.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.7" />

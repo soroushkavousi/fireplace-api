@@ -3,16 +3,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
-using GamingCommunityApi.Infrastructure.Entities;
-using GamingCommunityApi.Infrastructure.Entities.UserInformationEntities;
-using GamingCommunityApi.Infrastructure.Repositories;
+using FireplaceApi.Infrastructure.Entities;
+using FireplaceApi.Infrastructure.Entities.UserInformationEntities;
+using FireplaceApi.Infrastructure.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Models.UserInformations;
 
-namespace GamingCommunityApi.Infrastructure.Converters
+namespace FireplaceApi.Infrastructure.Converters
 {
     public class AccessTokenConverter
     {

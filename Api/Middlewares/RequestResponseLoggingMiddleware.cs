@@ -1,4 +1,4 @@
-﻿using GamingCommunityApi.Api.Extensions;
+﻿using FireplaceApi.Api.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Api.Middlewares
+namespace FireplaceApi.Api.Middlewares
 {
     /// <summary>
     /// Not used. Just for learning approach.

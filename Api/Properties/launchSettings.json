@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "GamingCommunityApi": {
+    "FireplaceApi": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "docs",

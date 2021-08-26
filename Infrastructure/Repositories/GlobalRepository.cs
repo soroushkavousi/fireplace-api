@@ -1,33 +1,33 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using GamingCommunityApi.Infrastructure.Converters;
-using GamingCommunityApi.Infrastructure.Entities;
+using FireplaceApi.Infrastructure.Converters;
+using FireplaceApi.Infrastructure.Entities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Models;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Exceptions;
-using GamingCommunityApi.Core.ValueObjects;
-using GamingCommunityApi.Core.Interfaces.IRepositories;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.ValueObjects;
+using FireplaceApi.Core.Interfaces.IRepositories;
 
-namespace GamingCommunityApi.Infrastructure.Repositories
+namespace FireplaceApi.Infrastructure.Repositories
 {
     public class GlobalRepository : IGlobalRepository
     {
         private readonly ILogger<GlobalRepository> _logger;
         private readonly IConfiguration _configuration;
-        private readonly GamingCommunityApiContext _gamingCommunityApiContext;
+        private readonly FireplaceApiContext _gamingCommunityApiContext;
         private readonly DbSet<GlobalEntity> _globalEntities;
         private readonly GlobalConverter _globalConverter;
 
         public GlobalRepository(ILogger<GlobalRepository> logger, 
-            IConfiguration configuration, GamingCommunityApiContext gamingCommunityApiContext,
+            IConfiguration configuration, FireplaceApiContext gamingCommunityApiContext,
             GlobalConverter globalConverter)
         {
             _logger = logger;

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Core.Interfaces.IGateways
+namespace FireplaceApi.Core.Interfaces.IGateways
 {
     public interface IFileGateway
     {

@@ -11,7 +11,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.9" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
@@ -26,9 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Api\GamingCommunityApi.Api.csproj" />
-    <ProjectReference Include="..\Core\GamingCommunityApi.Core.csproj" />
-    <ProjectReference Include="..\Infrastructure\GamingCommunityApi.Infrastructure.csproj" />
+    <ProjectReference Include="..\Api\FireplaceApi.Api.csproj" />
+    <ProjectReference Include="..\Core\FireplaceApi.Core.csproj" />
+    <ProjectReference Include="..\Infrastructure\FireplaceApi.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,33 +1,33 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using GamingCommunityApi.Infrastructure.Converters;
-using GamingCommunityApi.Infrastructure.Entities;
-using GamingCommunityApi.Infrastructure.Entities.UserInformationEntities;
+using FireplaceApi.Infrastructure.Converters;
+using FireplaceApi.Infrastructure.Entities;
+using FireplaceApi.Infrastructure.Entities.UserInformationEntities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Models.UserInformations;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Core.Exceptions;
-using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Interfaces.IRepositories;
+using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Interfaces.IRepositories;
 
-namespace GamingCommunityApi.Infrastructure.Repositories
+namespace FireplaceApi.Infrastructure.Repositories
 {
     public class AccessTokenRepository : IAccessTokenRepository
     {
         private readonly ILogger<AccessTokenRepository> _logger;
         private readonly IConfiguration _configuration;
-        private readonly GamingCommunityApiContext _gamingCommunityApiContext;
+        private readonly FireplaceApiContext _gamingCommunityApiContext;
         private readonly DbSet<AccessTokenEntity> _accessTokenEntities;
         private readonly AccessTokenConverter _accessTokenConverter;
 
         public AccessTokenRepository(ILogger<AccessTokenRepository> logger, IConfiguration configuration, 
-            GamingCommunityApiContext gamingCommunityApiContext, AccessTokenConverter accessTokenConverter
+            FireplaceApiContext gamingCommunityApiContext, AccessTokenConverter accessTokenConverter
             )
         {
             _logger = logger;

@@ -1,7 +1,7 @@
-﻿using GamingCommunityApi.Api.Controllers.Parameters;
-using GamingCommunityApi.Api.Tools;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Core.Models.UserInformations;
+﻿using FireplaceApi.Api.Controllers.Parameters;
+using FireplaceApi.Api.Tools;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Models.UserInformations;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Api.Extensions
+namespace FireplaceApi.Api.Extensions
 {
     public static class HttpContextExtensions
     {

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Infrastructure.Entities.UserInformationEntities
+namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
 {
     public class EmailEntity
     {

@@ -2,14 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using GamingCommunityApi.Api.Controllers.Parameters.ErrorParameters;
+using FireplaceApi.Api.Controllers.Parameters.ErrorParameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Models;
+using FireplaceApi.Core.Models;
 
-namespace GamingCommunityApi.Api.Converters
+namespace FireplaceApi.Api.Converters
 {
     public class ErrorConverter
     {

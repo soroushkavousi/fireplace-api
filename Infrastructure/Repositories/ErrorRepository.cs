@@ -1,32 +1,32 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using GamingCommunityApi.Infrastructure.Converters;
-using GamingCommunityApi.Infrastructure.Entities;
+using FireplaceApi.Infrastructure.Converters;
+using FireplaceApi.Infrastructure.Entities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Interfaces.IRepositories;
-using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Models;
-using GamingCommunityApi.Core.Exceptions;
-using GamingCommunityApi.Core.Extensions;
+using FireplaceApi.Core.Interfaces.IRepositories;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Extensions;
 
-namespace GamingCommunityApi.Infrastructure.Repositories
+namespace FireplaceApi.Infrastructure.Repositories
 {
     public class ErrorRepository: IErrorRepository
     {
         private readonly ILogger<ErrorRepository> _logger;
         private readonly IConfiguration _configuration;
-        private readonly GamingCommunityApiContext _gamingCommunityApiContext;
+        private readonly FireplaceApiContext _gamingCommunityApiContext;
         private readonly DbSet<ErrorEntity> _errorEntities;
         private readonly ErrorConverter _errorConverter;
 
         public ErrorRepository(ILogger<ErrorRepository> logger, IConfiguration configuration, 
-            GamingCommunityApiContext gamingCommunityApiContext, ErrorConverter errorConverter
+            FireplaceApiContext gamingCommunityApiContext, ErrorConverter errorConverter
             )
         {
             _logger = logger;

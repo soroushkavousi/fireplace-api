@@ -1,11 +1,11 @@
-﻿using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.ValueObjects;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Core.Models
+namespace FireplaceApi.Core.Models
 {
     public class Global
     {

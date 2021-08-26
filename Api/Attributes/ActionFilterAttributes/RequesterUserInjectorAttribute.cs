@@ -4,15 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GamingCommunityApi.Api.Extensions;
+using FireplaceApi.Api.Extensions;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using System.Diagnostics;
-using GamingCommunityApi.Api.Controllers.Parameters.UserParameters;
+using FireplaceApi.Api.Controllers.Parameters.UserParameters;
 using Microsoft.Extensions.Logging;
-using GamingCommunityApi.Api.Tools;
-using GamingCommunityApi.Core.Extensions;
+using FireplaceApi.Api.Tools;
+using FireplaceApi.Core.Extensions;
 
-namespace GamingCommunityApi.Api.Attributes.ActionFilterAttributes
+namespace FireplaceApi.Api.Attributes.ActionFilterAttributes
 {
     public class RequesterUserInjectorAttribute : ActionFilterAttribute
     {

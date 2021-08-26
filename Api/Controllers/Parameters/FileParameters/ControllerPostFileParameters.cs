@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Api.Controllers.Parameters.FileParameters
+namespace FireplaceApi.Api.Controllers.Parameters.FileParameters
 {
     public class ControllerPostFileInputFormParameters
     {

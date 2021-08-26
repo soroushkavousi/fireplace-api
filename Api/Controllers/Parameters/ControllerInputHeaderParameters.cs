@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
-using GamingCommunityApi.Api.Extensions;
-using GamingCommunityApi.Api.Tools;
+using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +8,10 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Primitives;
-using GamingCommunityApi.Core.Tools;
-using GamingCommunityApi.Core.Extensions;
+using FireplaceApi.Core.Tools;
+using FireplaceApi.Core.Extensions;
 
-namespace GamingCommunityApi.Api.Controllers.Parameters
+namespace FireplaceApi.Api.Controllers.Parameters
 {
     public class ControllerInputHeaderParameters
     {

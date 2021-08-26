@@ -1,4 +1,4 @@
-﻿using GamingCommunityApi.Core.Extensions;
+﻿using FireplaceApi.Core.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Infrastructure.Entities.UserInformationEntities
+namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
 {
     public class SessionEntity
     {

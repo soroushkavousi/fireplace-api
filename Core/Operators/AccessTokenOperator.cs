@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using GamingCommunityApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Models.UserInformations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Interfaces.IRepositories;
+using FireplaceApi.Core.Interfaces.IRepositories;
 
-namespace GamingCommunityApi.Core.Operators
+namespace FireplaceApi.Core.Operators
 {
     public class AccessTokenOperator
     {

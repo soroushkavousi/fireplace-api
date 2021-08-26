@@ -8,9 +8,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.ValueObjects;
+using FireplaceApi.Core.ValueObjects;
 
-namespace GamingCommunityApi.Infrastructure.Entities
+namespace FireplaceApi.Infrastructure.Entities
 {
     public class GlobalEntity
     {

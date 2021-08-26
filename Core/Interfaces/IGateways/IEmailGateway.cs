@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Mail;
 
-namespace GamingCommunityApi.Core.Interfaces.IGateways
+namespace FireplaceApi.Core.Interfaces.IGateways
 {
     public interface IEmailGateway
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Core.Tools
+namespace FireplaceApi.Core.Tools
 {
     public static class Regexes
     {

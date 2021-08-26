@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GamingCommunityApi.Core.ValueObjects
+namespace FireplaceApi.Core.ValueObjects
 {
     public class GoogleUserToken
     {

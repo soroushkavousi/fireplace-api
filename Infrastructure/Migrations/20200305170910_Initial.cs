@@ -1,8 +1,8 @@
-﻿using GamingCommunityApi.Core.ValueObjects;
+﻿using FireplaceApi.Core.ValueObjects;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace GamingCommunityApi.Infrastructure.Migrations
+namespace FireplaceApi.Infrastructure.Migrations
 {
     public partial class Initial : Migration
     {

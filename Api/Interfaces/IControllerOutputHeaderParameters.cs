@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
-using GamingCommunityApi.Api.Extensions;
-using GamingCommunityApi.Api.Tools;
+using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Api.Interfaces
+namespace FireplaceApi.Api.Interfaces
 {
     public interface IControllerOutputHeaderParameters
     {

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Api.Tools.Swagger.DocumentFilters
+namespace FireplaceApi.Api.Tools.Swagger.DocumentFilters
 {
     //Usage : "options.DocumentFilter<CustomModelDocumentFilter<Error>>();"
     public class CustomModelDocumentFilter<T> : IDocumentFilter where T : class

@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Api.Middlewares
+namespace FireplaceApi.Api.Middlewares
 {
     /// <summary>
     /// Not used. Just for learning approach.

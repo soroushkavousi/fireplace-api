@@ -1,11 +1,11 @@
-﻿using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Extensions;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Core.Models.UserInformations
+namespace FireplaceApi.Core.Models.UserInformations
 {
     public class AccessToken
     {

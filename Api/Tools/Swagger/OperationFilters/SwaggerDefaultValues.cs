@@ -2,15 +2,15 @@
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
-using GamingCommunityApi.Api.Controllers.Parameters.ErrorParameters;
-using GamingCommunityApi.Api.Extensions;
+using FireplaceApi.Api.Controllers.Parameters.ErrorParameters;
+using FireplaceApi.Api.Extensions;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
 
-namespace GamingCommunityApi.Api.Tools.Swagger.OperationFilters
+namespace FireplaceApi.Api.Tools.Swagger.OperationFilters
 {
     /// <summary>
     /// Represents the Swagger/Swashbuckle operation filter used to document the implicit API version parameter.

@@ -1,7 +1,7 @@
-﻿using GamingCommunityApi.Core.Interfaces.IRepositories;
-using GamingCommunityApi.Core.Operators;
-using GamingCommunityApi.Core.ValueObjects;
-using GamingCommunityApi.Infrastructure.Entities;
+﻿using FireplaceApi.Core.Interfaces.IRepositories;
+using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.ValueObjects;
+using FireplaceApi.Infrastructure.Entities;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,14 +10,14 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Api.IntegrationTests.Tools
+namespace FireplaceApi.Api.IntegrationTests.Tools
 {
     public class ClientPool
     {
         private readonly ILogger<ClientPool> _logger;
         private readonly WebApplicationFactory<Startup> _apiFactory;
         private readonly WebApplicationFactoryClientOptions _clientOptions;
-        private readonly GamingCommunityApiContext _gamingCommunityApiContext;
+        private readonly FireplaceApiContext _gamingCommunityApiContext;
         private readonly IUserRepository _userRepository;
         private readonly IEmailRepository _emailRepository;
         private readonly IAccessTokenRepository _accessTokenRepository;
@@ -37,7 +37,7 @@ namespace GamingCommunityApi.Api.IntegrationTests.Tools
                 HandleCookies = true,
                 MaxAutomaticRedirections = 7
             };
-            _gamingCommunityApiContext = testFixture.ServiceProvider.GetRequiredService<GamingCommunityApiContext>();
+            _gamingCommunityApiContext = testFixture.ServiceProvider.GetRequiredService<FireplaceApiContext>();
             _userRepository = testFixture.ServiceProvider.GetRequiredService<IUserRepository>();
             _emailRepository = testFixture.ServiceProvider.GetRequiredService<IEmailRepository>();
             _accessTokenRepository = testFixture.ServiceProvider.GetRequiredService<IAccessTokenRepository>();

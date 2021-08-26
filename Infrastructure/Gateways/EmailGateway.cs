@@ -6,10 +6,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Mail;
-using GamingCommunityApi.Core.Interfaces.IGateways;
-using GamingCommunityApi.Core.Operators;
+using FireplaceApi.Core.Interfaces.IGateways;
+using FireplaceApi.Core.Operators;
 
-namespace GamingCommunityApi.Infrastructure.Gateways
+namespace FireplaceApi.Infrastructure.Gateways
 {
     public class EmailGateway : IEmailGateway
     {
@@ -40,8 +40,8 @@ namespace GamingCommunityApi.Infrastructure.Gateways
             {
                 try
                 {
-                    var from = new MailAddress(fromEmailAddress, "Gaming Community");
-                    var to = new MailAddress(toEmailAddress, "Gamer");
+                    var from = new MailAddress(fromEmailAddress, "Fireplace");
+                    var to = new MailAddress(toEmailAddress, "User");
 
                     var smtp = new SmtpClient
                     {

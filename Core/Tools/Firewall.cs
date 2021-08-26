@@ -1,8 +1,8 @@
-﻿using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Exceptions;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Core.Models.UserInformations;
-using GamingCommunityApi.Core.Operators;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Operators;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Core.Tools
+namespace FireplaceApi.Core.Tools
 {
     public class Firewall
     {

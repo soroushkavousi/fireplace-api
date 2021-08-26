@@ -4,11 +4,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Models.UserInformations;
-using GamingCommunityApi.Core.ValueObjects;
-using GamingCommunityApi.Core.Enums;
+using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.ValueObjects;
+using FireplaceApi.Core.Enums;
 
-namespace GamingCommunityApi.Core.Interfaces.IRepositories
+namespace FireplaceApi.Core.Interfaces.IRepositories
 {
     public interface IUserRepository
     {

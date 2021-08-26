@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Core.Tools.NewtonsoftSerializer
+namespace FireplaceApi.Core.Tools.NewtonsoftSerializer
 {
     public class CoreContractResolver : DefaultContractResolver
     {

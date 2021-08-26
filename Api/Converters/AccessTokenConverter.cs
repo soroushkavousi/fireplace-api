@@ -7,11 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GamingCommunityApi.Api.Controllers.Parameters.AccessTokenParameters;
-using GamingCommunityApi.Api.Controllers.Parameters.UserParameters;
-using GamingCommunityApi.Core.Models.UserInformations;
+using FireplaceApi.Api.Controllers.Parameters.AccessTokenParameters;
+using FireplaceApi.Api.Controllers.Parameters.UserParameters;
+using FireplaceApi.Core.Models.UserInformations;
 
-namespace GamingCommunityApi.Api.Converters
+namespace FireplaceApi.Api.Converters
 {
     public class AccessTokenConverter
     {

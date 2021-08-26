@@ -6,14 +6,14 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Models.UserInformations;
-using GamingCommunityApi.Core.Interfaces.IRepositories;
-using GamingCommunityApi.Core.Operators;
-using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Tools;
-using GamingCommunityApi.Core.Exceptions;
+using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Interfaces.IRepositories;
+using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Tools;
+using FireplaceApi.Core.Exceptions;
 
-namespace GamingCommunityApi.Core.Validators
+namespace FireplaceApi.Core.Validators
 {
     public class AccessTokenValidator : ApiValidator
     {

@@ -10,9 +10,9 @@ using System.Net;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using GamingCommunityApi.Core.Enums;
+using FireplaceApi.Core.Enums;
 
-namespace GamingCommunityApi.Infrastructure.Entities
+namespace FireplaceApi.Infrastructure.Entities
 {
     public class ErrorEntity
     {

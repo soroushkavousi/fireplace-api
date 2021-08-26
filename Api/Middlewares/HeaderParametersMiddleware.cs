@@ -1,17 +1,17 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using GamingCommunityApi.Api.Controllers.Parameters;
-using GamingCommunityApi.Api.Extensions;
-using GamingCommunityApi.Api.Interfaces;
-using GamingCommunityApi.Api.Tools;
+using FireplaceApi.Api.Controllers.Parameters;
+using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Interfaces;
+using FireplaceApi.Api.Tools;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Extensions;
+using FireplaceApi.Core.Extensions;
 
-namespace GamingCommunityApi.Api.Middlewares
+namespace FireplaceApi.Api.Middlewares
 {
     public class HeaderParametersMiddleware
     {

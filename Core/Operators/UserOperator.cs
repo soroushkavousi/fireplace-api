@@ -1,25 +1,25 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
-using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Exceptions;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Core.Models;
-using GamingCommunityApi.Core.Models.UserInformations;
-using GamingCommunityApi.Core.Validators;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Validators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Net;
-using GamingCommunityApi.Core.ValueObjects;
-using GamingCommunityApi.Core.Interfaces.IRepositories;
-using GamingCommunityApi.Core.Interfaces.IGateways;
+using FireplaceApi.Core.ValueObjects;
+using FireplaceApi.Core.Interfaces.IRepositories;
+using FireplaceApi.Core.Interfaces.IGateways;
 using Microsoft.AspNetCore.WebUtilities;
-using GamingCommunityApi.Core.Tools;
+using FireplaceApi.Core.Tools;
 
-namespace GamingCommunityApi.Core.Operators
+namespace FireplaceApi.Core.Operators
 {
     public class UserOperator
     {

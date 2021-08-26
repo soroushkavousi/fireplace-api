@@ -1,5 +1,5 @@
 ﻿using Microsoft.OpenApi.Any;
-using GamingCommunityApi.Api.Tools.Swagger.SchemaFilters;
+using FireplaceApi.Api.Tools.Swagger.SchemaFilters;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
@@ -7,9 +7,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Extensions;
+using FireplaceApi.Core.Extensions;
 
-namespace GamingCommunityApi.Api.Controllers.Parameters.ErrorParameters
+namespace FireplaceApi.Api.Controllers.Parameters.ErrorParameters
 {
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
     public class ApiExceptionErrorDto

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Core.Models;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Models;
 
-namespace GamingCommunityApi.Core.Exceptions
+namespace FireplaceApi.Core.Exceptions
 {
     public class ApiException : Exception
     {

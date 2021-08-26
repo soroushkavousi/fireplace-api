@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using GamingCommunityApi.Api.Controllers.Parameters.ErrorParameters;
-using GamingCommunityApi.Api.Converters;
-using GamingCommunityApi.Core.Operators;
-using GamingCommunityApi.Core.Exceptions;
-using GamingCommunityApi.Core.Models;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Core.Enums;
+using FireplaceApi.Api.Controllers.Parameters.ErrorParameters;
+using FireplaceApi.Api.Converters;
+using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Enums;
 
-namespace GamingCommunityApi.Api.Middlewares
+namespace FireplaceApi.Api.Middlewares
 {
     public class ExceptionMiddleware
     {

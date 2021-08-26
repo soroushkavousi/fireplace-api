@@ -7,20 +7,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using GamingCommunityApi.Api.Controllers.Parameters;
-using GamingCommunityApi.Api.Controllers.Parameters.UserParameters;
-using GamingCommunityApi.Api.Extensions;
-using GamingCommunityApi.Api.Controllers.Parameters.ErrorParameters;
+using FireplaceApi.Api.Controllers.Parameters;
+using FireplaceApi.Api.Controllers.Parameters.UserParameters;
+using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Controllers.Parameters.ErrorParameters;
 using Microsoft.AspNetCore.JsonPatch;
-using GamingCommunityApi.Api.Converters;
+using FireplaceApi.Api.Converters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Authorization;
-using GamingCommunityApi.Core.Services;
-using GamingCommunityApi.Core.ValueObjects;
-using GamingCommunityApi.Core.Models.UserInformations;
-using GamingCommunityApi.Core.Extensions;
+using FireplaceApi.Core.Services;
+using FireplaceApi.Core.ValueObjects;
+using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Extensions;
 
-namespace GamingCommunityApi.Api.Controllers
+namespace FireplaceApi.Api.Controllers
 {
     [ApiController]
     [ApiVersion("0.1")]

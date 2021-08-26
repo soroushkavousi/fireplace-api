@@ -1,20 +1,20 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
-using GamingCommunityApi.Api.Extensions;
-using GamingCommunityApi.Api.Interfaces;
+using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Interfaces;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using GamingCommunityApi.Api.Tools.Swagger.SchemaFilters;
-using GamingCommunityApi.Core.Exceptions;
-using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Extensions;
+using FireplaceApi.Api.Tools.Swagger.SchemaFilters;
+using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
 
-namespace GamingCommunityApi.Api.Tools.Swagger.OperationFilters
+namespace FireplaceApi.Api.Tools.Swagger.OperationFilters
 {
     public class ActionResponseExampleProvider : IOperationFilter
     {

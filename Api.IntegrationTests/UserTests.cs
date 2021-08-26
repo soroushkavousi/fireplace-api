@@ -2,17 +2,17 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using GamingCommunityApi.Api.IntegrationTests.Tools;
-using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Core.Models;
+using FireplaceApi.Api.IntegrationTests.Tools;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace GamingCommunityApi.Api.IntegrationTests
+namespace FireplaceApi.Api.IntegrationTests
 {
     [Collection("Api Integration Test Collection")]
     public class UserTests

@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using GamingCommunityApi.Infrastructure.Entities.UserInformationEntities;
-using GamingCommunityApi.Core.ValueObjects;
+using FireplaceApi.Infrastructure.Entities.UserInformationEntities;
+using FireplaceApi.Core.ValueObjects;
 
-namespace GamingCommunityApi.Infrastructure.Entities
+namespace FireplaceApi.Infrastructure.Entities
 {
-    public class GamingCommunityApiContext : DbContext
+    public class FireplaceApiContext : DbContext
     {
         public DbSet<AccessTokenEntity> AccessTokenEntities { get; set; }
         public DbSet<EmailEntity> EmailEntities { get; set; }
@@ -16,7 +16,7 @@ namespace GamingCommunityApi.Infrastructure.Entities
         public DbSet<FileEntity> FileEntities { get; set; }
         public DbSet<GlobalEntity> GlobalEntities { get; set; }
 
-        public GamingCommunityApiContext(DbContextOptions<GamingCommunityApiContext> options) 
+        public FireplaceApiContext(DbContextOptions<FireplaceApiContext> options) 
             : base(options)
         {
             //ChangeTracker.LazyLoadingEnabled = false;
@@ -24,7 +24,7 @@ namespace GamingCommunityApi.Infrastructure.Entities
             ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
-        public GamingCommunityApiContext(string connectionString)
+        public FireplaceApiContext(string connectionString)
             : base(CreateOptionsFromConnectionString(connectionString))
         {
 
@@ -59,9 +59,9 @@ namespace GamingCommunityApi.Infrastructure.Entities
             }
         }
 
-        public static DbContextOptions<GamingCommunityApiContext> CreateOptionsFromConnectionString(string connectionString)
+        public static DbContextOptions<FireplaceApiContext> CreateOptionsFromConnectionString(string connectionString)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<GamingCommunityApiContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<FireplaceApiContext>();
             optionsBuilder.UseNpgsql(connectionString);
             return optionsBuilder.Options;
         }

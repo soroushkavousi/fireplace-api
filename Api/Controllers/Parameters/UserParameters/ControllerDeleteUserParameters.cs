@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Api.Controllers.Parameters.UserParameters
+namespace FireplaceApi.Api.Controllers.Parameters.UserParameters
 {
     public class ControllerDeleteUserInputRouteParameters
     {

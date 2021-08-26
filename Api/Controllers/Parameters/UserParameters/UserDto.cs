@@ -1,20 +1,20 @@
 ﻿using Microsoft.OpenApi.Any;
-using GamingCommunityApi.Api.Controllers.Parameters.EmailParameters;
-using GamingCommunityApi.Api.Extensions;
-using GamingCommunityApi.Api.Interfaces;
-using GamingCommunityApi.Api.Tools.Swagger;
-using GamingCommunityApi.Api.Tools.Swagger.SchemaFilters;
+using FireplaceApi.Api.Controllers.Parameters.EmailParameters;
+using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Interfaces;
+using FireplaceApi.Api.Tools.Swagger;
+using FireplaceApi.Api.Tools.Swagger.SchemaFilters;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using GamingCommunityApi.Api.Controllers.Parameters.SessionParameters;
-using GamingCommunityApi.Api.Controllers.Parameters.AccessTokenParameters;
-using GamingCommunityApi.Core.Extensions;
+using FireplaceApi.Api.Controllers.Parameters.SessionParameters;
+using FireplaceApi.Api.Controllers.Parameters.AccessTokenParameters;
+using FireplaceApi.Core.Extensions;
 
-namespace GamingCommunityApi.Api.Controllers.Parameters.UserParameters
+namespace FireplaceApi.Api.Controllers.Parameters.UserParameters
 {
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
     public class UserDto

@@ -1,16 +1,16 @@
 ﻿using Microsoft.Extensions.Logging;
-using GamingCommunityApi.Core.Models.UserInformations;
-using GamingCommunityApi.Core.Validators;
+using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Validators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Operators;
+using FireplaceApi.Core.Operators;
 using System.Net;
-using GamingCommunityApi.Core.ValueObjects;
+using FireplaceApi.Core.ValueObjects;
 
-namespace GamingCommunityApi.Core.Services
+namespace FireplaceApi.Core.Services
 {
     public class UserService
     {

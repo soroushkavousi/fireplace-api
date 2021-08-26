@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Core.Extensions
+namespace FireplaceApi.Core.Extensions
 {
     public static class DictionaryExtensions
     {

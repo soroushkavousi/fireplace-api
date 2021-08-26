@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Infrastructure.Entities
+namespace FireplaceApi.Infrastructure.Entities
 {
     public class FileEntity
     {

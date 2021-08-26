@@ -1,23 +1,23 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
-using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Exceptions;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Core.Models;
-using GamingCommunityApi.Core.Models.UserInformations;
-using GamingCommunityApi.Core.Services;
-using GamingCommunityApi.Core.ValueObjects;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Services;
+using FireplaceApi.Core.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Operators;
-using GamingCommunityApi.Core.Tools;
+using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.Tools;
 
-namespace GamingCommunityApi.Core.Validators
+namespace FireplaceApi.Core.Validators
 {
     public class UserValidator : ApiValidator
     {

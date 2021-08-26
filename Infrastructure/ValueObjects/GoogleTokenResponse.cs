@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GamingCommunityApi.Infrastructure.ValueObjects
+namespace FireplaceApi.Infrastructure.ValueObjects
 {
     public class GoogleTokenResponse
     {

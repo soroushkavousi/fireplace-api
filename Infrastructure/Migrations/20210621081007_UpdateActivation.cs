@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace GamingCommunityApi.Infrastructure.Migrations
+namespace FireplaceApi.Infrastructure.Migrations
 {
     public partial class UpdateActivation : Migration
     {

@@ -2,15 +2,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using GamingCommunityApi.Api.Controllers.Parameters.FileParameters;
-using GamingCommunityApi.Api.Tools;
+using FireplaceApi.Api.Controllers.Parameters.FileParameters;
+using FireplaceApi.Api.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Models;
+using FireplaceApi.Core.Models;
 
-namespace GamingCommunityApi.Api.Converters
+namespace FireplaceApi.Api.Converters
 {
     public class FileConverter
     {

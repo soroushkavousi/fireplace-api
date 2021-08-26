@@ -6,17 +6,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using GamingCommunityApi.Api.Converters;
-using GamingCommunityApi.Core.Services;
-using GamingCommunityApi.Core.Operators;
-using GamingCommunityApi.Infrastructure.Repositories;
-using GamingCommunityApi.Core.Interfaces.IRepositories;
-using GamingCommunityApi.Core.Validators;
-using GamingCommunityApi.Infrastructure.Gateways;
-using GamingCommunityApi.Core.Interfaces.IGateways;
-using GamingCommunityApi.Core.Tools;
+using FireplaceApi.Api.Converters;
+using FireplaceApi.Core.Services;
+using FireplaceApi.Core.Operators;
+using FireplaceApi.Infrastructure.Repositories;
+using FireplaceApi.Core.Interfaces.IRepositories;
+using FireplaceApi.Core.Validators;
+using FireplaceApi.Infrastructure.Gateways;
+using FireplaceApi.Core.Interfaces.IGateways;
+using FireplaceApi.Core.Tools;
 
-namespace GamingCommunityApi.Api.Extensions
+namespace FireplaceApi.Api.Extensions
 {
     public static class AspNetCoreExtensions
     {

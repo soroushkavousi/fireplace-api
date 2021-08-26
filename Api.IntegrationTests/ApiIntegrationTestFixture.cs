@@ -1,10 +1,10 @@
-﻿using GamingCommunityApi.Api.IntegrationTests.Tools;
-using GamingCommunityApi.Api.Tools;
-using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Extensions;
-using GamingCommunityApi.Core.Models;
-using GamingCommunityApi.Core.Operators;
-using GamingCommunityApi.Infrastructure.Entities;
+﻿using FireplaceApi.Api.IntegrationTests.Tools;
+using FireplaceApi.Api.Tools;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Operators;
+using FireplaceApi.Infrastructure.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace GamingCommunityApi.Api.IntegrationTests
+namespace FireplaceApi.Api.IntegrationTests
 {
     [CollectionDefinition("Api Integration Test Collection")]
     public class DatabaseCollection : ICollectionFixture<ApiIntegrationTestFixture> { }
@@ -34,7 +34,7 @@ namespace GamingCommunityApi.Api.IntegrationTests
     {
         private readonly ILogger<ApiIntegrationTestFixture> _logger;
         private readonly IConfiguration _configuration;
-        private readonly GamingCommunityApiContext _gamingCommunityApiContext;
+        private readonly FireplaceApiContext _gamingCommunityApiContext;
         private readonly ErrorOperator _errorOperator;
 
         public WebApplicationFactory<Startup> ApiFactory;
@@ -71,7 +71,7 @@ namespace GamingCommunityApi.Api.IntegrationTests
             ServiceProvider = scope.ServiceProvider;
             _logger = ServiceProvider.GetRequiredService<ILogger<ApiIntegrationTestFixture>>();
             _configuration = ServiceProvider.GetRequiredService<IConfiguration>();
-            _gamingCommunityApiContext = ServiceProvider.GetRequiredService<GamingCommunityApiContext>();
+            _gamingCommunityApiContext = ServiceProvider.GetRequiredService<FireplaceApiContext>();
             _errorOperator = ServiceProvider.GetRequiredService<ErrorOperator>();
 
             ClearTestDatabase();
@@ -84,12 +84,12 @@ namespace GamingCommunityApi.Api.IntegrationTests
 
         private void InitTestDatabase()
         {
-            //var optionsBuilder = new DbContextOptionsBuilder<GamingCommunityApiContext>();
+            //var optionsBuilder = new DbContextOptionsBuilder<FireplaceApiContext>();
             //optionsBuilder.UseNpgsql(_configuration.GetConnectionString("MainDatabase"));
-            var mainGamingCommunityApiContext = new GamingCommunityApiContext(_configuration.GetConnectionString("MainDatabase"));
+            var mainFireplaceApiContext = new FireplaceApiContext(_configuration.GetConnectionString("MainDatabase"));
 
-            var errorEntities = mainGamingCommunityApiContext.ErrorEntities.AsNoTracking().ToList();
-            var globalEntities = mainGamingCommunityApiContext.GlobalEntities.AsNoTracking().ToList();
+            var errorEntities = mainFireplaceApiContext.ErrorEntities.AsNoTracking().ToList();
+            var globalEntities = mainFireplaceApiContext.GlobalEntities.AsNoTracking().ToList();
 
             _gamingCommunityApiContext.ErrorEntities.AddRange(errorEntities);
             _gamingCommunityApiContext.GlobalEntities.AddRange(globalEntities);
@@ -102,7 +102,7 @@ namespace GamingCommunityApi.Api.IntegrationTests
         {
             var descriptor = services.SingleOrDefault(
                             d => d.ServiceType ==
-                                typeof(DbContextOptions<GamingCommunityApiContext>));
+                                typeof(DbContextOptions<FireplaceApiContext>));
 
             if (descriptor != null)
             {
@@ -111,7 +111,7 @@ namespace GamingCommunityApi.Api.IntegrationTests
 
             var sp = services.BuildServiceProvider();
             var configuration = sp.GetRequiredService<IConfiguration>();
-            services.AddDbContext<GamingCommunityApiContext>(
+            services.AddDbContext<FireplaceApiContext>(
                 optionsBuilder => optionsBuilder.UseNpgsql(configuration.GetConnectionString("TestDatabase"))
             );
         }

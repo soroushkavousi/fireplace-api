@@ -1,15 +1,15 @@
 ﻿using Microsoft.OpenApi.Any;
-using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.Exceptions;
-using GamingCommunityApi.Core.Tools;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using GamingCommunityApi.Core.Extensions;
+using FireplaceApi.Core.Extensions;
 
-namespace GamingCommunityApi.Api.Extensions
+namespace FireplaceApi.Api.Extensions
 {
     public static class TypeExtensions
     {

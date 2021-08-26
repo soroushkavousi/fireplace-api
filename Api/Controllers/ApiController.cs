@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using GamingCommunityApi.Api.Interfaces;
-using GamingCommunityApi.Api.Tools;
+using FireplaceApi.Api.Interfaces;
+using FireplaceApi.Api.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Api.Controllers
+namespace FireplaceApi.Api.Controllers
 {
     public class ApiController : ControllerBase
     {

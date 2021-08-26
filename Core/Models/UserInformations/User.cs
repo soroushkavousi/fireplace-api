@@ -1,14 +1,14 @@
-﻿using GamingCommunityApi.Core.Enums;
-using GamingCommunityApi.Core.ValueObjects;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using GamingCommunityApi.Core.Extensions;
+using FireplaceApi.Core.Extensions;
 
-namespace GamingCommunityApi.Core.Models.UserInformations
+namespace FireplaceApi.Core.Models.UserInformations
 {
     public class User
     {

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GamingCommunityApi.Api.Tools.AspDotNetCore
+namespace FireplaceApi.Api.Tools.AspDotNetCore
 {
     public class NullObjectModelValidator : IObjectModelValidator
     {
