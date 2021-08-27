@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
-    public class FileEntity
+    public class FileEntity : BaseEntity
     {
         public string Name { get; set; }
         public string RealName { get; set; }
@@ -19,10 +19,10 @@ namespace FireplaceApi.Infrastructure.Entities
         public string RelativePhysicalPath { get; set; }
         public long? Id { get; set; }
 
-        private FileEntity() { }
+        private FileEntity() : base() { }
 
         public FileEntity(string name, string realName, string relativeUri, 
-            string relativePhysicalPath, long? id = null)
+            string relativePhysicalPath, long? id = null) : base()
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             RealName = realName ?? throw new ArgumentNullException(nameof(realName));

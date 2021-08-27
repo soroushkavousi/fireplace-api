@@ -12,16 +12,16 @@ using FireplaceApi.Core.ValueObjects;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
-    public class GlobalEntity
+    public class GlobalEntity : BaseEntity
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
         [Column("Values", TypeName = "jsonb")]
         public GlobalValues Values { get; set; }
 
-        private GlobalEntity() { }
+        private GlobalEntity() : base() { }
 
-        public GlobalEntity(int id, GlobalValues values)
+        public GlobalEntity(int id, GlobalValues values) : base()
         {
             Id = id;
             Values = values ?? throw new ArgumentNullException(nameof(values));

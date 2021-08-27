@@ -14,7 +14,7 @@ using FireplaceApi.Core.Enums;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
-    public class ErrorEntity
+    public class ErrorEntity : BaseEntity
     {
         [Column(Order = 1)]
         public string Name { get; set; }
@@ -28,10 +28,10 @@ namespace FireplaceApi.Infrastructure.Entities
         [Column(Order = 0)]
         public int? Id { get; set; }
 
-        private ErrorEntity() { }
+        private ErrorEntity() : base() { }
 
         public ErrorEntity(string name, int code, 
-            string clientMessage, int httpStatusCode, int? id = null)
+            string clientMessage, int httpStatusCode, int? id = null) : base()
         {
             Name = name ?? throw new ArgumentNullException(nameof(clientMessage));
             Code = code;

@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
 {
-    public class AccessTokenEntity
+    public class AccessTokenEntity : BaseEntity
     {
         public long UserEntityId { get; set; }
         public string Value { get; set; }
         public long? Id { get; set; }
         public UserEntity UserEntity { get; set; }
 
-        private AccessTokenEntity() { }
+        private AccessTokenEntity() : base() { }
 
         public AccessTokenEntity(long userEntityId, string value,
-             long? id = null, UserEntity userEntity = null)
+             long? id = null, UserEntity userEntity = null) : base()
         {
             UserEntityId = userEntityId;
             Value = value ?? throw new ArgumentNullException(nameof(value));

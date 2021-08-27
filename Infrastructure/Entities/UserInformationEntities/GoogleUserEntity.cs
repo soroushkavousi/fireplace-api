@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
 {
-    public class GoogleUserEntity
+    public class GoogleUserEntity : BaseEntity
     {
         public long UserEntityId { get; set; }
         public string Code { get; set; }
@@ -35,7 +35,7 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         public long? Id { get; set; }
         public UserEntity UserEntity { get; set; }
 
-        private GoogleUserEntity() { }
+        private GoogleUserEntity() : base() { }
 
         public GoogleUserEntity(long userEntityId, string code, 
             string accessToken, string tokenType, 
@@ -46,7 +46,7 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
             string firstName, string lastName, string locale, 
             string pictureUrl, string state, string authUser, 
             string prompt, string redirectToUserUrl, long? id = null, 
-            UserEntity userEntity = null)
+            UserEntity userEntity = null) : base()
         {
             UserEntityId = userEntityId;
             Code = code ?? throw new ArgumentNullException(nameof(code));

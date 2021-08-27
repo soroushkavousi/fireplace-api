@@ -2,6 +2,10 @@
 using Microsoft.Extensions.Configuration;
 using FireplaceApi.Infrastructure.Entities.UserInformationEntities;
 using FireplaceApi.Core.ValueObjects;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Linq;
+using System;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -49,6 +53,21 @@ namespace FireplaceApi.Infrastructure.Entities
             modelBuilder.ApplyConfiguration(new ErrorEntityConfiguration());
             modelBuilder.ApplyConfiguration(new FileEntityConfiguration());
             modelBuilder.ApplyConfiguration(new GlobalEntityConfiguration());
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
+            CancellationToken cancellationToken = default)
+        {
+            var EditedEntities = ChangeTracker.Entries()
+                .Where(E => E.State == EntityState.Modified)
+                .ToList();
+
+            EditedEntities.ForEach(E =>
+            {
+                E.Property("ModifiedDate").CurrentValue = DateTime.UtcNow;
+            });
+
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
         public void DetachAllEntries()

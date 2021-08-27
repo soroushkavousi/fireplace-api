@@ -10,7 +10,7 @@ using System.Text.Json.Serialization;
 
 namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
 {
-    public class UserEntity
+    public class UserEntity : BaseEntity
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -23,12 +23,12 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         public List<AccessTokenEntity> AccessTokenEntities { get; set; }
         public List<SessionEntity> SessionEntities { get; set; }
 
-        private UserEntity() { }
+        private UserEntity() : base() { }
 
         public UserEntity(string firstName, string lastName,
             string username, string state, string passwordHash = null, long? id = null,
             EmailEntity emailEntity = null, GoogleUserEntity googleUserEntity = null,
-            List<AccessTokenEntity> accessTokenEntities = null, List<SessionEntity> sessionEntities = null)
+            List<AccessTokenEntity> accessTokenEntities = null, List<SessionEntity> sessionEntities = null) : base()
         {
             FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
             LastName = lastName ?? throw new ArgumentNullException(nameof(lastName));

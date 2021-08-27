@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
 {
-    public class SessionEntity
+    public class SessionEntity : BaseEntity
     {
         public long UserEntityId { get; set; }
         public string IpAddress { get; set; }
@@ -18,10 +18,10 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         public long? Id { get; set; }
         public UserEntity UserEntity { get; set; }
 
-        private SessionEntity() { }
+        private SessionEntity() : base() { }
 
         public SessionEntity(long userEntityId, string ipAddress, string state,
-            long? id = null, UserEntity userEntity = null)
+            long? id = null, UserEntity userEntity = null) : base()
         {
             UserEntityId = userEntityId;
             IpAddress = ipAddress ?? throw new ArgumentNullException(nameof(ipAddress));

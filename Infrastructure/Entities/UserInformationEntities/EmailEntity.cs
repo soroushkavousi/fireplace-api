@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
 {
-    public class EmailEntity
+    public class EmailEntity : BaseEntity
     {
         public long UserEntityId { get; set; }
         public string Address { get; set; }
@@ -18,10 +18,10 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         public long? Id { get; set; }
         public UserEntity UserEntity { get; set; }
 
-        private EmailEntity() { }
+        private EmailEntity() : base() { }
 
         public EmailEntity(long userEntityId, string address, string activationStatus,
-            int? activationCode = null, long? id = null, UserEntity userEntity = null)
+            int? activationCode = null, long? id = null, UserEntity userEntity = null) : base()
         {
             UserEntityId = userEntityId;
             Address = address ?? throw new ArgumentNullException(nameof(address));
