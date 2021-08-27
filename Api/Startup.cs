@@ -158,7 +158,7 @@ namespace FireplaceApi.Api
                 options.SuppressMapClientErrors = true;
             });
 
-            //var gamingCommunityApiContext = services.BuildServiceProvider()
+            //var fireplaceApiContext = services.BuildServiceProvider()
             //           .GetService<FireplaceApiContext>();
 
             //services.AddAuthenticationCore().AddGoogle();

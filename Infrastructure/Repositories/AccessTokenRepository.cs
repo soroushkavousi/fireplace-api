@@ -22,18 +22,18 @@ namespace FireplaceApi.Infrastructure.Repositories
     {
         private readonly ILogger<AccessTokenRepository> _logger;
         private readonly IConfiguration _configuration;
-        private readonly FireplaceApiContext _gamingCommunityApiContext;
+        private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<AccessTokenEntity> _accessTokenEntities;
         private readonly AccessTokenConverter _accessTokenConverter;
 
         public AccessTokenRepository(ILogger<AccessTokenRepository> logger, IConfiguration configuration, 
-            FireplaceApiContext gamingCommunityApiContext, AccessTokenConverter accessTokenConverter
+            FireplaceApiContext fireplaceApiContext, AccessTokenConverter accessTokenConverter
             )
         {
             _logger = logger;
             _configuration = configuration;
-            _gamingCommunityApiContext = gamingCommunityApiContext;
-            _accessTokenEntities = gamingCommunityApiContext.AccessTokenEntities;
+            _fireplaceApiContext = fireplaceApiContext;
+            _accessTokenEntities = fireplaceApiContext.AccessTokenEntities;
             _accessTokenConverter = accessTokenConverter;
         }
 
@@ -80,8 +80,8 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             var accessTokenEntity = new AccessTokenEntity(userId, value);
             _accessTokenEntities.Add(accessTokenEntity);
-            await _gamingCommunityApiContext.SaveChangesAsync();
-            _gamingCommunityApiContext.DetachAllEntries();
+            await _fireplaceApiContext.SaveChangesAsync();
+            _fireplaceApiContext.DetachAllEntries();
             return _accessTokenConverter.ConvertToModel(accessTokenEntity);
         }
 
@@ -91,8 +91,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _accessTokenEntities.Update(accessTokenEntity);
             try
             {
-                await _gamingCommunityApiContext.SaveChangesAsync();
-                _gamingCommunityApiContext.DetachAllEntries();
+                await _fireplaceApiContext.SaveChangesAsync();
+                _fireplaceApiContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -109,8 +109,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _accessTokenEntities.Remove(accessTokenEntity);
-            await _gamingCommunityApiContext.SaveChangesAsync();
-            _gamingCommunityApiContext.DetachAllEntries();
+            await _fireplaceApiContext.SaveChangesAsync();
+            _fireplaceApiContext.DetachAllEntries();
         }
 
         public async Task<bool> DoesAccessTokenIdExistAsync(long id)

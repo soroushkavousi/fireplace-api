@@ -21,18 +21,18 @@ namespace FireplaceApi.Infrastructure.Repositories
     {
         private readonly ILogger<ErrorRepository> _logger;
         private readonly IConfiguration _configuration;
-        private readonly FireplaceApiContext _gamingCommunityApiContext;
+        private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<ErrorEntity> _errorEntities;
         private readonly ErrorConverter _errorConverter;
 
         public ErrorRepository(ILogger<ErrorRepository> logger, IConfiguration configuration, 
-            FireplaceApiContext gamingCommunityApiContext, ErrorConverter errorConverter
+            FireplaceApiContext fireplaceApiContext, ErrorConverter errorConverter
             )
         {
             _logger = logger;
             _configuration = configuration;
-            _gamingCommunityApiContext = gamingCommunityApiContext;
-            _errorEntities = gamingCommunityApiContext.ErrorEntities;
+            _fireplaceApiContext = fireplaceApiContext;
+            _errorEntities = fireplaceApiContext.ErrorEntities;
             _errorConverter = errorConverter;
         }
 
@@ -77,8 +77,8 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             var errorEntity = new ErrorEntity(name.ToString(), code, clientMessage, httpStatusCode);
             _errorEntities.Add(errorEntity);
-            await _gamingCommunityApiContext.SaveChangesAsync();
-            _gamingCommunityApiContext.DetachAllEntries();
+            await _fireplaceApiContext.SaveChangesAsync();
+            _fireplaceApiContext.DetachAllEntries();
             return _errorConverter.ConvertToModel(errorEntity);
         }
 
@@ -88,8 +88,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _errorEntities.Update(errorEntity);
             try
             {
-                await _gamingCommunityApiContext.SaveChangesAsync();
-                _gamingCommunityApiContext.DetachAllEntries();
+                await _fireplaceApiContext.SaveChangesAsync();
+                _fireplaceApiContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -106,8 +106,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _errorEntities.Remove(errorEntity);
-            await _gamingCommunityApiContext.SaveChangesAsync();
-            _gamingCommunityApiContext.DetachAllEntries();
+            await _fireplaceApiContext.SaveChangesAsync();
+            _fireplaceApiContext.DetachAllEntries();
         }
 
         public async Task<bool> DoesErrorNameExistAsync(ErrorName name)

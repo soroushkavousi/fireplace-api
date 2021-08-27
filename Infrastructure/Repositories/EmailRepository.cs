@@ -23,18 +23,18 @@ namespace FireplaceApi.Infrastructure.Repositories
     {
         private readonly ILogger<EmailRepository> _logger;
         private readonly IConfiguration _configuration;
-        private readonly FireplaceApiContext _gamingCommunityApiContext;
+        private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<EmailEntity> _emailEntities;
         private readonly EmailConverter _emailConverter;
 
         public EmailRepository(ILogger<EmailRepository> logger, IConfiguration configuration, 
-            FireplaceApiContext gamingCommunityApiContext, EmailConverter emailConverter
+            FireplaceApiContext fireplaceApiContext, EmailConverter emailConverter
             )
         {
             _logger = logger;
             _configuration = configuration;
-            _gamingCommunityApiContext = gamingCommunityApiContext;
-            _emailEntities = gamingCommunityApiContext.EmailEntities;
+            _fireplaceApiContext = fireplaceApiContext;
+            _emailEntities = fireplaceApiContext.EmailEntities;
             _emailConverter = emailConverter;
         }
 
@@ -83,8 +83,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             var emailEntity = new EmailEntity(userId, address,
                 activation.Status.ToString(), activation.Code);
             _emailEntities.Add(emailEntity);
-            await _gamingCommunityApiContext.SaveChangesAsync();
-            _gamingCommunityApiContext.DetachAllEntries();
+            await _fireplaceApiContext.SaveChangesAsync();
+            _fireplaceApiContext.DetachAllEntries();
             return _emailConverter.ConvertToModel(emailEntity);
         }
 
@@ -94,8 +94,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _emailEntities.Update(emailEntity);
             try
             {
-                await _gamingCommunityApiContext.SaveChangesAsync();
-                _gamingCommunityApiContext.DetachAllEntries();
+                await _fireplaceApiContext.SaveChangesAsync();
+                _fireplaceApiContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -112,8 +112,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _emailEntities.Remove(emailEntity);
-            await _gamingCommunityApiContext.SaveChangesAsync();
-            _gamingCommunityApiContext.DetachAllEntries();
+            await _fireplaceApiContext.SaveChangesAsync();
+            _fireplaceApiContext.DetachAllEntries();
         }
 
         public async Task<bool> DoesEmailIdExistAsync(long id)

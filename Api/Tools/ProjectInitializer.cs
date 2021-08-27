@@ -34,8 +34,8 @@ namespace FireplaceApi.Api.Tools
         {
             var globalId = ReadFromConfig("GlobalId").ToEnum<GlobalId>();
             var connectionString = _config.GetConnectionString("MainDatabase");
-            var gamingCommunityApiContext = new FireplaceApiContext(connectionString);
-            GlobalOperator.GlobalValues = gamingCommunityApiContext.GlobalEntities
+            var fireplaceApiContext = new FireplaceApiContext(connectionString);
+            GlobalOperator.GlobalValues = fireplaceApiContext.GlobalEntities
                 .AsNoTracking().Where(e => e.Id == globalId.To<int>()).Single().Values;
         }
 

@@ -17,7 +17,7 @@ namespace FireplaceApi.Api.IntegrationTests.Tools
         private readonly ILogger<ClientPool> _logger;
         private readonly WebApplicationFactory<Startup> _apiFactory;
         private readonly WebApplicationFactoryClientOptions _clientOptions;
-        private readonly FireplaceApiContext _gamingCommunityApiContext;
+        private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly IUserRepository _userRepository;
         private readonly IEmailRepository _emailRepository;
         private readonly IAccessTokenRepository _accessTokenRepository;
@@ -37,7 +37,7 @@ namespace FireplaceApi.Api.IntegrationTests.Tools
                 HandleCookies = true,
                 MaxAutomaticRedirections = 7
             };
-            _gamingCommunityApiContext = testFixture.ServiceProvider.GetRequiredService<FireplaceApiContext>();
+            _fireplaceApiContext = testFixture.ServiceProvider.GetRequiredService<FireplaceApiContext>();
             _userRepository = testFixture.ServiceProvider.GetRequiredService<IUserRepository>();
             _emailRepository = testFixture.ServiceProvider.GetRequiredService<IEmailRepository>();
             _accessTokenRepository = testFixture.ServiceProvider.GetRequiredService<IAccessTokenRepository>();

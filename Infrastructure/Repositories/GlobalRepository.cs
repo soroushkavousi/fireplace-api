@@ -22,18 +22,18 @@ namespace FireplaceApi.Infrastructure.Repositories
     {
         private readonly ILogger<GlobalRepository> _logger;
         private readonly IConfiguration _configuration;
-        private readonly FireplaceApiContext _gamingCommunityApiContext;
+        private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<GlobalEntity> _globalEntities;
         private readonly GlobalConverter _globalConverter;
 
         public GlobalRepository(ILogger<GlobalRepository> logger, 
-            IConfiguration configuration, FireplaceApiContext gamingCommunityApiContext,
+            IConfiguration configuration, FireplaceApiContext fireplaceApiContext,
             GlobalConverter globalConverter)
         {
             _logger = logger;
             _configuration = configuration;
-            _gamingCommunityApiContext = gamingCommunityApiContext;
-            _globalEntities = gamingCommunityApiContext.GlobalEntities;
+            _fireplaceApiContext = fireplaceApiContext;
+            _globalEntities = fireplaceApiContext.GlobalEntities;
             _globalConverter = globalConverter;
         }
 
@@ -64,8 +64,8 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             var globalEntity = new GlobalEntity(globalId.To<int>(), globalValues);
             _globalEntities.Add(globalEntity);
-            await _gamingCommunityApiContext.SaveChangesAsync();
-            _gamingCommunityApiContext.DetachAllEntries();
+            await _fireplaceApiContext.SaveChangesAsync();
+            _fireplaceApiContext.DetachAllEntries();
             return _globalConverter.ConvertToModel(globalEntity);
         }
 
@@ -75,8 +75,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _globalEntities.Update(globalEntity);
             try
             {
-                await _gamingCommunityApiContext.SaveChangesAsync();
-                _gamingCommunityApiContext.DetachAllEntries();
+                await _fireplaceApiContext.SaveChangesAsync();
+                _fireplaceApiContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -93,8 +93,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _globalEntities.Remove(globalEntity);
-            await _gamingCommunityApiContext.SaveChangesAsync();
-            _gamingCommunityApiContext.DetachAllEntries();
+            await _fireplaceApiContext.SaveChangesAsync();
+            _fireplaceApiContext.DetachAllEntries();
         }
 
         public async Task<bool> DoesGlobalIdExistAsync(GlobalId globalId)

@@ -23,18 +23,18 @@ namespace FireplaceApi.Infrastructure.Repositories
     {
         private readonly ILogger<GoogleUserRepository> _logger;
         private readonly IConfiguration _configuration;
-        private readonly FireplaceApiContext _gamingCommunityApiContext;
+        private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<GoogleUserEntity> _googleUserEntities;
         private readonly GoogleUserConverter _googleUserConverter;
 
         public GoogleUserRepository(ILogger<GoogleUserRepository> logger, IConfiguration configuration, 
-            FireplaceApiContext gamingCommunityApiContext, GoogleUserConverter googleUserConverter
+            FireplaceApiContext fireplaceApiContext, GoogleUserConverter googleUserConverter
             )
         {
             _logger = logger;
             _configuration = configuration;
-            _gamingCommunityApiContext = gamingCommunityApiContext;
-            _googleUserEntities = gamingCommunityApiContext.GoogleUserEntities;
+            _fireplaceApiContext = fireplaceApiContext;
+            _googleUserEntities = fireplaceApiContext.GoogleUserEntities;
             _googleUserConverter = googleUserConverter;
         }
 
@@ -92,8 +92,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 fullName, firstName, lastName, locale, pictureUrl, state, authUser,
                 prompt, redirectToUserUrl);
             _googleUserEntities.Add(googleUserEntity);
-            await _gamingCommunityApiContext.SaveChangesAsync();
-            _gamingCommunityApiContext.DetachAllEntries();
+            await _fireplaceApiContext.SaveChangesAsync();
+            _fireplaceApiContext.DetachAllEntries();
             return _googleUserConverter.ConvertToModel(googleUserEntity);
         }
 
@@ -103,8 +103,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _googleUserEntities.Update(googleUserEntity);
             try
             {
-                await _gamingCommunityApiContext.SaveChangesAsync();
-                _gamingCommunityApiContext.DetachAllEntries();
+                await _fireplaceApiContext.SaveChangesAsync();
+                _fireplaceApiContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -121,8 +121,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _googleUserEntities.Remove(googleUserEntity);
-            await _gamingCommunityApiContext.SaveChangesAsync();
-            _gamingCommunityApiContext.DetachAllEntries();
+            await _fireplaceApiContext.SaveChangesAsync();
+            _fireplaceApiContext.DetachAllEntries();
         }
 
         public async Task<bool> DoesGoogleUserIdExistAsync(long id)

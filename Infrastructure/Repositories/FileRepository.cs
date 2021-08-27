@@ -21,18 +21,18 @@ namespace FireplaceApi.Infrastructure.Repositories
     {
         private readonly ILogger<FileRepository> _logger;
         private readonly IConfiguration _configuration;
-        private readonly FireplaceApiContext _gamingCommunityApiContext;
+        private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<FileEntity> _fileEntities;
         private readonly FileConverter _fileConverter;
         
 
         public FileRepository(ILogger<FileRepository> logger, IConfiguration configuration, 
-            FireplaceApiContext gamingCommunityApiContext, FileConverter fileConverter)
+            FireplaceApiContext fireplaceApiContext, FileConverter fileConverter)
         {
             _logger = logger;
             _configuration = configuration;
-            _gamingCommunityApiContext = gamingCommunityApiContext;
-            _fileEntities = gamingCommunityApiContext.FileEntities;
+            _fireplaceApiContext = fireplaceApiContext;
+            _fileEntities = fireplaceApiContext.FileEntities;
             _fileConverter = fileConverter;
             
         }
@@ -67,8 +67,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             var relativePhysicalPath = _fileConverter.GetRelativePhysicalPath(physicalPath);
             var fileEntity = new FileEntity(name, realName, relativeUri, relativePhysicalPath);
             _fileEntities.Add(fileEntity);
-            await _gamingCommunityApiContext.SaveChangesAsync();
-            _gamingCommunityApiContext.DetachAllEntries();
+            await _fireplaceApiContext.SaveChangesAsync();
+            _fireplaceApiContext.DetachAllEntries();
             return _fileConverter.ConvertToModel(fileEntity);
         }
 
@@ -78,8 +78,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _fileEntities.Update(fileEntity);
             try
             {
-                await _gamingCommunityApiContext.SaveChangesAsync();
-                _gamingCommunityApiContext.DetachAllEntries();
+                await _fireplaceApiContext.SaveChangesAsync();
+                _fireplaceApiContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -96,8 +96,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _fileEntities.Remove(fileEntity);
-            await _gamingCommunityApiContext.SaveChangesAsync();
-            _gamingCommunityApiContext.DetachAllEntries();
+            await _fireplaceApiContext.SaveChangesAsync();
+            _fireplaceApiContext.DetachAllEntries();
         }
 
         public async Task<bool> DoesFileIdExistAsync(long id)

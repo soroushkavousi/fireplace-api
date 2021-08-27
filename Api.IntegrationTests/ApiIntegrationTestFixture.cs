@@ -34,7 +34,7 @@ namespace FireplaceApi.Api.IntegrationTests
     {
         private readonly ILogger<ApiIntegrationTestFixture> _logger;
         private readonly IConfiguration _configuration;
-        private readonly FireplaceApiContext _gamingCommunityApiContext;
+        private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly ErrorOperator _errorOperator;
 
         public WebApplicationFactory<Startup> ApiFactory;
@@ -71,7 +71,7 @@ namespace FireplaceApi.Api.IntegrationTests
             ServiceProvider = scope.ServiceProvider;
             _logger = ServiceProvider.GetRequiredService<ILogger<ApiIntegrationTestFixture>>();
             _configuration = ServiceProvider.GetRequiredService<IConfiguration>();
-            _gamingCommunityApiContext = ServiceProvider.GetRequiredService<FireplaceApiContext>();
+            _fireplaceApiContext = ServiceProvider.GetRequiredService<FireplaceApiContext>();
             _errorOperator = ServiceProvider.GetRequiredService<ErrorOperator>();
 
             ClearTestDatabase();
@@ -91,10 +91,10 @@ namespace FireplaceApi.Api.IntegrationTests
             var errorEntities = mainFireplaceApiContext.ErrorEntities.AsNoTracking().ToList();
             var globalEntities = mainFireplaceApiContext.GlobalEntities.AsNoTracking().ToList();
 
-            _gamingCommunityApiContext.ErrorEntities.AddRange(errorEntities);
-            _gamingCommunityApiContext.GlobalEntities.AddRange(globalEntities);
-            _gamingCommunityApiContext.SaveChanges();
-            _gamingCommunityApiContext.DetachAllEntries();
+            _fireplaceApiContext.ErrorEntities.AddRange(errorEntities);
+            _fireplaceApiContext.GlobalEntities.AddRange(globalEntities);
+            _fireplaceApiContext.SaveChanges();
+            _fireplaceApiContext.DetachAllEntries();
         }
 
 
@@ -118,9 +118,9 @@ namespace FireplaceApi.Api.IntegrationTests
 
         public void ClearTestDatabase()
         {
-            _gamingCommunityApiContext.Database.ExecuteSqlRaw(@"TRUNCATE TABLE public.""GlobalEntities"" CASCADE;");
-            _gamingCommunityApiContext.Database.ExecuteSqlRaw(@"TRUNCATE TABLE public.""ErrorEntities"" CASCADE;");
-            _gamingCommunityApiContext.Database.ExecuteSqlRaw(@"TRUNCATE TABLE public.""UserEntities"" CASCADE;");
+            _fireplaceApiContext.Database.ExecuteSqlRaw(@"TRUNCATE TABLE public.""GlobalEntities"" CASCADE;");
+            _fireplaceApiContext.Database.ExecuteSqlRaw(@"TRUNCATE TABLE public.""ErrorEntities"" CASCADE;");
+            _fireplaceApiContext.Database.ExecuteSqlRaw(@"TRUNCATE TABLE public.""UserEntities"" CASCADE;");
         }
 
         public void Dispose()

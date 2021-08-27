@@ -57,7 +57,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\FireplaceApi.Core.csproj" />
-    <ProjectReference Include="..\Infrastructure\FireplaceApi.Infrastructure.csproj" />
+    <ProjectReference Include="..\Infrastructure\FireplaceApi.Infrastructure.csproj"  />
   </ItemGroup>
 
   <PropertyGroup>

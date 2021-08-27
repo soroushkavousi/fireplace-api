@@ -24,17 +24,17 @@ namespace FireplaceApi.Infrastructure.Repositories
     {
         private readonly ILogger<UserRepository> _logger;
         private readonly IConfiguration _configuration;
-        private readonly FireplaceApiContext _gamingCommunityApiContext;
+        private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<UserEntity> _userEntities;
         private readonly UserConverter _userConverter;
 
         public UserRepository(ILogger<UserRepository> logger, IConfiguration configuration, 
-                    FireplaceApiContext gamingCommunityApiContext, UserConverter userConverter)
+                    FireplaceApiContext fireplaceApiContext, UserConverter userConverter)
         {
             _logger = logger;
             _configuration = configuration;
-            _gamingCommunityApiContext = gamingCommunityApiContext;
-            _userEntities = gamingCommunityApiContext.UserEntities;
+            _fireplaceApiContext = fireplaceApiContext;
+            _userEntities = fireplaceApiContext.UserEntities;
             _userConverter = userConverter;
         }
 
@@ -97,8 +97,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             var userEntity = new UserEntity(firstName, lastName,
                 username, state.ToString(), password?.Hash);
             _userEntities.Add(userEntity);
-            await _gamingCommunityApiContext.SaveChangesAsync();
-            _gamingCommunityApiContext.DetachAllEntries();
+            await _fireplaceApiContext.SaveChangesAsync();
+            _fireplaceApiContext.DetachAllEntries();
             return _userConverter.ConvertToModel(userEntity);
         }
 
@@ -108,8 +108,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _userEntities.Update(userEntity);
             try
             {
-                await _gamingCommunityApiContext.SaveChangesAsync();
-                _gamingCommunityApiContext.DetachAllEntries();
+                await _fireplaceApiContext.SaveChangesAsync();
+                _fireplaceApiContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -126,8 +126,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _userEntities.Remove(userEntity);
-            await _gamingCommunityApiContext.SaveChangesAsync();
-            _gamingCommunityApiContext.DetachAllEntries();
+            await _fireplaceApiContext.SaveChangesAsync();
+            _fireplaceApiContext.DetachAllEntries();
         }
 
         public async Task<bool> DoesUserIdExistAsync(long id)

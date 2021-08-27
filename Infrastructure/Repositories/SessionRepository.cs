@@ -23,18 +23,18 @@ namespace FireplaceApi.Infrastructure.Repositories
     {
         private readonly ILogger<SessionRepository> _logger;
         private readonly IConfiguration _configuration;
-        private readonly FireplaceApiContext _gamingCommunityApiContext;
+        private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<SessionEntity> _sessionEntities;
         private readonly SessionConverter _sessionConverter;
 
         public SessionRepository(ILogger<SessionRepository> logger, IConfiguration configuration, 
-            FireplaceApiContext gamingCommunityApiContext, SessionConverter sessionConverter
+            FireplaceApiContext fireplaceApiContext, SessionConverter sessionConverter
             )
         {
             _logger = logger;
             _configuration = configuration;
-            _gamingCommunityApiContext = gamingCommunityApiContext;
-            _sessionEntities = gamingCommunityApiContext.SessionEntities;
+            _fireplaceApiContext = fireplaceApiContext;
+            _sessionEntities = fireplaceApiContext.SessionEntities;
             _sessionConverter = sessionConverter;
         }
 
@@ -92,8 +92,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             var sessionEntity = new SessionEntity(userId, ipAddress.ToString(),
                 state.ToString());
             _sessionEntities.Add(sessionEntity);
-            await _gamingCommunityApiContext.SaveChangesAsync();
-            _gamingCommunityApiContext.DetachAllEntries();
+            await _fireplaceApiContext.SaveChangesAsync();
+            _fireplaceApiContext.DetachAllEntries();
             return _sessionConverter.ConvertToModel(sessionEntity);
         }
 
@@ -103,8 +103,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _sessionEntities.Update(sessionEntity);
             try
             {
-                await _gamingCommunityApiContext.SaveChangesAsync();
-                _gamingCommunityApiContext.DetachAllEntries();
+                await _fireplaceApiContext.SaveChangesAsync();
+                _fireplaceApiContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -121,8 +121,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _sessionEntities.Remove(sessionEntity);
-            await _gamingCommunityApiContext.SaveChangesAsync();
-            _gamingCommunityApiContext.DetachAllEntries();
+            await _fireplaceApiContext.SaveChangesAsync();
+            _fireplaceApiContext.DetachAllEntries();
         }
 
         public async Task<bool> DoesSessionIdExistAsync(long id)
