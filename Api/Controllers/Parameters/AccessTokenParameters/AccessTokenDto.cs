@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FireplaceApi.Api.Controllers.Parameters.UserParameters;
 using FireplaceApi.Core.Extensions;
+using FireplaceApi.Api.Tools;
 
 namespace FireplaceApi.Api.Controllers.Parameters.AccessTokenParameters
 {
@@ -21,18 +22,22 @@ namespace FireplaceApi.Api.Controllers.Parameters.AccessTokenParameters
         public long UserId { get; set; }
         [Required]
         public string Value { get; set; }
+        [Required]
+        public DateTime CreationDate { get; set; }
         public UserDto User { get; set; }
 
         public static OpenApiObject PureAccessTokenExample1 { get; } = new OpenApiObject
         {
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(Value).ToSnakeCase()] = new OpenApiString("e207d1b29e9146a2b143cb1a6e3aaa26"),
+            [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(User).ToSnakeCase()] = new OpenApiNull(),
         };
         public static OpenApiObject PureAccessTokenExample2 { get; } = new OpenApiObject
         {
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(Value).ToSnakeCase()] = new OpenApiString("957b25e5ef5c4de68a135eafab380918"),
+            [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(User).ToSnakeCase()] = new OpenApiNull(),
         };
 
@@ -40,12 +45,14 @@ namespace FireplaceApi.Api.Controllers.Parameters.AccessTokenParameters
         {
             [nameof(UserId).ToSnakeCase()] = PureAccessTokenExample1[nameof(UserId).ToSnakeCase()],
             [nameof(Value).ToSnakeCase()] = PureAccessTokenExample1[nameof(Value).ToSnakeCase()],
+            [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(User).ToSnakeCase()] = UserDto.PureUserExample1,
         };
         public static OpenApiObject AccessTokenExample2 { get; } = new OpenApiObject
         {
             [nameof(UserId).ToSnakeCase()] = PureAccessTokenExample2[nameof(UserId).ToSnakeCase()],
             [nameof(Value).ToSnakeCase()] = PureAccessTokenExample2[nameof(Value).ToSnakeCase()],
+            [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(User).ToSnakeCase()] = UserDto.PureUserExample2,
         };
 
@@ -61,10 +68,12 @@ namespace FireplaceApi.Api.Controllers.Parameters.AccessTokenParameters
             PureAccessTokenExample2[nameof(UserId).ToSnakeCase()] = UserDto.PureUserExample1[nameof(UserDto.Id).ToSnakeCase()];
         }
 
-        public AccessTokenDto(long userId, string value, UserDto user)
+        public AccessTokenDto(long userId, string value,
+            DateTime creationDate, UserDto user)
         {
             UserId = userId;
             Value = value;
+            CreationDate = creationDate;
             User = user;
         }
     }

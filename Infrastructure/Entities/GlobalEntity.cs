@@ -21,13 +21,14 @@ namespace FireplaceApi.Infrastructure.Entities
 
         private GlobalEntity() : base() { }
 
-        public GlobalEntity(int id, GlobalValues values) : base()
+        public GlobalEntity(int id, GlobalValues values, DateTime? creationDate = null, 
+            DateTime? modifiedDate = null) : base(creationDate, modifiedDate)
         {
             Id = id;
             Values = values ?? throw new ArgumentNullException(nameof(values));
         }
 
-        public GlobalEntity PureCopy() => new GlobalEntity(Id, Values);
+        public GlobalEntity PureCopy() => new GlobalEntity(Id, Values, CreationDate, ModifiedDate);
 
         public void RemoveLoopReferencing()
         {

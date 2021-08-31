@@ -21,7 +21,8 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         private EmailEntity() : base() { }
 
         public EmailEntity(long userEntityId, string address, string activationStatus,
-            int? activationCode = null, long? id = null, UserEntity userEntity = null) : base()
+            DateTime? creationDate = null, DateTime? modifiedDate = null, int? activationCode = null, 
+            long? id = null, UserEntity userEntity = null) : base(creationDate, modifiedDate)
         {
             UserEntityId = userEntityId;
             Address = address ?? throw new ArgumentNullException(nameof(address));
@@ -32,7 +33,7 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         }
 
         public EmailEntity PureCopy() => new EmailEntity(UserEntityId, Address,
-            ActivationStatus, ActivationCode, Id, null);
+            ActivationStatus, CreationDate, ModifiedDate, ActivationCode, Id, null);
 
         public void RemoveLoopReferencing()
         {

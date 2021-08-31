@@ -22,7 +22,8 @@ namespace FireplaceApi.Infrastructure.Entities
         private FileEntity() : base() { }
 
         public FileEntity(string name, string realName, string relativeUri, 
-            string relativePhysicalPath, long? id = null) : base()
+            string relativePhysicalPath, DateTime? creationDate = null, 
+            DateTime? modifiedDate = null, long? id = null) : base(creationDate, modifiedDate)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             RealName = realName ?? throw new ArgumentNullException(nameof(realName));
@@ -32,7 +33,7 @@ namespace FireplaceApi.Infrastructure.Entities
         }
 
         public FileEntity PureCopy() => new FileEntity(Name, RealName, RelativeUri,
-            RelativePhysicalPath, Id);
+            RelativePhysicalPath, CreationDate, ModifiedDate, Id);
 
         public void RemoveLoopReferencing()
         {

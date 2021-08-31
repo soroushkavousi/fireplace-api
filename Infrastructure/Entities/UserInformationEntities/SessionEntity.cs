@@ -21,7 +21,8 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         private SessionEntity() : base() { }
 
         public SessionEntity(long userEntityId, string ipAddress, string state,
-            long? id = null, UserEntity userEntity = null) : base()
+            DateTime? creationDate = null, DateTime? modifiedDate = null, long? id = null, 
+            UserEntity userEntity = null) : base(creationDate, modifiedDate)
         {
             UserEntityId = userEntityId;
             IpAddress = ipAddress ?? throw new ArgumentNullException(nameof(ipAddress));
@@ -31,7 +32,7 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         }
 
         public SessionEntity PureCopy() => new SessionEntity(UserEntityId, IpAddress,
-            State, Id, null);
+            State, CreationDate, ModifiedDate, Id, null);
 
         public void RemoveLoopReferencing()
         {

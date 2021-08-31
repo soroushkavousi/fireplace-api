@@ -47,6 +47,7 @@ namespace FireplaceApi.Infrastructure.Converters
                 googleUser.GmailIssuedTimeInSeconds, googleUser.FullName, googleUser.FirstName, 
                 googleUser.LastName, googleUser.Locale, googleUser.PictureUrl, googleUser.State,
                 googleUser.AuthUser, googleUser.Prompt, googleUser.RedirectToUserUrl, 
+                googleUser.CreationDate, googleUser.ModifiedDate,
                 googleUser.Id, userEntity);
 
             return googleUserEntity;
@@ -70,7 +71,9 @@ namespace FireplaceApi.Infrastructure.Converters
                 googleUserEntity.GmailIssuedTimeInSeconds, googleUserEntity.FullName, 
                 googleUserEntity.FirstName, googleUserEntity.LastName, googleUserEntity.Locale, 
                 googleUserEntity.PictureUrl, googleUserEntity.State, googleUserEntity.AuthUser,
-                googleUserEntity.Prompt, googleUserEntity.RedirectToUserUrl, user);
+                googleUserEntity.Prompt, googleUserEntity.RedirectToUserUrl, 
+                googleUserEntity.CreationDate, googleUserEntity.ModifiedDate,
+                user);
 
             return googleUser;
         }

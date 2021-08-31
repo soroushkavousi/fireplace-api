@@ -31,7 +31,9 @@ namespace FireplaceApi.Infrastructure.Entities
         private ErrorEntity() : base() { }
 
         public ErrorEntity(string name, int code, 
-            string clientMessage, int httpStatusCode, int? id = null) : base()
+            string clientMessage, int httpStatusCode,
+            DateTime? creationDate = null, DateTime? modifiedDate = null, 
+            int? id = null) : base(creationDate, modifiedDate)
         {
             Name = name ?? throw new ArgumentNullException(nameof(clientMessage));
             Code = code;
@@ -41,7 +43,7 @@ namespace FireplaceApi.Infrastructure.Entities
         }
 
         public ErrorEntity PureCopy() => new ErrorEntity(Name, Code, ClientMessage,
-            HttpStatusCode, Id);
+            HttpStatusCode, CreationDate, ModifiedDate, Id);
 
         public void RemoveLoopReferencing()
         {

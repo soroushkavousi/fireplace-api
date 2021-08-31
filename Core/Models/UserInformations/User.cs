@@ -10,7 +10,7 @@ using FireplaceApi.Core.Extensions;
 
 namespace FireplaceApi.Core.Models.UserInformations
 {
-    public class User
+    public class User : BaseModel
     {
         public long Id { get; set; }
         public string FirstName { get; set; }
@@ -24,15 +24,17 @@ namespace FireplaceApi.Core.Models.UserInformations
         public List<Session> Sessions { get; set; }
 
         public User(long id, string firstName, string lastName,
-            string username, UserState state, Password password = null,
-            Email email = null, GoogleUser googleUser = null,
-            List<AccessToken> accessTokens = null, List<Session> sessions = null)
+            string username, UserState state, DateTime creationDate, 
+            DateTime? modifiedDate = null, Password password = null, Email email = null, 
+            GoogleUser googleUser = null, List<AccessToken> accessTokens = null, 
+            List<Session> sessions = null) : base(creationDate, modifiedDate)
         {
             Id = id;
             FirstName = firstName ?? throw new ArgumentNullException(nameof(username));
             LastName = lastName ?? throw new ArgumentNullException(nameof(username));
             Username = username ?? throw new ArgumentNullException(nameof(username));
             State = state;
+            CreationDate = creationDate;
             Password = password;
             Email = email;
             GoogleUser = googleUser;
@@ -42,8 +44,8 @@ namespace FireplaceApi.Core.Models.UserInformations
 
 
         public User PureCopy() => new User(Id, FirstName, LastName,
-                Username, State, Password, null, null,
-                null, null);
+                Username, State, CreationDate, ModifiedDate, Password,
+                null, null, null, null);
 
         public void RemoveLoopReferencing()
         {

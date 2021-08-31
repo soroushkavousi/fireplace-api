@@ -19,7 +19,8 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         private AccessTokenEntity() : base() { }
 
         public AccessTokenEntity(long userEntityId, string value,
-             long? id = null, UserEntity userEntity = null) : base()
+            DateTime? creationDate = null, DateTime? modifiedDate = null,
+            long? id = null, UserEntity userEntity = null) : base(creationDate, modifiedDate)
         {
             UserEntityId = userEntityId;
             Value = value ?? throw new ArgumentNullException(nameof(value));
@@ -28,7 +29,7 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         }
 
         public AccessTokenEntity PureCopy() => new AccessTokenEntity(UserEntityId, 
-            Value, Id, null);
+            Value, CreationDate, ModifiedDate, Id, null);
 
         public void RemoveLoopReferencing()
         {

@@ -36,7 +36,7 @@ namespace FireplaceApi.Infrastructure.Converters
                 userEntity = _serviceProvider.GetService<UserConverter>().ConvertToEntity(accessToken.User.PureCopy());
 
             var accessTokenEntity = new AccessTokenEntity(accessToken.UserId, accessToken.Value,
-                accessToken.Id, userEntity);
+                accessToken.CreationDate, accessToken.ModifiedDate, accessToken.Id, userEntity);
 
             return accessTokenEntity;
         }
@@ -51,7 +51,7 @@ namespace FireplaceApi.Infrastructure.Converters
                 user = _serviceProvider.GetService<UserConverter>().ConvertToModel(accessTokenEntity.UserEntity.PureCopy());
 
             var accessToken = new AccessToken(accessTokenEntity.Id.Value, accessTokenEntity.UserEntityId,
-                accessTokenEntity.Value, user);
+                accessTokenEntity.Value, accessTokenEntity.CreationDate, accessTokenEntity.ModifiedDate, user);
 
             return accessToken;
         }

@@ -13,7 +13,7 @@ using FireplaceApi.Core.Enums;
 
 namespace FireplaceApi.Core.Models
 {
-    public class Error
+    public class Error : BaseModel
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public int Id { get; set; }
@@ -32,11 +32,14 @@ namespace FireplaceApi.Core.Models
             name: ErrorName.INTERNAL_SERVER,
             code: 5000,
             clientMessage: "Something Went Wrong!",
-            httpStatusCode: 500
+            httpStatusCode: 500,
+            creationDate: DateTime.UtcNow
         );
 
-        public Error(int id, ErrorName name, int code, string clientMessage, int httpStatusCode, 
-            string serverMessage = null, Exception exception = null)
+        public Error(int id, ErrorName name, int code, 
+            string clientMessage, int httpStatusCode,
+            DateTime creationDate, DateTime? modifiedDate = null,
+            string serverMessage = null, Exception exception = null) : base(creationDate, modifiedDate)
         {
             Id = id;
             Name = name;
@@ -47,7 +50,9 @@ namespace FireplaceApi.Core.Models
             Exception = exception;
         }
 
-        public Error PureCopy() => new Error(Id, Name, Code, ClientMessage, HttpStatusCode, ServerMessage, Exception);
+        public Error PureCopy() => new Error(Id, Name, Code, 
+            ClientMessage, HttpStatusCode, CreationDate, ModifiedDate, 
+            ServerMessage, Exception);
 
         public void RemoveLoopReferencing()
         {

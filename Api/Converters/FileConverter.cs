@@ -35,7 +35,7 @@ namespace FireplaceApi.Api.Converters
             if (file == null)
                 return null;
 
-            var fileDto = new FileDto(file.Id, file.Uri.AbsoluteUri);           
+            var fileDto = new FileDto(file.Id, file.Uri.AbsoluteUri, file.CreationDate);           
 
             return fileDto;
         }

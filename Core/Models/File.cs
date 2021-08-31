@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Models
 {
-    public class File
+    public class File : BaseModel
     {
         public long Id { get; set; }
         public string Name { get; set; }
@@ -19,7 +19,9 @@ namespace FireplaceApi.Core.Models
         //[JsonIgnore]
         //public IFormFile FormFile {get;set;}
 
-        public File(long id, string name, string realName, Uri uri, string physicalPath)
+        public File(long id, string name, string realName, 
+            Uri uri, string physicalPath, DateTime creationDate, 
+            DateTime? modifiedDate = null) : base(creationDate, modifiedDate)
         {
             Id = id;
             Name = name ?? throw new ArgumentNullException(nameof(name));
@@ -28,7 +30,8 @@ namespace FireplaceApi.Core.Models
             PhysicalPath = physicalPath ?? throw new ArgumentNullException(nameof(physicalPath));
         }
 
-        public File PureCopy() => new File(Id, Name, RealName, Uri, PhysicalPath);
+        public File PureCopy() => new File(Id, Name, RealName, 
+            Uri, PhysicalPath, CreationDate, ModifiedDate);
 
         public void RemoveLoopReferencing()
         {

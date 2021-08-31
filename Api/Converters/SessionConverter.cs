@@ -33,10 +33,11 @@ namespace FireplaceApi.Api.Converters
 
             UserDto userDto = null;
             if (session.User != null)
-                userDto = _serviceProvider.GetService<UserConverter>().ConvertToDto(session.User.PureCopy());
+                userDto = _serviceProvider.GetService<UserConverter>()
+                    .ConvertToDto(session.User.PureCopy());
 
-            var sessionDto = new SessionDto(session.Id, session.UserId, session.IpAddress.ToString(),
-                userDto);
+            var sessionDto = new SessionDto(session.Id, session.UserId, 
+                session.IpAddress.ToString(), session.CreationDate, userDto);
 
             return sessionDto;
         }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Models.UserInformations
 {
-    public class Session
+    public class Session : BaseModel
     {
         public long Id { get; set; }
         public long UserId { get; set; }
@@ -17,7 +17,8 @@ namespace FireplaceApi.Core.Models.UserInformations
         public User User { get; set; }
 
         public Session(long id, long userId, IPAddress ipAddress, 
-            SessionState state, User user = null)
+            SessionState state, DateTime creationDate, DateTime? modifiedDate = null, 
+            User user = null) : base(creationDate, modifiedDate)
         {
             Id = id;
             IpAddress = ipAddress ?? throw new ArgumentNullException(nameof(ipAddress));
@@ -26,7 +27,8 @@ namespace FireplaceApi.Core.Models.UserInformations
             User = user;
         }
 
-        public Session PureCopy() => new Session(Id, UserId, IpAddress, State, null);
+        public Session PureCopy() => new Session(Id, UserId, IpAddress, 
+            State, CreationDate, ModifiedDate, null);
 
         public void RemoveLoopReferencing()
         {

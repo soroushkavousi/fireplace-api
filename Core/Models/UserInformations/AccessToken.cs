@@ -7,14 +7,16 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Models.UserInformations
 {
-    public class AccessToken
+    public class AccessToken : BaseModel
     {
         public long Id { get; set; }
         public long UserId { get; set; }
         public string Value { get; set; }
         public User User { get; set; }
 
-        public AccessToken(long id, long userId, string value, User user = null)
+        public AccessToken(long id, long userId, string value,
+            DateTime creationDate, DateTime? modifiedDate = null, 
+            User user = null) : base(creationDate, modifiedDate)
         {
             Id = id;
             UserId = userId;
@@ -22,7 +24,8 @@ namespace FireplaceApi.Core.Models.UserInformations
             User = user;
         }
 
-        public AccessToken PureCopy() => new AccessToken(Id, UserId, Value, null);
+        public AccessToken PureCopy() => new AccessToken(Id, UserId, Value, 
+            CreationDate, ModifiedDate, null);
 
         public void RemoveLoopReferencing()
         {

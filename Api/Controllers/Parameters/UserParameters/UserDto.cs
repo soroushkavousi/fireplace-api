@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using FireplaceApi.Api.Controllers.Parameters.SessionParameters;
 using FireplaceApi.Api.Controllers.Parameters.AccessTokenParameters;
 using FireplaceApi.Core.Extensions;
+using FireplaceApi.Api.Tools;
 
 namespace FireplaceApi.Api.Controllers.Parameters.UserParameters
 {
@@ -30,8 +31,9 @@ namespace FireplaceApi.Api.Controllers.Parameters.UserParameters
         [Required]
         public string State { get; set; }
         [Required]
-        public EmailDto Email { get; set; }
+        public DateTime CreationDate { get; set; }
         public string AccessToken { get; set; }
+        public EmailDto Email { get; set; }
         public List<SessionDto> Sessions { get; set; }
 
         public static OpenApiObject PureUserExample1 { get; } = new OpenApiObject
@@ -41,8 +43,9 @@ namespace FireplaceApi.Api.Controllers.Parameters.UserParameters
             [nameof(LastName).ToSnakeCase()] = new OpenApiString("Mosby"),
             [nameof(Username).ToSnakeCase()] = new OpenApiString("tedmosby"),
             [nameof(State).ToSnakeCase()] = new OpenApiString(Core.Enums.UserState.VERIFIED.ToString()),
-            [nameof(Email).ToSnakeCase()] = new OpenApiNull(),
+            [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(AccessToken).ToSnakeCase()] = new OpenApiNull(),
+            [nameof(Email).ToSnakeCase()] = new OpenApiNull(),
             [nameof(Sessions).ToSnakeCase()] = new OpenApiNull(),
         };
         public static OpenApiObject PureUserExample2 { get; } = new OpenApiObject
@@ -52,11 +55,12 @@ namespace FireplaceApi.Api.Controllers.Parameters.UserParameters
             [nameof(LastName).ToSnakeCase()] = new OpenApiString("Stinson"),
             [nameof(Username).ToSnakeCase()] = new OpenApiString("barneystinson"),
             [nameof(State).ToSnakeCase()] = new OpenApiString(Core.Enums.UserState.NOT_VERIFIED.ToString()),
-            [nameof(Email).ToSnakeCase()] = new OpenApiNull(),
+            [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(AccessToken).ToSnakeCase()] = new OpenApiNull(),
+            [nameof(Email).ToSnakeCase()] = new OpenApiNull(),
             [nameof(Sessions).ToSnakeCase()] = new OpenApiNull(),
         };
-        
+
         public static OpenApiArray ListOfPureUsersExample1 { get; } = new OpenApiArray
         {
             PureUserExample1, PureUserExample2
@@ -69,8 +73,9 @@ namespace FireplaceApi.Api.Controllers.Parameters.UserParameters
             [nameof(LastName).ToSnakeCase()] = PureUserExample1[nameof(LastName).ToSnakeCase()],
             [nameof(Username).ToSnakeCase()] = PureUserExample1[nameof(Username).ToSnakeCase()],
             [nameof(State).ToSnakeCase()] = PureUserExample1[nameof(State).ToSnakeCase()],
-            [nameof(Email).ToSnakeCase()] = EmailDto.PureEmailExample1,
+            [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(AccessToken).ToSnakeCase()] = AccessTokenDto.PureAccessTokenExample1[nameof(AccessTokenDto.Value).ToSnakeCase()],
+            [nameof(Email).ToSnakeCase()] = EmailDto.PureEmailExample1,
             [nameof(Sessions).ToSnakeCase()] = SessionDto.ListOfPureSessionsExample1,
         };
         public static OpenApiObject UserExample2 { get; } = new OpenApiObject
@@ -80,8 +85,9 @@ namespace FireplaceApi.Api.Controllers.Parameters.UserParameters
             [nameof(LastName).ToSnakeCase()] = PureUserExample2[nameof(LastName).ToSnakeCase()],
             [nameof(Username).ToSnakeCase()] = PureUserExample2[nameof(Username).ToSnakeCase()],
             [nameof(State).ToSnakeCase()] = PureUserExample2[nameof(State).ToSnakeCase()],
-            [nameof(Email).ToSnakeCase()] = EmailDto.PureEmailExample2,
+            [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(AccessToken).ToSnakeCase()] = AccessTokenDto.PureAccessTokenExample2[nameof(AccessTokenDto.Value).ToSnakeCase()],
+            [nameof(Email).ToSnakeCase()] = EmailDto.PureEmailExample2,
             [nameof(Sessions).ToSnakeCase()] = SessionDto.ListOfPureSessionsExample2,
         };
         public static OpenApiArray ListOfUsersExample1 { get; } = new OpenApiArray
@@ -109,16 +115,18 @@ namespace FireplaceApi.Api.Controllers.Parameters.UserParameters
         }
 
         public UserDto(long? id, string firstName, string lastName, 
-            string username, string state, EmailDto email, 
-            string accessToken = null, List<SessionDto> sessions = null)
+            string username, string state, DateTime creationDate, 
+            string accessToken = null, EmailDto email = null, 
+            List<SessionDto> sessions = null)
         {
             Id = id;
             FirstName = firstName;
             LastName = lastName;
             Username = username;
             State = state;
-            Email = email;
+            CreationDate = creationDate;
             AccessToken = accessToken;
+            Email = email;
             Sessions = sessions;
         }
     }

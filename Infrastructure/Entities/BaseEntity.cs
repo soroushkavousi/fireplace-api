@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,9 +12,16 @@ namespace FireplaceApi.Infrastructure.Entities
         public DateTime CreationDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
 
-        public BaseEntity()
+        protected BaseEntity() 
         {
             CreationDate = DateTime.UtcNow;
+        }
+
+        public BaseEntity(DateTime? creationDate = null, DateTime? modifiedDate = null) : this()
+        {
+            if(creationDate.HasValue)
+                CreationDate = creationDate.Value;
+            ModifiedDate = modifiedDate;
         }
     }
 }

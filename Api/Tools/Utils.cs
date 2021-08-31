@@ -14,5 +14,7 @@ namespace FireplaceApi.Api.Tools
         {
             return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
         }
+        public static DateTimeOffset GetYesterdayDate() 
+            => DateTimeOffset.UtcNow.Subtract(new TimeSpan(1, 0, 0, 0));
     }
 }

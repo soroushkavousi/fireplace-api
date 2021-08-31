@@ -81,7 +81,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             Activation activation)
         {
             var emailEntity = new EmailEntity(userId, address,
-                activation.Status.ToString(), activation.Code);
+                activation.Status.ToString(), activationCode: activation.Code);
             _emailEntities.Add(emailEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();

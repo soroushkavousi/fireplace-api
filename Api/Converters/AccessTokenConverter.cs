@@ -31,10 +31,11 @@ namespace FireplaceApi.Api.Converters
 
             UserDto userDto = null;
             if (accessToken.User != null)
-                userDto = _serviceProvider.GetService<UserConverter>().ConvertToDto(accessToken.User.PureCopy());
+                userDto = _serviceProvider.GetService<UserConverter>()
+                    .ConvertToDto(accessToken.User.PureCopy());
 
             var accessTokenDto = new AccessTokenDto(accessToken.UserId, accessToken.Value,
-                userDto);
+                accessToken.CreationDate, userDto);
 
             return accessTokenDto;
         }

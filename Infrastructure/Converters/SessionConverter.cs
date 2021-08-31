@@ -34,7 +34,8 @@ namespace FireplaceApi.Infrastructure.Converters
                 userEntity = _serviceProvider.GetService<UserConverter>().ConvertToEntity(session.User.PureCopy());
 
             var sessionEntity = new SessionEntity(session.UserId, session.IpAddress.ToString(),
-                session.State.ToString(), session.Id, userEntity);
+                session.State.ToString(), session.CreationDate, session.ModifiedDate,
+                session.Id, userEntity);
 
             return sessionEntity;
         }
@@ -49,7 +50,8 @@ namespace FireplaceApi.Infrastructure.Converters
                 user = _serviceProvider.GetService<UserConverter>().ConvertToModel(sessionEntity.UserEntity.PureCopy());
 
             var session = new Session(sessionEntity.Id.Value, sessionEntity.UserEntityId, 
-                sessionEntity.IpAddress.ToIPAddress(), sessionEntity.State.ToEnum<SessionState>(), user);
+                sessionEntity.IpAddress.ToIPAddress(), sessionEntity.State.ToEnum<SessionState>(), 
+                sessionEntity.CreationDate, sessionEntity.ModifiedDate, user);
 
             return session;
         }

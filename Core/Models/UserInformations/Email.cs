@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Models.UserInformations
 {
-    public class Email
+    public class Email : BaseModel
     {
         public long Id { get; set; }
         public long UserId { get; set; }
@@ -15,7 +15,10 @@ namespace FireplaceApi.Core.Models.UserInformations
         public Activation Activation { get; set; }
         public User User { get; set; }
 
-        public Email(long id, long userId, string address, Activation activation, User user = null)
+        public Email(long id, long userId, string address, 
+            Activation activation, DateTime creationDate, 
+            DateTime? modifiedDate = null, 
+            User user = null) : base(creationDate, modifiedDate)
         {
             Id = id;
             UserId = userId;
@@ -24,7 +27,8 @@ namespace FireplaceApi.Core.Models.UserInformations
             User = user;
         }
 
-        public Email PureCopy() => new Email(Id, UserId, Address, Activation, null);
+        public Email PureCopy() => new Email(Id, UserId, Address, 
+            Activation, CreationDate, ModifiedDate, null);
 
         public void RemoveLoopReferencing()
         {

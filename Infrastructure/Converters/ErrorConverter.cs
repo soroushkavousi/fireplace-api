@@ -31,7 +31,9 @@ namespace FireplaceApi.Infrastructure.Converters
                 return null;
 
             var errorEntity = new ErrorEntity(error.Name.ToString(), error.Code,
-                error.ClientMessage, error.HttpStatusCode, error.Id);
+                error.ClientMessage, error.HttpStatusCode,  
+                error.CreationDate, error.ModifiedDate,
+                error.Id);
 
             return errorEntity;
         }
@@ -42,7 +44,8 @@ namespace FireplaceApi.Infrastructure.Converters
                 return null;
 
             var error = new Error(errorEntity.Id.Value, errorEntity.Name.ToEnum<ErrorName>(),
-                errorEntity.Code, errorEntity.ClientMessage, errorEntity.HttpStatusCode);
+                errorEntity.Code, errorEntity.ClientMessage, errorEntity.HttpStatusCode,
+                errorEntity.CreationDate, errorEntity.ModifiedDate);
 
             return error;
         }

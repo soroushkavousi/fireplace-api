@@ -10,6 +10,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using FireplaceApi.Core.Extensions;
+using FireplaceApi.Api.Tools;
 
 namespace FireplaceApi.Api.Controllers.Parameters.FileParameters
 {
@@ -20,16 +21,20 @@ namespace FireplaceApi.Api.Controllers.Parameters.FileParameters
         public long? Id { get; set; }
         [Required]
         public string Url { get; set; }
+        [Required]
+        public DateTime CreationDate { get; set; }
 
         public static OpenApiObject PureFileExample1 { get; } = new OpenApiObject
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiInteger(1000000),
             [nameof(Url).ToSnakeCase()] = new OpenApiString("https://files.social-media.bitiano.com/xww03krwo1e3.jpg"),
+            [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
         };
         public static OpenApiObject FileExample1 { get; } = new OpenApiObject
         {
             [nameof(Id).ToSnakeCase()] = PureFileExample1[nameof(Id).ToSnakeCase()],
             [nameof(Url).ToSnakeCase()] = PureFileExample1[nameof(Url).ToSnakeCase()],
+            [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
         };
 
         public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
@@ -44,10 +49,11 @@ namespace FireplaceApi.Api.Controllers.Parameters.FileParameters
 
         }
 
-        public FileDto(long? id, string url)
+        public FileDto(long? id, string url, DateTime creationDate)
         {
             Id = id;
             Url = url;
+            CreationDate = creationDate;
         }
     }
 }

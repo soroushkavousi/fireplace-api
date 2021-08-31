@@ -95,7 +95,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             string username, UserState state, Password password = null)
         {
             var userEntity = new UserEntity(firstName, lastName,
-                username, state.ToString(), password?.Hash);
+                username, state.ToString(), passwordHash: password?.Hash);
             _userEntities.Add(userEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();

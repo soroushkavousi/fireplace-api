@@ -45,8 +45,9 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
             long gmailIssuedTimeInSeconds, string fullName, 
             string firstName, string lastName, string locale, 
             string pictureUrl, string state, string authUser, 
-            string prompt, string redirectToUserUrl, long? id = null, 
-            UserEntity userEntity = null) : base()
+            string prompt, string redirectToUserUrl,
+            DateTime? creationDate = null, DateTime? modifiedDate = null,
+            long? id = null, UserEntity userEntity = null) : base(creationDate, modifiedDate)
         {
             UserEntityId = userEntityId;
             Code = code ?? throw new ArgumentNullException(nameof(code));
@@ -77,7 +78,7 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
             TokenType, AccessTokenExpiresInSeconds, RefreshToken, Scope, IdToken,
             AccessTokenIssuedTime, GmailAddress, GmailVerified, GmailIssuedTimeInSeconds,
             FullName, FirstName, LastName, Locale, PictureUrl, State, AuthUser, Prompt,
-            RedirectToUserUrl, Id, null);
+            RedirectToUserUrl, CreationDate, ModifiedDate, Id, null);
 
         public void RemoveLoopReferencing()
         {

@@ -26,9 +26,11 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         private UserEntity() : base() { }
 
         public UserEntity(string firstName, string lastName,
-            string username, string state, string passwordHash = null, long? id = null,
+            string username, string state, DateTime? creationDate = null, 
+            DateTime? modifiedDate = null, string passwordHash = null, long? id = null,
             EmailEntity emailEntity = null, GoogleUserEntity googleUserEntity = null,
-            List<AccessTokenEntity> accessTokenEntities = null, List<SessionEntity> sessionEntities = null) : base()
+            List<AccessTokenEntity> accessTokenEntities = null, 
+            List<SessionEntity> sessionEntities = null) : base(creationDate, modifiedDate)
         {
             FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
             LastName = lastName ?? throw new ArgumentNullException(nameof(lastName));
@@ -43,7 +45,8 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         }
 
         public UserEntity PureCopy() => new UserEntity(FirstName, LastName, 
-            Username, State, PasswordHash, Id, null, null, null, null);
+            Username, State, CreationDate, ModifiedDate, PasswordHash, Id,
+            null, null, null, null);
 
         public void RemoveLoopReferencing()
         {

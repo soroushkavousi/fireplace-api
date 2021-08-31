@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Models.UserInformations
 {
-    public class GoogleUser
+    public class GoogleUser : BaseModel
     {
         public long Id { get; set; }
         public long UserId { get; set; }
@@ -40,7 +40,8 @@ namespace FireplaceApi.Core.Models.UserInformations
             string gmailAddress, bool gmailVerified, long gmailIssuedTimeInSeconds, 
             string fullName, string firstName, string lastName, string locale, 
             string pictureUrl, string state, string authUser, string prompt, 
-            string redirectToUserUrl, User user = null)
+            string redirectToUserUrl, DateTime creationDate, DateTime? modifiedDate = null, 
+            User user = null) : base(creationDate, modifiedDate)
         {
             Id = id;
             UserId = userId;
@@ -70,7 +71,8 @@ namespace FireplaceApi.Core.Models.UserInformations
         public GoogleUser PureCopy() => new GoogleUser(Id, UserId, Code, AccessToken,
             TokenType, AccessTokenExpiresInSeconds, RefreshToken, Scope, IdToken,
             AccessTokenIssuedTime, GmailAddress, GmailVerified, GmailIssuedTimeInSeconds,
-            FullName, FirstName, LastName, Locale, PictureUrl, State, AuthUser, Prompt, RedirectToUserUrl, null);
+            FullName, FirstName, LastName, Locale, PictureUrl, State, AuthUser, Prompt, 
+            RedirectToUserUrl, CreationDate, ModifiedDate, null);
 
         public void RemoveLoopReferencing()
         {

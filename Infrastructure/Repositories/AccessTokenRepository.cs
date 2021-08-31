@@ -73,6 +73,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
+            _logger.LogInformation($"accessTokenEntity: {accessTokenEntity.ToJson()}");
             return _accessTokenConverter.ConvertToModel(accessTokenEntity);
         }
 
