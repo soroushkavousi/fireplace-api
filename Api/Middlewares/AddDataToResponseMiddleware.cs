@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using FireplaceApi.Core.Extensions;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,15 +16,19 @@ namespace FireplaceApi.Api.Middlewares
     /// </summary>
     public class AddDataToResponseMiddleware
     {
+        private readonly ILogger<AddDataToResponseMiddleware> _logger;
         private readonly RequestDelegate _next;
 
-        public AddDataToResponseMiddleware(RequestDelegate next)
+        public AddDataToResponseMiddleware(ILogger<AddDataToResponseMiddleware> logger, RequestDelegate next)
         {
+            _logger = logger;
             _next = next;
         }
 
         public async Task InvokeAsync(HttpContext context)
         {
+            var sw = Stopwatch.StartNew();
+
             var existingBody = context.Response.Body;
             try
             {
@@ -49,6 +56,10 @@ namespace FireplaceApi.Api.Middlewares
             {
                 context.Response.Body = existingBody;
                 throw;
+            }
+            finally
+            {
+                _logger.LogTrace(sw);
             }
         }
     }

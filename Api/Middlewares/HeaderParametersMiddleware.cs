@@ -10,23 +10,30 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using FireplaceApi.Core.Extensions;
+using NLog;
+using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace FireplaceApi.Api.Middlewares
 {
     public class HeaderParametersMiddleware
     {
+        private readonly ILogger<HeaderParametersMiddleware> _logger;
         private readonly RequestDelegate _next;
 
-        public HeaderParametersMiddleware(RequestDelegate next)
+        public HeaderParametersMiddleware(ILogger<HeaderParametersMiddleware> logger, RequestDelegate next)
         {
+            _logger = logger;
             _next = next;
         }
 
         public async Task InvokeAsync(HttpContext httpContext)
         {
+            var sw = Stopwatch.StartNew();
             GetInputHeaders(httpContext);
             await _next(httpContext);
             SetOutputHeaders(httpContext);
+            _logger.LogTrace(sw);
         }
 
         private static void GetInputHeaders(HttpContext httpContext)

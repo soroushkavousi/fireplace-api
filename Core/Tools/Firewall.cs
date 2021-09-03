@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -52,20 +53,22 @@ namespace FireplaceApi.Core.Tools
 
         public async Task<User> CheckUser(string accessTokenValue, IPAddress ipAddress)
         {
+            var sw = Stopwatch.StartNew();
             var accessToken = await ValidateAccessTokenAsync(accessTokenValue);
             var requesterUser = accessToken.User;
             requesterUser.AccessTokens = new List<AccessToken> { accessToken };
             await ValidateSessionAsync(requesterUser.Id, ipAddress);
             await ValidateLimitationOfUserRequestCounts(requesterUser.Id);
             await ValidateLimitationOfIpRequestCounts(ipAddress);
-            _logger.LogInformation($"User {requesterUser.Id} doesn't have any problem to continue. {requesterUser.ToJson()}");
+            _logger.LogTrace(sw, $"User {requesterUser.Id} doesn't have any problem to continue. {requesterUser.ToJson()}");
             return requesterUser;
         }
 
         public async Task CheckGuest(IPAddress ipAddress)
         {
+            var sw = Stopwatch.StartNew();
             await ValidateLimitationOfIpRequestCounts(ipAddress);
-            _logger.LogInformation($"Guest doesn't have any problem to continue. {ipAddress}");
+            _logger.LogTrace(sw, $"Guest doesn't have any problem to continue. {ipAddress}");
         }
 
         public async Task<AccessToken> ValidateAccessTokenAsync(string accessTokenValue)

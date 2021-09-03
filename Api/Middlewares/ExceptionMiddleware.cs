@@ -13,6 +13,7 @@ using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Enums;
+using System.Diagnostics;
 
 namespace FireplaceApi.Api.Middlewares
 {
@@ -30,6 +31,7 @@ namespace FireplaceApi.Api.Middlewares
         public async Task InvokeAsync(HttpContext httpContext, ErrorConverter errorConverter, 
             ErrorOperator errorOperator)
         {
+            var sw = Stopwatch.StartNew();
             try
             {
                 await _next(httpContext);
@@ -44,6 +46,7 @@ namespace FireplaceApi.Api.Middlewares
                 var error = await CreateErrorAsync(apiException, errorOperator);
                 await ReportError(error, errorConverter, httpContext);
             }
+            _logger.LogTrace(sw);
         }
 
         private async Task<Error> CreateErrorAsync(ApiException apiException, ErrorOperator errorOperator)

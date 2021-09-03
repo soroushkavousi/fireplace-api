@@ -12,20 +12,26 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using FireplaceApi.Core.Tools;
 using System.Net.Http;
+using System.Diagnostics;
+using FireplaceApi.Core.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace FireplaceApi.Api.Middlewares
 {
     public class FirewallMiddleware
     {
+        private readonly ILogger<FirewallMiddleware> _logger;
         private readonly RequestDelegate _next;
 
-        public FirewallMiddleware(RequestDelegate next)
+        public FirewallMiddleware(ILogger<FirewallMiddleware> logger, RequestDelegate next)
         {
+            _logger = logger;
             _next = next;
         }
 
         public async Task InvokeAsync(HttpContext httpContext, Firewall firewall)
         {
+            var sw = Stopwatch.StartNew();
             var httpMethod = new HttpMethod(httpContext.Request.Method);
             if (httpMethod == HttpMethod.Post
                 || httpMethod == HttpMethod.Put
@@ -55,7 +61,10 @@ namespace FireplaceApi.Api.Middlewares
             {
                 await firewall.CheckGuest(ipAddress);
             }
+            _logger.LogInformation(sw, $"#ExecutionTime | For the firewall only");
+            sw = Stopwatch.StartNew();
             await _next(httpContext);
+            _logger.LogInformation(sw, $"#ExecutionTime | For inner of the firewall");
         }
 
         public bool IsUserEndpoint(HttpContext httpContext)

@@ -19,6 +19,7 @@ using FireplaceApi.Core.Services;
 using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Core.Models.UserInformations;
 using FireplaceApi.Core.Extensions;
+using System.Diagnostics;
 
 namespace FireplaceApi.Api.Controllers
 {
@@ -28,11 +29,13 @@ namespace FireplaceApi.Api.Controllers
     [Produces("application/json")]
     public class UserController : ApiController
     {
+        private readonly ILogger<UserController> _logger;
         private readonly UserConverter _userConverter;
         private readonly UserService _userService;
 
-        public UserController(UserConverter userConverter, UserService userService)
+        public UserController(ILogger<UserController> logger, UserConverter userConverter, UserService userService)
         {
+            _logger = logger;
             _userConverter = userConverter;
             _userService = userService;
         }
@@ -174,9 +177,11 @@ namespace FireplaceApi.Api.Controllers
             [FromRoute] ControllerGetUserByIdInputRouteParameters inputRouteParameters,
             [FromQuery] ControllerGetUserByIdInputQueryParameters inputQueryParameters)
         {
+            var sw = Stopwatch.StartNew();
             var user = await _userService.GetUserByIdAsync(requesterUser, inputRouteParameters.Id,
                 inputQueryParameters.IncludeEmail, inputQueryParameters.IncludeSessions);
             var userDto = _userConverter.ConvertToDto(user);
+            _logger.LogTrace(sw);
             return userDto;
         }
 

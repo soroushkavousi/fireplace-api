@@ -18,6 +18,7 @@ using FireplaceApi.Core.Interfaces.IRepositories;
 using FireplaceApi.Core.Interfaces.IGateways;
 using Microsoft.AspNetCore.WebUtilities;
 using FireplaceApi.Core.Tools;
+using System.Diagnostics;
 
 namespace FireplaceApi.Core.Operators
 {
@@ -216,8 +217,13 @@ namespace FireplaceApi.Core.Operators
             bool includeEmail = false, bool includeGoogleUser = false, 
             bool includeAccessTokens = false, bool includeSessions = false)
         {
+            var sw = Stopwatch.StartNew();
             var user = await _userRepository.GetUserByIdAsync(id, includeEmail,
                 includeGoogleUser, includeAccessTokens, includeSessions);
+
+            _logger.LogTrace("Test1");
+            _logger.LogTrace($"Test2 User: {user.ToJson()}");
+            _logger.LogTrace(sw, $"Output User: {user.ToJson()}");
 
             if (user == null)
                 return user;
@@ -230,6 +236,7 @@ namespace FireplaceApi.Core.Operators
                 if (user.Sessions[i].State == SessionState.CLOSED)
                     user.Sessions.RemoveAt(i);
             }
+            
             return user;
         }
 

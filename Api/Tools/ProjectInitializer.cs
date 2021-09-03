@@ -50,7 +50,7 @@ namespace FireplaceApi.Api.Tools
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Can't setup logger: {ex.ToString()}");
+                Console.WriteLine($"Can't setup logger: {ex}");
             }
         }
 

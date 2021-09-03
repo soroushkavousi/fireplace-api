@@ -18,7 +18,6 @@ namespace FireplaceApi.Core.Extensions
         private static readonly JsonSerializerSettings _jsonSerializerSettings;
         public static JavaScriptEncoder AllUnicodeRanges = JavaScriptEncoder.Create(UnicodeRanges.All, UnicodeRanges.All);
 
-
         static ObjectExtensions()
         {
             _jsonSerializerSettings = new JsonSerializerSettings
@@ -28,6 +27,8 @@ namespace FireplaceApi.Core.Extensions
                 //NullValueHandling = NullValueHandling.Ignore,
             };
             _jsonSerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+            _jsonSerializerSettings.Converters.Add(new IPAddressConverter());
+            _jsonSerializerSettings.Converters.Add(new IPEndPointConverter());
         }
 
         public static string ToJson(this object obj)

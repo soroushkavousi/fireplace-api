@@ -1,9 +1,11 @@
 ﻿using FireplaceApi.Api.Extensions;
+using FireplaceApi.Core.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,10 +18,10 @@ namespace FireplaceApi.Api.Middlewares
     /// </summary>
     public class RequestResponseLoggingMiddleware
     {
-        private readonly ILogger<ExceptionMiddleware> _logger;
+        private readonly ILogger<RequestResponseLoggingMiddleware> _logger;
         private readonly RequestDelegate _next;
 
-        public RequestResponseLoggingMiddleware(ILogger<ExceptionMiddleware> logger, RequestDelegate next)
+        public RequestResponseLoggingMiddleware(ILogger<RequestResponseLoggingMiddleware> logger, RequestDelegate next)
         {
             _logger = logger;
             _next = next;
@@ -27,6 +29,8 @@ namespace FireplaceApi.Api.Middlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
+            var sw = Stopwatch.StartNew();
+
             //Copy a pointer to the original response body stream
             var originalBodyStream = context.Response.Body;
 
@@ -35,18 +39,15 @@ namespace FireplaceApi.Api.Middlewares
 
             try
             {
-                //First, get the incoming request
-                var request = await FormatRequest(context.Request);
-                _logger.LogInformation(request);
+                await LogRequest(context.Request);
+
                 //...and use that for the temporary response body
                 context.Response.Body = responseBody;
 
                 //Continue down the Middleware pipeline, eventually returning to this class
                 await _next(context);
 
-                //Format the response from the server
-                var response = await FormatResponse(context.Response);
-                _logger.LogInformation(response);
+                await LogResponse(context.Response);
             }
             catch (Exception)
             {
@@ -56,11 +57,13 @@ namespace FireplaceApi.Api.Middlewares
             {
                 //Copy the contents of the new memory stream (which contains the response) to the original stream, which is then returned to the client.
                 await responseBody.CopyToAsync(originalBodyStream);
+                _logger.LogTrace(sw);
             }
         }
 
-        private async Task<string> FormatRequest(HttpRequest request)
+        private async Task LogRequest(HttpRequest request)
         {
+            var sw = Stopwatch.StartNew();
             string requestBodyText;
             if (request.ContentType != null && request.ContentType.Contains("multipart/form-data"))
             {
@@ -75,11 +78,13 @@ namespace FireplaceApi.Api.Middlewares
             if (request.QueryString.HasValue)
                 requestQueryString = request.QueryString.Value;
 
-            return $"#Request | {requestQueryString} | {requestBodyText}";
+            var requestLogMessage = $"#Request | {requestQueryString} | {requestBodyText}";
+            _logger.LogInformation(sw, requestLogMessage);
         }
 
-        private async Task<string> FormatResponse(HttpResponse response)
+        private async Task LogResponse(HttpResponse response)
         {
+            var sw = Stopwatch.StartNew();
             //We need to read the response stream from the beginning...
             response.Body.Seek(0, SeekOrigin.Begin);
 
@@ -93,7 +98,8 @@ namespace FireplaceApi.Api.Middlewares
             response.Body.Seek(0, SeekOrigin.Begin);
 
             //Return the string for the response, including the status code (e.g. 200, 404, 401, etc.)
-            return $"#Response | {response.StatusCode} | {responseBodyText}";
+            var responseLogMessage = $"#Response | {response.StatusCode} | {responseBodyText}";
+            _logger.LogInformation(sw, responseLogMessage);
         }
     }
 

@@ -16,6 +16,7 @@ using System.Net;
 using System.Threading.Tasks;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Tools;
+using System.Diagnostics;
 
 namespace FireplaceApi.Core.Validators
 {
@@ -98,9 +99,11 @@ namespace FireplaceApi.Core.Validators
         public async Task ValidateGetUserByIdInputParametersAsync(User requesterUser, long? id, 
             bool? includeEmail, bool? includeSessions)
         {
+            var sw = Stopwatch.StartNew();
             ValidateParameterIsNotNull(id, nameof(id), ErrorName.USER_ID_IS_NULL);
             await ValidateUserIdExists(id.Value);
             ValidateUserCanAccessToUserId(requesterUser, id.Value);
+            _logger.LogTrace(sw);
         }
 
         public async Task ValidateDeleteProcutInputParametersAsync(User requesterUser, long? id)
