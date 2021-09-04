@@ -16,6 +16,7 @@ using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces.IRepositories;
 using FireplaceApi.Core.ValueObjects;
+using System.Diagnostics;
 
 namespace FireplaceApi.Infrastructure.Repositories
 {
@@ -41,6 +42,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<List<Email>> ListEmailsAsync(
                     bool includeUser = false)
         {
+            var sw = Stopwatch.StartNew();
             var emailEntities = await _emailEntities
                 .AsNoTracking()
                 .Include(
@@ -48,11 +50,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
+            _logger.LogIOInformation(sw, "Database", new { includeUser }, new { emailEntities });
             return emailEntities.Select(e => _emailConverter.ConvertToModel(e)).ToList();
         }
 
         public async Task<Email> GetEmailByIdAsync(long id, bool includeUser = false)
         {
+            var sw = Stopwatch.StartNew();
             var emailEntity = await _emailEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
@@ -61,11 +65,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
+            _logger.LogIOInformation(sw, "Database", new { id, includeUser }, new { emailEntity });
             return _emailConverter.ConvertToModel(emailEntity);
         }
 
         public async Task<Email> GetEmailByAddressAsync(string address, bool includeUser = false)
         {
+            var sw = Stopwatch.StartNew();
             var emailEntity = await _emailEntities
                 .AsNoTracking()
                 .Where(e => e.Address == address)
@@ -74,22 +80,27 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
+            _logger.LogIOInformation(sw, "Database", new { address, includeUser }, new { emailEntity });
             return _emailConverter.ConvertToModel(emailEntity);
         }
 
         public async Task<Email> CreateEmailAsync(long userId, string address,
             Activation activation)
         {
+            var sw = Stopwatch.StartNew();
             var emailEntity = new EmailEntity(userId, address,
                 activation.Status.ToString(), activationCode: activation.Code);
             _emailEntities.Add(emailEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
+
+            _logger.LogIOInformation(sw, "Database", new { userId, address, activation }, new { emailEntity });
             return _emailConverter.ConvertToModel(emailEntity);
         }
 
         public async Task<Email> UpdateEmailAsync(Email email)
         {
+            var sw = Stopwatch.StartNew();
             var emailEntity = _emailConverter.ConvertToEntity(email);
             _emailEntities.Update(emailEntity);
             try
@@ -102,11 +113,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                 var serverMessage = $"Can't update the emailEntity DbUpdateConcurrencyException. {emailEntity.ToJson()}";
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
+
+            _logger.LogIOInformation(sw, "Database", new { email }, new { emailEntity });
             return _emailConverter.ConvertToModel(emailEntity);
         }
 
         public async Task DeleteEmailAsync(long id)
         {
+            var sw = Stopwatch.StartNew();
             var emailEntity = await _emailEntities
                 .Where(e => e.Id == id)
                 .SingleOrDefaultAsync();
@@ -114,22 +128,32 @@ namespace FireplaceApi.Infrastructure.Repositories
             _emailEntities.Remove(emailEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
+
+            _logger.LogIOInformation(sw, "Database", new { id }, new { emailEntity });
         }
 
         public async Task<bool> DoesEmailIdExistAsync(long id)
         {
-            return await _emailEntities
+            var sw = Stopwatch.StartNew();
+            var doesExist = await _emailEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .AnyAsync();
+
+            _logger.LogIOInformation(sw, "Database", new { id }, new { doesExist });
+            return doesExist;
         }
 
         public async Task<bool> DoesEmailAddressExistAsync(string emailAddress)
         {
-            return await _emailEntities
+            var sw = Stopwatch.StartNew();
+            var doesExist = await _emailEntities
                 .AsNoTracking()
                 .Where(e => e.Address == emailAddress)
                 .AnyAsync();
+
+            _logger.LogIOInformation(sw, "Database", new { emailAddress }, new { doesExist });
+            return doesExist;
         }
     }
 

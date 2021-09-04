@@ -130,5 +130,11 @@ namespace FireplaceApi.Core.Extensions
             return Regex.Replace(result, @"\s+", " ");
         }
 
+        public static string EscapeCurlyBrackets(this string str)
+        {
+            var result = str;
+            result = result.Replace("{", "{{").Replace("}", "}}");
+            return result;
+        }
     }
 }

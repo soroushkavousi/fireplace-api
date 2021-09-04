@@ -16,6 +16,7 @@ using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces.IRepositories;
+using System.Diagnostics;
 
 namespace FireplaceApi.Infrastructure.Repositories
 {
@@ -41,6 +42,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<List<Session>> ListSessionsAsync(long userId,
             SessionState? filterSessionState = null, bool includeUser = false)
         {
+            var sw = Stopwatch.StartNew();
             Expression<Func<SessionEntity, bool>> filterSessionStateFunction;
             if (filterSessionState == null)
                 filterSessionStateFunction = e => true;
@@ -56,11 +58,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
+            _logger.LogIOInformation(sw, "Database", new { userId, filterSessionState, includeUser }, new { sessionEntities });
             return sessionEntities.Select(e => _sessionConverter.ConvertToModel(e)).ToList();
         }
 
         public async Task<Session> GetSessionByIdAsync(long id, bool includeUser = false)
         {
+            var sw = Stopwatch.StartNew();
             var sessionEntity = await _sessionEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
@@ -69,36 +73,43 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
+            _logger.LogIOInformation(sw, "Database", new { id, includeUser }, new { sessionEntity });
             return _sessionConverter.ConvertToModel(sessionEntity);
         }
 
-        public async Task<Session> FindSessionAsync(long userId, IPAddress IpAddress, 
+        public async Task<Session> FindSessionAsync(long userId, IPAddress ipAddress, 
             bool includeTracking = false, bool includeUser = false)
         {
+            var sw = Stopwatch.StartNew();
             var sessionEntity = await _sessionEntities
                 .AsNoTracking()
-                .Where(e => e.UserEntityId == userId && e.IpAddress == IpAddress.ToString())
+                .Where(e => e.UserEntityId == userId && e.IpAddress == ipAddress.ToString())
                 .Include(
                     userEntity: includeUser
                 )
                 .SingleOrDefaultAsync();
 
+            _logger.LogIOInformation(sw, "Database", new { userId, ipAddress, includeTracking, includeUser }, new { sessionEntity });
             return _sessionConverter.ConvertToModel(sessionEntity);
         }
 
         public async Task<Session> CreateSessionAsync(long userId, IPAddress ipAddress,
             SessionState state)
         {
+            var sw = Stopwatch.StartNew();
             var sessionEntity = new SessionEntity(userId, ipAddress.ToString(),
                 state.ToString());
             _sessionEntities.Add(sessionEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
+            
+            _logger.LogIOInformation(sw, "Database", new { userId, ipAddress, state }, new { sessionEntity });
             return _sessionConverter.ConvertToModel(sessionEntity);
         }
 
         public async Task<Session> UpdateSessionAsync(Session session)
         {
+            var sw = Stopwatch.StartNew();
             var sessionEntity = _sessionConverter.ConvertToEntity(session);
             _sessionEntities.Update(sessionEntity);
             try
@@ -111,11 +122,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                 var serverMessage = $"Can't update the sessionEntity DbUpdateConcurrencyException. {sessionEntity.ToJson()}";
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
+
+            _logger.LogIOInformation(sw, "Database", new { session }, new { sessionEntity });
             return _sessionConverter.ConvertToModel(sessionEntity);
         }
 
         public async Task DeleteSessionAsync(long id)
         {
+            var sw = Stopwatch.StartNew();
             var sessionEntity = await _sessionEntities
                 .Where(e => e.Id == id)
                 .SingleOrDefaultAsync();
@@ -123,14 +137,20 @@ namespace FireplaceApi.Infrastructure.Repositories
             _sessionEntities.Remove(sessionEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
+        
+            _logger.LogIOInformation(sw, "Database", new { id }, new { sessionEntity });
         }
 
         public async Task<bool> DoesSessionIdExistAsync(long id)
         {
-            return await _sessionEntities
+            var sw = Stopwatch.StartNew();
+            var doesExist = await _sessionEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .AnyAsync();
+        
+            _logger.LogIOInformation(sw, "Database", new { id }, new { doesExist });
+            return doesExist;
         }
     }
 

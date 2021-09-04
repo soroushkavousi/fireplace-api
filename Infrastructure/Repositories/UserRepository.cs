@@ -17,6 +17,7 @@ using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces.IRepositories;
+using System.Diagnostics;
 
 namespace FireplaceApi.Infrastructure.Repositories
 {
@@ -42,6 +43,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                     bool includeEmail = false, bool includeGoogleUser = false,
                     bool includeAccessTokens = false, bool includeSessions = false)
         {
+            var sw = Stopwatch.StartNew();
             var userEntities = await _userEntities
                 .AsNoTracking()
                 .Include(
@@ -52,6 +54,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
+            _logger.LogIOInformation(sw, "Database", 
+                new { includeEmail, includeGoogleUser, includeAccessTokens, includeSessions }, 
+                new { userEntities });
             return userEntities.Select(e => _userConverter.ConvertToModel(e)).ToList();
         }
 
@@ -59,6 +64,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             bool includeEmail = false, bool includeGoogleUser = false, 
             bool includeAccessTokens = false, bool includeSessions = false)
         {
+            var sw = Stopwatch.StartNew();
             var userEntity = await _userEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
@@ -70,6 +76,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
+            _logger.LogIOInformation(sw, "Database",
+                new { id, includeEmail, includeGoogleUser, includeAccessTokens, includeSessions },
+                new { userEntity });
             return _userConverter.ConvertToModel(userEntity);
         }
 
@@ -77,6 +86,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             bool includeEmail = false, bool includeGoogleUser = false, 
             bool includeAccessTokens = false, bool includeSessions = false)
         {
+            var sw = Stopwatch.StartNew();
             var userEntity = await _userEntities
                 .AsNoTracking()
                 .Where(e => e.Username == username)
@@ -88,22 +98,31 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
+            _logger.LogIOInformation(sw, "Database",
+                new { username, includeEmail, includeGoogleUser, includeAccessTokens, includeSessions },
+                new { userEntity });
             return _userConverter.ConvertToModel(userEntity);
         }
 
         public async Task<User> CreateUserAsync(string firstName, string lastName,
             string username, UserState state, Password password = null)
         {
+            var sw = Stopwatch.StartNew();
             var userEntity = new UserEntity(firstName, lastName,
                 username, state.ToString(), passwordHash: password?.Hash);
             _userEntities.Add(userEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
+
+            _logger.LogIOInformation(sw, "Database",
+                new { firstName, lastName, username, state, passwordHash = password?.Hash },
+                new { userEntity });
             return _userConverter.ConvertToModel(userEntity);
         }
 
         public async Task<User> UpdateUserAsync(User user)
         {
+            var sw = Stopwatch.StartNew();
             var userEntity = _userConverter.ConvertToEntity(user);
             _userEntities.Update(userEntity);
             try
@@ -116,11 +135,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                 var serverMessage = $"Can't update the dbUser DbUpdateConcurrencyException. {userEntity.ToJson()}";
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
+
+            _logger.LogIOInformation(sw, "Database", new { user }, new { userEntity });
             return _userConverter.ConvertToModel(userEntity);
         }
 
         public async Task DeleteUserAsync(long id)
         {
+            var sw = Stopwatch.StartNew();
             var userEntity = await _userEntities
                 .Where(e => e.Id == id)
                 .SingleOrDefaultAsync();
@@ -128,22 +150,32 @@ namespace FireplaceApi.Infrastructure.Repositories
             _userEntities.Remove(userEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
+        
+            _logger.LogIOInformation(sw, "Database", new { id }, new { userEntity });
         }
 
         public async Task<bool> DoesUserIdExistAsync(long id)
         {
-            return await _userEntities
+            var sw = Stopwatch.StartNew();
+            var doesExist = await _userEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .AnyAsync();
+        
+            _logger.LogIOInformation(sw, "Database", new { id }, new { doesExist });
+            return doesExist;
         }
 
         public async Task<bool> DoesUsernameExistAsync(string username)
         {
-            return await _userEntities
+            var sw = Stopwatch.StartNew();
+            var doesExist = await _userEntities
                 .AsNoTracking()
                 .Where(e => e.Username == username)
                 .AnyAsync();
+
+            _logger.LogIOInformation(sw, "Database", new { username }, new { doesExist });
+            return doesExist;
         }
     }
 

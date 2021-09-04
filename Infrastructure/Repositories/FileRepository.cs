@@ -14,6 +14,7 @@ using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Extensions;
+using System.Diagnostics;
 
 namespace FireplaceApi.Infrastructure.Repositories
 {
@@ -39,17 +40,20 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<List<File>> ListFilesAsync()
         {
+            var sw = Stopwatch.StartNew();
             var fileEntities = await _fileEntities
                 .AsNoTracking()
                 .Include(
                 )
                 .ToListAsync();
 
+            _logger.LogIOInformation(sw, "Database", null, new { fileEntities });
             return fileEntities.Select(e => _fileConverter.ConvertToModel(e)).ToList();
         }
 
         public async Task<File> GetFileByIdAsync(long id)
         {
+            var sw = Stopwatch.StartNew();
             var fileEntity = await _fileEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
@@ -57,23 +61,28 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
+            _logger.LogIOInformation(sw, "Database", new { id }, new { fileEntity });
             return _fileConverter.ConvertToModel(fileEntity);
         }
 
         public async Task<File> CreateFileAsync(string name, string realName, Uri uri,
             string physicalPath)
         {
+            var sw = Stopwatch.StartNew();
             var relativeUri = _fileConverter.GetRelativeUri(uri).ToString();
             var relativePhysicalPath = _fileConverter.GetRelativePhysicalPath(physicalPath);
             var fileEntity = new FileEntity(name, realName, relativeUri, relativePhysicalPath);
             _fileEntities.Add(fileEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
+            
+            _logger.LogIOInformation(sw, "Database", new { name, realName, uri, physicalPath }, new { fileEntity });
             return _fileConverter.ConvertToModel(fileEntity);
         }
 
         public async Task<File> UpdateFileAsync(File file)
         {
+            var sw = Stopwatch.StartNew();
             var fileEntity = _fileConverter.ConvertToEntity(file);
             _fileEntities.Update(fileEntity);
             try
@@ -86,11 +95,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                 var serverMessage = $"Can't update the dbFile DbUpdateConcurrencyException. {fileEntity.ToJson()}";
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
+            
+            _logger.LogIOInformation(sw, "Database", new { file }, new { fileEntity });
             return _fileConverter.ConvertToModel(fileEntity);
         }
 
         public async Task DeleteFileAsync(long id)
         {
+            var sw = Stopwatch.StartNew();
             var fileEntity = await _fileEntities
                 .Where(e => e.Id == id)
                 .SingleOrDefaultAsync();
@@ -98,22 +110,32 @@ namespace FireplaceApi.Infrastructure.Repositories
             _fileEntities.Remove(fileEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
+        
+            _logger.LogIOInformation(sw, "Database", new { id }, new { fileEntity });
         }
 
         public async Task<bool> DoesFileIdExistAsync(long id)
         {
-            return await _fileEntities
+            var sw = Stopwatch.StartNew();
+            var doesExist = await _fileEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .AnyAsync();
+        
+            _logger.LogIOInformation(sw, "Database", new { id }, new { doesExist });
+            return doesExist;
         }
 
         public async Task<bool> DoesFileNameExistAsync(string name)
         {
-            return await _fileEntities
+            var sw = Stopwatch.StartNew();
+            var doesExist = await _fileEntities
                 .AsNoTracking()
                 .Where(e => e.Name == name)
                 .AnyAsync();
+
+            _logger.LogIOInformation(sw, "Database", new { name }, new { doesExist });
+            return doesExist;
         }
     }
 

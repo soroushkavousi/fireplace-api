@@ -15,6 +15,7 @@ using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Core.Interfaces.IRepositories;
+using System.Diagnostics;
 
 namespace FireplaceApi.Infrastructure.Repositories
 {
@@ -39,17 +40,20 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<List<Global>> ListGlobalsAsync()
         {
+            var sw = Stopwatch.StartNew();
             var globalEntites = await _globalEntities
                 .AsNoTracking()
                 .Include(
                 )
                 .ToListAsync();
 
+            _logger.LogIOInformation(sw, "Database", null, new { globalEntites });
             return globalEntites.Select(e => _globalConverter.ConvertToModel(e)).ToList();
         }
 
         public async Task<Global> GetGlobalByIdAsync(GlobalId globalId)
         {
+            var sw = Stopwatch.StartNew();
             var globalEntity = await _globalEntities
                 .AsNoTracking()
                 .Where(e => e.Id == globalId.To<int>())
@@ -57,20 +61,25 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
+            _logger.LogIOInformation(sw, "Database", new { globalId }, new { globalEntity });
             return _globalConverter.ConvertToModel(globalEntity);
         }
 
         public async Task<Global> CreateGlobalAsync(GlobalId globalId, GlobalValues globalValues)
         {
+            var sw = Stopwatch.StartNew();
             var globalEntity = new GlobalEntity(globalId.To<int>(), globalValues);
             _globalEntities.Add(globalEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
+            
+            _logger.LogIOInformation(sw, "Database", new { globalId, globalValues }, new { globalEntity });
             return _globalConverter.ConvertToModel(globalEntity);
         }
 
         public async Task<Global> UpdateGlobalAsync(Global global)
         {
+            var sw = Stopwatch.StartNew();
             var globalEntity = _globalConverter.ConvertToEntity(global);
             _globalEntities.Update(globalEntity);
             try
@@ -83,11 +92,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                 var serverMessage = $"Can't update the globalEntity DbUpdateConcurrencyException. {globalEntity.ToJson()}";
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
+            
+            _logger.LogIOInformation(sw, "Database", new { global }, new { globalEntity });
             return _globalConverter.ConvertToModel(globalEntity);
         }
 
         public async Task DeleteGlobalAsync(GlobalId globalId)
         {
+            var sw = Stopwatch.StartNew();
             var globalEntity = await _globalEntities
                 .Where(e => e.Id == globalId.To<int>())
                 .SingleOrDefaultAsync();
@@ -95,14 +107,20 @@ namespace FireplaceApi.Infrastructure.Repositories
             _globalEntities.Remove(globalEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
+        
+            _logger.LogIOInformation(sw, "Database", new { globalId }, new { globalEntity });
         }
 
         public async Task<bool> DoesGlobalIdExistAsync(GlobalId globalId)
         {
-            return await _globalEntities
+            var sw = Stopwatch.StartNew();
+            var doesExist = await _globalEntities
                 .AsNoTracking()
                 .Where(e => e.Id == globalId.To<int>())
                 .AnyAsync();
+        
+            _logger.LogIOInformation(sw, "Database", new { globalId }, new { doesExist });
+            return doesExist;
         }
     }
 

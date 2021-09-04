@@ -29,7 +29,6 @@ namespace FireplaceApi.Api.Middlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var sw = Stopwatch.StartNew();
 
             //Copy a pointer to the original response body stream
             var originalBodyStream = context.Response.Body;
@@ -45,9 +44,10 @@ namespace FireplaceApi.Api.Middlewares
                 context.Response.Body = responseBody;
 
                 //Continue down the Middleware pipeline, eventually returning to this class
+                var sw = Stopwatch.StartNew();
                 await _next(context);
 
-                await LogResponse(context.Response);
+                await LogResponse(context.Response, sw);
             }
             catch (Exception)
             {
@@ -57,7 +57,6 @@ namespace FireplaceApi.Api.Middlewares
             {
                 //Copy the contents of the new memory stream (which contains the response) to the original stream, which is then returned to the client.
                 await responseBody.CopyToAsync(originalBodyStream);
-                _logger.LogTrace(sw);
             }
         }
 
@@ -82,9 +81,8 @@ namespace FireplaceApi.Api.Middlewares
             _logger.LogInformation(sw, requestLogMessage);
         }
 
-        private async Task LogResponse(HttpResponse response)
+        private async Task LogResponse(HttpResponse response, Stopwatch sw)
         {
-            var sw = Stopwatch.StartNew();
             //We need to read the response stream from the beginning...
             response.Body.Seek(0, SeekOrigin.Begin);
 
@@ -98,7 +96,7 @@ namespace FireplaceApi.Api.Middlewares
             response.Body.Seek(0, SeekOrigin.Begin);
 
             //Return the string for the response, including the status code (e.g. 200, 404, 401, etc.)
-            var responseLogMessage = $"#Response | {response.StatusCode} | {responseBodyText}";
+            var responseLogMessage = $"#Response #ControllerDuration | {response.StatusCode} | {responseBodyText}";
             _logger.LogInformation(sw, responseLogMessage);
         }
     }

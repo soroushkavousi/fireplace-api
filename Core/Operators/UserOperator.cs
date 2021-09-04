@@ -217,13 +217,8 @@ namespace FireplaceApi.Core.Operators
             bool includeEmail = false, bool includeGoogleUser = false, 
             bool includeAccessTokens = false, bool includeSessions = false)
         {
-            var sw = Stopwatch.StartNew();
             var user = await _userRepository.GetUserByIdAsync(id, includeEmail,
                 includeGoogleUser, includeAccessTokens, includeSessions);
-
-            _logger.LogTrace("Test1");
-            _logger.LogTrace($"Test2 User: {user.ToJson()}");
-            _logger.LogTrace(sw, $"Output User: {user.ToJson()}");
 
             if (user == null)
                 return user;

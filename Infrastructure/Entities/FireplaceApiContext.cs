@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
 using System;
+using Microsoft.Extensions.Logging;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
     public class FireplaceApiContext : DbContext
     {
+        private readonly ILogger<FireplaceApiContext> _logger;
         public DbSet<AccessTokenEntity> AccessTokenEntities { get; set; }
         public DbSet<EmailEntity> EmailEntities { get; set; }
         public DbSet<GoogleUserEntity> GoogleUserEntities { get; set; }
@@ -20,9 +22,10 @@ namespace FireplaceApi.Infrastructure.Entities
         public DbSet<FileEntity> FileEntities { get; set; }
         public DbSet<GlobalEntity> GlobalEntities { get; set; }
 
-        public FireplaceApiContext(DbContextOptions<FireplaceApiContext> options) 
+        public FireplaceApiContext(ILogger<FireplaceApiContext> logger, DbContextOptions<FireplaceApiContext> options) 
             : base(options)
         {
+            _logger = logger;
             //ChangeTracker.LazyLoadingEnabled = false;
             //ChangeTracker.AutoDetectChangesEnabled = false;
             ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
