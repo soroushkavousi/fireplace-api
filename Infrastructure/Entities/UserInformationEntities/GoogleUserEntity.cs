@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
 {
+    [Index(nameof(GmailAddress), IsUnique = true)]
     public class GoogleUserEntity : BaseEntity
     {
         public long UserEntityId { get; set; }
@@ -91,16 +92,6 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         public void Configure(EntityTypeBuilder<GoogleUserEntity> modelBuilder)
         {
             // p => principal / d => dependent
-
-            modelBuilder
-                .HasIndex(e => e.GmailAddress)
-                .IsUnique();
-
-            modelBuilder
-                .HasOne(d => d.UserEntity)
-                .WithOne(p => p.GoogleUserEntity)
-                .HasForeignKey<GoogleUserEntity>(d => d.UserEntityId)
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

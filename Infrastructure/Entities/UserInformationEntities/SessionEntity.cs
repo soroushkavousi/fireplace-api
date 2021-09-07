@@ -45,12 +45,6 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         public void Configure(EntityTypeBuilder<SessionEntity> modelBuilder)
         {
             // p => principal / d => dependent
-
-            modelBuilder
-                .HasOne(d => d.UserEntity)
-                .WithMany(p => p.SessionEntities)
-                .HasForeignKey(d => d.UserEntityId)
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

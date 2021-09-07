@@ -10,6 +10,7 @@ using System.Text.Json.Serialization;
 
 namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
 {
+    [Index(nameof(Username), IsUnique = true)]
     public class UserEntity : BaseEntity
     {
         public string FirstName { get; set; }
@@ -64,10 +65,6 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         public void Configure(EntityTypeBuilder<UserEntity> modelBuilder)
         {
             // p => principal / d => dependent
-
-            modelBuilder
-                .HasIndex(e => e.Username)
-                .IsUnique();
         }
     }
 }

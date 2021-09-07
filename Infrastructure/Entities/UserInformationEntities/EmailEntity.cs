@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
 {
+    [Index(nameof(Address), IsUnique = true)]
     public class EmailEntity : BaseEntity
     {
         public long UserEntityId { get; set; }
@@ -46,16 +47,6 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         public void Configure(EntityTypeBuilder<EmailEntity> modelBuilder)
         {
             // p => principal / d => dependent
-
-            modelBuilder
-                .HasIndex(e => e.Address)
-                .IsUnique();
-
-            modelBuilder
-                .HasOne(d => d.UserEntity)
-                .WithOne(p => p.EmailEntity)
-                .HasForeignKey<EmailEntity>(d => d.UserEntityId)
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

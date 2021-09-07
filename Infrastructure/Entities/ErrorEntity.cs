@@ -14,6 +14,8 @@ using FireplaceApi.Core.Enums;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
+    [Index(nameof(Name), IsUnique = true)]
+    [Index(nameof(Code), IsUnique = true)]
     public class ErrorEntity : BaseEntity
     {
         [Column(Order = 1)]
@@ -61,14 +63,6 @@ namespace FireplaceApi.Infrastructure.Entities
                .Property(e => e.Name)
                .HasDefaultValue(ErrorName.INTERNAL_SERVER.ToString())
                .IsRequired();
-
-            modelBuilder
-                .HasIndex(e => e.Name)
-                .IsUnique();
-
-            modelBuilder
-                .HasIndex(e => e.Code)
-                .IsUnique();
 
             modelBuilder
                 .Property(e => e.HttpStatusCode)

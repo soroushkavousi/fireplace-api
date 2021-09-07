@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
 {
+    [Index(nameof(Value), IsUnique = true)]
     public class AccessTokenEntity : BaseEntity
     {
         public long UserEntityId { get; set; }
@@ -42,16 +43,6 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         public void Configure(EntityTypeBuilder<AccessTokenEntity> modelBuilder)
         {
             // p => principal / d => dependent
-
-            modelBuilder
-                .HasIndex(e => e.Value)
-                .IsUnique();
-
-            modelBuilder
-                .HasOne(d => d.UserEntity)
-                .WithMany(p => p.AccessTokenEntities)
-                .HasForeignKey(d => d.UserEntityId)
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
