@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
+namespace FireplaceApi.Infrastructure.Entities
 {
     [Index(nameof(Username), IsUnique = true)]
     public class UserEntity : BaseEntity
@@ -23,6 +23,12 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         public GoogleUserEntity GoogleUserEntity { get; set; }
         public List<AccessTokenEntity> AccessTokenEntities { get; set; }
         public List<SessionEntity> SessionEntities { get; set; }
+        public List<CommunityEntity> OwnCommunities { get; set; }
+        public List<CommunityMemberEntity> JoinedCommunities { get; set; }
+        public List<PostEntity> PostEntities { get; set; }
+        public List<PostVoteEntity> PostVoteEntities { get; set; }
+        public List<CommentEntity> CommentEntities { get; set; }
+        public List<CommentVoteEntity> CommentVoteEntities { get; set; }
 
         private UserEntity() : base() { }
 
@@ -31,7 +37,13 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
             DateTime? modifiedDate = null, string passwordHash = null, long? id = null,
             EmailEntity emailEntity = null, GoogleUserEntity googleUserEntity = null,
             List<AccessTokenEntity> accessTokenEntities = null, 
-            List<SessionEntity> sessionEntities = null) : base(creationDate, modifiedDate)
+            List<SessionEntity> sessionEntities = null,
+            List<CommunityEntity> ownCommunities = null,
+            List<CommunityMemberEntity> joinedCommunities = null,
+            List<PostEntity> postEntities = null,
+            List<PostVoteEntity> postVoteEntities = null,
+            List<CommentEntity> commentEntities = null,
+            List<CommentVoteEntity> commentVoteEntities = null) : base(creationDate, modifiedDate)
         {
             FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
             LastName = lastName ?? throw new ArgumentNullException(nameof(lastName));
@@ -43,21 +55,26 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
             GoogleUserEntity = googleUserEntity;
             AccessTokenEntities = accessTokenEntities;
             SessionEntities = sessionEntities;
+            OwnCommunities = ownCommunities;
+            JoinedCommunities = joinedCommunities;
+            PostEntities = postEntities;
+            PostVoteEntities = postVoteEntities;
+            CommentEntities = commentEntities;
+            CommentVoteEntities = commentVoteEntities;
         }
 
         public UserEntity PureCopy() => new UserEntity(FirstName, LastName, 
-            Username, State, CreationDate, ModifiedDate, PasswordHash, Id,
-            null, null, null, null);
+            Username, State, CreationDate, ModifiedDate, PasswordHash, Id);
 
-        public void RemoveLoopReferencing()
-        {
-            EmailEntity = EmailEntity?.PureCopy();
-            GoogleUserEntity = GoogleUserEntity?.PureCopy();
-            AccessTokenEntities?.ForEach(
-                    accessTokenEntity => accessTokenEntity?.PureCopy());
-            SessionEntities?.ForEach(
-                    sessionEntity => sessionEntity?.PureCopy());
-        }
+        //public void RemoveLoopReferencing()
+        //{
+        //    EmailEntity = EmailEntity?.PureCopy();
+        //    GoogleUserEntity = GoogleUserEntity?.PureCopy();
+        //    AccessTokenEntities?.ForEach(
+        //            accessTokenEntity => accessTokenEntity?.PureCopy());
+        //    SessionEntities?.ForEach(
+        //            sessionEntity => sessionEntity?.PureCopy());
+        //}
     }
 
     public class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>

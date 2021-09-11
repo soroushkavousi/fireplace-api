@@ -8,7 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
+namespace FireplaceApi.Infrastructure.Entities
 {
     public class SessionEntity : BaseEntity
     {
@@ -32,7 +32,7 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         }
 
         public SessionEntity PureCopy() => new SessionEntity(UserEntityId, IpAddress,
-            State, CreationDate, ModifiedDate, Id, null);
+            State, CreationDate, ModifiedDate, Id);
 
         public void RemoveLoopReferencing()
         {
@@ -45,6 +45,13 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         public void Configure(EntityTypeBuilder<SessionEntity> modelBuilder)
         {
             // p => principal / d => dependent
+
+            modelBuilder
+                .HasOne(d => d.UserEntity)
+                .WithMany(p => p.SessionEntities)
+                .HasForeignKey(d => d.UserEntityId)
+                .HasPrincipalKey(p => p.Id)
+                .IsRequired();
         }
     }
 }

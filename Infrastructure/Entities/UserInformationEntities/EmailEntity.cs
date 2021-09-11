@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
+namespace FireplaceApi.Infrastructure.Entities
 {
     [Index(nameof(Address), IsUnique = true)]
     public class EmailEntity : BaseEntity
@@ -34,7 +34,7 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         }
 
         public EmailEntity PureCopy() => new EmailEntity(UserEntityId, Address,
-            ActivationStatus, CreationDate, ModifiedDate, ActivationCode, Id, null);
+            ActivationStatus, CreationDate, ModifiedDate, ActivationCode, Id);
 
         public void RemoveLoopReferencing()
         {
@@ -47,6 +47,13 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         public void Configure(EntityTypeBuilder<EmailEntity> modelBuilder)
         {
             // p => principal / d => dependent
+
+            modelBuilder
+                .HasOne(d => d.UserEntity)
+                .WithOne(p => p.EmailEntity)
+                .HasForeignKey<EmailEntity>(d => d.UserEntityId)
+                .HasPrincipalKey<UserEntity>(p => p.Id)
+                .IsRequired();
         }
     }
 }

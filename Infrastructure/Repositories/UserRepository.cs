@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
-using FireplaceApi.Infrastructure.Entities.UserInformationEntities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;

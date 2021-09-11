@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
+namespace FireplaceApi.Infrastructure.Entities
 {
     [Index(nameof(GmailAddress), IsUnique = true)]
     public class GoogleUserEntity : BaseEntity
@@ -79,7 +79,7 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
             TokenType, AccessTokenExpiresInSeconds, RefreshToken, Scope, IdToken,
             AccessTokenIssuedTime, GmailAddress, GmailVerified, GmailIssuedTimeInSeconds,
             FullName, FirstName, LastName, Locale, PictureUrl, State, AuthUser, Prompt,
-            RedirectToUserUrl, CreationDate, ModifiedDate, Id, null);
+            RedirectToUserUrl, CreationDate, ModifiedDate, Id);
 
         public void RemoveLoopReferencing()
         {
@@ -92,6 +92,13 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         public void Configure(EntityTypeBuilder<GoogleUserEntity> modelBuilder)
         {
             // p => principal / d => dependent
+
+            modelBuilder
+                .HasOne(d => d.UserEntity)
+                .WithOne(p => p.GoogleUserEntity)
+                .HasForeignKey<GoogleUserEntity>(d => d.UserEntityId)
+                .HasPrincipalKey<UserEntity>(p => p.Id)
+                .IsRequired();
         }
     }
 }

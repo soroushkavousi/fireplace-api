@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using FireplaceApi.Infrastructure.Entities.UserInformationEntities;
 using FireplaceApi.Core.ValueObjects;
 using System.Threading.Tasks;
 using System.Threading;
@@ -13,11 +12,22 @@ namespace FireplaceApi.Infrastructure.Entities
     public class FireplaceApiContext : DbContext
     {
         private readonly ILogger<FireplaceApiContext> _logger;
+
+        public DbSet<CommentEntity> CommentEntities { get; set; }
+        public DbSet<CommentVoteEntity> CommentVoteEntities { get; set; }
+
+        public DbSet<CommunityEntity> CommunityEntities{ get; set; }
+        public DbSet<CommunityMemberEntity> CommunityMemberEntities { get; set; }
+
+        public DbSet<PostEntity> PostEntities { get; set; }
+        public DbSet<PostVoteEntity> PostVoteEntities { get; set; }
+
         public DbSet<AccessTokenEntity> AccessTokenEntities { get; set; }
         public DbSet<EmailEntity> EmailEntities { get; set; }
         public DbSet<GoogleUserEntity> GoogleUserEntities { get; set; }
         public DbSet<SessionEntity> SessionEntities { get; set; }
         public DbSet<UserEntity> UserEntities { get; set; }
+
         public DbSet<ErrorEntity> ErrorEntities { get; set; }
         public DbSet<FileEntity> FileEntities { get; set; }
         public DbSet<GlobalEntity> GlobalEntities { get; set; }
@@ -48,11 +58,21 @@ namespace FireplaceApi.Infrastructure.Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration(new CommentEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new CommentVoteEntityConfiguration());
+
+            modelBuilder.ApplyConfiguration(new CommunityEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new CommunityMemberEntityConfiguration());
+
+            modelBuilder.ApplyConfiguration(new PostEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new PostVoteEntityConfiguration());
+
             modelBuilder.ApplyConfiguration(new AccessTokenEntityConfiguration());
             modelBuilder.ApplyConfiguration(new EmailEntityConfiguration());
             modelBuilder.ApplyConfiguration(new GoogleUserEntityConfiguration());
             modelBuilder.ApplyConfiguration(new SessionEntityConfiguration());
             modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
+
             modelBuilder.ApplyConfiguration(new ErrorEntityConfiguration());
             modelBuilder.ApplyConfiguration(new FileEntityConfiguration());
             modelBuilder.ApplyConfiguration(new GlobalEntityConfiguration());

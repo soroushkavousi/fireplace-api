@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
+namespace FireplaceApi.Infrastructure.Entities
 {
     [Index(nameof(Value), IsUnique = true)]
     public class AccessTokenEntity : BaseEntity
@@ -30,7 +30,7 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         }
 
         public AccessTokenEntity PureCopy() => new AccessTokenEntity(UserEntityId, 
-            Value, CreationDate, ModifiedDate, Id, null);
+            Value, CreationDate, ModifiedDate, Id);
 
         public void RemoveLoopReferencing()
         {
@@ -43,6 +43,13 @@ namespace FireplaceApi.Infrastructure.Entities.UserInformationEntities
         public void Configure(EntityTypeBuilder<AccessTokenEntity> modelBuilder)
         {
             // p => principal / d => dependent
+
+            modelBuilder
+                .HasOne(d => d.UserEntity)
+                .WithMany(p => p.AccessTokenEntities)
+                .HasForeignKey(d => d.UserEntityId)
+                .HasPrincipalKey(p => p.Id)
+                .IsRequired();
         }
     }
 }

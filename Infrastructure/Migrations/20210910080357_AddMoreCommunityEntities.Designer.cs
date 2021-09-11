@@ -4,15 +4,17 @@ using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FireplaceApi.Infrastructure.Migrations
 {
     [DbContext(typeof(FireplaceApiContext))]
-    partial class FireplaceApiContextModelSnapshot : ModelSnapshot
+    [Migration("20210910080357_AddMoreCommunityEntities")]
+    partial class AddMoreCommunityEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,18 +72,12 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<long?>("ParentCommentEntityId")
-                        .HasColumnType("bigint");
-
                     b.Property<int>("Vote")
                         .HasColumnType("integer");
 
                     b.HasKey("AuthorEntityId", "PostEntityId");
 
                     b.HasIndex("AuthorEntityId")
-                        .IsUnique();
-
-                    b.HasIndex("ParentCommentEntityId")
                         .IsUnique();
 
                     b.HasIndex("PostEntityId")
@@ -542,12 +538,6 @@ namespace FireplaceApi.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FireplaceApi.Infrastructure.Entities.CommentEntity", "ParentCommentEntity")
-                        .WithMany("ChildCommentEntities")
-                        .HasForeignKey("ParentCommentEntityId")
-                        .HasPrincipalKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("FireplaceApi.Infrastructure.Entities.PostEntity", "PostEntity")
                         .WithMany("CommentEntities")
                         .HasForeignKey("PostEntityId")
@@ -556,8 +546,6 @@ namespace FireplaceApi.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("AuthorEntity");
-
-                    b.Navigation("ParentCommentEntity");
 
                     b.Navigation("PostEntity");
                 });
@@ -686,8 +674,6 @@ namespace FireplaceApi.Infrastructure.Migrations
 
             modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.CommentEntity", b =>
                 {
-                    b.Navigation("ChildCommentEntities");
-
                     b.Navigation("CommentVoteEntities");
                 });
 

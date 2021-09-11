@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using FireplaceApi.Infrastructure.Entities;
-using FireplaceApi.Infrastructure.Entities.UserInformationEntities;
 using FireplaceApi.Infrastructure.Repositories;
 using System;
 using FireplaceApi.Core.Models.UserInformations;

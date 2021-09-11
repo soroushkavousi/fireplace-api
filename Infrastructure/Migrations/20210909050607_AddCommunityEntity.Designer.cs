@@ -4,15 +4,17 @@ using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FireplaceApi.Infrastructure.Migrations
 {
     [DbContext(typeof(FireplaceApiContext))]
-    partial class FireplaceApiContextModelSnapshot : ModelSnapshot
+    [Migration("20210909050607_AddCommunityEntity")]
+    partial class AddCommunityEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,78 +51,6 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.ToTable("AccessTokenEntities");
                 });
 
-            modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.CommentEntity", b =>
-                {
-                    b.Property<long>("AuthorEntityId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("PostEntityId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("Id")
-                        .IsRequired()
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("ParentCommentEntityId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("Vote")
-                        .HasColumnType("integer");
-
-                    b.HasKey("AuthorEntityId", "PostEntityId");
-
-                    b.HasIndex("AuthorEntityId")
-                        .IsUnique();
-
-                    b.HasIndex("ParentCommentEntityId")
-                        .IsUnique();
-
-                    b.HasIndex("PostEntityId")
-                        .IsUnique();
-
-                    b.ToTable("CommentEntities");
-                });
-
-            modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.CommentVoteEntity", b =>
-                {
-                    b.Property<long>("VoterEntityId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("CommentEntityId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("Id")
-                        .HasColumnType("bigint");
-
-                    b.Property<bool>("IsUp")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.HasKey("VoterEntityId", "CommentEntityId");
-
-                    b.HasIndex("CommentEntityId")
-                        .IsUnique();
-
-                    b.HasIndex("VoterEntityId")
-                        .IsUnique();
-
-                    b.ToTable("CommentVoteEntities");
-                });
-
             modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.CommunityEntity", b =>
                 {
                     b.Property<long?>("Id")
@@ -131,7 +61,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<long>("CreatorEntityId")
+                    b.Property<long>("CreatorId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime?>("ModifiedDate")
@@ -142,7 +72,7 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatorEntityId");
+                    b.HasIndex("CreatorId");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -392,72 +322,6 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.ToTable("GoogleUserEntities");
                 });
 
-            modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.PostEntity", b =>
-                {
-                    b.Property<long>("AuthorEntityId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("CommunityEntityId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("Id")
-                        .IsRequired()
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("Vote")
-                        .HasColumnType("integer");
-
-                    b.HasKey("AuthorEntityId", "CommunityEntityId");
-
-                    b.HasIndex("AuthorEntityId")
-                        .IsUnique();
-
-                    b.HasIndex("CommunityEntityId")
-                        .IsUnique();
-
-                    b.ToTable("PostEntities");
-                });
-
-            modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.PostVoteEntity", b =>
-                {
-                    b.Property<long>("VoterEntityId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("PostEntityId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("Id")
-                        .HasColumnType("bigint");
-
-                    b.Property<bool>("IsUp")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.HasKey("VoterEntityId", "PostEntityId");
-
-                    b.HasIndex("PostEntityId")
-                        .IsUnique();
-
-                    b.HasIndex("VoterEntityId")
-                        .IsUnique();
-
-                    b.ToTable("PostVoteEntities");
-                });
-
             modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.SessionEntity", b =>
                 {
                     b.Property<long?>("Id")
@@ -534,69 +398,21 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Navigation("UserEntity");
                 });
 
-            modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.CommentEntity", b =>
-                {
-                    b.HasOne("FireplaceApi.Infrastructure.Entities.UserEntity", "AuthorEntity")
-                        .WithMany("CommentEntities")
-                        .HasForeignKey("AuthorEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FireplaceApi.Infrastructure.Entities.CommentEntity", "ParentCommentEntity")
-                        .WithMany("ChildCommentEntities")
-                        .HasForeignKey("ParentCommentEntityId")
-                        .HasPrincipalKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("FireplaceApi.Infrastructure.Entities.PostEntity", "PostEntity")
-                        .WithMany("CommentEntities")
-                        .HasForeignKey("PostEntityId")
-                        .HasPrincipalKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AuthorEntity");
-
-                    b.Navigation("ParentCommentEntity");
-
-                    b.Navigation("PostEntity");
-                });
-
-            modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.CommentVoteEntity", b =>
-                {
-                    b.HasOne("FireplaceApi.Infrastructure.Entities.CommentEntity", "CommentEntity")
-                        .WithMany("CommentVoteEntities")
-                        .HasForeignKey("CommentEntityId")
-                        .HasPrincipalKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FireplaceApi.Infrastructure.Entities.UserEntity", "VoterEntity")
-                        .WithMany("CommentVoteEntities")
-                        .HasForeignKey("VoterEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CommentEntity");
-
-                    b.Navigation("VoterEntity");
-                });
-
             modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.CommunityEntity", b =>
                 {
-                    b.HasOne("FireplaceApi.Infrastructure.Entities.UserEntity", "CreatorEntity")
+                    b.HasOne("FireplaceApi.Infrastructure.Entities.UserEntity", "Creator")
                         .WithMany("OwnCommunities")
-                        .HasForeignKey("CreatorEntityId")
+                        .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CreatorEntity");
+                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.CommunityMemberEntity", b =>
                 {
                     b.HasOne("FireplaceApi.Infrastructure.Entities.CommunityEntity", "CommunityEntity")
-                        .WithMany("CommunityMemberEntities")
+                        .WithMany("Members")
                         .HasForeignKey("CommunityEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -634,45 +450,6 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Navigation("UserEntity");
                 });
 
-            modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.PostEntity", b =>
-                {
-                    b.HasOne("FireplaceApi.Infrastructure.Entities.UserEntity", "AuthorEntity")
-                        .WithMany("PostEntities")
-                        .HasForeignKey("AuthorEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FireplaceApi.Infrastructure.Entities.CommunityEntity", "CommunityEntity")
-                        .WithMany("PostEntities")
-                        .HasForeignKey("CommunityEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AuthorEntity");
-
-                    b.Navigation("CommunityEntity");
-                });
-
-            modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.PostVoteEntity", b =>
-                {
-                    b.HasOne("FireplaceApi.Infrastructure.Entities.PostEntity", "PostEntity")
-                        .WithMany("PostVoteEntities")
-                        .HasForeignKey("PostEntityId")
-                        .HasPrincipalKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FireplaceApi.Infrastructure.Entities.UserEntity", "VoterEntity")
-                        .WithMany("PostVoteEntities")
-                        .HasForeignKey("VoterEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("PostEntity");
-
-                    b.Navigation("VoterEntity");
-                });
-
             modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.SessionEntity", b =>
                 {
                     b.HasOne("FireplaceApi.Infrastructure.Entities.UserEntity", "UserEntity")
@@ -684,34 +461,14 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Navigation("UserEntity");
                 });
 
-            modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.CommentEntity", b =>
-                {
-                    b.Navigation("ChildCommentEntities");
-
-                    b.Navigation("CommentVoteEntities");
-                });
-
             modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.CommunityEntity", b =>
                 {
-                    b.Navigation("CommunityMemberEntities");
-
-                    b.Navigation("PostEntities");
-                });
-
-            modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.PostEntity", b =>
-                {
-                    b.Navigation("CommentEntities");
-
-                    b.Navigation("PostVoteEntities");
+                    b.Navigation("Members");
                 });
 
             modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.UserEntity", b =>
                 {
                     b.Navigation("AccessTokenEntities");
-
-                    b.Navigation("CommentEntities");
-
-                    b.Navigation("CommentVoteEntities");
 
                     b.Navigation("EmailEntity");
 
@@ -720,10 +477,6 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Navigation("JoinedCommunities");
 
                     b.Navigation("OwnCommunities");
-
-                    b.Navigation("PostEntities");
-
-                    b.Navigation("PostVoteEntities");
 
                     b.Navigation("SessionEntities");
                 });
