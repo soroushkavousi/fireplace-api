@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.Extensions.Options;
-using FireplaceApi.Api.Tools.Swagger;
+using FireplaceApi.Api.Tools;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Rewrite;
 using System.Net;
@@ -30,17 +30,13 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.Text.Json.Serialization;
-using FireplaceApi.Api.Tools.AspDotNetCore;
 using Swashbuckle.AspNetCore.SwaggerUI;
-using FireplaceApi.Api.Controllers.Parameters.ErrorParameters;
-using FireplaceApi.Api.Tools.Swagger.OperationFilters;
-using FireplaceApi.Api.Tools.Swagger.DocumentFilters;
-using FireplaceApi.Api.Attributes.ActionFilterAttributes;
+using FireplaceApi.Api.Attributes;
 using Microsoft.AspNetCore.Authentication;
 using FireplaceApi.Infrastructure.Entities;
-using FireplaceApi.Api.Tools.TextJsonSerializer;
 using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Extensions;
+using FireplaceApi.Api.Controllers;
 
 namespace FireplaceApi.Api
 {

@@ -15,7 +15,6 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Net;
 using FireplaceApi.Core.Operators;
-using FireplaceApi.Core.Models.UserInformations;
 
 namespace FireplaceApi.Core.Services
 {

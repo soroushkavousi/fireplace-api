@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Validators;
 using System;
 using System.Collections.Generic;

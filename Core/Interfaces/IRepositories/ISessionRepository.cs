@@ -5,10 +5,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
-using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Enums;
 
-namespace FireplaceApi.Core.Interfaces.IRepositories
+namespace FireplaceApi.Core.Interfaces
 {
     public interface ISessionRepository
     {

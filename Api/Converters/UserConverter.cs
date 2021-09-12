@@ -3,15 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
-using FireplaceApi.Api.Controllers.Parameters.UserParameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FireplaceApi.Api.Extensions;
-using FireplaceApi.Api.Controllers.Parameters.EmailParameters;
-using FireplaceApi.Api.Controllers.Parameters.SessionParameters;
-using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Api.Controllers;
 
 namespace FireplaceApi.Api.Converters
 {

@@ -16,7 +16,7 @@ using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 
-namespace FireplaceApi.Api.Tools.Swagger.SchemaFilters
+namespace FireplaceApi.Api.Tools
 {
     public class TypeExampleProvider : ISchemaFilter
     {

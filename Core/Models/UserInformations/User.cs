@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using FireplaceApi.Core.Extensions;
 
-namespace FireplaceApi.Core.Models.UserInformations
+namespace FireplaceApi.Core.Models
 {
     public class User : BaseModel
     {

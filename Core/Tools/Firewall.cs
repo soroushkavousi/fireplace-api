@@ -1,7 +1,7 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;

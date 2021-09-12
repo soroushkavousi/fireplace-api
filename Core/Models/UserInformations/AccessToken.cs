@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Core.Models.UserInformations
+namespace FireplaceApi.Core.Models
 {
     public class AccessToken : BaseModel
     {

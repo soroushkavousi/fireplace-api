@@ -9,7 +9,7 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 
-namespace FireplaceApi.Api.Tools.Swagger
+namespace FireplaceApi.Api.Tools
 {
     /// <summary>
     /// Configures the Swagger generation options.

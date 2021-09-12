@@ -8,7 +8,7 @@ using System.Net;
 using System.Net.Mail;
 using FireplaceApi.Core.ValueObjects;
 
-namespace FireplaceApi.Core.Interfaces.IGateways
+namespace FireplaceApi.Core.Interfaces
 {
     public interface IGoogleGateway
     {

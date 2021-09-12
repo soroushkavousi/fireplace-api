@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Models;
 using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Enums;

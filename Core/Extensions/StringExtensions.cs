@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Core.Tools;
-using FireplaceApi.Core.Tools.NewtonsoftSerializer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -61,7 +60,7 @@ namespace FireplaceApi.Core.Extensions
             {
                 null => throw new ArgumentNullException(nameof(str)),
                 "" => throw new ArgumentException($"{nameof(str)} cannot be empty", nameof(str)),
-                _ => str.First().ToString().ToUpper() + str.Substring(1)
+                _ => str.First().ToString().ToUpper() + str[1..]
             };
 
         public static string Shuffle(this string str)

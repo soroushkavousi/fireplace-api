@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Api.IntegrationTests.Tools;
+﻿using FireplaceApi.Api.IntegrationTests;
 using FireplaceApi.Api.Tools;
 using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Extensions;

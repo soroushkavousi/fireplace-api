@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace FireplaceApi.Api.IntegrationTests.Tools
+namespace FireplaceApi.Api.IntegrationTests
 {
     public class TestUtils
     {

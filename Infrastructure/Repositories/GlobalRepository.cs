@@ -14,7 +14,7 @@ using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Interfaces.IRepositories;
+using FireplaceApi.Core.Interfaces;
 using System.Diagnostics;
 
 namespace FireplaceApi.Infrastructure.Repositories

@@ -11,8 +11,6 @@ namespace FireplaceApi.Api.Controllers
 {
     public class ApiController : ControllerBase
     {
-        
-
         protected void SetOutputHeaderParameters(IControllerOutputHeaderParameters outputHeaderParameters)
         {
             HttpContext.Items[Constants.ControllerOutputHeaderParametersKey] = outputHeaderParameters;

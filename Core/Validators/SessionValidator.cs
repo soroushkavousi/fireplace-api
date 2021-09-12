@@ -10,8 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using FireplaceApi.Core.Models.UserInformations;
-using FireplaceApi.Core.Interfaces.IRepositories;
+using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Operators;
 
 namespace FireplaceApi.Core.Validators

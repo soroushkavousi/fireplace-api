@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
-namespace FireplaceApi.Core.Tools.NewtonsoftSerializer
+namespace FireplaceApi.Core.Tools
 {
     public class IPAddressConverter : JsonConverter
     {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Mail;
 
-namespace FireplaceApi.Core.Interfaces.IGateways
+namespace FireplaceApi.Core.Interfaces
 {
     public interface IEmailGateway
     {

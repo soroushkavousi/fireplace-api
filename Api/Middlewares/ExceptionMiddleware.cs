@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using FireplaceApi.Api.Controllers.Parameters.ErrorParameters;
 using FireplaceApi.Api.Converters;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Exceptions;

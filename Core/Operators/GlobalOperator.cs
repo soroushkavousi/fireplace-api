@@ -13,8 +13,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Net;
 using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Interfaces.IRepositories;
-using FireplaceApi.Core.Interfaces.IGateways;
+using FireplaceApi.Core.Interfaces;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace FireplaceApi.Core.Operators

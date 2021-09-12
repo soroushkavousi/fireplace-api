@@ -9,9 +9,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using FireplaceApi.Api.Extensions;
 using System.Net;
-using FireplaceApi.Api.Controllers.Parameters.SessionParameters;
-using FireplaceApi.Api.Controllers.Parameters.UserParameters;
-using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Api.Controllers;
 
 namespace FireplaceApi.Api.Converters
 {

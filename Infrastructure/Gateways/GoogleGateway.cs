@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Mail;
-using FireplaceApi.Core.Interfaces.IGateways;
+using FireplaceApi.Core.Interfaces;
 using Google.Apis.Auth.OAuth2;
 using static Google.Apis.Oauth2.v2.Oauth2Service;
 using Microsoft.AspNetCore.Authentication.Google;

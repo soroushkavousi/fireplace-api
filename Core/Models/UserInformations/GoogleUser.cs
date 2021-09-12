@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Core.Models.UserInformations
+namespace FireplaceApi.Core.Models
 {
     public class GoogleUser : BaseModel
     {

@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Api.Tools.TextJsonSerializer;
+﻿using FireplaceApi.Api.Tools;
 using FireplaceApi.Core.Tools;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

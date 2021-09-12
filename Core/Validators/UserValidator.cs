@@ -5,7 +5,6 @@ using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Models.UserInformations;
 using FireplaceApi.Core.Services;
 using FireplaceApi.Core.ValueObjects;
 using System;

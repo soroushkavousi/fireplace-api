@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Enums;
 
-namespace FireplaceApi.Core.Interfaces.IRepositories
+namespace FireplaceApi.Core.Interfaces
 {
     public interface IErrorRepository
     {

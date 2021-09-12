@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Api.Tools.TextJsonSerializer
+namespace FireplaceApi.Api.Tools
 {
     public class SnakeCaseNamingPolicy : JsonNamingPolicy
     {

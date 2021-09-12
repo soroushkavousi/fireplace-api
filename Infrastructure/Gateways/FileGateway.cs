@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FireplaceApi.Core.Interfaces.IGateways;
+using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Tools;
 
 namespace FireplaceApi.Infrastructure.Gateways

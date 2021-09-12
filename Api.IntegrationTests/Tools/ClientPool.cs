@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Core.Interfaces.IRepositories;
+﻿using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Entities;
@@ -10,7 +10,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Api.IntegrationTests.Tools
+namespace FireplaceApi.Api.IntegrationTests
 {
     public class ClientPool
     {

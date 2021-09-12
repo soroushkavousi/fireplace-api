@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Api.Controllers.Parameters.ErrorParameters
+namespace FireplaceApi.Api.Controllers
 {
     public class ControllerGetErrorByCodeInputRouteParameters
     {

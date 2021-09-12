@@ -9,12 +9,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using FireplaceApi.Api.Tools.Swagger.SchemaFilters;
+using FireplaceApi.Api.Tools;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Extensions;
 
-namespace FireplaceApi.Api.Tools.Swagger.OperationFilters
+namespace FireplaceApi.Api.Tools
 {
     public class ActionResponseExampleProvider : IOperationFilter
     {

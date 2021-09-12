@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Api.Tools.Swagger.DocumentFilters
+namespace FireplaceApi.Api.Tools
 {
     //Usage : "options.DocumentFilter<CustomModelDocumentFilter<Error>>();"
     public class CustomModelDocumentFilter<T> : IDocumentFilter where T : class

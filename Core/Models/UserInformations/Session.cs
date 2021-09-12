@@ -6,7 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Core.Models.UserInformations
+namespace FireplaceApi.Core.Models
 {
     public class Session : BaseModel
     {

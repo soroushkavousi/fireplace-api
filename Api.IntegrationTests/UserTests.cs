@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using FireplaceApi.Api.IntegrationTests.Tools;
+using FireplaceApi.Api.IntegrationTests;
 using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;

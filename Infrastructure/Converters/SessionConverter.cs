@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using FireplaceApi.Infrastructure.Entities;
 using FireplaceApi.Infrastructure.Repositories;
 using System;
-using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Enums;
 

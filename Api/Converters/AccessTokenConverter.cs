@@ -7,9 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FireplaceApi.Api.Controllers.Parameters.AccessTokenParameters;
-using FireplaceApi.Api.Controllers.Parameters.UserParameters;
-using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Api.Controllers;
 
 namespace FireplaceApi.Api.Converters
 {

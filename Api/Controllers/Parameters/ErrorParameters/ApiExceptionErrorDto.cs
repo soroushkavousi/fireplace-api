@@ -1,5 +1,5 @@
 ﻿using Microsoft.OpenApi.Any;
-using FireplaceApi.Api.Tools.Swagger.SchemaFilters;
+using FireplaceApi.Api.Tools;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using FireplaceApi.Core.Extensions;
 
-namespace FireplaceApi.Api.Controllers.Parameters.ErrorParameters
+namespace FireplaceApi.Api.Controllers
 {
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
     public class ApiExceptionErrorDto

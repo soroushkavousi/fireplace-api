@@ -8,7 +8,7 @@ using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.ValueObjects;
 
-namespace FireplaceApi.Core.Interfaces.IRepositories
+namespace FireplaceApi.Core.Interfaces
 {
     public interface IGlobalRepository
     {

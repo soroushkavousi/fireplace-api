@@ -1,7 +1,7 @@
-﻿using FireplaceApi.Api.Controllers.Parameters;
+﻿using FireplaceApi.Api.Controllers;
 using FireplaceApi.Api.Tools;
 using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Models;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;

@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 using FireplaceApi.Api.Extensions;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using System.Diagnostics;
-using FireplaceApi.Api.Controllers.Parameters.UserParameters;
 using Microsoft.Extensions.Logging;
 using FireplaceApi.Api.Tools;
 using FireplaceApi.Core.Extensions;
 
-namespace FireplaceApi.Api.Attributes.ActionFilterAttributes
+namespace FireplaceApi.Api.Attributes
 {
     public class RequesterUserInjectorAttribute : ActionFilterAttribute
     {

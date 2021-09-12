@@ -1,8 +1,7 @@
 ﻿using Microsoft.OpenApi.Any;
 using FireplaceApi.Api.Extensions;
 using FireplaceApi.Api.Interfaces;
-using FireplaceApi.Api.Tools.Swagger;
-using FireplaceApi.Api.Tools.Swagger.SchemaFilters;
+using FireplaceApi.Api.Tools;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
@@ -10,9 +9,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using FireplaceApi.Core.Extensions;
-using FireplaceApi.Api.Tools;
 
-namespace FireplaceApi.Api.Controllers.Parameters.FileParameters
+namespace FireplaceApi.Api.Controllers
 {
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
     public class FileDto

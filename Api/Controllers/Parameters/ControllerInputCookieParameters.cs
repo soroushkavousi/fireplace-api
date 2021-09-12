@@ -8,7 +8,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace FireplaceApi.Api.Controllers.Parameters
+namespace FireplaceApi.Api.Controllers
 {
     public class ControllerInputCookieParameters
     {

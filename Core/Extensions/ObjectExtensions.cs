@@ -9,7 +9,7 @@ using System.Text.Unicode;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Reflection;
-using FireplaceApi.Core.Tools.NewtonsoftSerializer;
+using FireplaceApi.Core.Tools;
 
 namespace FireplaceApi.Core.Extensions
 {

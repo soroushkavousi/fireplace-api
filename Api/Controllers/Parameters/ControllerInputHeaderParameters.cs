@@ -11,7 +11,7 @@ using Microsoft.Extensions.Primitives;
 using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.Extensions;
 
-namespace FireplaceApi.Api.Controllers.Parameters
+namespace FireplaceApi.Api.Controllers
 {
     public class ControllerInputHeaderParameters
     {

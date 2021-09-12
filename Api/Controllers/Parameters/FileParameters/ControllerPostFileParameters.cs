@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Api.Controllers.Parameters.FileParameters
+namespace FireplaceApi.Api.Controllers
 {
     public class ControllerPostFileInputFormParameters
     {

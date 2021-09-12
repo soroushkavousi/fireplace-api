@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Core.Tools.NewtonsoftSerializer
+namespace FireplaceApi.Core.Tools
 {
     public class CoreContractResolver : DefaultContractResolver
     {

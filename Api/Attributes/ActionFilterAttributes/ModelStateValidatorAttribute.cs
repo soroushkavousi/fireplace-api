@@ -12,7 +12,7 @@
 //using Microsoft.Extensions.Logging;
 //using FireplaceApi.Api.Enums;
 
-//namespace FireplaceApi.Api.Attributes.ActionFilterAttributes
+//namespace FireplaceApi.Api.Attributes
 //{
 //    public class ModelStateValidatorAttribute : ActionFilterAttribute
 //    {

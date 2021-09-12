@@ -6,14 +6,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using FireplaceApi.Api.Controllers.Parameters;
-using FireplaceApi.Api.Controllers.Parameters.ErrorParameters;
+using FireplaceApi.Api.Controllers;
 using FireplaceApi.Api.Converters;
 using FireplaceApi.Api.Extensions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using FireplaceApi.Api.Controllers.Parameters.EmailParameters;
 using FireplaceApi.Core.Services;
-using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Models;
 
 namespace FireplaceApi.Api.Controllers
 {

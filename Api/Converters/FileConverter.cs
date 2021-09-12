@@ -2,13 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using FireplaceApi.Api.Controllers.Parameters.FileParameters;
 using FireplaceApi.Api.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FireplaceApi.Core.Models;
+using FireplaceApi.Api.Controllers;
 
 namespace FireplaceApi.Api.Converters
 {

@@ -10,10 +10,9 @@ using FireplaceApi.Api.Converters;
 using FireplaceApi.Core.Services;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Infrastructure.Repositories;
-using FireplaceApi.Core.Interfaces.IRepositories;
+using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Validators;
 using FireplaceApi.Infrastructure.Gateways;
-using FireplaceApi.Core.Interfaces.IGateways;
 using FireplaceApi.Core.Tools;
 
 namespace FireplaceApi.Api.Extensions

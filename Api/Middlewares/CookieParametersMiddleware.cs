@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using FireplaceApi.Api.Controllers.Parameters;
+using FireplaceApi.Api.Controllers;
 using FireplaceApi.Api.Extensions;
 using FireplaceApi.Api.Interfaces;
 using FireplaceApi.Api.Tools;

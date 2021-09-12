@@ -10,12 +10,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using FireplaceApi.Core.Models.UserInformations;
+using FireplaceApi.Core.Models;
 using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Interfaces.IRepositories;
+using FireplaceApi.Core.Interfaces;
 using System.Diagnostics;
 
 namespace FireplaceApi.Infrastructure.Repositories

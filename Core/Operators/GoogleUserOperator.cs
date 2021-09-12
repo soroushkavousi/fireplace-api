@@ -12,9 +12,8 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Core.Tools;
-using FireplaceApi.Core.Models.UserInformations;
-using FireplaceApi.Core.Interfaces.IRepositories;
-using FireplaceApi.Core.Interfaces.IGateways;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Interfaces;
 
 namespace FireplaceApi.Core.Operators
 {
