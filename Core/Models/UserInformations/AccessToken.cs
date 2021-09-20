@@ -25,7 +25,7 @@ namespace FireplaceApi.Core.Models
         }
 
         public AccessToken PureCopy() => new AccessToken(Id, UserId, Value, 
-            CreationDate, ModifiedDate, null);
+            CreationDate, ModifiedDate);
 
         public void RemoveLoopReferencing()
         {

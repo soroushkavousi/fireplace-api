@@ -28,7 +28,7 @@ namespace FireplaceApi.Core.Models
         }
 
         public Session PureCopy() => new Session(Id, UserId, IpAddress, 
-            State, CreationDate, ModifiedDate, null);
+            State, CreationDate, ModifiedDate);
 
         public void RemoveLoopReferencing()
         {

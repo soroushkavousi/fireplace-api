@@ -27,6 +27,7 @@ namespace FireplaceApi.Api.Extensions
         public static IServiceCollection AddInfrastructurConverters(this IServiceCollection services)
         {
             services.AddScoped<Infrastructure.Converters.AccessTokenConverter>();
+            services.AddScoped<Infrastructure.Converters.CommunityConverter>();
             services.AddScoped<Infrastructure.Converters.EmailConverter>();
             services.AddScoped<Infrastructure.Converters.ErrorConverter>();
             services.AddScoped<Infrastructure.Converters.FileConverter>();
@@ -40,6 +41,7 @@ namespace FireplaceApi.Api.Extensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<IAccessTokenRepository, AccessTokenRepository>();
+            services.AddScoped<ICommunityRepository, CommunityRepository>();
             services.AddScoped<IEmailRepository, EmailRepository>();
             services.AddScoped<IErrorRepository, ErrorRepository>();
             services.AddScoped<IFileRepository, FileRepository>();
@@ -67,6 +69,7 @@ namespace FireplaceApi.Api.Extensions
         public static IServiceCollection AddOperators(this IServiceCollection services)
         {
             services.AddScoped<AccessTokenOperator>();
+            services.AddScoped<CommunityOperator>();
             services.AddScoped<EmailOperator>();
             services.AddScoped<ErrorOperator>();
             services.AddScoped<FileOperator>();
@@ -80,6 +83,7 @@ namespace FireplaceApi.Api.Extensions
         public static IServiceCollection AddValidators(this IServiceCollection services)
         {
             services.AddScoped<AccessTokenValidator>();
+            services.AddScoped<CommunityValidator>();
             services.AddScoped<EmailValidator>();
             services.AddScoped<ErrorValidator>();
             services.AddScoped<FileValidator>();
@@ -91,6 +95,7 @@ namespace FireplaceApi.Api.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddScoped<AccessTokenService>();
+            services.AddScoped<CommunityService>();
             services.AddScoped<EmailService>();
             services.AddScoped<ErrorService>();
             services.AddScoped<FileService>();
@@ -102,6 +107,7 @@ namespace FireplaceApi.Api.Extensions
         public static IServiceCollection AddApiConverters(this IServiceCollection services)
         {
             services.AddScoped<AccessTokenConverter>();
+            services.AddScoped<CommunityConverter>();
             services.AddScoped<EmailConverter>();
             services.AddScoped<ErrorConverter>();
             services.AddScoped<FileConverter>();

@@ -78,6 +78,7 @@ namespace FireplaceApi.Api
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = SnakeCaseNamingPolicy.Instance;
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.JsonSerializerOptions.Converters.Add(new JsonPropertyOrderConverter());
             });
             //services.AddControllers().AddNewtonsoftJson(options =>
             //{
@@ -208,7 +209,6 @@ namespace FireplaceApi.Api
                 options.EnableDeepLinking();
                 //options.EnableFilter();
                 options.RoutePrefix = "docs";
-                options.DisplayRequestDuration();
                 // build a swagger endpoint for each discovered API version
                 foreach (var description in provider.ApiVersionDescriptions.OrderByDescending(x => x.ApiVersion).ToList())
                 {

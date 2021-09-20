@@ -12,8 +12,8 @@ namespace FireplaceApi.Infrastructure.Entities
     [Index(nameof(Name), IsUnique = true)]
     public class CommunityEntity : BaseEntity
     {
-        public long CreatorEntityId { get; set; }
         public string Name { get; set; }
+        public long CreatorEntityId { get; set; }
         public long? Id { get; set; }
         public UserEntity CreatorEntity { get; set; }
         public List<CommunityMemberEntity> CommunityMemberEntities { get; set; }
@@ -21,21 +21,21 @@ namespace FireplaceApi.Infrastructure.Entities
 
         private CommunityEntity() : base() { }
 
-        public CommunityEntity(long creatorEntityId, string name,
+        public CommunityEntity(string name, long creatorEntityId,
             DateTime? creationDate = null, DateTime? modifiedDate = null,
             long? id = null, UserEntity creatorEntity = null, 
             List<CommunityMemberEntity> members = null,
             List<PostEntity> postEntities = null) : base(creationDate, modifiedDate)
         {
-            CreatorEntityId = creatorEntityId;
             Name = name ?? throw new ArgumentNullException(nameof(name));
+            CreatorEntityId = creatorEntityId;
             Id = id;
             CreatorEntity = creatorEntity;
             CommunityMemberEntities = members;
             PostEntities = postEntities;
         }
 
-        public CommunityEntity PureCopy() => new CommunityEntity(CreatorEntityId, Name,
+        public CommunityEntity PureCopy() => new CommunityEntity(Name, CreatorEntityId,
             CreationDate, ModifiedDate, Id);
     }
 

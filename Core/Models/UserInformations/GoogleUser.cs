@@ -72,7 +72,7 @@ namespace FireplaceApi.Core.Models
             TokenType, AccessTokenExpiresInSeconds, RefreshToken, Scope, IdToken,
             AccessTokenIssuedTime, GmailAddress, GmailVerified, GmailIssuedTimeInSeconds,
             FullName, FirstName, LastName, Locale, PictureUrl, State, AuthUser, Prompt, 
-            RedirectToUserUrl, CreationDate, ModifiedDate, null);
+            RedirectToUserUrl, CreationDate, ModifiedDate);
 
         public void RemoveLoopReferencing()
         {

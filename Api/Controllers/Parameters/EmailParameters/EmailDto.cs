@@ -27,7 +27,7 @@ namespace FireplaceApi.Api.Controllers
 
         public static OpenApiObject PureEmailExample1 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(1000001),
+            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(10001),
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(Address).ToSnakeCase()] = new OpenApiString("tedmosby@gmail.com"),
             [nameof(ActivationStatus).ToSnakeCase()] = new OpenApiString(Core.Enums.ActivationStatus.COMPLETED.ToString()),
@@ -35,7 +35,7 @@ namespace FireplaceApi.Api.Controllers
         };
         public static OpenApiObject PureEmailExample2 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(2000001),
+            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(20001),
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(Address).ToSnakeCase()] = new OpenApiString("barneystinson@gmail.com"),
             [nameof(ActivationStatus).ToSnakeCase()] = new OpenApiString(Core.Enums.ActivationStatus.SENT.ToString()),

@@ -175,11 +175,9 @@ namespace FireplaceApi.Api.Controllers
             [FromRoute] ControllerGetUserByIdInputRouteParameters inputRouteParameters,
             [FromQuery] ControllerGetUserByIdInputQueryParameters inputQueryParameters)
         {
-            var sw = Stopwatch.StartNew();
             var user = await _userService.GetUserByIdAsync(requesterUser, inputRouteParameters.Id,
                 inputQueryParameters.IncludeEmail, inputQueryParameters.IncludeSessions);
             var userDto = _userConverter.ConvertToDto(user);
-            _logger.LogTrace(sw);
             return userDto;
         }
 

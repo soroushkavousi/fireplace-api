@@ -24,7 +24,7 @@ namespace FireplaceApi.Api.Controllers
 
         public static OpenApiObject PureFileExample1 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(1000000),
+            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(10001),
             [nameof(Url).ToSnakeCase()] = new OpenApiString("https://files.social-media.bitiano.com/xww03krwo1e3.jpg"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
         };

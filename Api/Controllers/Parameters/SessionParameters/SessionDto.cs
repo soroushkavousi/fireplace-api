@@ -28,7 +28,7 @@ namespace FireplaceApi.Api.Controllers
 
         public static OpenApiObject PureSessionExample11 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(1000011),
+            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(10001),
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(IpAddress).ToSnakeCase()] = new OpenApiString("111.111.111.111"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
@@ -36,7 +36,7 @@ namespace FireplaceApi.Api.Controllers
         };
         public static OpenApiObject PureSessionExample12 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(1000012),
+            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(10002),
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(IpAddress).ToSnakeCase()] = new OpenApiString("111.111.111.112"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
@@ -44,7 +44,7 @@ namespace FireplaceApi.Api.Controllers
         };
         public static OpenApiObject PureSessionExample21 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(2000011),
+            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(20001),
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(IpAddress).ToSnakeCase()] = new OpenApiString("222.222.222.222"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
@@ -52,7 +52,7 @@ namespace FireplaceApi.Api.Controllers
         };
         public static OpenApiObject PureSessionExample22 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(2000012),
+            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(20002),
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(IpAddress).ToSnakeCase()] = new OpenApiString("222.222.222.223"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),

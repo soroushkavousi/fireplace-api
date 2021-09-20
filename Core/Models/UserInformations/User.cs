@@ -44,8 +44,7 @@ namespace FireplaceApi.Core.Models
 
 
         public User PureCopy() => new User(Id, FirstName, LastName,
-                Username, State, CreationDate, ModifiedDate, Password,
-                null, null, null, null);
+                Username, State, CreationDate, ModifiedDate, Password);
 
         public void RemoveLoopReferencing()
         {

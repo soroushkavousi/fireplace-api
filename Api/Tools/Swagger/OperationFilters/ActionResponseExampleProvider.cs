@@ -76,6 +76,8 @@ namespace FireplaceApi.Api.Tools
 
         public IOpenApiAny ExtractExample(Type type, string actionName)
         {
+            if (type.IsGenericType)
+                type = type.GenericTypeArguments[0];
             var exampleProperty = type.GetProperty(Constants.ActionExamplesPropertyName, BindingFlags.Public | BindingFlags.Static);
             if (exampleProperty == null)
             {
