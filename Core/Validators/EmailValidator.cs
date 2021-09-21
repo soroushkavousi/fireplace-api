@@ -35,15 +35,15 @@ namespace FireplaceApi.Core.Validators
 
         public async Task ValidateGetEmailByIdInputParametersAsync(User requesterUser, long? id, bool? includeUser)
         {
-            ValidateParameterIsNotNull(id, nameof(id), ErrorName.EMAIL_ID_IS_NULL);
+            ValidateParameterIsNotMissing(id, nameof(id), ErrorName.EMAIL_ID_IS_MISSING);
             await ValidateEmailIdExistsAsync(id.Value);
             await ValidateRequesterUserCanAccessToEmailIdAsync(requesterUser, id.Value);
         }
 
         public async Task ValidateActivateEmailByIdInputParametersAsync(User requesterUser, long? id, int? activationCode)
         {
-            ValidateParameterIsNotNull(id, nameof(id), ErrorName.EMAIL_ID_IS_NULL);
-            ValidateParameterIsNotNull(activationCode, nameof(activationCode), ErrorName.ACTIVATION_CODE_IS_NULL);
+            ValidateParameterIsNotMissing(id, nameof(id), ErrorName.EMAIL_ID_IS_MISSING);
+            ValidateParameterIsNotMissing(activationCode, nameof(activationCode), ErrorName.ACTIVATION_CODE_IS_MISSING);
             await ValidateEmailIdExistsAsync(id.Value);
             await ValidateRequesterUserCanAccessToEmailIdAsync(requesterUser, id.Value);
             await ValidateActivationCodeIsCorrectAsync(id.Value, activationCode.Value);

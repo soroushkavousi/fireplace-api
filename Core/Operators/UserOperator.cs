@@ -273,9 +273,25 @@ namespace FireplaceApi.Core.Operators
             return user;
         }
 
-        public async Task DeleteUserAsync(long id)
+        public async Task<User> PatchUserByUsernameAsync(string currentUsername, string firstName = null,
+            string lastName = null, string username = null, Password password = null,
+            UserState? state = null, string emailAddress = null)
         {
-            await _userRepository.DeleteUserAsync(id);
+            var user = await _userRepository.GetUserByUsernameAsync(currentUsername, true);
+            user = await ApplyUserChanges(user, firstName, lastName, username, password,
+                state, emailAddress);
+            user = await GetUserByIdAsync(user.Id, true, false, false, false);
+            return user;
+        }
+
+        public async Task DeleteUserByIdAsync(long id)
+        {
+            await _userRepository.DeleteUserByIdAsync(id);
+        }
+
+        public async Task DeleteUserByUsernameAsync(string username)
+        {
+            await _userRepository.DeleteUserByUsernameAsync(username);
         }
 
         public async Task<bool> DoesUserIdExistAsync(long id)

@@ -14,11 +14,18 @@ using FireplaceApi.Core.Extensions;
 
 namespace FireplaceApi.Api.Controllers
 {
-    public class ControllerPatchUserInputRouteParameters
+    public class ControllerPatchUserByIdInputRouteParameters
     {
         [Required]
         [FromRoute(Name = "id")]
         public long? Id { get; set; }
+    }
+
+    public class ControllerPatchUserByUsernameInputRouteParameters
+    {
+        [Required]
+        [FromRoute(Name = "username")]
+        public string Username { get; set; }
     }
 
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]

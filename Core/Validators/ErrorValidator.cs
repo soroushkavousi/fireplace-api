@@ -38,13 +38,13 @@ namespace FireplaceApi.Core.Validators
 
         public async Task ValidateGetErrorByCodeInputParametersAsync(User requesterUser, int? code)
         {
-            ValidateParameterIsNotNull(code, nameof(code), ErrorName.ERROR_CODE_IS_NULL);
+            ValidateParameterIsNotMissing(code, nameof(code), ErrorName.ERROR_CODE_IS_MISSING);
             await ValidateErrorCodeExists(code.Value);
         }
 
         public async Task ValidatePatchErrorInputParametersAsync(User requesterUser, int? code, string clientMessage)
         {
-            ValidateParameterIsNotNull(code, nameof(code), ErrorName.ERROR_CODE_IS_NULL);
+            ValidateParameterIsNotMissing(code, nameof(code), ErrorName.ERROR_CODE_IS_MISSING);
             await ValidateErrorCodeExists(code.Value);
 
             if (clientMessage != null)

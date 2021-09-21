@@ -11,10 +11,16 @@ namespace FireplaceApi.Core.Validators
 {
     public class ApiValidator
     {
-        public void ValidateParameterIsNotNull(object parameter, string parameterName, ErrorName errorId)
+        public void ValidateParameterIsNotMissing(string parameter, string parameterName, ErrorName errorId)
+        {
+            if (string.IsNullOrWhiteSpace(parameter))
+                throw new ApiException(errorId, $"String parameter ({parameterName}) with input value ({parameter}) is missing!");
+        }
+
+        public void ValidateParameterIsNotMissing(object parameter, string parameterName, ErrorName errorId)
         {
             if (parameter == null)
-                throw new ApiException(errorId, $"Parameter ({parameterName}) is null!");
+                throw new ApiException(errorId, $"Parameter ({parameterName}) is missing!");
         }
 
         //private void ValidateObjectParametersAreNotNull(ErrorId errorCode, object obj, params string[] exceptions)

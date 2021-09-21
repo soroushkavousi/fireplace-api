@@ -139,7 +139,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _userConverter.ConvertToModel(userEntity);
         }
 
-        public async Task DeleteUserAsync(long id)
+        public async Task DeleteUserByIdAsync(long id)
         {
             var sw = Stopwatch.StartNew();
             var userEntity = await _userEntities
@@ -151,6 +151,20 @@ namespace FireplaceApi.Infrastructure.Repositories
             _fireplaceApiContext.DetachAllEntries();
         
             _logger.LogIOInformation(sw, "Database", new { id }, new { userEntity });
+        }
+
+        public async Task DeleteUserByUsernameAsync(string username)
+        {
+            var sw = Stopwatch.StartNew();
+            var userEntity = await _userEntities
+                .Where(e => e.Username == username)
+                .SingleOrDefaultAsync();
+
+            _userEntities.Remove(userEntity);
+            await _fireplaceApiContext.SaveChangesAsync();
+            _fireplaceApiContext.DetachAllEntries();
+
+            _logger.LogIOInformation(sw, "Database", new { username }, new { userEntity });
         }
 
         public async Task<bool> DoesUserIdExistAsync(long id)

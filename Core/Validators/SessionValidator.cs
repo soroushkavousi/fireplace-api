@@ -33,7 +33,7 @@ namespace FireplaceApi.Core.Validators
 
         public async Task ValidateRevokeSessionByIdInputParametersAsync(User requesterUser, long? id)
         {
-            ValidateParameterIsNotNull(id, nameof(id), ErrorName.SESSION_ID_IS_NULL);
+            ValidateParameterIsNotMissing(id, nameof(id), ErrorName.SESSION_ID_IS_MISSING);
             await ValidateSessionIdExists(id.Value);
             await ValidateUserCanAccessToSessionId(requesterUser, id.Value);
         }
@@ -45,7 +45,7 @@ namespace FireplaceApi.Core.Validators
 
         public async Task ValidateGetSessionByIdInputParametersAsync(User requesterUser, long? id, bool? includeUser)
         {
-            ValidateParameterIsNotNull(id, nameof(id), ErrorName.SESSION_ID_IS_NULL);
+            ValidateParameterIsNotMissing(id, nameof(id), ErrorName.SESSION_ID_IS_MISSING);
             await ValidateSessionIdExists(id.Value);
             await ValidateUserCanAccessToSessionId(requesterUser, id.Value);
         }

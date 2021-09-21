@@ -18,7 +18,14 @@ namespace FireplaceApi.Api.Controllers
         public long? Id { get; set; }
     }
 
-    public class ControllerGetUserByIdInputQueryParameters
+    public class ControllerGetUserByUsernameInputRouteParameters
+    {
+        [Required]
+        [FromRoute(Name = "username")]
+        public string Username { get; set; }
+    }
+
+    public class ControllerGetUserInputQueryParameters
     {
         [FromQuery(Name = "include_email")]
         public bool IncludeEmail { get; set; } = true;

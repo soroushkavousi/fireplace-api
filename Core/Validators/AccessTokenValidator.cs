@@ -34,8 +34,8 @@ namespace FireplaceApi.Core.Validators
         public async Task ValidateGetAccessTokenByValueInputParametersAsync(
             User requesterUser, string accessTokenValue, bool? includeUser)
         {
-            ValidateParameterIsNotNull(accessTokenValue, nameof(accessTokenValue), 
-                ErrorName.ACCESS_TOKEN_VALUE_IS_NULL);
+            ValidateParameterIsNotMissing(accessTokenValue, nameof(accessTokenValue), 
+                ErrorName.ACCESS_TOKEN_VALUE_IS_MISSING);
             ValidateAccessTokenValueFormat(accessTokenValue);
             await ValidateUserCanAccessToAccessTokenValue(requesterUser, accessTokenValue);
         }

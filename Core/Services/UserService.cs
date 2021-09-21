@@ -76,20 +76,43 @@ namespace FireplaceApi.Core.Services
             return user;
         }
 
+        public async Task<User> GetUserByUsernameAsync(User requesterUser, string username, bool? includeEmail, bool? includeSessions)
+        {
+            await _userValidator.ValidateGetUserByUsernameInputParametersAsync(requesterUser, username, includeEmail, includeSessions);
+            var user = await _userOperator.GetUserByUsernameAsync(username, includeEmail.Value, false, false, includeSessions.Value);
+            return user;
+        }
+
         public async Task<User> PatchUserByIdAsync(User requesterUser, long? id, string firstName,
             string lastName, string username, Password oldPassword, Password password, string emailAddress)
         {
-            await _userValidator.ValidatePatchUserInputParametersAsync(requesterUser, id, firstName,
+            await _userValidator.ValidatePatchUserByIdInputParametersAsync(requesterUser, id, firstName,
                 lastName, username, oldPassword, password, emailAddress);
             var user = await _userOperator.PatchUserByIdAsync(id.Value, firstName: firstName, lastName: lastName,
                 username: username, password: password, emailAddress: emailAddress);
             return user;
         }
 
-        public async Task DeleteUserAsync(User requesterUser, long? id)
+        public async Task<User> PatchUserByUsernameAsync(User requesterUser, string currentUsername, string firstName,
+            string lastName, string username, Password currentPassword, Password password, string emailAddress)
         {
-            await _userValidator.ValidateDeleteProcutInputParametersAsync(requesterUser, id);
-            await _userOperator.DeleteUserAsync(id.Value);
+            await _userValidator.ValidatePatchUserByUsernameInputParametersAsync(requesterUser, currentUsername, firstName,
+                lastName, username, currentPassword, password, emailAddress);
+            var user = await _userOperator.PatchUserByUsernameAsync(currentUsername, firstName: firstName, lastName: lastName,
+                username: username, password: password, emailAddress: emailAddress);
+            return user;
+        }
+
+        public async Task DeleteUserByIdAsync(User requesterUser, long? id)
+        {
+            await _userValidator.ValidateDeleteUserByIdInputParametersAsync(requesterUser, id);
+            await _userOperator.DeleteUserByIdAsync(id.Value);
+        }
+
+        public async Task DeleteUserByUsernameAsync(User requesterUser, string username)
+        {
+            await _userValidator.ValidateDeleteUserByUsernameInputParametersAsync(requesterUser, username);
+            await _userOperator.DeleteUserByUsernameAsync(username);
         }
     }
 }
