@@ -110,7 +110,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _communityConverter.ConvertToModel(communityEntity);
         }
 
-        public async Task DeleteCommunityAsync(long id)
+        public async Task DeleteCommunityByIdAsync(long id)
         {
             var sw = Stopwatch.StartNew();
             var communityEntity = await _communityEntities
@@ -122,6 +122,20 @@ namespace FireplaceApi.Infrastructure.Repositories
             _fireplaceApiContext.DetachAllEntries();
 
             _logger.LogIOInformation(sw, "Database", new { id }, new { communityEntity });
+        }
+
+        public async Task DeleteCommunityByNameAsync(string name)
+        {
+            var sw = Stopwatch.StartNew();
+            var communityEntity = await _communityEntities
+                .Where(e => e.Name == name)
+                .SingleOrDefaultAsync();
+
+            _communityEntities.Remove(communityEntity);
+            await _fireplaceApiContext.SaveChangesAsync();
+            _fireplaceApiContext.DetachAllEntries();
+
+            _logger.LogIOInformation(sw, "Database", new { name }, new { communityEntity });
         }
 
         public async Task<bool> DoesCommunityIdExistAsync(long id)

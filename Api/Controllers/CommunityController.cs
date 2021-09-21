@@ -58,16 +58,16 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
-        /// Get a single community.
+        /// Get a single community by id.
         /// </summary>
         /// <returns>Requested community</returns>
         /// <response code="200">The community was successfully retrieved.</response>
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:long}")]
         [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommunityDto>> GetCommunityByIdAsync(
             [BindNever][FromHeader] User requesterUser,
             [FromRoute] ControllerGetCommunityByIdInputRouteParameters inputRouteParameters,
-            [FromQuery] ControllerGetCommunityByIdInputQueryParameters inputQueryParameters)
+            [FromQuery] ControllerGetCommunityInputQueryParameters inputQueryParameters)
         {
             var community = await _communityService
                 .GetCommunityByIdAsync(requesterUser, inputRouteParameters.Id, 
@@ -77,7 +77,7 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
-        /// Get a single community.
+        /// Get a single community by name.
         /// </summary>
         /// <returns>Requested community</returns>
         /// <response code="200">The community was successfully retrieved.</response>
@@ -86,7 +86,7 @@ namespace FireplaceApi.Api.Controllers
         public async Task<ActionResult<CommunityDto>> GetCommunityByNameAsync(
             [BindNever][FromHeader] User requesterUser,
             [FromRoute] ControllerGetCommunityByNameInputRouteParameters inputRouteParameters,
-            [FromQuery] ControllerGetCommunityByNameInputQueryParameters inputQueryParameters)
+            [FromQuery] ControllerGetCommunityInputQueryParameters inputQueryParameters)
         {
             var community = await _communityService
                 .GetCommunityByNameAsync(requesterUser, inputRouteParameters.Name,
@@ -114,16 +114,16 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
-        /// Update a single community.
+        /// Update a single community by id.
         /// </summary>
         /// <returns>Updated community</returns>
         /// <response code="200">The community was successfully updated.</response>
-        [HttpPatch("{id}")]
+        [HttpPatch("{id:long}")]
         [Consumes("application/merge-patch+json")]
         [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<CommunityDto>> PatchCommunityAsync(
+        public async Task<ActionResult<CommunityDto>> PatchCommunityByIdAsync(
             [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerPatchCommunityInputRouteParameters inputRouteParameters,
+            [FromRoute] ControllerPatchCommunityByIdInputRouteParameters inputRouteParameters,
             [FromBody] ControllerPatchCommunityInputBodyParameters inputBodyParameters)
         {
             var community = await _communityService.PatchCommunityByIdAsync(requesterUser, inputRouteParameters.Id);
@@ -132,17 +132,50 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
-        /// Delete a single community.
+        /// Update a single community by name.
+        /// </summary>
+        /// <returns>Updated community</returns>
+        /// <response code="200">The community was successfully updated.</response>
+        [HttpPatch("{name}")]
+        [Consumes("application/merge-patch+json")]
+        [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<CommunityDto>> PatchCommunityByNameAsync(
+            [BindNever][FromHeader] User requesterUser,
+            [FromRoute] ControllerPatchCommunityByNameInputRouteParameters inputRouteParameters,
+            [FromBody] ControllerPatchCommunityInputBodyParameters inputBodyParameters)
+        {
+            var community = await _communityService.PatchCommunityByNameAsync(requesterUser, inputRouteParameters.Name);
+            var communityDto = _communityConverter.ConvertToDto(community);
+            return communityDto;
+        }
+
+        /// <summary>
+        /// Delete a single community by id.
         /// </summary>
         /// <returns>No content</returns>
         /// <response code="200">The community was successfully deleted.</response>
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:long}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteCommunityAsync(
+        public async Task<IActionResult> DeleteCommunityByIdAsync(
             [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerDeleteCommunityInputRouteParameters inputRouteParameters)
+            [FromRoute] ControllerDeleteCommunityByIdInputRouteParameters inputRouteParameters)
         {
-            await _communityService.DeleteCommunityAsync(requesterUser, inputRouteParameters.Id);
+            await _communityService.DeleteCommunityByIdAsync(requesterUser, inputRouteParameters.Id);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Delete a single community by name.
+        /// </summary>
+        /// <returns>No content</returns>
+        /// <response code="200">The community was successfully deleted.</response>
+        [HttpDelete("{name}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteCommunityByNameAsync(
+            [BindNever][FromHeader] User requesterUser,
+            [FromRoute] ControllerDeleteCommunityByNameInputRouteParameters inputRouteParameters)
+        {
+            await _communityService.DeleteCommunityByNameAsync(requesterUser, inputRouteParameters.Name);
             return Ok();
         }
     }

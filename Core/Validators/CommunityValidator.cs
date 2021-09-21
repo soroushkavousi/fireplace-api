@@ -44,7 +44,7 @@ namespace FireplaceApi.Core.Validators
             await Task.CompletedTask;
         }
 
-        public async Task ValidateGetCommunityByNameAsyncInputParametersAsync(User requesterUser, string name, 
+        public async Task ValidateGetCommunityByNameInputParametersAsync(User requesterUser, string name, 
             bool? includeCreator)
         {
             await Task.CompletedTask;
@@ -55,12 +55,22 @@ namespace FireplaceApi.Core.Validators
             await Task.CompletedTask;
         }
 
-        public async Task ValidatePatchCommunityInputParametersAsync(User requesterUser)
+        public async Task ValidatePatchCommunityByIdInputParametersAsync(User requesterUser, long? id)
         {
             await Task.CompletedTask;
         }
 
-        public async Task ValidateDeleteProcutInputParametersAsync(User requesterUser, long? id)
+        public async Task ValidatePatchCommunityByNameInputParametersAsync(User requesterUser, string name)
+        {
+            await Task.CompletedTask;
+        }
+
+        public async Task ValidateDeleteCommunityByIdInputParametersAsync(User requesterUser, long? id)
+        {
+            await Task.CompletedTask;
+        }
+
+        public async Task ValidateDeleteCommunityByNameInputParametersAsync(User requesterUser, string name)
         {
             await Task.CompletedTask;
         }

@@ -18,7 +18,14 @@ namespace FireplaceApi.Api.Controllers
         public long? Id { get; set; }
     }
 
-    public class ControllerGetCommunityByIdInputQueryParameters
+    public class ControllerGetCommunityByNameInputRouteParameters
+    {
+        [Required]
+        [FromRoute(Name = "name")]
+        public string Name { get; set; }
+    }
+
+    public class ControllerGetCommunityInputQueryParameters
     {
         [FromQuery(Name = "include_creator")]
         public bool IncludeCreator { get; set; } = true;

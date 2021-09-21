@@ -81,9 +81,14 @@ namespace FireplaceApi.Core.Operators
             return community;
         }
 
-        public async Task DeleteCommunityAsync(long id)
+        public async Task DeleteCommunityByIdAsync(long id)
         {
-            await _communityRepository.DeleteCommunityAsync(id);
+            await _communityRepository.DeleteCommunityByIdAsync(id);
+        }
+
+        public async Task DeleteCommunityByNameAsync(string name)
+        {
+            await _communityRepository.DeleteCommunityByNameAsync(name);
         }
 
         public async Task<bool> DoesCommunityIdExistAsync(long id)

@@ -82,8 +82,10 @@ namespace FireplaceApi.Api.Controllers
             [nameof(CommunityController.GetCommunityByIdAsync)] = CommunityExample1,
             [nameof(CommunityController.GetCommunityByNameAsync)] = CommunityExample1,
             [nameof(CommunityController.CreateCommunityAsync)] = CommunityExample1,
-            [nameof(CommunityController.PatchCommunityAsync)] = CommunityExample1,
-            [nameof(CommunityController.DeleteCommunityAsync)] = CommunityExample1,
+            [nameof(CommunityController.PatchCommunityByIdAsync)] = CommunityExample1,
+            [nameof(CommunityController.PatchCommunityByNameAsync)] = CommunityExample1,
+            [nameof(CommunityController.DeleteCommunityByIdAsync)] = CommunityExample1,
+            [nameof(CommunityController.DeleteCommunityByNameAsync)] = CommunityExample1,
         };
 
         static CommunityDto()

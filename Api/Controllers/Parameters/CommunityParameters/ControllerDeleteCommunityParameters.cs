@@ -10,10 +10,17 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Api.Controllers
 {
-    public class ControllerDeleteCommunityInputRouteParameters
+    public class ControllerDeleteCommunityByIdInputRouteParameters
     {
         [Required]
         [FromRoute(Name = "id")]
         public long? Id { get; set; }
+    }
+
+    public class ControllerDeleteCommunityByNameInputRouteParameters
+    {
+        [Required]
+        [FromRoute(Name = "name")]
+        public string Name { get; set; }
     }
 }

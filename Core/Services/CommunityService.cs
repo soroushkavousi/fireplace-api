@@ -31,7 +31,7 @@ namespace FireplaceApi.Core.Services
             await _communityValidator.ValidateListCommunitiesInputParametersAsync(requesterUser);
             var page = await _communityOperator.ListCommunitiesAsync();
             return page;
-        }
+        } 
 
         public async Task<Community> GetCommunityByIdAsync(User requesterUser, long? id, bool? includeCreator)
         {
@@ -42,7 +42,7 @@ namespace FireplaceApi.Core.Services
 
         public async Task<Community> GetCommunityByNameAsync(User requesterUser, string name, bool? includeCreator)
         {
-            await _communityValidator.ValidateGetCommunityByNameAsyncInputParametersAsync(requesterUser, name, includeCreator);
+            await _communityValidator.ValidateGetCommunityByNameInputParametersAsync(requesterUser, name, includeCreator);
             var community = await _communityOperator.GetCommunityByNameAsync(name, includeCreator.Value);
             return community;
         }
@@ -57,15 +57,28 @@ namespace FireplaceApi.Core.Services
 
         public async Task<Community> PatchCommunityByIdAsync(User requesterUser, long? id)
         {
-            await _communityValidator.ValidatePatchCommunityInputParametersAsync(requesterUser);
+            await _communityValidator.ValidatePatchCommunityByIdInputParametersAsync(requesterUser, id);
             var community = await _communityOperator.PatchCommunityByIdAsync(id.Value);
             return community;
         }
 
-        public async Task DeleteCommunityAsync(User requesterUser, long? id)
+        public async Task<Community> PatchCommunityByNameAsync(User requesterUser, string name)
         {
-            await _communityValidator.ValidateDeleteProcutInputParametersAsync(requesterUser, id);
-            await _communityOperator.DeleteCommunityAsync(id.Value);
+            await _communityValidator.ValidatePatchCommunityByNameInputParametersAsync(requesterUser, name);
+            var community = await _communityOperator.PatchCommunityByNameAsync(name);
+            return community;
+        }
+
+        public async Task DeleteCommunityByIdAsync(User requesterUser, long? id)
+        {
+            await _communityValidator.ValidateDeleteCommunityByIdInputParametersAsync(requesterUser, id);
+            await _communityOperator.DeleteCommunityByIdAsync(id.Value);
+        }
+
+        public async Task DeleteCommunityByNameAsync(User requesterUser, string name)
+        {
+            await _communityValidator.ValidateDeleteCommunityByNameInputParametersAsync(requesterUser, name);
+            await _communityOperator.DeleteCommunityByNameAsync(name);
         }
     }
 }
