@@ -23,22 +23,36 @@ namespace FireplaceApi.Core.Operators
         private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly ICommunityRepository _communityRepository;
+        private readonly PageOperator _pageOperator;
 
         public CommunityOperator(ILogger<CommunityOperator> logger, IConfiguration configuration,
-            IServiceProvider serviceProvider, ICommunityRepository communityRepository)
+            IServiceProvider serviceProvider, ICommunityRepository communityRepository,
+            PageOperator pageOperator)
         {
             _logger = logger;
             _configuration = configuration;
             _serviceProvider = serviceProvider;
             _communityRepository = communityRepository;
+            _pageOperator = pageOperator;
         }
 
-        public async Task<Page<Community>> ListCommunitiesAsync()
+        public async Task<Page<Community>> ListCommunitiesAsync(User requesterUser,
+            PaginationInputParameters paginationInputParameters, string name)
         {
-            var communities = await _communityRepository.ListCommunitiesAsync();
-            var pagination = new Pagination(-1);
-            var page = new Page<Community>(-1, communities, pagination);
-            return page;
+            Page<Community> resultPage = default;
+            if (string.IsNullOrWhiteSpace(paginationInputParameters.Pointer))
+            {
+                var communityIds = await _communityRepository.ListCommunityIdsAsync(name);
+                resultPage = await _pageOperator.CreatePageWithoutPointerAsync(ModelName.COMMUNITY,
+                    paginationInputParameters, communityIds, 
+                    _communityRepository.ListCommunitiesAsync);
+            }
+            else
+            {
+                resultPage = await _pageOperator.CreatePageWithPointerAsync(ModelName.COMMUNITY,
+                    paginationInputParameters, _communityRepository.ListCommunitiesAsync);
+            }
+            return resultPage;
         }
 
         public async Task<Community> GetCommunityByIdAsync(long id, bool includeCreator)
@@ -97,6 +111,11 @@ namespace FireplaceApi.Core.Operators
             return communityIdExists;
         }
 
+        public async Task<bool> DoesCommunityNameExistAsync(string name)
+        {
+            return await _communityRepository.DoesCommunityNameExistAsync(name);
+        }
+
         public async Task<Community> ApplyCommunityChangesAsync(Community community, string name = null)
         {
             if (name != null)
@@ -106,11 +125,6 @@ namespace FireplaceApi.Core.Operators
 
             community = await _communityRepository.UpdateCommunityAsync(community);
             return community;
-        }
-
-        public async Task<bool> DoesCommunityNameExistAsync(string name)
-        {
-            return await _communityRepository.DoesCommunityNameExistAsync(name);
         }
     }
 }

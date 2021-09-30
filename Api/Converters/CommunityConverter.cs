@@ -11,6 +11,7 @@ using FireplaceApi.Api.Extensions;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Api.Controllers;
 using FireplaceApi.Core.ValueObjects;
+using FireplaceApi.Core.Operators;
 
 namespace FireplaceApi.Api.Converters
 {
@@ -41,28 +42,21 @@ namespace FireplaceApi.Api.Converters
             return communityDto;
         }
 
-        public PageDto<CommunityDto> ConvertToDto(Page<Community> page)
+        public PageDto<CommunityDto> ConvertToDto(Page<Community> page, string listRelativePath)
         {
             if (page == null)
                 return null;
 
-            var paginationDto = ConvertToDto(page.Pagination);
+            var listPath = $"{GlobalOperator.GlobalValues.Api.BaseUrlPath}{listRelativePath}";
+            
+            var paginationDto = new PaginationDto(page.QueryResultPointer, 
+                listPath, page.Number, page.Start, page.End, page.Limit,
+                page.TotalItemsCount, page.TotalPagesCount);
+
             var itemDtos = page.Items.Select(community => ConvertToDto(community)).ToList();
 
-            var pageDto = new PageDto<CommunityDto>(page.TotalItemsCount, itemDtos, paginationDto);
+            var pageDto = new PageDto<CommunityDto>(itemDtos, paginationDto);
             return pageDto;
-        }
-
-        public PaginationDto ConvertToDto(Pagination pagination)
-        {
-            if (pagination == null)
-                return null;
-
-            var paginationDto = new PaginationDto(pagination.TotalPagesCount,
-                "next-page-url", "previous-page-url",
-                pagination.Cursor);
-
-            return paginationDto;
         }
     }
 }

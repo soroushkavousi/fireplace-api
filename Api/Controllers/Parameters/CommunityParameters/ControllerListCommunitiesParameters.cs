@@ -13,9 +13,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FireplaceApi.Api.Controllers
 {
-    public class ControllerListCommunitiesInputQueryParameters
+    public class ControllerListCommunitiesInputQueryParameters : PaginationInputQueryParameters
     {
-        [FromQuery(Name = "include_creator")]
-        public bool IncludeCreator { get; set; } = true;
+        [FromQuery(Name = "name")]
+        public string Name { get; set; }
     }
 }

@@ -9,6 +9,5 @@ namespace FireplaceApi.Core.Tools
     {
         public static string FilesBaseUrlPathKey { get; } = "Files:BaseUrlPath";
         public static string FilesBasePhysicalPathKey { get; } = "Files:BasePhysicalPath";
-        public static int FileNameLength { get; } = 12;
     }
 }

@@ -26,10 +26,13 @@ namespace FireplaceApi.Core.Services
             _communityOperator = communityOperator;
         }
 
-        public async Task<Page<Community>> ListCommunitiesAsync(User requesterUser)
+        public async Task<Page<Community>> ListCommunitiesAsync(User requesterUser, 
+            PaginationInputParameters paginationInputParameters, string name)
         {
-            await _communityValidator.ValidateListCommunitiesInputParametersAsync(requesterUser);
-            var page = await _communityOperator.ListCommunitiesAsync();
+            await _communityValidator.ValidateListCommunitiesInputParametersAsync(requesterUser,
+                paginationInputParameters, name);
+            var page = await _communityOperator.ListCommunitiesAsync(requesterUser,
+                paginationInputParameters, name);
             return page;
         } 
 

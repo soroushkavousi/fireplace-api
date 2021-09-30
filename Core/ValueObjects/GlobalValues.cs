@@ -9,6 +9,7 @@ namespace FireplaceApi.Core.ValueObjects
     {
         public ApiGlobalValues Api { get; set; }
         public LogGlobalValues Log { get; set; }
+        public PaginationGlobalValues Pagination { get; set; }
         public FileGlobalValues File { get; set; }
         public EmailGlobalValues Email { get; set; }
         public GoogleGlobalValues Google { get; set; }
@@ -51,17 +52,37 @@ namespace FireplaceApi.Core.ValueObjects
             }
         }
 
+        public class PaginationGlobalValues
+        {
+            public int TotalItemsCount { get; set; }
+            public int MaximumOfPageItemsCount { get; set; }
+            public int GeneratedPointerLength { get; set; }
+
+            private PaginationGlobalValues() { }
+
+            public PaginationGlobalValues(int totalItemsCount, int maximumOfPageItemsCount, 
+                int generatedPointerLength)
+            {
+                TotalItemsCount = totalItemsCount;
+                MaximumOfPageItemsCount = maximumOfPageItemsCount;
+                GeneratedPointerLength = generatedPointerLength;
+            }
+        }
+
         public class FileGlobalValues
         {
             public string BasePhysicalPath { get; set; }
             public string BaseUrlPath { get; set; }
+            public int GeneratedFileNameLength { get; set; }
 
             private FileGlobalValues() { }
 
-            public FileGlobalValues(string basePhysicalPath, string baseUrlPath)
+            public FileGlobalValues(string basePhysicalPath, string baseUrlPath, 
+                int generatedFileNameLength)
             {
                 BasePhysicalPath = basePhysicalPath ?? throw new ArgumentNullException(nameof(basePhysicalPath));
                 BaseUrlPath = baseUrlPath ?? throw new ArgumentNullException(nameof(baseUrlPath));
+                GeneratedFileNameLength = generatedFileNameLength;
             }
         }
 

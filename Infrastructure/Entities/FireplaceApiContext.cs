@@ -22,6 +22,7 @@ namespace FireplaceApi.Infrastructure.Entities
         public DbSet<PostEntity> PostEntities { get; set; }
         public DbSet<PostVoteEntity> PostVoteEntities { get; set; }
 
+
         public DbSet<AccessTokenEntity> AccessTokenEntities { get; set; }
         public DbSet<EmailEntity> EmailEntities { get; set; }
         public DbSet<GoogleUserEntity> GoogleUserEntities { get; set; }
@@ -31,6 +32,8 @@ namespace FireplaceApi.Infrastructure.Entities
         public DbSet<ErrorEntity> ErrorEntities { get; set; }
         public DbSet<FileEntity> FileEntities { get; set; }
         public DbSet<GlobalEntity> GlobalEntities { get; set; }
+        //Each entity has its own QueryResultEntity.
+        public DbSet<QueryResultEntity> CommunityQueryResultEntities { get; set; }
 
         public FireplaceApiContext(ILogger<FireplaceApiContext> logger, DbContextOptions<FireplaceApiContext> options) 
             : base(options)
@@ -76,6 +79,7 @@ namespace FireplaceApi.Infrastructure.Entities
             modelBuilder.ApplyConfiguration(new ErrorEntityConfiguration());
             modelBuilder.ApplyConfiguration(new FileEntityConfiguration());
             modelBuilder.ApplyConfiguration(new GlobalEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new QueryResultEntityConfiguration());
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,

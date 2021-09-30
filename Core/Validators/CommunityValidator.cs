@@ -33,7 +33,8 @@ namespace FireplaceApi.Core.Validators
             _communityOperator = communityOperator;
         }
 
-        public async Task ValidateListCommunitiesInputParametersAsync(User requesterUser)
+        public async Task ValidateListCommunitiesInputParametersAsync(User requesterUser,
+            PaginationInputParameters paginationInputParameters, string name)
         {
             await Task.CompletedTask;
         }

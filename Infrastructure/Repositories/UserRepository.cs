@@ -131,7 +131,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                var serverMessage = $"Can't update the dbUser DbUpdateConcurrencyException. {userEntity.ToJson()}";
+                var serverMessage = $"Can't update the userEntity DbUpdateConcurrencyException. {userEntity.ToJson()}";
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
 

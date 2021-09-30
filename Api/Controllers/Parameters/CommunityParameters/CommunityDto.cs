@@ -69,7 +69,6 @@ namespace FireplaceApi.Api.Controllers
         };
         public static OpenApiObject PageOfCommunitiesExample1 { get; } = new OpenApiObject
         {
-            [nameof(PageDto<CommunityDto>.TotalItemsCount).ToSnakeCase()] = new OpenApiInteger(200),
             [nameof(PageDto<CommunityDto>.Pagination).ToSnakeCase()] = PaginationDto.PurePaginationExample1,
             [nameof(PageDto<CommunityDto>.Items).ToSnakeCase()] = ListOfPureCommunitiesExample1
         };

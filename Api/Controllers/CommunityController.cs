@@ -51,8 +51,10 @@ namespace FireplaceApi.Api.Controllers
             [FromQuery] ControllerListCommunitiesInputQueryParameters inputQueryParameters)
         {
             //var accessTokenValue = FindAccessTokenValue(inputHeaderParameters, inputCookieParameters);
-            var page = await _communityService.ListCommunitiesAsync(requesterUser);
-            var pageDto = _communityConverter.ConvertToDto(page);
+            var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
+            var page = await _communityService.ListCommunitiesAsync(requesterUser, 
+                paginationInputParameters, inputQueryParameters.Name);
+            var pageDto = _communityConverter.ConvertToDto(page, "/communities");
             //SetOutputHeaderParameters(communityDtos.HeaderParameters);
             return pageDto;
         }

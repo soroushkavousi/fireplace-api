@@ -16,6 +16,7 @@ using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.ValueObjects;
 using System.Diagnostics;
+using FireplaceApi.Core.Operators;
 
 namespace FireplaceApi.Infrastructure.Repositories
 {
@@ -27,7 +28,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         private readonly DbSet<CommunityEntity> _communityEntities;
         private readonly CommunityConverter _communityConverter;
 
-        public CommunityRepository(ILogger<CommunityRepository> logger, IConfiguration configuration, 
+        public CommunityRepository(ILogger<CommunityRepository> logger, IConfiguration configuration,
             FireplaceApiContext fireplaceApiContext, CommunityConverter communityConverter)
         {
             _logger = logger;
@@ -36,16 +37,44 @@ namespace FireplaceApi.Infrastructure.Repositories
             _communityEntities = fireplaceApiContext.CommunityEntities;
             _communityConverter = communityConverter;
         }
-
-        public async Task<List<Community>> ListCommunitiesAsync()
+         
+        public async Task<List<Community>> ListCommunitiesAsync(List<long> Ids)
         {
             var sw = Stopwatch.StartNew();
             var communityEntities = await _communityEntities
                 .AsNoTracking()
+                .Where(e => Ids.Contains(e.Id.Value))
                 .ToListAsync();
 
-            _logger.LogIOInformation(sw, "Database", new { }, new { communityEntities });
+            _logger.LogIOInformation(sw, "Database", new { Ids }, new { communityEntities });
             return communityEntities.Select(e => _communityConverter.ConvertToModel(e)).ToList();
+        }
+
+        public async Task<List<Community>> ListCommunitiesAsync(string name)
+        {
+            var sw = Stopwatch.StartNew();
+            var communityEntities = await _communityEntities
+                .AsNoTracking()
+                .Where(e => e.Name.Contains(name))
+                .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
+                .ToListAsync();
+
+            _logger.LogIOInformation(sw, "Database", new { name }, new { communityEntities });
+            return communityEntities.Select(e => _communityConverter.ConvertToModel(e)).ToList();
+        }
+
+        public async Task<List<long>> ListCommunityIdsAsync(string name)
+        {
+            var sw = Stopwatch.StartNew();
+            var communityEntities = await _communityEntities
+                .AsNoTracking()
+                .Where(e => e.Name.Contains(name))
+                .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
+                .Select(e => e.Id.Value)
+                .ToListAsync();
+
+            _logger.LogIOInformation(sw, "Database", new { name }, new { communityEntities });
+            return communityEntities;
         }
 
         public async Task<Community> GetCommunityByIdAsync(long id, bool includeCreator = false)

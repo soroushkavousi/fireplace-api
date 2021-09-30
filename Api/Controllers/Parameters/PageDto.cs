@@ -20,19 +20,17 @@ namespace FireplaceApi.Api.Controllers
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
     public class PageDto<T>
     {
-        [Required]
-        [JsonPropertyOrder(-1)]
-        public int TotalItemsCount { get; set; }
+        [JsonPropertyName("pagination")]
         [JsonPropertyOrder(99)]
         public PaginationDto Pagination { get; set; }
         [Required]
+        [JsonPropertyName("items")]
         [JsonPropertyOrder(100)]
         public List<T> Items { get; set; }
 
 
         public static OpenApiObject PurePageExample1 { get; } = new OpenApiObject
         {
-            [nameof(TotalItemsCount).ToSnakeCase()] = new OpenApiInteger(200),
             [nameof(Pagination).ToSnakeCase()] = PaginationDto.PurePaginationExample1,
             [nameof(Items).ToSnakeCase()] = CommunityDto.ListOfPureCommunitiesExample1
         };
@@ -42,9 +40,8 @@ namespace FireplaceApi.Api.Controllers
         //    [nameof(CommunityController.ListCommunitiesAsync)] = PageOfCommunitiesExample1,
         //};
 
-        public PageDto(int totalItemsCount, List<T> items, PaginationDto paginationDto = null)
+        public PageDto(List<T> items, PaginationDto paginationDto = null)
         {
-            TotalItemsCount = totalItemsCount;
             Pagination = paginationDto;
             Items = items;
         }
@@ -54,29 +51,50 @@ namespace FireplaceApi.Api.Controllers
     public class PaginationDto
     {
         [Required]
-        public int TotalPagesCount { get; set; }
+        public string Pointer { get; set; }
         [Required]
         public string NextLink { get; set; }
         [Required]
         public string PerviousLink { get; set; }
-        public string Cursor { get; set; }
-
+        public int? PageNumber { get; set; }
+        [Required]
+        public int Start { get; set; }
+        [Required]
+        public int End { get; set; }
+        [Required]
+        public int Limit { get; set; }
+        [Required]
+        public int TotalItemsCount { get; set; }
+        [Required]
+        public int TotalPagesCount { get; set; }
+        
         public static OpenApiObject PurePaginationExample1 { get; } = new OpenApiObject
         {
-            [nameof(TotalPagesCount).ToSnakeCase()] = new OpenApiInteger(10),
-            [nameof(NextLink).ToSnakeCase()] = new OpenApiString("next-link"),
-            [nameof(PerviousLink).ToSnakeCase()] = new OpenApiString("previous-link"),
-            [nameof(Cursor).ToSnakeCase()] = new OpenApiString("CURSER"),
+            [nameof(Pointer).ToSnakeCase()] = new OpenApiString("z2vywvh7h6"),
+            [nameof(NextLink).ToSnakeCase()] = new OpenApiString("?pointer=z2vywvh7h6&next"),
+            [nameof(PerviousLink).ToSnakeCase()] = new OpenApiString("?pointer=z2vywvh7h6&previous"),
+            [nameof(PageNumber).ToSnakeCase()] = new OpenApiInteger(2),
+            [nameof(Start).ToSnakeCase()] = new OpenApiInteger(20),
+            [nameof(End).ToSnakeCase()] = new OpenApiInteger(29),
+            [nameof(Limit).ToSnakeCase()] = new OpenApiInteger(10),
+            [nameof(TotalItemsCount).ToSnakeCase()] = new OpenApiInteger(300),
+            [nameof(TotalPagesCount).ToSnakeCase()] = new OpenApiInteger(30),
         };
         public static IOpenApiAny Example { get; } = PurePaginationExample1;
 
-        public PaginationDto(int totalPagesCount, string nextLink, 
-            string perviousLink, string cursor = null)
+        public PaginationDto(string queryResultPointer, string listPath,
+            int? pageNumber, int start, int end, int limit, 
+            int totalItemsCount, int totalPagesCount)
         {
+            Pointer = queryResultPointer;
+            NextLink = $"{listPath}?pointer={queryResultPointer}&next";
+            PerviousLink = $"{listPath}?pointer={queryResultPointer}&previous";
+            PageNumber = pageNumber;
+            Start = start;
+            End = end;
+            Limit = limit;
+            TotalItemsCount = totalItemsCount;
             TotalPagesCount = totalPagesCount;
-            NextLink = nextLink;
-            PerviousLink = perviousLink;
-            Cursor = cursor;
         }
     }
 }

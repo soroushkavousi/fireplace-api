@@ -11,7 +11,9 @@ namespace FireplaceApi.Core.Interfaces
 {
     public interface ICommunityRepository
     {
-        public Task<List<Community>> ListCommunitiesAsync();
+        public Task<List<Community>> ListCommunitiesAsync(List<long> Ids);
+        public Task<List<Community>> ListCommunitiesAsync(string name);
+        public Task<List<long>> ListCommunityIdsAsync(string name);
         public Task<Community> GetCommunityByIdAsync(long id, bool includeCreator = false);
         public Task<Community> GetCommunityByNameAsync(string name, bool includeCreator = false);
         public Task<Community> CreateCommunityAsync(string name, long creatorId);

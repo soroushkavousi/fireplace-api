@@ -129,7 +129,7 @@ namespace FireplaceApi.Core.Operators
             string fileName;
             do
             {
-                fileName = Utils.RandomString(Constants.FileNameLength) + extension;
+                fileName = Utils.RandomString(GlobalOperator.GlobalValues.File.GeneratedFileNameLength) + extension;
             } while (await DoesFileNameExistAsync(fileName));
 
             return fileName;
