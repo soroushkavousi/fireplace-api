@@ -103,6 +103,36 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _userConverter.ConvertToModel(userEntity);
         }
 
+        public async Task<string> GetUsernameByIdAsync(long id)
+        {
+            var sw = Stopwatch.StartNew();
+            var username = (await _userEntities
+                .AsNoTracking()
+                .Select(e => new { Id = e.Id.Value, e.Username })
+                .SingleAsync(e => e.Id == id))
+                .Username;
+
+            _logger.LogIOInformation(sw, "Database",
+                new { id },
+                new { username });
+            return username;
+        }
+
+        public async Task<long> GetIdByUsernameAsync(string username)
+        {
+            var sw = Stopwatch.StartNew();
+            var userId = (await _userEntities
+                .AsNoTracking()
+                .Select(e => new { Id = e.Id.Value, e.Username})
+                .SingleAsync(e => string.Equals(e.Username, username)))
+                .Id;
+
+            _logger.LogIOInformation(sw, "Database",
+                new { username },
+                new { userId });
+            return userId;
+        }
+
         public async Task<User> CreateUserAsync(string firstName, string lastName,
             string username, UserState state, Password password = null)
         {

@@ -22,25 +22,25 @@ namespace FireplaceApi.Api.Controllers
         [Required]
         public DateTime CreationDate { get; set; }
 
-        public static OpenApiObject PureFileExample1 { get; } = new OpenApiObject
+        public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiInteger(10001),
             [nameof(Url).ToSnakeCase()] = new OpenApiString("https://files.social-media.bitiano.com/xww03krwo1e3.jpg"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
         };
-        public static OpenApiObject FileExample1 { get; } = new OpenApiObject
+        public static OpenApiObject Example1 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = PureFileExample1[nameof(Id).ToSnakeCase()],
-            [nameof(Url).ToSnakeCase()] = PureFileExample1[nameof(Url).ToSnakeCase()],
+            [nameof(Id).ToSnakeCase()] = PureExample1[nameof(Id).ToSnakeCase()],
+            [nameof(Url).ToSnakeCase()] = PureExample1[nameof(Url).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
         };
 
         public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
         {
-            [nameof(FileController.PostFileAsync)] = FileExample1,
+            [nameof(FileController.PostFileAsync)] = Example1,
         };
 
-        public static OpenApiObject Example { get; } = FileExample1;
+        public static OpenApiObject Example { get; } = Example1;
 
         static FileDto()
         {

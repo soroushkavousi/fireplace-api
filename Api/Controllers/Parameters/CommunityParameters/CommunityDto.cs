@@ -25,66 +25,66 @@ namespace FireplaceApi.Api.Controllers
         public DateTime CreationDate { get; set; }
         public UserDto Creator { get; set; }
 
-        public static OpenApiObject PureCommunityExample1 { get; } = new OpenApiObject
+        public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiInteger(10001),
             [nameof(Name).ToSnakeCase()] = new OpenApiString("backend-developers"),
-            [nameof(CreatorId).ToSnakeCase()] = UserDto.PureUserExample1[nameof(Id).ToSnakeCase()],
+            [nameof(CreatorId).ToSnakeCase()] = UserDto.PureExample1[nameof(Id).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(Creator).ToSnakeCase()] = new OpenApiNull(),
         };
-        public static OpenApiObject PureCommunityExample2 { get; } = new OpenApiObject
+        public static OpenApiObject PureExample2 { get; } = new OpenApiObject
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiInteger(20002),
             [nameof(Name).ToSnakeCase()] = new OpenApiString("android-developers"),
-            [nameof(CreatorId).ToSnakeCase()] = UserDto.PureUserExample2[nameof(Id).ToSnakeCase()],
+            [nameof(CreatorId).ToSnakeCase()] = UserDto.PureExample2[nameof(Id).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(Creator).ToSnakeCase()] = new OpenApiNull(),
         };
 
-        public static OpenApiArray ListOfPureCommunitiesExample1 { get; } = new OpenApiArray
+        public static OpenApiArray PureListExample1 { get; } = new OpenApiArray
         {
-            PureCommunityExample1, PureCommunityExample2
+            PureExample1, PureExample2
         };
 
-        public static OpenApiObject CommunityExample1 { get; } = new OpenApiObject
+        public static OpenApiObject Example1 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = PureCommunityExample1[nameof(Id).ToSnakeCase()],
-            [nameof(Name).ToSnakeCase()] = PureCommunityExample1[nameof(Name).ToSnakeCase()],
-            [nameof(CreatorId).ToSnakeCase()] = PureCommunityExample1[nameof(CreatorId).ToSnakeCase()],
-            [nameof(CreationDate).ToSnakeCase()] = PureCommunityExample1[nameof(CreationDate).ToSnakeCase()],
-            [nameof(Creator).ToSnakeCase()] = PureCommunityExample1[nameof(Creator).ToSnakeCase()],
+            [nameof(Id).ToSnakeCase()] = PureExample1[nameof(Id).ToSnakeCase()],
+            [nameof(Name).ToSnakeCase()] = PureExample1[nameof(Name).ToSnakeCase()],
+            [nameof(CreatorId).ToSnakeCase()] = PureExample1[nameof(CreatorId).ToSnakeCase()],
+            [nameof(CreationDate).ToSnakeCase()] = PureExample1[nameof(CreationDate).ToSnakeCase()],
+            [nameof(Creator).ToSnakeCase()] = PureExample1[nameof(Creator).ToSnakeCase()],
         };
-        public static OpenApiObject CommunityExample2 { get; } = new OpenApiObject
+        public static OpenApiObject Example2 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = PureCommunityExample2[nameof(Id).ToSnakeCase()],
-            [nameof(Name).ToSnakeCase()] = PureCommunityExample2[nameof(Name).ToSnakeCase()],
-            [nameof(CreatorId).ToSnakeCase()] = PureCommunityExample2[nameof(CreatorId).ToSnakeCase()],
-            [nameof(CreationDate).ToSnakeCase()] = PureCommunityExample2[nameof(CreationDate).ToSnakeCase()],
-            [nameof(Creator).ToSnakeCase()] = PureCommunityExample2[nameof(Creator).ToSnakeCase()],
+            [nameof(Id).ToSnakeCase()] = PureExample2[nameof(Id).ToSnakeCase()],
+            [nameof(Name).ToSnakeCase()] = PureExample2[nameof(Name).ToSnakeCase()],
+            [nameof(CreatorId).ToSnakeCase()] = PureExample2[nameof(CreatorId).ToSnakeCase()],
+            [nameof(CreationDate).ToSnakeCase()] = PureExample2[nameof(CreationDate).ToSnakeCase()],
+            [nameof(Creator).ToSnakeCase()] = PureExample2[nameof(Creator).ToSnakeCase()],
         };
-        public static OpenApiArray ListOfCommunitiesExample1 { get; } = new OpenApiArray
+        public static OpenApiArray ListExample1 { get; } = new OpenApiArray
         {
-            CommunityExample1, CommunityExample2
+            Example1, Example2
         };
-        public static OpenApiObject PageOfCommunitiesExample1 { get; } = new OpenApiObject
+        public static OpenApiObject PageExample1 { get; } = new OpenApiObject
         {
-            [nameof(PageDto<CommunityDto>.Pagination).ToSnakeCase()] = PaginationDto.PurePaginationExample1,
-            [nameof(PageDto<CommunityDto>.Items).ToSnakeCase()] = ListOfPureCommunitiesExample1
+            [nameof(PageDto<CommunityDto>.Pagination).ToSnakeCase()] = PaginationDto.PureExample1,
+            [nameof(PageDto<CommunityDto>.Items).ToSnakeCase()] = PureListExample1
         };
 
 
-        public static IOpenApiAny Example { get; } = CommunityExample1;
+        public static IOpenApiAny Example { get; } = Example1;
         public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
         {
-            [nameof(CommunityController.ListCommunitiesAsync)] = PageOfCommunitiesExample1,
-            [nameof(CommunityController.GetCommunityByIdAsync)] = CommunityExample1,
-            [nameof(CommunityController.GetCommunityByNameAsync)] = CommunityExample1,
-            [nameof(CommunityController.CreateCommunityAsync)] = CommunityExample1,
-            [nameof(CommunityController.PatchCommunityByIdAsync)] = CommunityExample1,
-            [nameof(CommunityController.PatchCommunityByNameAsync)] = CommunityExample1,
-            [nameof(CommunityController.DeleteCommunityByIdAsync)] = CommunityExample1,
-            [nameof(CommunityController.DeleteCommunityByNameAsync)] = CommunityExample1,
+            [nameof(CommunityController.ListCommunitiesAsync)] = PageExample1,
+            [nameof(CommunityController.GetCommunityByIdAsync)] = Example1,
+            [nameof(CommunityController.GetCommunityByNameAsync)] = Example1,
+            [nameof(CommunityController.CreateCommunityAsync)] = Example1,
+            [nameof(CommunityController.PatchCommunityByIdAsync)] = Example1,
+            [nameof(CommunityController.PatchCommunityByNameAsync)] = Example1,
+            [nameof(CommunityController.DeleteCommunityByIdAsync)] = Example1,
+            [nameof(CommunityController.DeleteCommunityByNameAsync)] = Example1,
         };
 
         static CommunityDto()

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace FireplaceApi.Infrastructure.Entities
     {
         public long UserEntityId { get; set; }
         public string Value { get; set; }
+        [Key]
         public long? Id { get; set; }
         public UserEntity UserEntity { get; set; }
 

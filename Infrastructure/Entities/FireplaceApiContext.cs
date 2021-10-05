@@ -16,12 +16,11 @@ namespace FireplaceApi.Infrastructure.Entities
         public DbSet<CommentEntity> CommentEntities { get; set; }
         public DbSet<CommentVoteEntity> CommentVoteEntities { get; set; }
 
-        public DbSet<CommunityEntity> CommunityEntities{ get; set; }
-        public DbSet<CommunityMemberEntity> CommunityMemberEntities { get; set; }
+        public DbSet<CommunityEntity> CommunityEntities { get; set; }
+        public DbSet<CommunityMembershipEntity> CommunityMembershipEntities { get; set; }
 
         public DbSet<PostEntity> PostEntities { get; set; }
         public DbSet<PostVoteEntity> PostVoteEntities { get; set; }
-
 
         public DbSet<AccessTokenEntity> AccessTokenEntities { get; set; }
         public DbSet<EmailEntity> EmailEntities { get; set; }
@@ -33,7 +32,8 @@ namespace FireplaceApi.Infrastructure.Entities
         public DbSet<FileEntity> FileEntities { get; set; }
         public DbSet<GlobalEntity> GlobalEntities { get; set; }
         //Each entity has its own QueryResultEntity.
-        public DbSet<QueryResultEntity> CommunityQueryResultEntities { get; set; }
+        public DbSet<CommunityQueryResultEntity> CommunityQueryResultEntities { get; set; }
+        public DbSet<CommunityMembershipQueryResultEntity> CommunityMembershipQueryResultEntities { get; set; }
 
         public FireplaceApiContext(ILogger<FireplaceApiContext> logger, DbContextOptions<FireplaceApiContext> options) 
             : base(options)
@@ -61,11 +61,13 @@ namespace FireplaceApi.Infrastructure.Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Ignore<QueryResultEntity>();
+
             modelBuilder.ApplyConfiguration(new CommentEntityConfiguration());
             modelBuilder.ApplyConfiguration(new CommentVoteEntityConfiguration());
 
             modelBuilder.ApplyConfiguration(new CommunityEntityConfiguration());
-            modelBuilder.ApplyConfiguration(new CommunityMemberEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new CommunityMembershipEntityConfiguration());
 
             modelBuilder.ApplyConfiguration(new PostEntityConfiguration());
             modelBuilder.ApplyConfiguration(new PostVoteEntityConfiguration());
@@ -79,7 +81,8 @@ namespace FireplaceApi.Infrastructure.Entities
             modelBuilder.ApplyConfiguration(new ErrorEntityConfiguration());
             modelBuilder.ApplyConfiguration(new FileEntityConfiguration());
             modelBuilder.ApplyConfiguration(new GlobalEntityConfiguration());
-            modelBuilder.ApplyConfiguration(new QueryResultEntityConfiguration());
+            //modelBuilder.ApplyConfiguration(new CommunityQueryResultEntityConfiguration());
+            //modelBuilder.ApplyConfiguration(new CommunityMembershipQueryResultEntityConfiguration());
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,

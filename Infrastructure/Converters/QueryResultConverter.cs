@@ -19,12 +19,13 @@ namespace FireplaceApi.Infrastructure.Converters
 
         // Entity
 
-        public QueryResultEntity ConvertToEntity(QueryResult queryResult)
+        public T ConvertToEntity<T>(QueryResult queryResult) where T: QueryResultEntity, new()
         {
             if (queryResult == null)
                 return null;
 
-            var queryResultEntity = new QueryResultEntity(queryResult.Pointer, 
+            var queryResultEntity = new T();
+            queryResultEntity.FillParameters(queryResult.Pointer, 
                 queryResult.LastStart, queryResult.LastEnd, queryResult.LastLimit,
                 queryResult.LastPage, queryResult.ReferenceIds, queryResult.CreationDate, 
                 queryResult.ModifiedDate, queryResult.Id);

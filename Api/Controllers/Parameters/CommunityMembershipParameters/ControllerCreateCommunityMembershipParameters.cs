@@ -16,14 +16,14 @@ using FireplaceApi.Core.Extensions;
 namespace FireplaceApi.Api.Controllers
 {
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
-    public class ControllerCreateCommunityInputBodyParameters
+    public class ControllerCreateCommunityMembershipInputBodyParameters
     {
-        [Required]
-        public string Name { get; set; }
+        public long? CommunityId { get; set; }
+        public string CommunityName { get; set; }
 
         public static IOpenApiAny Example { get; } = new OpenApiObject
         {
-            [nameof(Name).ToSnakeCase()] = CommunityDto.PureExample1[nameof(CommunityDto.Name).ToSnakeCase()],
+            [nameof(CommunityName).ToSnakeCase()] = CommunityDto.PureExample1[nameof(CommunityDto.Name).ToSnakeCase()],
         };
     }
 }

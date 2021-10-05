@@ -25,7 +25,7 @@ namespace FireplaceApi.Api.Controllers
 
         public static IOpenApiAny Example { get; } = new OpenApiObject
         {
-            [nameof(EmailAddress).ToSnakeCase()] = EmailDto.PureEmailExample1[nameof(EmailDto.Address).ToSnakeCase()],
+            [nameof(EmailAddress).ToSnakeCase()] = EmailDto.PureExample1[nameof(EmailDto.Address).ToSnakeCase()],
             [nameof(Password).ToSnakeCase()] = new OpenApiString("P@ssw0rd"),
         };
     }

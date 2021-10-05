@@ -1,11 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -31,8 +27,8 @@ namespace FireplaceApi.Infrastructure.Entities
             PostEntityId = postEntityId;
             IsUp = isUp;
             Id = id;
-            VoterEntity = voterEntity ?? throw new ArgumentNullException(nameof(voterEntity));
-            PostEntity = postEntity ?? throw new ArgumentNullException(nameof(postEntity));
+            VoterEntity = voterEntity;
+            PostEntity = postEntity;
         }
 
         public PostVoteEntity PureCopy() => new PostVoteEntity(VoterEntityId, PostEntityId,
@@ -44,9 +40,6 @@ namespace FireplaceApi.Infrastructure.Entities
         public void Configure(EntityTypeBuilder<PostVoteEntity> modelBuilder)
         {
             // p => principal / d => dependent
-
-            modelBuilder
-                .HasKey(t => new { t.VoterEntityId, t.PostEntityId });
 
             modelBuilder
                 .HasOne(d => d.VoterEntity)

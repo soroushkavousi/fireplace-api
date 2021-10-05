@@ -31,7 +31,7 @@ namespace FireplaceApi.Api.Controllers
         public EmailDto Email { get; set; }
         public List<SessionDto> Sessions { get; set; }
 
-        public static OpenApiObject PureUserExample1 { get; } = new OpenApiObject
+        public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiInteger(10000),
             [nameof(FirstName).ToSnakeCase()] = new OpenApiString("Ted"),
@@ -43,7 +43,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(Email).ToSnakeCase()] = new OpenApiNull(),
             [nameof(Sessions).ToSnakeCase()] = new OpenApiNull(),
         };
-        public static OpenApiObject PureUserExample2 { get; } = new OpenApiObject
+        public static OpenApiObject PureExample2 { get; } = new OpenApiObject
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiInteger(20000),
             [nameof(FirstName).ToSnakeCase()] = new OpenApiString("Barney"),
@@ -56,55 +56,55 @@ namespace FireplaceApi.Api.Controllers
             [nameof(Sessions).ToSnakeCase()] = new OpenApiNull(),
         };
 
-        public static OpenApiArray ListOfPureUsersExample1 { get; } = new OpenApiArray
+        public static OpenApiArray PureListExample1 { get; } = new OpenApiArray
         {
-            PureUserExample1, PureUserExample2
+            PureExample1, PureExample2
         };
 
-        public static OpenApiObject UserExample1 { get; } = new OpenApiObject
+        public static OpenApiObject Example1 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = PureUserExample1[nameof(Id).ToSnakeCase()],
-            [nameof(FirstName).ToSnakeCase()] = PureUserExample1[nameof(FirstName).ToSnakeCase()],
-            [nameof(LastName).ToSnakeCase()] = PureUserExample1[nameof(LastName).ToSnakeCase()],
-            [nameof(Username).ToSnakeCase()] = PureUserExample1[nameof(Username).ToSnakeCase()],
-            [nameof(State).ToSnakeCase()] = PureUserExample1[nameof(State).ToSnakeCase()],
+            [nameof(Id).ToSnakeCase()] = PureExample1[nameof(Id).ToSnakeCase()],
+            [nameof(FirstName).ToSnakeCase()] = PureExample1[nameof(FirstName).ToSnakeCase()],
+            [nameof(LastName).ToSnakeCase()] = PureExample1[nameof(LastName).ToSnakeCase()],
+            [nameof(Username).ToSnakeCase()] = PureExample1[nameof(Username).ToSnakeCase()],
+            [nameof(State).ToSnakeCase()] = PureExample1[nameof(State).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
-            [nameof(AccessToken).ToSnakeCase()] = AccessTokenDto.PureAccessTokenExample1[nameof(AccessTokenDto.Value).ToSnakeCase()],
-            [nameof(Email).ToSnakeCase()] = EmailDto.PureEmailExample1,
-            [nameof(Sessions).ToSnakeCase()] = SessionDto.ListOfPureSessionsExample1,
+            [nameof(AccessToken).ToSnakeCase()] = AccessTokenDto.PureExample1[nameof(AccessTokenDto.Value).ToSnakeCase()],
+            [nameof(Email).ToSnakeCase()] = EmailDto.PureExample1,
+            [nameof(Sessions).ToSnakeCase()] = SessionDto.PureListExample1,
         };
-        public static OpenApiObject UserExample2 { get; } = new OpenApiObject
+        public static OpenApiObject Example2 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = PureUserExample2[nameof(Id).ToSnakeCase()],
-            [nameof(FirstName).ToSnakeCase()] = PureUserExample2[nameof(FirstName).ToSnakeCase()],
-            [nameof(LastName).ToSnakeCase()] = PureUserExample2[nameof(LastName).ToSnakeCase()],
-            [nameof(Username).ToSnakeCase()] = PureUserExample2[nameof(Username).ToSnakeCase()],
-            [nameof(State).ToSnakeCase()] = PureUserExample2[nameof(State).ToSnakeCase()],
+            [nameof(Id).ToSnakeCase()] = PureExample2[nameof(Id).ToSnakeCase()],
+            [nameof(FirstName).ToSnakeCase()] = PureExample2[nameof(FirstName).ToSnakeCase()],
+            [nameof(LastName).ToSnakeCase()] = PureExample2[nameof(LastName).ToSnakeCase()],
+            [nameof(Username).ToSnakeCase()] = PureExample2[nameof(Username).ToSnakeCase()],
+            [nameof(State).ToSnakeCase()] = PureExample2[nameof(State).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
-            [nameof(AccessToken).ToSnakeCase()] = AccessTokenDto.PureAccessTokenExample2[nameof(AccessTokenDto.Value).ToSnakeCase()],
-            [nameof(Email).ToSnakeCase()] = EmailDto.PureEmailExample2,
-            [nameof(Sessions).ToSnakeCase()] = SessionDto.ListOfPureSessionsExample2,
+            [nameof(AccessToken).ToSnakeCase()] = AccessTokenDto.PureExample2[nameof(AccessTokenDto.Value).ToSnakeCase()],
+            [nameof(Email).ToSnakeCase()] = EmailDto.PureExample2,
+            [nameof(Sessions).ToSnakeCase()] = SessionDto.PureListExample2,
         };
-        public static OpenApiArray ListOfUsersExample1 { get; } = new OpenApiArray
+        public static OpenApiArray ListExample1 { get; } = new OpenApiArray
         {
-            UserExample1, UserExample2
+            Example1, Example2
         };
 
-        public static IOpenApiAny Example { get; } = UserExample1;
+        public static IOpenApiAny Example { get; } = Example1;
         public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
         {
-            [nameof(UserController.OpenGoogleLogInPage)] = UserExample1,
-            [nameof(UserController.LogInWithGoogleAsync)] = UserExample1,
-            [nameof(UserController.SignUpWithEmailAsync)] = UserExample1,
-            [nameof(UserController.LogInWithEmailAsync)] = UserExample1,
-            [nameof(UserController.LogInWithUsernameAsync)] = UserExample1,
-            [nameof(UserController.ListUsersAsync)] = ListOfUsersExample1,
-            [nameof(UserController.GetUserByIdAsync)] = UserExample1,
-            [nameof(UserController.GetUserByUsernameAsync)] = UserExample1,
-            [nameof(UserController.PatchUserByIdAsync)] = UserExample1,
-            [nameof(UserController.PatchUserByUsernameAsync)] = UserExample1,
-            [nameof(UserController.DeleteUserByIdAsync)] = UserExample1,
-            [nameof(UserController.DeleteUserByUsernameAsync)] = UserExample1,
+            [nameof(UserController.OpenGoogleLogInPage)] = Example1,
+            [nameof(UserController.LogInWithGoogleAsync)] = Example1,
+            [nameof(UserController.SignUpWithEmailAsync)] = Example1,
+            [nameof(UserController.LogInWithEmailAsync)] = Example1,
+            [nameof(UserController.LogInWithUsernameAsync)] = Example1,
+            [nameof(UserController.ListUsersAsync)] = ListExample1,
+            [nameof(UserController.GetUserByIdAsync)] = Example1,
+            [nameof(UserController.GetUserByUsernameAsync)] = Example1,
+            [nameof(UserController.PatchUserByIdAsync)] = Example1,
+            [nameof(UserController.PatchUserByUsernameAsync)] = Example1,
+            [nameof(UserController.DeleteUserByIdAsync)] = Example1,
+            [nameof(UserController.DeleteUserByUsernameAsync)] = Example1,
         };
 
         static UserDto()

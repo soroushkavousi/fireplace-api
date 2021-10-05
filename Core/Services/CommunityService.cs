@@ -50,12 +50,12 @@ namespace FireplaceApi.Core.Services
             return community;
         }
 
-        public async Task<Community> CreateCommunityAsync(string name, long creatorId)
+        public async Task<Community> CreateCommunityAsync(User requesterUser, string name)
         {
             await _communityValidator
-                .ValidateCreateCommunityInputParametersAsync(name, creatorId);
+                .ValidateCreateCommunityInputParametersAsync(name, requesterUser.Id);
             return await _communityOperator
-                .CreateCommunityAsync(name, creatorId);
+                .CreateCommunityAsync(name, requesterUser.Id);
         }
 
         public async Task<Community> PatchCommunityByIdAsync(User requesterUser, long? id)

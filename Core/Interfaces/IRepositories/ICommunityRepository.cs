@@ -16,11 +16,14 @@ namespace FireplaceApi.Core.Interfaces
         public Task<List<long>> ListCommunityIdsAsync(string name);
         public Task<Community> GetCommunityByIdAsync(long id, bool includeCreator = false);
         public Task<Community> GetCommunityByNameAsync(string name, bool includeCreator = false);
+        public Task<string> GetNameByIdAsync(long id);
+        public Task<long> GetIdByNameAsync(string name);
         public Task<Community> CreateCommunityAsync(string name, long creatorId);
         public Task<Community> UpdateCommunityAsync(Community community);
         public Task DeleteCommunityByIdAsync(long id);
         public Task DeleteCommunityByNameAsync(string name);
         public Task<bool> DoesCommunityIdExistAsync(long id);
         public Task<bool> DoesCommunityNameExistAsync(string name);
+        
     }
 }

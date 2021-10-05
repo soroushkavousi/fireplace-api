@@ -26,7 +26,7 @@ namespace FireplaceApi.Api.Controllers
         public DateTime CreationDate { get; set; }
         public UserDto User { get; set; }
 
-        public static OpenApiObject PureSessionExample11 { get; } = new OpenApiObject
+        public static OpenApiObject PureExample11 { get; } = new OpenApiObject
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiInteger(10001),
             [nameof(UserId).ToSnakeCase()] = null,
@@ -34,7 +34,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(User).ToSnakeCase()] = new OpenApiNull(),
         };
-        public static OpenApiObject PureSessionExample12 { get; } = new OpenApiObject
+        public static OpenApiObject PureExample12 { get; } = new OpenApiObject
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiInteger(10002),
             [nameof(UserId).ToSnakeCase()] = null,
@@ -42,7 +42,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(User).ToSnakeCase()] = new OpenApiNull(),
         };
-        public static OpenApiObject PureSessionExample21 { get; } = new OpenApiObject
+        public static OpenApiObject PureExample21 { get; } = new OpenApiObject
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiInteger(20001),
             [nameof(UserId).ToSnakeCase()] = null,
@@ -50,7 +50,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(User).ToSnakeCase()] = new OpenApiNull(),
         };
-        public static OpenApiObject PureSessionExample22 { get; } = new OpenApiObject
+        public static OpenApiObject PureExample22 { get; } = new OpenApiObject
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiInteger(20002),
             [nameof(UserId).ToSnakeCase()] = null,
@@ -58,69 +58,69 @@ namespace FireplaceApi.Api.Controllers
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(User).ToSnakeCase()] = new OpenApiNull(),
         };
-        public static OpenApiArray ListOfPureSessionsExample1 { get; } = new OpenApiArray
+        public static OpenApiArray PureListExample1 { get; } = new OpenApiArray
         {
-            PureSessionExample11, PureSessionExample12
+            PureExample11, PureExample12
         };
-        public static OpenApiArray ListOfPureSessionsExample2 { get; } = new OpenApiArray
+        public static OpenApiArray PureListExample2 { get; } = new OpenApiArray
         {
-            PureSessionExample21, PureSessionExample22
-        };
-
-        public static OpenApiObject SessionExample11 { get; } = new OpenApiObject
-        {
-            [nameof(Id).ToSnakeCase()] = PureSessionExample11[nameof(Id).ToSnakeCase()],
-            [nameof(UserId).ToSnakeCase()] = PureSessionExample11[nameof(UserId).ToSnakeCase()],
-            [nameof(IpAddress).ToSnakeCase()] = PureSessionExample11[nameof(IpAddress).ToSnakeCase()],
-            [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
-            [nameof(User).ToSnakeCase()] = UserDto.PureUserExample1,
-        };
-        public static OpenApiObject SessionExample12 { get; } = new OpenApiObject
-        {
-            [nameof(Id).ToSnakeCase()] = PureSessionExample12[nameof(Id).ToSnakeCase()],
-            [nameof(UserId).ToSnakeCase()] = PureSessionExample12[nameof(UserId).ToSnakeCase()],
-            [nameof(IpAddress).ToSnakeCase()] = PureSessionExample12[nameof(IpAddress).ToSnakeCase()],
-            [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
-            [nameof(User).ToSnakeCase()] = UserDto.PureUserExample1,
-        };
-        public static OpenApiObject SessionExample21 { get; } = new OpenApiObject
-        {
-            [nameof(Id).ToSnakeCase()] = PureSessionExample21[nameof(Id).ToSnakeCase()],
-            [nameof(UserId).ToSnakeCase()] = PureSessionExample21[nameof(UserId).ToSnakeCase()],
-            [nameof(IpAddress).ToSnakeCase()] = PureSessionExample21[nameof(IpAddress).ToSnakeCase()],
-            [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
-            [nameof(User).ToSnakeCase()] = UserDto.PureUserExample2,
-        };
-        public static OpenApiObject SessionExample22 { get; } = new OpenApiObject
-        {
-            [nameof(Id).ToSnakeCase()] = PureSessionExample22[nameof(Id).ToSnakeCase()],
-            [nameof(UserId).ToSnakeCase()] = PureSessionExample22[nameof(UserId).ToSnakeCase()],
-            [nameof(IpAddress).ToSnakeCase()] = PureSessionExample22[nameof(IpAddress).ToSnakeCase()],
-            [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
-            [nameof(User).ToSnakeCase()] = UserDto.PureUserExample2,
-        };
-        public static OpenApiArray ListOfSessionsExample1 { get; } = new OpenApiArray
-        {
-            SessionExample11, SessionExample12
-        };
-        public static OpenApiArray ListOfSessionsExample2 { get; } = new OpenApiArray
-        {
-            SessionExample21, SessionExample22
+            PureExample21, PureExample22
         };
 
-        public static OpenApiObject Example { get; } = SessionExample11;
+        public static OpenApiObject Example11 { get; } = new OpenApiObject
+        {
+            [nameof(Id).ToSnakeCase()] = PureExample11[nameof(Id).ToSnakeCase()],
+            [nameof(UserId).ToSnakeCase()] = PureExample11[nameof(UserId).ToSnakeCase()],
+            [nameof(IpAddress).ToSnakeCase()] = PureExample11[nameof(IpAddress).ToSnakeCase()],
+            [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
+            [nameof(User).ToSnakeCase()] = UserDto.PureExample1,
+        };
+        public static OpenApiObject Example12 { get; } = new OpenApiObject
+        {
+            [nameof(Id).ToSnakeCase()] = PureExample12[nameof(Id).ToSnakeCase()],
+            [nameof(UserId).ToSnakeCase()] = PureExample12[nameof(UserId).ToSnakeCase()],
+            [nameof(IpAddress).ToSnakeCase()] = PureExample12[nameof(IpAddress).ToSnakeCase()],
+            [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
+            [nameof(User).ToSnakeCase()] = UserDto.PureExample1,
+        };
+        public static OpenApiObject Example21 { get; } = new OpenApiObject
+        {
+            [nameof(Id).ToSnakeCase()] = PureExample21[nameof(Id).ToSnakeCase()],
+            [nameof(UserId).ToSnakeCase()] = PureExample21[nameof(UserId).ToSnakeCase()],
+            [nameof(IpAddress).ToSnakeCase()] = PureExample21[nameof(IpAddress).ToSnakeCase()],
+            [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
+            [nameof(User).ToSnakeCase()] = UserDto.PureExample2,
+        };
+        public static OpenApiObject Example22 { get; } = new OpenApiObject
+        {
+            [nameof(Id).ToSnakeCase()] = PureExample22[nameof(Id).ToSnakeCase()],
+            [nameof(UserId).ToSnakeCase()] = PureExample22[nameof(UserId).ToSnakeCase()],
+            [nameof(IpAddress).ToSnakeCase()] = PureExample22[nameof(IpAddress).ToSnakeCase()],
+            [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
+            [nameof(User).ToSnakeCase()] = UserDto.PureExample2,
+        };
+        public static OpenApiArray ListExample1 { get; } = new OpenApiArray
+        {
+            Example11, Example12
+        };
+        public static OpenApiArray ListExample2 { get; } = new OpenApiArray
+        {
+            Example21, Example22
+        };
+
+        public static OpenApiObject Example { get; } = Example11;
         public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
         {
-            [nameof(SessionController.GetSessionByIdAsync)] = SessionExample11,
-            [nameof(SessionController.ListSessionsAsync)] = ListOfPureSessionsExample1,
+            [nameof(SessionController.GetSessionByIdAsync)] = Example11,
+            [nameof(SessionController.ListSessionsAsync)] = PureListExample1,
         };
 
         static SessionDto()
         {
-            PureSessionExample11[nameof(UserId).ToSnakeCase()] = UserDto.PureUserExample1[nameof(UserDto.Id).ToSnakeCase()];
-            PureSessionExample12[nameof(UserId).ToSnakeCase()] = UserDto.PureUserExample1[nameof(UserDto.Id).ToSnakeCase()];
-            PureSessionExample21[nameof(UserId).ToSnakeCase()] = UserDto.PureUserExample2[nameof(UserDto.Id).ToSnakeCase()];
-            PureSessionExample22[nameof(UserId).ToSnakeCase()] = UserDto.PureUserExample2[nameof(UserDto.Id).ToSnakeCase()];
+            PureExample11[nameof(UserId).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Id).ToSnakeCase()];
+            PureExample12[nameof(UserId).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Id).ToSnakeCase()];
+            PureExample21[nameof(UserId).ToSnakeCase()] = UserDto.PureExample2[nameof(UserDto.Id).ToSnakeCase()];
+            PureExample22[nameof(UserId).ToSnakeCase()] = UserDto.PureExample2[nameof(UserDto.Id).ToSnakeCase()];
         }
 
         public SessionDto(long? id, long userId, string ipAddress,  

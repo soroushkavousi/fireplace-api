@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -31,8 +26,8 @@ namespace FireplaceApi.Infrastructure.Entities
             CommentEntityId = commentEntityId;
             IsUp = isUp;
             Id = id;
-            VoterEntity = voterEntity ?? throw new ArgumentNullException(nameof(voterEntity));
-            CommentEntity = commentEntity ?? throw new ArgumentNullException(nameof(commentEntity));
+            VoterEntity = voterEntity;
+            CommentEntity = commentEntity;
         }
 
         public CommentVoteEntity PureCopy() => new CommentVoteEntity(VoterEntityId, CommentEntityId,
@@ -44,9 +39,6 @@ namespace FireplaceApi.Infrastructure.Entities
         public void Configure(EntityTypeBuilder<CommentVoteEntity> modelBuilder)
         {
             // p => principal / d => dependent
-
-            modelBuilder
-                .HasKey(t => new { t.VoterEntityId, t.CommentEntityId });
 
             modelBuilder
                 .HasOne(d => d.VoterEntity)

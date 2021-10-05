@@ -31,11 +31,11 @@ namespace FireplaceApi.Api.Controllers
 
         public static IOpenApiAny Example { get; } = new OpenApiObject
         {
-            [nameof(FirstName).ToSnakeCase()] = UserDto.PureUserExample1[nameof(UserDto.FirstName).ToSnakeCase()],
-            [nameof(LastName).ToSnakeCase()] = UserDto.PureUserExample1[nameof(UserDto.LastName).ToSnakeCase()],
-            [nameof(Username).ToSnakeCase()] = UserDto.PureUserExample1[nameof(UserDto.Username).ToSnakeCase()],
+            [nameof(FirstName).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.FirstName).ToSnakeCase()],
+            [nameof(LastName).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.LastName).ToSnakeCase()],
+            [nameof(Username).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Username).ToSnakeCase()],
             [nameof(Password).ToSnakeCase()] = new OpenApiString("P@ssw0rd"),
-            [nameof(EmailAddress).ToSnakeCase()] = EmailDto.PureEmailExample1[nameof(EmailDto.Address).ToSnakeCase()],
+            [nameof(EmailAddress).ToSnakeCase()] = EmailDto.PureExample1[nameof(EmailDto.Address).ToSnakeCase()],
         };
     }
 

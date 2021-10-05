@@ -24,7 +24,7 @@ namespace FireplaceApi.Infrastructure.Entities
         public List<AccessTokenEntity> AccessTokenEntities { get; set; }
         public List<SessionEntity> SessionEntities { get; set; }
         public List<CommunityEntity> OwnCommunities { get; set; }
-        public List<CommunityMemberEntity> JoinedCommunities { get; set; }
+        public List<CommunityMembershipEntity> JoinedCommunities { get; set; }
         public List<PostEntity> PostEntities { get; set; }
         public List<PostVoteEntity> PostVoteEntities { get; set; }
         public List<CommentEntity> CommentEntities { get; set; }
@@ -39,7 +39,7 @@ namespace FireplaceApi.Infrastructure.Entities
             List<AccessTokenEntity> accessTokenEntities = null, 
             List<SessionEntity> sessionEntities = null,
             List<CommunityEntity> ownCommunities = null,
-            List<CommunityMemberEntity> joinedCommunities = null,
+            List<CommunityMembershipEntity> joinedCommunities = null,
             List<PostEntity> postEntities = null,
             List<PostVoteEntity> postVoteEntities = null,
             List<CommentEntity> commentEntities = null,

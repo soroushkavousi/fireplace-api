@@ -29,12 +29,12 @@ namespace FireplaceApi.Api.Controllers
         public List<T> Items { get; set; }
 
 
-        public static OpenApiObject PurePageExample1 { get; } = new OpenApiObject
+        public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
-            [nameof(Pagination).ToSnakeCase()] = PaginationDto.PurePaginationExample1,
-            [nameof(Items).ToSnakeCase()] = CommunityDto.ListOfPureCommunitiesExample1
+            [nameof(Pagination).ToSnakeCase()] = PaginationDto.PureExample1,
+            [nameof(Items).ToSnakeCase()] = CommunityDto.PureListExample1
         };
-        public static IOpenApiAny Example { get; } = PurePageExample1;
+        public static IOpenApiAny Example { get; } = PureExample1;
         //public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
         //{
         //    [nameof(CommunityController.ListCommunitiesAsync)] = PageOfCommunitiesExample1,
@@ -68,7 +68,7 @@ namespace FireplaceApi.Api.Controllers
         [Required]
         public int TotalPagesCount { get; set; }
         
-        public static OpenApiObject PurePaginationExample1 { get; } = new OpenApiObject
+        public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
             [nameof(Pointer).ToSnakeCase()] = new OpenApiString("z2vywvh7h6"),
             [nameof(NextLink).ToSnakeCase()] = new OpenApiString("?pointer=z2vywvh7h6&next"),
@@ -80,7 +80,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(TotalItemsCount).ToSnakeCase()] = new OpenApiInteger(300),
             [nameof(TotalPagesCount).ToSnakeCase()] = new OpenApiInteger(30),
         };
-        public static IOpenApiAny Example { get; } = PurePaginationExample1;
+        public static IOpenApiAny Example { get; } = PureExample1;
 
         public PaginationDto(string queryResultPointer, string listPath,
             int? pageNumber, int start, int end, int limit, 

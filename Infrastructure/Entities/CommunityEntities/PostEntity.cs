@@ -2,10 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -38,8 +35,8 @@ namespace FireplaceApi.Infrastructure.Entities
             Content = content ?? throw new ArgumentNullException(nameof(content));
             Vote = vote;
             Id = id;
-            AuthorEntity = author ?? throw new ArgumentNullException(nameof(author));
-            CommunityEntity = communityEntity ?? throw new ArgumentNullException(nameof(communityEntity));
+            AuthorEntity = author;
+            CommunityEntity = communityEntity;
             PostVoteEntities = postVoteEntities;
             CommentEntities = commentEntities;
         }
@@ -53,9 +50,6 @@ namespace FireplaceApi.Infrastructure.Entities
         public void Configure(EntityTypeBuilder<PostEntity> modelBuilder)
         {
             // p => principal / d => dependent
-
-            modelBuilder
-                .HasKey(t => new { t.AuthorEntityId, t.CommunityEntityId });
 
             modelBuilder
                 .HasOne(d => d.AuthorEntity)

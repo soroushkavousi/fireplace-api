@@ -254,6 +254,18 @@ namespace FireplaceApi.Core.Operators
             return user;
         }
 
+        public async Task<string> GetUsernameByIdAsync(long id)
+        {
+            var username = await _userRepository.GetUsernameByIdAsync(id);
+            return username;
+        }
+
+        public async Task<long> GetIdByUsernameAsync(string username)
+        {
+            var userId = await _userRepository.GetIdByUsernameAsync(username);
+            return userId;
+        }
+
         public async Task<User> CreateUserAsync(string firstName, string lastName,
             string username, Password password = null, UserState state = UserState.NOT_VERIFIED)
         {

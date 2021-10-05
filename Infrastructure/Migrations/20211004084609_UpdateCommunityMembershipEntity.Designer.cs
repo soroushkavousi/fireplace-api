@@ -5,20 +5,22 @@ using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FireplaceApi.Infrastructure.Migrations
 {
     [DbContext(typeof(FireplaceApiContext))]
-    partial class FireplaceApiContextModelSnapshot : ModelSnapshot
+    [Migration("20211004084609_UpdateCommunityMembershipEntity")]
+    partial class UpdateCommunityMembershipEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.10")
+                .HasAnnotation("ProductVersion", "5.0.9")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
             modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.AccessTokenEntity", b =>
@@ -201,84 +203,6 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.HasIndex("UserEntityId", "UserEntityName");
 
                     b.ToTable("CommunityMembershipEntities");
-                });
-
-            modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.CommunityMembershipQueryResultEntity", b =>
-                {
-                    b.Property<long?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("LastEnd")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("LastLimit")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("LastPage")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("LastStart")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Pointer")
-                        .HasColumnType("text");
-
-                    b.Property<List<long>>("ReferenceEntityIds")
-                        .HasColumnType("bigint[]");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Pointer")
-                        .IsUnique();
-
-                    b.ToTable("CommunityMembershipQueryResultEntities");
-                });
-
-            modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.CommunityQueryResultEntity", b =>
-                {
-                    b.Property<long?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("LastEnd")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("LastLimit")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("LastPage")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("LastStart")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Pointer")
-                        .HasColumnType("text");
-
-                    b.Property<List<long>>("ReferenceEntityIds")
-                        .HasColumnType("bigint[]");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Pointer")
-                        .IsUnique();
-
-                    b.ToTable("CommunityQueryResultEntities");
                 });
 
             modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.EmailEntity", b =>
@@ -562,6 +486,45 @@ namespace FireplaceApi.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("PostVoteEntities");
+                });
+
+            modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.QueryResultEntity", b =>
+                {
+                    b.Property<long?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("LastEnd")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("LastLimit")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("LastPage")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("LastStart")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Pointer")
+                        .HasColumnType("text");
+
+                    b.Property<List<long>>("ReferenceEntityIds")
+                        .HasColumnType("bigint[]");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Pointer")
+                        .IsUnique();
+
+                    b.ToTable("CommunityQueryResultEntities");
                 });
 
             modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.SessionEntity", b =>

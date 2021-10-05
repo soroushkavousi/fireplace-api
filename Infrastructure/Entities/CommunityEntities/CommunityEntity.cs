@@ -2,10 +2,6 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -16,7 +12,7 @@ namespace FireplaceApi.Infrastructure.Entities
         public long CreatorEntityId { get; set; }
         public long? Id { get; set; }
         public UserEntity CreatorEntity { get; set; }
-        public List<CommunityMemberEntity> CommunityMemberEntities { get; set; }
+        public List<CommunityMembershipEntity> CommunityMemberEntities { get; set; }
         public List<PostEntity> PostEntities { get; set; }
 
         private CommunityEntity() : base() { }
@@ -24,7 +20,7 @@ namespace FireplaceApi.Infrastructure.Entities
         public CommunityEntity(string name, long creatorEntityId,
             DateTime? creationDate = null, DateTime? modifiedDate = null,
             long? id = null, UserEntity creatorEntity = null, 
-            List<CommunityMemberEntity> members = null,
+            List<CommunityMembershipEntity> members = null,
             List<PostEntity> postEntities = null) : base(creationDate, modifiedDate)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));

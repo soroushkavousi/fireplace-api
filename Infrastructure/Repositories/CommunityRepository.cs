@@ -107,6 +107,36 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _communityConverter.ConvertToModel(communityEntity);
         }
 
+        public async Task<string> GetNameByIdAsync(long id)
+        {
+            var sw = Stopwatch.StartNew();
+            var communityName = (await _communityEntities
+                .AsNoTracking()
+                .Select(e => new { Id = e.Id.Value, e.Name })
+                .SingleAsync(e => e.Id == id))
+                .Name;
+
+            _logger.LogIOInformation(sw, "Database",
+                new { id },
+                new { communityName });
+            return communityName;
+        }
+
+        public async Task<long> GetIdByNameAsync(string communityName)
+        {
+            var sw = Stopwatch.StartNew();
+            var communityId = (await _communityEntities
+                .AsNoTracking()
+                .Select(e => new { Id = e.Id.Value, e.Name })
+                .SingleAsync(e => string.Equals(e.Name, communityName)))
+                .Id;
+
+            _logger.LogIOInformation(sw, "Database",
+                new { communityName },
+                new { communityId });
+            return communityId;
+        }
+
         public async Task<Community> CreateCommunityAsync(string name, long creatorId)
         {
             var sw = Stopwatch.StartNew();

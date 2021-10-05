@@ -28,22 +28,49 @@ namespace FireplaceApi.Infrastructure.Entities
             DateTime? creationDate = null, DateTime? modifiedDate = null, 
             long? id = null) : base(creationDate, modifiedDate)
         {
+            FillParameters(pointer, lastStart, lastEnd, lastLimit, lastPage,
+                referenceEntityIds, creationDate, modifiedDate, id);
+        }
+
+        public void FillParameters(string pointer, int lastStart,
+            int lastEnd, int lastLimit, int lastPage, List<long> referenceEntityIds,
+            DateTime? creationDate = null, DateTime? modifiedDate = null,
+            long? id = null)
+        {
             Pointer = pointer ?? throw new ArgumentNullException(nameof(pointer));
             LastStart = lastStart;
             LastEnd = lastEnd;
             LastLimit = lastLimit;
             LastPage = lastPage;
             ReferenceEntityIds = referenceEntityIds ?? throw new ArgumentNullException(nameof(referenceEntityIds));
+            if (creationDate.HasValue)
+                CreationDate = creationDate.Value;
+            if (modifiedDate.HasValue)
+                ModifiedDate = modifiedDate.Value;
             Id = id;
         }
     }
 
-    public class QueryResultEntityConfiguration : IEntityTypeConfiguration<QueryResultEntity>
-    {
-        public void Configure(EntityTypeBuilder<QueryResultEntity> modelBuilder)
-        {
-            // p => principal / d => dependent
+    public class CommunityQueryResultEntity : QueryResultEntity { }
+    public class CommunityMembershipQueryResultEntity : QueryResultEntity { }
 
-        }
-    }
+    //public class CommunityQueryResultEntityConfiguration : IEntityTypeConfiguration<CommunityQueryResultEntity>
+    //{
+    //    public void Configure(EntityTypeBuilder<CommunityQueryResultEntity> modelBuilder)
+    //    {
+    //        // p => principal / d => dependent
+
+    //        modelBuilder.ToTable("CommunityQueryResultEntities");
+    //    }
+    //}
+
+    //public class CommunityMembershipQueryResultEntityConfiguration : IEntityTypeConfiguration<CommunityMembershipQueryResultEntity>
+    //{
+    //    public void Configure(EntityTypeBuilder<CommunityMembershipQueryResultEntity> modelBuilder)
+    //    {
+    //        // p => principal / d => dependent
+
+    //        modelBuilder.ToTable("CommunityMembershipQueryResultEntities");
+    //    }
+    //}
 }

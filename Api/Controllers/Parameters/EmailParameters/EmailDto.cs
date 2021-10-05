@@ -25,7 +25,7 @@ namespace FireplaceApi.Api.Controllers
         public string ActivationStatus { get; set; }
         public UserDto User { get; set; }
 
-        public static OpenApiObject PureEmailExample1 { get; } = new OpenApiObject
+        public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiInteger(10001),
             [nameof(UserId).ToSnakeCase()] = null,
@@ -33,7 +33,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(ActivationStatus).ToSnakeCase()] = new OpenApiString(Core.Enums.ActivationStatus.COMPLETED.ToString()),
             [nameof(User).ToSnakeCase()] = new OpenApiNull(),
         };
-        public static OpenApiObject PureEmailExample2 { get; } = new OpenApiObject
+        public static OpenApiObject PureExample2 { get; } = new OpenApiObject
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiInteger(20001),
             [nameof(UserId).ToSnakeCase()] = null,
@@ -41,39 +41,39 @@ namespace FireplaceApi.Api.Controllers
             [nameof(ActivationStatus).ToSnakeCase()] = new OpenApiString(Core.Enums.ActivationStatus.SENT.ToString()),
             [nameof(User).ToSnakeCase()] = new OpenApiNull(),
         };
-        public static OpenApiArray ListOfPureEmailsExample1 { get; } = new OpenApiArray
+        public static OpenApiArray PureListExample1 { get; } = new OpenApiArray
         {
-            PureEmailExample1, PureEmailExample2
+            PureExample1, PureExample2
         };
 
-        public static OpenApiObject EmailExample1 { get; } = new OpenApiObject
+        public static OpenApiObject Example1 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = PureEmailExample1[nameof(Id).ToSnakeCase()],
-            [nameof(UserId).ToSnakeCase()] = UserDto.PureUserExample1[nameof(UserDto.Id).ToSnakeCase()],
-            [nameof(Address).ToSnakeCase()] = PureEmailExample1[nameof(Address).ToSnakeCase()],
-            [nameof(ActivationStatus).ToSnakeCase()] = PureEmailExample1[nameof(ActivationStatus).ToSnakeCase()],
-            [nameof(User).ToSnakeCase()] = UserDto.PureUserExample1,
+            [nameof(Id).ToSnakeCase()] = PureExample1[nameof(Id).ToSnakeCase()],
+            [nameof(UserId).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Id).ToSnakeCase()],
+            [nameof(Address).ToSnakeCase()] = PureExample1[nameof(Address).ToSnakeCase()],
+            [nameof(ActivationStatus).ToSnakeCase()] = PureExample1[nameof(ActivationStatus).ToSnakeCase()],
+            [nameof(User).ToSnakeCase()] = UserDto.PureExample1,
         };
-        public static OpenApiObject EmailExample2 { get; } = new OpenApiObject
+        public static OpenApiObject Example2 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = PureEmailExample2[nameof(Id).ToSnakeCase()],
-            [nameof(UserId).ToSnakeCase()] = UserDto.PureUserExample2[nameof(UserDto.Id).ToSnakeCase()],
-            [nameof(Address).ToSnakeCase()] = PureEmailExample2[nameof(Address).ToSnakeCase()],
-            [nameof(ActivationStatus).ToSnakeCase()] = PureEmailExample2[nameof(ActivationStatus).ToSnakeCase()],
-            [nameof(User).ToSnakeCase()] = UserDto.PureUserExample2,
+            [nameof(Id).ToSnakeCase()] = PureExample2[nameof(Id).ToSnakeCase()],
+            [nameof(UserId).ToSnakeCase()] = UserDto.PureExample2[nameof(UserDto.Id).ToSnakeCase()],
+            [nameof(Address).ToSnakeCase()] = PureExample2[nameof(Address).ToSnakeCase()],
+            [nameof(ActivationStatus).ToSnakeCase()] = PureExample2[nameof(ActivationStatus).ToSnakeCase()],
+            [nameof(User).ToSnakeCase()] = UserDto.PureExample2,
         };
 
-        public static OpenApiObject Example { get; } = EmailExample1;
+        public static OpenApiObject Example { get; } = Example1;
         public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
         {
-            [nameof(EmailController.ActivateEmail)] = EmailExample1,
-            [nameof(EmailController.GetEmailByIdAsync)] = EmailExample1
+            [nameof(EmailController.ActivateEmail)] = Example1,
+            [nameof(EmailController.GetEmailByIdAsync)] = Example1
         };
 
         static EmailDto()
         {
-            PureEmailExample1[nameof(UserId).ToSnakeCase()] = UserDto.PureUserExample1[nameof(UserDto.Id).ToSnakeCase()];
-            PureEmailExample2[nameof(UserId).ToSnakeCase()] = UserDto.PureUserExample2[nameof(UserDto.Id).ToSnakeCase()];
+            PureExample1[nameof(UserId).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Id).ToSnakeCase()];
+            PureExample2[nameof(UserId).ToSnakeCase()] = UserDto.PureExample2[nameof(UserDto.Id).ToSnakeCase()];
         }
 
         public EmailDto(long? id, long userId, string address, 

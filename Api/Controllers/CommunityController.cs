@@ -109,8 +109,8 @@ namespace FireplaceApi.Api.Controllers
             [BindNever][FromHeader] User requesterUser,
             [FromBody] ControllerCreateCommunityInputBodyParameters inputBodyParameters)
         {
-            var community = await _communityService.CreateCommunityAsync(inputBodyParameters.Name,
-                requesterUser.Id);
+            var community = await _communityService.CreateCommunityAsync(requesterUser,
+                inputBodyParameters.Name);
             var communityDto = _communityConverter.ConvertToDto(community);
             return communityDto;
         }

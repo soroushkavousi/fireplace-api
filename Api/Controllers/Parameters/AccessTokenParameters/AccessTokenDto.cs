@@ -23,14 +23,14 @@ namespace FireplaceApi.Api.Controllers
         public DateTime CreationDate { get; set; }
         public UserDto User { get; set; }
 
-        public static OpenApiObject PureAccessTokenExample1 { get; } = new OpenApiObject
+        public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(Value).ToSnakeCase()] = new OpenApiString("e207d1b29e9146a2b143cb1a6e3aaa26"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(User).ToSnakeCase()] = new OpenApiNull(),
         };
-        public static OpenApiObject PureAccessTokenExample2 { get; } = new OpenApiObject
+        public static OpenApiObject PureExample2 { get; } = new OpenApiObject
         {
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(Value).ToSnakeCase()] = new OpenApiString("957b25e5ef5c4de68a135eafab380918"),
@@ -38,31 +38,31 @@ namespace FireplaceApi.Api.Controllers
             [nameof(User).ToSnakeCase()] = new OpenApiNull(),
         };
 
-        public static OpenApiObject AccessTokenExample1 { get; } = new OpenApiObject
+        public static OpenApiObject Example1 { get; } = new OpenApiObject
         {
-            [nameof(UserId).ToSnakeCase()] = PureAccessTokenExample1[nameof(UserId).ToSnakeCase()],
-            [nameof(Value).ToSnakeCase()] = PureAccessTokenExample1[nameof(Value).ToSnakeCase()],
+            [nameof(UserId).ToSnakeCase()] = PureExample1[nameof(UserId).ToSnakeCase()],
+            [nameof(Value).ToSnakeCase()] = PureExample1[nameof(Value).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
-            [nameof(User).ToSnakeCase()] = UserDto.PureUserExample1,
+            [nameof(User).ToSnakeCase()] = UserDto.PureExample1,
         };
-        public static OpenApiObject AccessTokenExample2 { get; } = new OpenApiObject
+        public static OpenApiObject Example2 { get; } = new OpenApiObject
         {
-            [nameof(UserId).ToSnakeCase()] = PureAccessTokenExample2[nameof(UserId).ToSnakeCase()],
-            [nameof(Value).ToSnakeCase()] = PureAccessTokenExample2[nameof(Value).ToSnakeCase()],
+            [nameof(UserId).ToSnakeCase()] = PureExample2[nameof(UserId).ToSnakeCase()],
+            [nameof(Value).ToSnakeCase()] = PureExample2[nameof(Value).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
-            [nameof(User).ToSnakeCase()] = UserDto.PureUserExample2,
+            [nameof(User).ToSnakeCase()] = UserDto.PureExample2,
         };
 
-        public static OpenApiObject Example { get; } = AccessTokenExample1;
+        public static OpenApiObject Example { get; } = Example1;
         public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
         {
-            [nameof(AccessTokenController.GetAccessTokenByValueAsync)] = AccessTokenExample1,
+            [nameof(AccessTokenController.GetAccessTokenByValueAsync)] = Example1,
         };
 
         static AccessTokenDto()
         {
-            PureAccessTokenExample1[nameof(UserId).ToSnakeCase()] = UserDto.PureUserExample1[nameof(UserDto.Id).ToSnakeCase()];
-            PureAccessTokenExample2[nameof(UserId).ToSnakeCase()] = UserDto.PureUserExample1[nameof(UserDto.Id).ToSnakeCase()];
+            PureExample1[nameof(UserId).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Id).ToSnakeCase()];
+            PureExample2[nameof(UserId).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Id).ToSnakeCase()];
         }
 
         public AccessTokenDto(long userId, string value,

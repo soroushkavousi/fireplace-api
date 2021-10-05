@@ -21,6 +21,8 @@ namespace FireplaceApi.Core.Interfaces
         public Task<User> GetUserByUsernameAsync(string username,
             bool includeEmail = false, bool includeGoogleUser = false,
             bool includeAccessTokens = false, bool includeSessions = false);
+        public Task<string> GetUsernameByIdAsync(long id);
+        public Task<long> GetIdByUsernameAsync(string username);
         public Task<User> CreateUserAsync(string firstName, string lastName,
             string username, UserState state, Password password = null);
         public Task<User> UpdateUserAsync(User user);

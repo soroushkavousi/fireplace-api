@@ -73,6 +73,18 @@ namespace FireplaceApi.Core.Operators
             return community;
         }
 
+        public async Task<string> GetNameByIdAsync(long id)
+        {
+            var communityName = await _communityRepository.GetNameByIdAsync(id);
+            return communityName;
+        }
+
+        public async Task<long> GetIdByNameAsync(string name)
+        {
+            var communityId = await _communityRepository.GetIdByNameAsync(name);
+            return communityId;
+        }
+
         public async Task<Community> CreateCommunityAsync(string name, long creatorId)
         {
             var community = await _communityRepository.CreateCommunityAsync(name, creatorId);
