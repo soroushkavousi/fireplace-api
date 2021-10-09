@@ -16,7 +16,7 @@ namespace FireplaceApi.Api.Controllers
     public class ErrorDto
     {
         [Required]
-        public int? Code { get; set; }
+        public int Code { get; set; }
         [Required]
         public string Message { get; set; }
         [Required]
@@ -50,7 +50,7 @@ namespace FireplaceApi.Api.Controllers
 
         }
 
-        public ErrorDto(int? code, string message, int? httpStatusCode)
+        public ErrorDto(int code, string message, int? httpStatusCode)
         {
             Code = code;
             Message = message;

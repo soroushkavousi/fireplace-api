@@ -6,8 +6,6 @@ using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 using FireplaceApi.Core.Extensions;
 
 namespace FireplaceApi.Api.Controllers

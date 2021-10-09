@@ -1,14 +1,9 @@
 ﻿using Microsoft.OpenApi.Any;
-using FireplaceApi.Api.Extensions;
-using FireplaceApi.Api.Interfaces;
 using FireplaceApi.Api.Tools;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Net;
 using FireplaceApi.Core.Extensions;
 
 namespace FireplaceApi.Api.Controllers
@@ -17,7 +12,7 @@ namespace FireplaceApi.Api.Controllers
     public class SessionDto
     {
         [Required]
-        public long? Id { get; set; }
+        public long Id { get; set; }
         [Required]
         public long UserId { get; set; }
         [Required]
@@ -123,7 +118,7 @@ namespace FireplaceApi.Api.Controllers
             PureExample22[nameof(UserId).ToSnakeCase()] = UserDto.PureExample2[nameof(UserDto.Id).ToSnakeCase()];
         }
 
-        public SessionDto(long? id, long userId, string ipAddress,  
+        public SessionDto(long id, long userId, string ipAddress,  
             DateTime creationDate, UserDto user)
         {
             Id = id;

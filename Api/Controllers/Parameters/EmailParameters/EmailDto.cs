@@ -1,13 +1,8 @@
 ﻿using Microsoft.OpenApi.Any;
-using FireplaceApi.Api.Extensions;
-using FireplaceApi.Api.Interfaces;
 using FireplaceApi.Api.Tools;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 using FireplaceApi.Core.Extensions;
 
 namespace FireplaceApi.Api.Controllers
@@ -16,7 +11,7 @@ namespace FireplaceApi.Api.Controllers
     public class EmailDto
     {
         [Required]
-        public long? Id { get; set; }
+        public long Id { get; set; }
         [Required]
         public long UserId { get; set; }
         [Required]
@@ -76,7 +71,7 @@ namespace FireplaceApi.Api.Controllers
             PureExample2[nameof(UserId).ToSnakeCase()] = UserDto.PureExample2[nameof(UserDto.Id).ToSnakeCase()];
         }
 
-        public EmailDto(long? id, long userId, string address, 
+        public EmailDto(long id, long userId, string address, 
             string activationStatus, UserDto user = null)
         {
             Id = id;

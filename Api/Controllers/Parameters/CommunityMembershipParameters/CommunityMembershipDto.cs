@@ -1,13 +1,9 @@
 ﻿using Microsoft.OpenApi.Any;
-using FireplaceApi.Api.Extensions;
-using FireplaceApi.Api.Interfaces;
 using FireplaceApi.Api.Tools;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 using FireplaceApi.Core.Extensions;
 
 namespace FireplaceApi.Api.Controllers
@@ -16,7 +12,7 @@ namespace FireplaceApi.Api.Controllers
     public class CommunityMembershipDto
     {
         [Required]
-        public long? Id { get; set; }
+        public long Id { get; set; }
         [Required]
         public long UserId { get; set; }
         [Required]
@@ -106,7 +102,7 @@ namespace FireplaceApi.Api.Controllers
 
         }
 
-        public CommunityMembershipDto(long? id, long userId, string username,
+        public CommunityMembershipDto(long id, long userId, string username,
             long communityId, string communityName, DateTime creationDate, 
             UserDto user = null, CommunityDto community = null)
         {
