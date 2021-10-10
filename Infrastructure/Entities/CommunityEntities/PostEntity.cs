@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -12,8 +12,9 @@ namespace FireplaceApi.Infrastructure.Entities
     {
         public long AuthorEntityId { get; set; }
         public long CommunityEntityId { get; set; }
-        public string Content { get; set; }
         public int Vote { get; set; }
+        public string Content { get; set; }
+        [Column(Order = 0)]
         public long? Id { get; set; }
         public UserEntity AuthorEntity { get; set; }
         public CommunityEntity CommunityEntity { get; set; }
