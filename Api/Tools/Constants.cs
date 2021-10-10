@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace FireplaceApi.Api.Tools
+﻿namespace FireplaceApi.Api.Tools
 {
     public static class Constants
     {
@@ -24,6 +19,6 @@ namespace FireplaceApi.Api.Tools
         public static string InputHeaderParametersActionArgumentKey { get; } = "inputHeaderParameters";
         public static string InputCookieParametersActionArgumentKey { get; } = "inputCookieParameters";
         public static string RequesterUserKey { get; } = "User";
-        public static string X_FORWARDED_FOR { get;} = "X-Forwarded-For";
+        public static string X_FORWARDED_FOR { get; } = "X-Forwarded-For";
     }
 }

@@ -1,16 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using NLog;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Net;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using FireplaceApi.Core.Enums;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using FireplaceApi.Core.Enums;
+using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -32,9 +24,9 @@ namespace FireplaceApi.Infrastructure.Entities
 
         private ErrorEntity() : base() { }
 
-        public ErrorEntity(string name, int code, 
+        public ErrorEntity(string name, int code,
             string clientMessage, int httpStatusCode,
-            DateTime? creationDate = null, DateTime? modifiedDate = null, 
+            DateTime? creationDate = null, DateTime? modifiedDate = null,
             int? id = null) : base(creationDate, modifiedDate)
         {
             Name = name ?? throw new ArgumentNullException(nameof(clientMessage));

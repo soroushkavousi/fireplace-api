@@ -1,13 +1,10 @@
 ﻿using FireplaceApi.Core.Tools;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Extensions
 {

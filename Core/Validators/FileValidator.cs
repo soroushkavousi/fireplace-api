@@ -1,17 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Operators;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
-using FireplaceApi.Core.Interfaces;
-using FireplaceApi.Core.Operators;
 
 namespace FireplaceApi.Core.Validators
 {

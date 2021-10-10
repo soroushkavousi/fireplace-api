@@ -1,21 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Interfaces;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
-using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Interfaces;
-using System.Diagnostics;
 
 namespace FireplaceApi.Infrastructure.Repositories
 {
@@ -27,7 +25,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         private readonly DbSet<GlobalEntity> _globalEntities;
         private readonly GlobalConverter _globalConverter;
 
-        public GlobalRepository(ILogger<GlobalRepository> logger, 
+        public GlobalRepository(ILogger<GlobalRepository> logger,
             IConfiguration configuration, FireplaceApiContext fireplaceApiContext,
             GlobalConverter globalConverter)
         {
@@ -72,7 +70,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _globalEntities.Add(globalEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
-            
+
             _logger.LogIOInformation(sw, "Database", new { globalId, globalValues }, new { globalEntity });
             return _globalConverter.ConvertToModel(globalEntity);
         }
@@ -92,7 +90,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 var serverMessage = $"Can't update the globalEntity DbUpdateConcurrencyException. {globalEntity.ToJson()}";
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
-            
+
             _logger.LogIOInformation(sw, "Database", new { global }, new { globalEntity });
             return _globalConverter.ConvertToModel(globalEntity);
         }
@@ -107,7 +105,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _globalEntities.Remove(globalEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
-        
+
             _logger.LogIOInformation(sw, "Database", new { globalId }, new { globalEntity });
         }
 
@@ -118,7 +116,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Where(e => e.Id == globalId.To<int>())
                 .AnyAsync();
-        
+
             _logger.LogIOInformation(sw, "Database", new { globalId }, new { doesExist });
             return doesExist;
         }

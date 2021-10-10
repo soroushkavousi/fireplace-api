@@ -1,18 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using FireplaceApi.Core.Enums;
+﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Validators
 {
@@ -97,13 +92,13 @@ namespace FireplaceApi.Core.Validators
         public async Task ValidateEmailAddressMatchWithPasswordAsync(string emailAddress, Password password)
         {
             var email = await _emailOperator.GetEmailByAddressAsync(emailAddress, true);
-            if(email == null)
+            if (email == null)
             {
                 var serverMessage = $"Email address {emailAddress} doesn't exist! password: {password.Value}";
                 throw new ApiException(ErrorName.AUTHENTICATION_FAILED, serverMessage);
             }
 
-            if(string.Equals(email.User.Password.Hash, password.Hash) == false)
+            if (string.Equals(email.User.Password.Hash, password.Hash) == false)
             {
                 var serverMessage = $"Email address {emailAddress} isn't match with password {password.Value}!";
                 throw new ApiException(ErrorName.AUTHENTICATION_FAILED, serverMessage);

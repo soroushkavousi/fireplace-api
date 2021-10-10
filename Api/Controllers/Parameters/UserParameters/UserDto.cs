@@ -1,10 +1,10 @@
-﻿using Microsoft.OpenApi.Any;
-using FireplaceApi.Api.Tools;
+﻿using FireplaceApi.Api.Tools;
+using FireplaceApi.Core.Extensions;
+using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using FireplaceApi.Core.Extensions;
 
 namespace FireplaceApi.Api.Controllers
 {
@@ -108,9 +108,9 @@ namespace FireplaceApi.Api.Controllers
 
         }
 
-        public UserDto(long id, string firstName, string lastName, 
-            string username, string state, DateTime creationDate, 
-            string accessToken = null, EmailDto email = null, 
+        public UserDto(long id, string firstName, string lastName,
+            string username, string state, DateTime creationDate,
+            string accessToken = null, EmailDto email = null,
             List<SessionDto> sessions = null)
         {
             Id = id;

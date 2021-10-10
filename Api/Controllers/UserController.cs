@@ -1,23 +1,15 @@
-﻿using System;
+﻿using FireplaceApi.Api.Converters;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Services;
+using FireplaceApi.Core.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using FireplaceApi.Api.Controllers;
-using FireplaceApi.Api.Extensions;
-using Microsoft.AspNetCore.JsonPatch;
-using FireplaceApi.Api.Converters;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Authorization;
-using FireplaceApi.Core.Services;
-using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Extensions;
-using System.Diagnostics;
 
 namespace FireplaceApi.Api.Controllers
 {
@@ -47,7 +39,7 @@ namespace FireplaceApi.Api.Controllers
         [HttpGet("open-google-log-in-page")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> OpenGoogleLogInPage(
-            [BindNever] [FromHeader] ControllerInputHeaderParameters inputHeaderParameters)
+            [BindNever][FromHeader] ControllerInputHeaderParameters inputHeaderParameters)
         {
             var googleLogInPageUrl = await _userService.GetGoogleAuthUrlAsync(inputHeaderParameters.IpAddress);
             return Redirect(googleLogInPageUrl);
@@ -63,7 +55,7 @@ namespace FireplaceApi.Api.Controllers
         [Consumes("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> SignUpWithEmailAsync(
-            [BindNever] [FromHeader] ControllerInputHeaderParameters inputHeaderParameters,
+            [BindNever][FromHeader] ControllerInputHeaderParameters inputHeaderParameters,
             [FromBody] ControllerSignUpWithEmailInputBodyParameters inputBodyParameters)
         {
             var password = Password.OfValue(inputBodyParameters.Password);
@@ -85,7 +77,7 @@ namespace FireplaceApi.Api.Controllers
         [HttpGet("log-in-with-google")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> LogInWithGoogleAsync(
-            [BindNever] [FromHeader] ControllerInputHeaderParameters inputHeaderParameters,
+            [BindNever][FromHeader] ControllerInputHeaderParameters inputHeaderParameters,
             [FromQuery] ControllerLogInWithGoogleInputQueryParameters inputQueryParameters)
         {
             var user = await _userService.LogInWithGoogleAsync(inputHeaderParameters.IpAddress,
@@ -94,7 +86,7 @@ namespace FireplaceApi.Api.Controllers
             var userDto = _userConverter.ConvertToDto(user);
             var outputCookieParameters = new ControllerSignUpWithEmailOutputCookieParameters(userDto?.AccessToken);
             SetOutputCookieParameters(outputCookieParameters);
-            if(string.IsNullOrWhiteSpace(user.GoogleUser.RedirectToUserUrl))
+            if (string.IsNullOrWhiteSpace(user.GoogleUser.RedirectToUserUrl))
                 return userDto;
             else
                 return Redirect(user.GoogleUser.RedirectToUserUrl);
@@ -110,11 +102,11 @@ namespace FireplaceApi.Api.Controllers
         [Consumes("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> LogInWithEmailAsync(
-            [BindNever] [FromHeader] ControllerInputHeaderParameters inputHeaderParameters,
+            [BindNever][FromHeader] ControllerInputHeaderParameters inputHeaderParameters,
             [FromBody] ControllerLogInWithEmailInputBodyParameters inputBodyParameters)
         {
             var password = Password.OfValue(inputBodyParameters.Password);
-            var user = await _userService.LogInWithEmailAsync(inputHeaderParameters.IpAddress, 
+            var user = await _userService.LogInWithEmailAsync(inputHeaderParameters.IpAddress,
                 inputBodyParameters.EmailAddress, password);
             var userDto = _userConverter.ConvertToDto(user);
             var outputCookieParameters = new ControllerSignUpWithEmailOutputCookieParameters(userDto.AccessToken);
@@ -132,7 +124,7 @@ namespace FireplaceApi.Api.Controllers
         [Consumes("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> LogInWithUsernameAsync(
-            [BindNever] [FromHeader] ControllerInputHeaderParameters inputHeaderParameters,
+            [BindNever][FromHeader] ControllerInputHeaderParameters inputHeaderParameters,
             [FromBody] ControllerLogInWithUsernameInputBodyParameters inputBodyParameters)
         {
             var password = Password.OfValue(inputBodyParameters.Password);
@@ -152,11 +144,11 @@ namespace FireplaceApi.Api.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<UserDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<UserDto>>> ListUsersAsync(
-            [BindNever] [FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requesterUser,
             [FromQuery] ControllerListUsersInputQueryParameters inputQueryParameters)
         {
             //var accessTokenValue = FindAccessTokenValue(inputHeaderParameters, inputCookieParameters);
-            var users = await _userService.ListUsersAsync(requesterUser, 
+            var users = await _userService.ListUsersAsync(requesterUser,
                 inputQueryParameters.IncludeEmail, inputQueryParameters.IncludeSessions);
             var userDtos = users.Select(user => _userConverter.ConvertToDto(user)).ToList();
             //SetOutputHeaderParameters(userDtos.HeaderParameters);
@@ -171,7 +163,7 @@ namespace FireplaceApi.Api.Controllers
         [HttpGet("{id:long}")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> GetUserByIdAsync(
-            [BindNever] [FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requesterUser,
             [FromRoute] ControllerGetUserByIdInputRouteParameters inputRouteParameters,
             [FromQuery] ControllerGetUserInputQueryParameters inputQueryParameters)
         {
@@ -208,7 +200,7 @@ namespace FireplaceApi.Api.Controllers
         [Consumes("application/merge-patch+json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> PatchUserByIdAsync(
-            [BindNever] [FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requesterUser,
             [FromRoute] ControllerPatchUserByIdInputRouteParameters inputRouteParameters,
             [FromBody] ControllerPatchUserInputBodyParameters inputBodyParameters)
         {
@@ -249,7 +241,7 @@ namespace FireplaceApi.Api.Controllers
         [HttpDelete("{id:long}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteUserByIdAsync(
-            [BindNever] [FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requesterUser,
             [FromRoute] ControllerDeleteUserByIdInputRouteParameters inputRouteParameters)
         {
             await _userService.DeleteUserByIdAsync(requesterUser, inputRouteParameters.Id);

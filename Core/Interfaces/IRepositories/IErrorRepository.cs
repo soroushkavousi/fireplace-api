@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Enums;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Interfaces
 {

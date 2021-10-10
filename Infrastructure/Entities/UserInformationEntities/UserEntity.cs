@@ -1,12 +1,7 @@
-﻿using FireplaceApi.Core.Extensions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -33,10 +28,10 @@ namespace FireplaceApi.Infrastructure.Entities
         private UserEntity() : base() { }
 
         public UserEntity(string firstName, string lastName,
-            string username, string state, DateTime? creationDate = null, 
+            string username, string state, DateTime? creationDate = null,
             DateTime? modifiedDate = null, string passwordHash = null, long? id = null,
             EmailEntity emailEntity = null, GoogleUserEntity googleUserEntity = null,
-            List<AccessTokenEntity> accessTokenEntities = null, 
+            List<AccessTokenEntity> accessTokenEntities = null,
             List<SessionEntity> sessionEntities = null,
             List<CommunityEntity> ownCommunities = null,
             List<CommunityMembershipEntity> joinedCommunities = null,
@@ -63,7 +58,7 @@ namespace FireplaceApi.Infrastructure.Entities
             CommentVoteEntities = commentVoteEntities;
         }
 
-        public UserEntity PureCopy() => new UserEntity(FirstName, LastName, 
+        public UserEntity PureCopy() => new UserEntity(FirstName, LastName,
             Username, State, CreationDate, ModifiedDate, PasswordHash, Id);
 
         //public void RemoveLoopReferencing()

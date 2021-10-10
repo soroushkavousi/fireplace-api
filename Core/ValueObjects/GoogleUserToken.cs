@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FireplaceApi.Core.ValueObjects
 {
@@ -23,12 +21,12 @@ namespace FireplaceApi.Core.ValueObjects
         public string Locale { get; set; }
         public string PictureUrl { get; set; }
 
-        public GoogleUserToken(string code, string accessToken, 
-            string tokenType, long accessTokenExpiresInSeconds, 
-            string refreshToken, string scope, string idToken, 
-            DateTime accessTokenIssuedTime, string gmailAddress, 
-            bool gmailVerified, long gmailIssuedTimeInSeconds, 
-            string fullName, string firstName, string lastName, 
+        public GoogleUserToken(string code, string accessToken,
+            string tokenType, long accessTokenExpiresInSeconds,
+            string refreshToken, string scope, string idToken,
+            DateTime accessTokenIssuedTime, string gmailAddress,
+            bool gmailVerified, long gmailIssuedTimeInSeconds,
+            string fullName, string firstName, string lastName,
             string locale, string pictureUrl)
         {
             Code = code ?? throw new ArgumentNullException(nameof(code));

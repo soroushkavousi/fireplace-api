@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FireplaceApi.Api.Converters;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using FireplaceApi.Api.Controllers;
-using FireplaceApi.Api.Converters;
-using FireplaceApi.Api.Extensions;
-using Swashbuckle.AspNetCore.Annotations;
-using FireplaceApi.Core.Services;
-using FireplaceApi.Core.Models;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Api.Controllers
 {
@@ -42,7 +33,7 @@ namespace FireplaceApi.Api.Controllers
         [RequestFormLimits(MultipartBodyLengthLimit = 268435456)]
         [RequestSizeLimit(268435456)] // For kestrel
         public async Task<ActionResult<FileDto>> PostFileAsync(
-            [BindNever] [FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requesterUser,
             [FromForm] ControllerPostFileInputFormParameters inputBodyParameters)
         {
             var file = await _fileService.CreateFileAsync(requesterUser, inputBodyParameters.FormFile);

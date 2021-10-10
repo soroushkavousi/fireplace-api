@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -38,14 +33,14 @@ namespace FireplaceApi.Infrastructure.Entities
 
         private GoogleUserEntity() : base() { }
 
-        public GoogleUserEntity(long userEntityId, string code, 
-            string accessToken, string tokenType, 
-            long accessTokenExpiresInSeconds, string refreshToken, 
-            string scope, string idToken, DateTime accessTokenIssuedTime, 
-            string gmailAddress, bool gmailVerified, 
-            long gmailIssuedTimeInSeconds, string fullName, 
-            string firstName, string lastName, string locale, 
-            string pictureUrl, string state, string authUser, 
+        public GoogleUserEntity(long userEntityId, string code,
+            string accessToken, string tokenType,
+            long accessTokenExpiresInSeconds, string refreshToken,
+            string scope, string idToken, DateTime accessTokenIssuedTime,
+            string gmailAddress, bool gmailVerified,
+            long gmailIssuedTimeInSeconds, string fullName,
+            string firstName, string lastName, string locale,
+            string pictureUrl, string state, string authUser,
             string prompt, string redirectToUserUrl,
             DateTime? creationDate = null, DateTime? modifiedDate = null,
             long? id = null, UserEntity userEntity = null) : base(creationDate, modifiedDate)

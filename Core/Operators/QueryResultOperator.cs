@@ -1,19 +1,12 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Interfaces;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Tools;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Validators;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
-using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Tools;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Interfaces;
 
 namespace FireplaceApi.Core.Operators
 {
@@ -43,7 +36,7 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<QueryResult> CreateQueryResultAsync(ModelName modelName,
-            int lastStart, int lastEnd, int lastLimit, int lastPage, List<long> referenceIds, 
+            int lastStart, int lastEnd, int lastLimit, int lastPage, List<long> referenceIds,
             string pointer = null)
         {
             if (pointer == null)
@@ -74,8 +67,8 @@ namespace FireplaceApi.Core.Operators
             return pointer;
         }
 
-        public async Task<QueryResult> ApplyQueryResultChanges(ModelName modelName, 
-            QueryResult queryResult, int? lastStart = null, int? lastEnd = null, 
+        public async Task<QueryResult> ApplyQueryResultChanges(ModelName modelName,
+            QueryResult queryResult, int? lastStart = null, int? lastEnd = null,
             int? lastLimit = null, int? lastPage = null)
         {
             if (lastStart != null)

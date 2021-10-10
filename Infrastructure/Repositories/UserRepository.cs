@@ -1,22 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using FireplaceApi.Infrastructure.Converters;
-using FireplaceApi.Infrastructure.Entities;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Enums;
+﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.ValueObjects;
+using FireplaceApi.Infrastructure.Converters;
+using FireplaceApi.Infrastructure.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories
 {
@@ -28,7 +25,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         private readonly DbSet<UserEntity> _userEntities;
         private readonly UserConverter _userConverter;
 
-        public UserRepository(ILogger<UserRepository> logger, IConfiguration configuration, 
+        public UserRepository(ILogger<UserRepository> logger, IConfiguration configuration,
                     FireplaceApiContext fireplaceApiContext, UserConverter userConverter)
         {
             _logger = logger;
@@ -53,14 +50,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
-            _logger.LogIOInformation(sw, "Database", 
-                new { includeEmail, includeGoogleUser, includeAccessTokens, includeSessions }, 
+            _logger.LogIOInformation(sw, "Database",
+                new { includeEmail, includeGoogleUser, includeAccessTokens, includeSessions },
                 new { userEntities });
             return userEntities.Select(e => _userConverter.ConvertToModel(e)).ToList();
         }
 
-        public async Task<User> GetUserByIdAsync(long id, 
-            bool includeEmail = false, bool includeGoogleUser = false, 
+        public async Task<User> GetUserByIdAsync(long id,
+            bool includeEmail = false, bool includeGoogleUser = false,
             bool includeAccessTokens = false, bool includeSessions = false)
         {
             var sw = Stopwatch.StartNew();
@@ -82,7 +79,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public async Task<User> GetUserByUsernameAsync(string username,
-            bool includeEmail = false, bool includeGoogleUser = false, 
+            bool includeEmail = false, bool includeGoogleUser = false,
             bool includeAccessTokens = false, bool includeSessions = false)
         {
             var sw = Stopwatch.StartNew();
@@ -123,7 +120,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             var sw = Stopwatch.StartNew();
             var userId = (await _userEntities
                 .AsNoTracking()
-                .Select(e => new { Id = e.Id.Value, e.Username})
+                .Select(e => new { Id = e.Id.Value, e.Username })
                 .SingleAsync(e => string.Equals(e.Username, username)))
                 .Id;
 
@@ -179,7 +176,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _userEntities.Remove(userEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
-        
+
             _logger.LogIOInformation(sw, "Database", new { id }, new { userEntity });
         }
 
@@ -204,7 +201,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .AnyAsync();
-        
+
             _logger.LogIOInformation(sw, "Database", new { id }, new { doesExist });
             return doesExist;
         }

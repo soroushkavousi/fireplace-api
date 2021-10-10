@@ -1,14 +1,12 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using FireplaceApi.Core.Enums;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using FireplaceApi.Core.Interfaces;
 
 namespace FireplaceApi.Core.Operators
 {
@@ -83,7 +81,7 @@ namespace FireplaceApi.Core.Operators
             return session;
         }
 
-        public async Task<Session> PatchSessionByIdAsync(long id, long? userId = null, 
+        public async Task<Session> PatchSessionByIdAsync(long id, long? userId = null,
             IPAddress ipAddress = null, SessionState? state = null)
         {
             var session = await _sessionRepository.GetSessionByIdAsync(id, true);
@@ -106,7 +104,7 @@ namespace FireplaceApi.Core.Operators
             return sessionIdExists;
         }
 
-        public async Task<Session> ApplySessionChangesAsync(Session session, long? userId = null, 
+        public async Task<Session> ApplySessionChangesAsync(Session session, long? userId = null,
             IPAddress ipAddress = null, SessionState? state = null)
         {
             if (userId != null)

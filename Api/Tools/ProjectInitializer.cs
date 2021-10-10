@@ -7,10 +7,7 @@ using Microsoft.Extensions.Configuration;
 using NLog;
 using NLog.Web;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
 namespace FireplaceApi.Api.Tools
 {
@@ -44,7 +41,7 @@ namespace FireplaceApi.Api.Tools
             try
             {
                 NLogBuilder.ConfigureNLog(GlobalOperator.GlobalValues.Log.ConfigFilePath);
-                LogManager.Configuration.Variables["logRootDirectoryPath"] = 
+                LogManager.Configuration.Variables["logRootDirectoryPath"] =
                     GlobalOperator.GlobalValues.Log.RootDirectoryPath;
                 Logger = LogManager.GetCurrentClassLogger();
             }

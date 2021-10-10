@@ -1,15 +1,7 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FireplaceApi.Core.Tools;
+using Newtonsoft.Json;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using System.Reflection;
-using FireplaceApi.Core.Tools;
 
 namespace FireplaceApi.Core.Extensions
 {

@@ -1,15 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Validators;
-using System;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Services

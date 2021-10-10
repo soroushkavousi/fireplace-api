@@ -1,21 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using FireplaceApi.Infrastructure.Converters;
-using FireplaceApi.Infrastructure.Entities;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces;
-using FireplaceApi.Core.ValueObjects;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Infrastructure.Converters;
+using FireplaceApi.Infrastructure.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories
 {
@@ -26,7 +24,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly QueryResultConverter _queryResultConverter;
 
-        public QueryResultRepository(ILogger<QueryResultRepository> logger, IConfiguration configuration, 
+        public QueryResultRepository(ILogger<QueryResultRepository> logger, IConfiguration configuration,
             FireplaceApiContext fireplaceApiContext, QueryResultConverter queryResultConverter)
         {
             _logger = logger;
@@ -50,7 +48,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             }
         }
 
-        private async Task<QueryResult> GetQueryResultByPointerAsync<T>(DbSet<T> entities, string pointer) where T: QueryResultEntity
+        private async Task<QueryResult> GetQueryResultByPointerAsync<T>(DbSet<T> entities, string pointer) where T : QueryResultEntity
         {
             var sw = Stopwatch.StartNew();
 
@@ -84,8 +82,8 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public async Task<QueryResult> CreateQueryResultAsync<T>(DbSet<T> entities, string pointer,
-            int lastStart, int lastEnd, int lastLimit, int lastPage, 
-            List<long> referenceEntityIds) where T: QueryResultEntity, new()
+            int lastStart, int lastEnd, int lastLimit, int lastPage,
+            List<long> referenceEntityIds) where T : QueryResultEntity, new()
         {
             var sw = Stopwatch.StartNew();
             var queryResultEntity = new T();
@@ -114,7 +112,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             }
         }
 
-        public async Task<QueryResult> UpdateQueryResultAsync<T>(DbSet<T> entities, 
+        public async Task<QueryResult> UpdateQueryResultAsync<T>(DbSet<T> entities,
             QueryResult queryResult) where T : QueryResultEntity, new()
         {
             var sw = Stopwatch.StartNew();
@@ -152,7 +150,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             }
         }
 
-        public async Task DeleteQueryResultByPointerAsync<T>(DbSet<T> entities, string pointer) 
+        public async Task DeleteQueryResultByPointerAsync<T>(DbSet<T> entities, string pointer)
             where T : QueryResultEntity
         {
             var sw = Stopwatch.StartNew();

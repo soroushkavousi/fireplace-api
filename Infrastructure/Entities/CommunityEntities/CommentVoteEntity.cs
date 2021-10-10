@@ -17,9 +17,9 @@ namespace FireplaceApi.Infrastructure.Entities
 
         private CommentVoteEntity() : base() { }
 
-        public CommentVoteEntity(long voterEntityId, long commentEntityId, bool isUp, 
-            DateTime? creationDate = null, DateTime? modifiedDate = null, 
-            long? id = null, UserEntity voterEntity = null, 
+        public CommentVoteEntity(long voterEntityId, long commentEntityId, bool isUp,
+            DateTime? creationDate = null, DateTime? modifiedDate = null,
+            long? id = null, UserEntity voterEntity = null,
             CommentEntity commentEntity = null) : base(creationDate, modifiedDate)
         {
             VoterEntityId = voterEntityId;

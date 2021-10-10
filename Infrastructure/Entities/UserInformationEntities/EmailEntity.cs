@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -22,7 +17,7 @@ namespace FireplaceApi.Infrastructure.Entities
         private EmailEntity() : base() { }
 
         public EmailEntity(long userEntityId, string address, string activationStatus,
-            DateTime? creationDate = null, DateTime? modifiedDate = null, int? activationCode = null, 
+            DateTime? creationDate = null, DateTime? modifiedDate = null, int? activationCode = null,
             long? id = null, UserEntity userEntity = null) : base(creationDate, modifiedDate)
         {
             UserEntityId = userEntityId;

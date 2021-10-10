@@ -1,11 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using FireplaceApi.Core.ValueObjects;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Linq;
-using System;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -35,7 +33,7 @@ namespace FireplaceApi.Infrastructure.Entities
         public DbSet<CommunityQueryResultEntity> CommunityQueryResultEntities { get; set; }
         public DbSet<CommunityMembershipQueryResultEntity> CommunityMembershipQueryResultEntities { get; set; }
 
-        public FireplaceApiContext(ILogger<FireplaceApiContext> logger, DbContextOptions<FireplaceApiContext> options) 
+        public FireplaceApiContext(ILogger<FireplaceApiContext> logger, DbContextOptions<FireplaceApiContext> options)
             : base(options)
         {
             _logger = logger;

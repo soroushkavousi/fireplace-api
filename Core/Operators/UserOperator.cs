@@ -1,22 +1,16 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Exceptions;
+﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Validators;
+using FireplaceApi.Core.Tools;
+using FireplaceApi.Core.ValueObjects;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 using System.Net;
-using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Interfaces;
-using Microsoft.AspNetCore.WebUtilities;
-using FireplaceApi.Core.Tools;
-using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Operators
 {
@@ -77,7 +71,7 @@ namespace FireplaceApi.Core.Operators
                 await userOperator.ApplyUserChanges(user, state: UserState.VERIFIED);
             }
 
-            if(user.Email.Activation.Status != ActivationStatus.COMPLETED)
+            if (user.Email.Activation.Status != ActivationStatus.COMPLETED)
             {
                 var emailOperator = _serviceProvider.GetService<EmailOperator>();
                 await emailOperator.ApplyEmailChangesAsync(user.Email, activationStatus: ActivationStatus.COMPLETED);
@@ -108,11 +102,11 @@ namespace FireplaceApi.Core.Operators
             }
             else
             {
-                if(await emailOperator.DoesEmailAddressExistAsync(googleUserToken.GmailAddress))
+                if (await emailOperator.DoesEmailAddressExistAsync(googleUserToken.GmailAddress))
                 {
                     var email = await emailOperator.GetEmailByAddressAsync(gmailAddress, true);
                     email.User.Email = email;
-                    user = await AddGoogleInformationToUserAsync(email.User, ipAddress, 
+                    user = await AddGoogleInformationToUserAsync(email.User, ipAddress,
                         googleUserToken, state, scope, authUser, prompt);
                     userId = user.Id;
                 }
@@ -123,7 +117,7 @@ namespace FireplaceApi.Core.Operators
                     userId = user.Id;
                 }
             }
-            
+
             var sessionOperator = _serviceProvider.GetService<SessionOperator>();
             var session = await sessionOperator.CreateOrUpdateSessionAsync(userId, ipAddress);
 
@@ -190,8 +184,8 @@ namespace FireplaceApi.Core.Operators
             return user;
         }
 
-        public async Task<List<User>> ListUsersAsync(bool includeEmail = false, 
-            bool includeGoogleUser = false, bool includeAccessTokens = false, 
+        public async Task<List<User>> ListUsersAsync(bool includeEmail = false,
+            bool includeGoogleUser = false, bool includeAccessTokens = false,
             bool includeSessions = false)
         {
             var users = await _userRepository.ListUsersAsync(includeEmail,
@@ -211,8 +205,8 @@ namespace FireplaceApi.Core.Operators
             return users;
         }
 
-        public async Task<User> GetUserByIdAsync(long id, 
-            bool includeEmail = false, bool includeGoogleUser = false, 
+        public async Task<User> GetUserByIdAsync(long id,
+            bool includeEmail = false, bool includeGoogleUser = false,
             bool includeAccessTokens = false, bool includeSessions = false)
         {
             var user = await _userRepository.GetUserByIdAsync(id, includeEmail,
@@ -223,18 +217,18 @@ namespace FireplaceApi.Core.Operators
 
             if (user.Sessions.IsNullOrEmpty())
                 return user;
-            
+
             for (int i = 0; i < user.Sessions.Count; i++)
             {
                 if (user.Sessions[i].State == SessionState.CLOSED)
                     user.Sessions.RemoveAt(i);
             }
-            
+
             return user;
         }
 
-        public async Task<User> GetUserByUsernameAsync(string username, 
-            bool includeEmail = false, bool includeGoogleUser = false, 
+        public async Task<User> GetUserByUsernameAsync(string username,
+            bool includeEmail = false, bool includeGoogleUser = false,
             bool includeAccessTokens = false, bool includeSessions = false)
         {
             var user = await _userRepository.GetUserByUsernameAsync(username, includeEmail,
@@ -274,12 +268,12 @@ namespace FireplaceApi.Core.Operators
             return user;
         }
 
-        public async Task<User> PatchUserByIdAsync(long id, string firstName = null, 
-            string lastName = null, string username = null, Password password = null, 
+        public async Task<User> PatchUserByIdAsync(long id, string firstName = null,
+            string lastName = null, string username = null, Password password = null,
             UserState? state = null, string emailAddress = null)
         {
             var user = await _userRepository.GetUserByIdAsync(id, true);
-            user = await ApplyUserChanges(user, firstName, lastName, username, password, 
+            user = await ApplyUserChanges(user, firstName, lastName, username, password,
                 state, emailAddress);
             user = await GetUserByIdAsync(user.Id, true, false, false, false);
             return user;

@@ -1,13 +1,13 @@
-﻿using Microsoft.OpenApi.Any;
-using FireplaceApi.Api.Tools;
-using Swashbuckle.AspNetCore.Annotations;
-using System.ComponentModel.DataAnnotations;
+﻿using FireplaceApi.Api.Tools;
 using FireplaceApi.Core.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Any;
+using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Api.Controllers
 {
-    public class ControllerPatchCommunityByIdInputRouteParameters
+    public class ControllerPatchPostByIdInputRouteParameters
     {
         [Required]
         [FromRoute(Name = "id")]
@@ -15,7 +15,7 @@ namespace FireplaceApi.Api.Controllers
     }
 
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
-    public class ControllerPatchCommunityInputBodyParameters
+    public class ControllerPatchPostInputBodyParameters
     {
         public string Content { get; set; }
 

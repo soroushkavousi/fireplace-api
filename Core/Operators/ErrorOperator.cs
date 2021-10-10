@@ -1,16 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Validators;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
-using FireplaceApi.Core.Interfaces;
 
 namespace FireplaceApi.Core.Operators
 {
@@ -21,7 +16,7 @@ namespace FireplaceApi.Core.Operators
         private readonly IServiceProvider _serviceProvider;
         private readonly IErrorRepository _errorRepository;
 
-        public ErrorOperator(ILogger<ErrorOperator> logger, IConfiguration configuration, 
+        public ErrorOperator(ILogger<ErrorOperator> logger, IConfiguration configuration,
             IServiceProvider serviceProvider, IErrorRepository errorRepository)
         {
             _logger = logger;

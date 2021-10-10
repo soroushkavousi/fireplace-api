@@ -2,8 +2,6 @@
 using JWT.Algorithms;
 using JWT.Serializers;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FireplaceApi.Core.ValueObjects
 {

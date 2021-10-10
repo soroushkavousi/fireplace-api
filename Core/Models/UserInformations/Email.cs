@@ -1,9 +1,5 @@
 ﻿using FireplaceApi.Core.ValueObjects;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Models
 {
@@ -15,9 +11,9 @@ namespace FireplaceApi.Core.Models
         public Activation Activation { get; set; }
         public User User { get; set; }
 
-        public Email(long id, long userId, string address, 
-            Activation activation, DateTime creationDate, 
-            DateTime? modifiedDate = null, 
+        public Email(long id, long userId, string address,
+            Activation activation, DateTime creationDate,
+            DateTime? modifiedDate = null,
             User user = null) : base(creationDate, modifiedDate)
         {
             Id = id;
@@ -27,7 +23,7 @@ namespace FireplaceApi.Core.Models
             User = user;
         }
 
-        public Email PureCopy() => new Email(Id, UserId, Address, 
+        public Email PureCopy() => new Email(Id, UserId, Address,
             Activation, CreationDate, ModifiedDate);
 
         public void RemoveLoopReferencing()

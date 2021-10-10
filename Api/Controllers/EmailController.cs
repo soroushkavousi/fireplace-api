@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FireplaceApi.Api.Converters;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using FireplaceApi.Api.Controllers;
-using FireplaceApi.Api.Converters;
-using FireplaceApi.Api.Extensions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using FireplaceApi.Core.Services;
-using FireplaceApi.Core.Models;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Api.Controllers
 {
@@ -39,8 +32,8 @@ namespace FireplaceApi.Api.Controllers
         [Consumes("application/json")]
         [ProducesResponseType(typeof(EmailDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<EmailDto>> ActivateEmail(
-            [BindNever] [FromHeader] User requesterUser,
-            [FromRoute] ControllerActivateEmailInputRouteParameters inputRouteParameters, 
+            [BindNever][FromHeader] User requesterUser,
+            [FromRoute] ControllerActivateEmailInputRouteParameters inputRouteParameters,
             [FromBody] ControllerActivateEmailInputBodyParameters inputBodyParameters)
         {
             var email = await _emailService.ActivateEmailByIdAsync(requesterUser, inputRouteParameters.Id, inputBodyParameters.ActivationCode);
@@ -56,7 +49,7 @@ namespace FireplaceApi.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(EmailDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<EmailDto>> GetEmailByIdAsync(
-            [BindNever] [FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requesterUser,
             [FromRoute] ControllerGetEmailByIdInputRouteParameters inputRouteParameters,
             [FromQuery] ControllerGetEmailByIdInputQueryParameters inputQueryParameters)
         {

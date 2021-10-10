@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.ValueObjects
 {
@@ -60,7 +57,7 @@ namespace FireplaceApi.Core.ValueObjects
 
             private PaginationGlobalValues() { }
 
-            public PaginationGlobalValues(int totalItemsCount, int maximumOfPageItemsCount, 
+            public PaginationGlobalValues(int totalItemsCount, int maximumOfPageItemsCount,
                 int generatedPointerLength)
             {
                 TotalItemsCount = totalItemsCount;
@@ -77,7 +74,7 @@ namespace FireplaceApi.Core.ValueObjects
 
             private FileGlobalValues() { }
 
-            public FileGlobalValues(string basePhysicalPath, string baseUrlPath, 
+            public FileGlobalValues(string basePhysicalPath, string baseUrlPath,
                 int generatedFileNameLength)
             {
                 BasePhysicalPath = basePhysicalPath ?? throw new ArgumentNullException(nameof(basePhysicalPath));
@@ -97,7 +94,7 @@ namespace FireplaceApi.Core.ValueObjects
 
             private EmailGlobalValues() { }
 
-            public EmailGlobalValues(string address, string password, string smtpServerAddress, 
+            public EmailGlobalValues(string address, string password, string smtpServerAddress,
                 int smtpServerPort, string activationMessageFormat, string activationSubject)
             {
                 Address = address ?? throw new ArgumentNullException(nameof(address));
@@ -119,7 +116,7 @@ namespace FireplaceApi.Core.ValueObjects
 
             private GoogleGlobalValues() { }
 
-            public GoogleGlobalValues(string baseAuthUrl, string baseTokenUrl, 
+            public GoogleGlobalValues(string baseAuthUrl, string baseTokenUrl,
                 string clientId, string clientSecret, string relativeRedirectUrl)
             {
                 BaseAuthUrl = baseAuthUrl ?? throw new ArgumentNullException(nameof(baseAuthUrl));

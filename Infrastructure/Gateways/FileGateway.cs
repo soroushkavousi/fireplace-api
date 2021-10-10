@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FireplaceApi.Core.Interfaces;
+using FireplaceApi.Core.Tools;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using FireplaceApi.Core.Interfaces;
-using FireplaceApi.Core.Tools;
 
 namespace FireplaceApi.Infrastructure.Gateways
 {

@@ -1,10 +1,6 @@
 ﻿using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Extensions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Models
 {
@@ -16,8 +12,8 @@ namespace FireplaceApi.Core.Models
         public SessionState State { get; set; }
         public User User { get; set; }
 
-        public Session(long id, long userId, IPAddress ipAddress, 
-            SessionState state, DateTime creationDate, DateTime? modifiedDate = null, 
+        public Session(long id, long userId, IPAddress ipAddress,
+            SessionState state, DateTime creationDate, DateTime? modifiedDate = null,
             User user = null) : base(creationDate, modifiedDate)
         {
             Id = id;
@@ -27,7 +23,7 @@ namespace FireplaceApi.Core.Models
             User = user;
         }
 
-        public Session PureCopy() => new Session(Id, UserId, IpAddress, 
+        public Session PureCopy() => new Session(Id, UserId, IpAddress,
             State, CreationDate, ModifiedDate);
 
         public void RemoveLoopReferencing()

@@ -1,17 +1,12 @@
-﻿using System;
+﻿using FireplaceApi.Api.Converters;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using FireplaceApi.Api.Controllers;
-using FireplaceApi.Api.Converters;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using FireplaceApi.Core.Services;
-using FireplaceApi.Core.Models;
 
 namespace FireplaceApi.Api.Controllers
 {
@@ -38,8 +33,8 @@ namespace FireplaceApi.Api.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ErrorDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<ErrorDto>>> ListErrorsAsync(
-            [BindNever] [FromHeader] User requesterUser,
-            [BindNever] [FromQuery] ControllerListErrorsInputQueryParameters inputQueryParameters)
+            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromQuery] ControllerListErrorsInputQueryParameters inputQueryParameters)
         {
             var errors = await _errorService.ListErrorsAsync(requesterUser);
             var errorDtos = errors.Select(error => _errorConverter.ConvertToDto(error)).ToList();
@@ -55,9 +50,9 @@ namespace FireplaceApi.Api.Controllers
         [HttpGet("{code}")]
         [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<ErrorDto>> GetErrorByCodeAsync(
-            [BindNever] [FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requesterUser,
             [FromRoute] ControllerGetErrorByCodeInputRouteParameters inputRouteParameters,
-            [BindNever] [FromQuery] ControllerGetErrorByCodeInputQueryParameters inputQueryParameters)
+            [BindNever][FromQuery] ControllerGetErrorByCodeInputQueryParameters inputQueryParameters)
         {
             var error = await _errorService.GetErrorByCodeAsync(requesterUser, inputRouteParameters.Code);
             var errorDto = _errorConverter.ConvertToDto(error);
@@ -74,7 +69,7 @@ namespace FireplaceApi.Api.Controllers
         [Consumes("application/merge-patch+json")]
         [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<ErrorDto>> PatchErrorAsync(
-            [BindNever] [FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requesterUser,
             [FromRoute] ControllerPatchErrorInputRouteParameters inputRouteParameters,
             [FromBody] ControllerPatchErrorInputBodyParameters inputBodyParameters)
         {

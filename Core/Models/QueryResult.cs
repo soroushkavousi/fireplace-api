@@ -1,9 +1,6 @@
-﻿using FireplaceApi.Core.ValueObjects;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Models
 {
@@ -19,8 +16,8 @@ namespace FireplaceApi.Core.Models
         public List<long> ReferenceIds { get; set; }
 
         public QueryResult(long id, string pointer, int lastStart,
-            int lastEnd, int lastLimit, int lastPage, List<long> referenceIds, 
-            DateTime creationDate,  DateTime? modifiedDate = null) 
+            int lastEnd, int lastLimit, int lastPage, List<long> referenceIds,
+            DateTime creationDate, DateTime? modifiedDate = null)
             : base(creationDate, modifiedDate)
         {
             Id = id;
@@ -33,7 +30,7 @@ namespace FireplaceApi.Core.Models
         }
 
         public QueryResult PureCopy() => new QueryResult(Id, Pointer,
-            LastStart, LastEnd, LastLimit, LastPage, ReferenceIds, 
+            LastStart, LastEnd, LastLimit, LastPage, ReferenceIds,
             CreationDate, ModifiedDate);
     }
 }

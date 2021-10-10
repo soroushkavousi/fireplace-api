@@ -2,7 +2,7 @@
 
 namespace FireplaceApi.Api.Controllers
 {
-    public class ControllerListCommunitiesInputQueryParameters : PaginationInputQueryParameters
+    public class ControllerListPostsInputQueryParameters : PaginationInputQueryParameters
     {
         [FromQuery(Name = "community_id")]
         public string CommunityId { get; set; }

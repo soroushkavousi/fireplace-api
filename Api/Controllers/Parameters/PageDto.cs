@@ -1,19 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using FireplaceApi.Api.Extensions;
-using FireplaceApi.Api.Tools;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Primitives;
-using FireplaceApi.Core.Tools;
+﻿using FireplaceApi.Api.Tools;
 using FireplaceApi.Core.Extensions;
+using Microsoft.OpenApi.Any;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Swashbuckle.AspNetCore.Annotations;
-using Microsoft.OpenApi.Any;
 
 namespace FireplaceApi.Api.Controllers
 {
@@ -67,7 +58,7 @@ namespace FireplaceApi.Api.Controllers
         public int TotalItemsCount { get; set; }
         [Required]
         public int TotalPagesCount { get; set; }
-        
+
         public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
             [nameof(Pointer).ToSnakeCase()] = new OpenApiString("z2vywvh7h6"),
@@ -83,7 +74,7 @@ namespace FireplaceApi.Api.Controllers
         public static IOpenApiAny Example { get; } = PureExample1;
 
         public PaginationDto(string queryResultPointer, string listPath,
-            int? pageNumber, int start, int end, int limit, 
+            int? pageNumber, int start, int end, int limit,
             int totalItemsCount, int totalPagesCount)
         {
             Pointer = queryResultPointer;

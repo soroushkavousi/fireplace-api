@@ -1,49 +1,37 @@
-using System;
-using System.Reflection;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using FireplaceApi.Api.Attributes;
+using FireplaceApi.Api.Controllers;
+using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Middlewares;
+using FireplaceApi.Api.Tools;
+using FireplaceApi.Infrastructure.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Microsoft.Extensions.Options;
-using FireplaceApi.Api.Tools;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.AspNetCore.Rewrite;
-using System.Net;
-using FireplaceApi.Api.Middlewares;
-using FireplaceApi.Api.Extensions;
-using System.Text.Json;
-using System.Diagnostics;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using System.Text.Json.Serialization;
 using Swashbuckle.AspNetCore.SwaggerUI;
-using FireplaceApi.Api.Attributes;
-using Microsoft.AspNetCore.Authentication;
-using FireplaceApi.Infrastructure.Entities;
-using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Api.Controllers;
+using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text.Json.Serialization;
 
 namespace FireplaceApi.Api
 {
     public class Startup
     {
         public IConfiguration Configuration { get; }
-        
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -148,7 +136,7 @@ namespace FireplaceApi.Api
                 options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
                 options.HttpsPort = 5021;
             });
-            
+
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;

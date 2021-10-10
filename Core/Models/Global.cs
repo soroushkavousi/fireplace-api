@@ -1,9 +1,6 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.ValueObjects;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Models
 {

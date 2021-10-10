@@ -1,17 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FireplaceApi.Api.Extensions;
+﻿using FireplaceApi.Api.Controllers;
 using FireplaceApi.Core.Models;
-using FireplaceApi.Api.Controllers;
-using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.ValueObjects;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
 
 namespace FireplaceApi.Api.Converters
 {
@@ -48,8 +42,8 @@ namespace FireplaceApi.Api.Converters
                 return null;
 
             var listPath = $"{GlobalOperator.GlobalValues.Api.BaseUrlPath}{listRelativePath}";
-            
-            var paginationDto = new PaginationDto(page.QueryResultPointer, 
+
+            var paginationDto = new PaginationDto(page.QueryResultPointer,
                 listPath, page.Number, page.Start, page.End, page.Limit,
                 page.TotalItemsCount, page.TotalPagesCount);
 

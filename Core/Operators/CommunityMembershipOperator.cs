@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Interfaces;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.ValueObjects;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using FireplaceApi.Core.Enums;
 using System;
 using System.Threading.Tasks;
-using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Interfaces;
 
 namespace FireplaceApi.Core.Operators
 {
@@ -19,9 +19,9 @@ namespace FireplaceApi.Core.Operators
         private readonly UserOperator _userOperator;
         private readonly CommunityOperator _communityOperator;
 
-        public CommunityMembershipOperator(ILogger<CommunityMembershipOperator> logger, 
-            IConfiguration configuration, IServiceProvider serviceProvider, 
-            ICommunityMembershipRepository communityMembershipRepository, 
+        public CommunityMembershipOperator(ILogger<CommunityMembershipOperator> logger,
+            IConfiguration configuration, IServiceProvider serviceProvider,
+            ICommunityMembershipRepository communityMembershipRepository,
             PageOperator pageOperator, UserOperator userOperator,
             CommunityOperator communityOperator)
         {
@@ -43,19 +43,19 @@ namespace FireplaceApi.Core.Operators
                 var communityMembershipIds = await _communityMembershipRepository
                     .ListCommunityMembershipIdsAsync(requesterUser.Id);
                 resultPage = await _pageOperator.CreatePageWithoutPointerAsync(
-                    ModelName.COMMUNITY_MEMBERSHIP, paginationInputParameters, communityMembershipIds, 
+                    ModelName.COMMUNITY_MEMBERSHIP, paginationInputParameters, communityMembershipIds,
                     _communityMembershipRepository.ListCommunityMembershipsAsync);
             }
             else
             {
                 resultPage = await _pageOperator.CreatePageWithPointerAsync(
-                    ModelName.COMMUNITY_MEMBERSHIP, paginationInputParameters, 
+                    ModelName.COMMUNITY_MEMBERSHIP, paginationInputParameters,
                     _communityMembershipRepository.ListCommunityMembershipsAsync);
             }
             return resultPage;
         }
 
-        public async Task<CommunityMembership> GetCommunityMembershipByIdAsync(long id, 
+        public async Task<CommunityMembership> GetCommunityMembershipByIdAsync(long id,
             bool includeCreator, bool includeCommunity)
         {
             var communityMembership = await _communityMembershipRepository
@@ -66,7 +66,7 @@ namespace FireplaceApi.Core.Operators
             return communityMembership;
         }
 
-        public async Task<CommunityMembership> CreateCommunityMembershipAsync(User requesterUser, 
+        public async Task<CommunityMembership> CreateCommunityMembershipAsync(User requesterUser,
             Identifier communityIdentifier)
         {
             switch (communityIdentifier.State)
@@ -91,7 +91,7 @@ namespace FireplaceApi.Core.Operators
             var communityMembership = await _communityMembershipRepository
                 .GetCommunityMembershipByIdAsync(id);
             communityMembership = await ApplyCommunityMembershipChangesAsync(communityMembership);
-            communityMembership = await GetCommunityMembershipByIdAsync(communityMembership.Id, 
+            communityMembership = await GetCommunityMembershipByIdAsync(communityMembership.Id,
                 false, false);
             return communityMembership;
         }

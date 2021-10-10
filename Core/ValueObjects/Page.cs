@@ -1,7 +1,5 @@
-﻿using FireplaceApi.Core.Operators;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Core.ValueObjects
 {
@@ -14,7 +12,7 @@ namespace FireplaceApi.Core.ValueObjects
         public int? Page { get; set; }
         public int? Offset { get; set; }
 
-        public PaginationInputParameters(int? limit, string pointer, bool? next, 
+        public PaginationInputParameters(int? limit, string pointer, bool? next,
             bool? previous, int? page, int? offset)
         {
             Limit = limit;
@@ -39,7 +37,7 @@ namespace FireplaceApi.Core.ValueObjects
 
         private Page() { }
 
-        public Page(string queryResultPointer, int? number, int start, int end, int limit, 
+        public Page(string queryResultPointer, int? number, int start, int end, int limit,
             int totalItemsCount, int totalPagesCount, List<T> items)
         {
             QueryResultPointer = queryResultPointer ?? throw new ArgumentNullException(nameof(queryResultPointer));

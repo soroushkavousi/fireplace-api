@@ -1,17 +1,12 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.Tools;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Interfaces;
-using FireplaceApi.Core.Operators;
-using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Tools;
-using FireplaceApi.Core.Exceptions;
 
 namespace FireplaceApi.Core.Validators
 {
@@ -34,7 +29,7 @@ namespace FireplaceApi.Core.Validators
         public async Task ValidateGetAccessTokenByValueInputParametersAsync(
             User requesterUser, string accessTokenValue, bool? includeUser)
         {
-            ValidateParameterIsNotMissing(accessTokenValue, nameof(accessTokenValue), 
+            ValidateParameterIsNotMissing(accessTokenValue, nameof(accessTokenValue),
                 ErrorName.ACCESS_TOKEN_VALUE_IS_MISSING);
             ValidateAccessTokenValueFormat(accessTokenValue);
             await ValidateUserCanAccessToAccessTokenValue(requesterUser, accessTokenValue);

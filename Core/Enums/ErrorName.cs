@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace FireplaceApi.Core.Enums
+﻿namespace FireplaceApi.Core.Enums
 {
     public enum ErrorName
     {
@@ -22,18 +17,18 @@ namespace FireplaceApi.Core.Enums
 
         USER_ID_EXISTS,
         USER_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED,
-        
+
         USERNAME_EXISTS,
         USERNAME_DOES_NOT_EXIST_OR_ACCESS_DENIED,
-        
+
         EMAIL_ADDRESS_EXISTS,
         EMAIL_ADDRESS_DOES_NOT_EXIST_OR_ACCESS_DENIED,
-        
+
         EMAIL_ID_EXISTS,
         EMAIL_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED,
-        
+
         ERROR_CODE_DOES_NOT_EXIST_OR_ACCESS_DENIED,
-        
+
         ACCESS_TOKEN_VALUE_DOES_NOT_EXIST_OR_ACCESS_DENIED,
 
         SESSION_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED,

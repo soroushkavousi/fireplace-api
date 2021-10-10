@@ -1,21 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using FireplaceApi.Infrastructure.Converters;
-using FireplaceApi.Infrastructure.Entities;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces;
+using FireplaceApi.Core.Models;
 using FireplaceApi.Core.ValueObjects;
+using FireplaceApi.Infrastructure.Converters;
+using FireplaceApi.Infrastructure.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories
 {
@@ -27,7 +25,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         private readonly DbSet<EmailEntity> _emailEntities;
         private readonly EmailConverter _emailConverter;
 
-        public EmailRepository(ILogger<EmailRepository> logger, IConfiguration configuration, 
+        public EmailRepository(ILogger<EmailRepository> logger, IConfiguration configuration,
             FireplaceApiContext fireplaceApiContext, EmailConverter emailConverter
             )
         {

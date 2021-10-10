@@ -1,14 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FireplaceApi.Core.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using FireplaceApi.Core.ValueObjects;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -21,7 +15,7 @@ namespace FireplaceApi.Infrastructure.Entities
 
         private GlobalEntity() : base() { }
 
-        public GlobalEntity(int id, GlobalValues values, DateTime? creationDate = null, 
+        public GlobalEntity(int id, GlobalValues values, DateTime? creationDate = null,
             DateTime? modifiedDate = null) : base(creationDate, modifiedDate)
         {
             Id = id;

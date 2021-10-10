@@ -24,8 +24,8 @@ namespace FireplaceApi.Infrastructure.Entities
 
         private CommentEntity() : base() { }
 
-        public CommentEntity(long authorEntityId, long postEntityId, 
-            string content, int vote, DateTime? creationDate = null, 
+        public CommentEntity(long authorEntityId, long postEntityId,
+            string content, int vote, DateTime? creationDate = null,
             DateTime? modifiedDate = null, long? id = null,
             UserEntity author = null, PostEntity postEntity = null,
             List<CommentVoteEntity> commentVoteEntities = null) : base(creationDate, modifiedDate)

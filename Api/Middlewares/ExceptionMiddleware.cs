@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using FireplaceApi.Api.Converters;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Operators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using FireplaceApi.Api.Converters;
-using FireplaceApi.Core.Operators;
-using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Enums;
+using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Api.Middlewares
 {
@@ -27,7 +24,7 @@ namespace FireplaceApi.Api.Middlewares
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext httpContext, ErrorConverter errorConverter, 
+        public async Task InvokeAsync(HttpContext httpContext, ErrorConverter errorConverter,
             ErrorOperator errorOperator)
         {
             var sw = Stopwatch.StartNew();
@@ -40,7 +37,7 @@ namespace FireplaceApi.Api.Middlewares
                 var apiException = ex switch
                 {
                     ApiException apiExceptionObject => apiExceptionObject,
-                    _ => new ApiException(Error.InternalServerError.Name, Error.InternalServerError.ClientMessage, systemException:ex),
+                    _ => new ApiException(Error.InternalServerError.Name, Error.InternalServerError.ClientMessage, systemException: ex),
                 };
                 var error = await CreateErrorAsync(apiException, errorOperator);
                 await ReportError(error, errorConverter, httpContext);

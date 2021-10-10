@@ -1,20 +1,14 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using FireplaceApi.Api.Controllers;
+﻿using FireplaceApi.Api.Controllers;
 using FireplaceApi.Api.Extensions;
-using FireplaceApi.Api.Interfaces;
-using FireplaceApi.Api.Tools;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using FireplaceApi.Core.Tools;
-using System.Net.Http;
-using System.Diagnostics;
 using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Tools;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Api.Middlewares
 {
@@ -74,7 +68,7 @@ namespace FireplaceApi.Api.Middlewares
             return false;
         }
 
-        protected string FindAccessTokenValue(ControllerInputHeaderParameters inputHeaderParameters, 
+        protected string FindAccessTokenValue(ControllerInputHeaderParameters inputHeaderParameters,
             ControllerInputCookieParameters inputCookieParameters)
         {
             var accessTokenValue = inputHeaderParameters.AccessTokenValue;

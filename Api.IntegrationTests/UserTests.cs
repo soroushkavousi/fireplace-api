@@ -1,16 +1,9 @@
-﻿using System;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using FireplaceApi.Api.IntegrationTests;
-using FireplaceApi.Core.Enums;
+﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using System.Threading.Tasks;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace FireplaceApi.Api.IntegrationTests
 {
@@ -37,7 +30,7 @@ namespace FireplaceApi.Api.IntegrationTests
             var requestUri = $"/v0.1/users/{id}";
             var response = await _clientPool.TheHulkClient.GetAsync(requestUri);
 
-            await _testUtils.AssertResponseContainsErrorAsync(ErrorName.USER_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED, 
+            await _testUtils.AssertResponseContainsErrorAsync(ErrorName.USER_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED,
                 response, nameof(TestGetUserWithIdReturnDoesNotExistsErrorAsync));
 
             _logger.LogInformation($"{nameof(TestGetUserWithIdReturnDoesNotExistsErrorAsync)} | End");

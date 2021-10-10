@@ -1,21 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Interfaces;
+using FireplaceApi.Core.Models;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Interfaces;
-using System.Diagnostics;
 
 namespace FireplaceApi.Infrastructure.Repositories
 {
@@ -27,7 +27,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         private readonly DbSet<SessionEntity> _sessionEntities;
         private readonly SessionConverter _sessionConverter;
 
-        public SessionRepository(ILogger<SessionRepository> logger, IConfiguration configuration, 
+        public SessionRepository(ILogger<SessionRepository> logger, IConfiguration configuration,
             FireplaceApiContext fireplaceApiContext, SessionConverter sessionConverter
             )
         {
@@ -76,7 +76,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _sessionConverter.ConvertToModel(sessionEntity);
         }
 
-        public async Task<Session> FindSessionAsync(long userId, IPAddress ipAddress, 
+        public async Task<Session> FindSessionAsync(long userId, IPAddress ipAddress,
             bool includeTracking = false, bool includeUser = false)
         {
             var sw = Stopwatch.StartNew();
@@ -101,7 +101,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _sessionEntities.Add(sessionEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
-            
+
             _logger.LogIOInformation(sw, "Database", new { userId, ipAddress, state }, new { sessionEntity });
             return _sessionConverter.ConvertToModel(sessionEntity);
         }
@@ -136,7 +136,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _sessionEntities.Remove(sessionEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
-        
+
             _logger.LogIOInformation(sw, "Database", new { id }, new { sessionEntity });
         }
 
@@ -147,7 +147,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .AnyAsync();
-        
+
             _logger.LogIOInformation(sw, "Database", new { id }, new { doesExist });
             return doesExist;
         }

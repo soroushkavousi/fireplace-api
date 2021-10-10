@@ -1,9 +1,4 @@
-﻿using FireplaceApi.Core.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace FireplaceApi.Core.Models
 {
@@ -24,7 +19,7 @@ namespace FireplaceApi.Core.Models
             Creator = creator;
         }
 
-        public Community PureCopy() => new Community(Id, Name, CreatorId, 
+        public Community PureCopy() => new Community(Id, Name, CreatorId,
             CreationDate, ModifiedDate);
     }
 }

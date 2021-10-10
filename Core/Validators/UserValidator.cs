@@ -1,21 +1,15 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using FireplaceApi.Core.Enums;
+﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Services;
-using FireplaceApi.Core.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Net;
-using System.Threading.Tasks;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Tools;
-using System.Diagnostics;
+using FireplaceApi.Core.ValueObjects;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Validators
 {
@@ -195,7 +189,7 @@ namespace FireplaceApi.Core.Validators
 
         public void ValidateBothOldPasswordAndPasswordAreNotNullIfRequested(Password oldPassword, Password password)
         {
-            if((oldPassword != null && password == null) 
+            if ((oldPassword != null && password == null)
                 || (oldPassword == null && password != null))
             {
                 var serverMessage = $"Required both of old_password and password to change!";
@@ -205,7 +199,7 @@ namespace FireplaceApi.Core.Validators
 
         public void ValidateOldPasswordIsCorrect(User requesterUser, Password oldPassword)
         {
-            if(Equals(requesterUser.Password.Hash, oldPassword.Hash))
+            if (Equals(requesterUser.Password.Hash, oldPassword.Hash))
             {
                 var serverMessage = $"Old paassword ({oldPassword}) is not correct!";
                 throw new ApiException(ErrorName.OLD_PASSWORD_NOT_CORRECT, serverMessage);
@@ -325,7 +319,7 @@ namespace FireplaceApi.Core.Validators
 
         public void ValidateRequesterUserCanAlterUser(User requesterUser, long id)
         {
-            if(requesterUser.Id != id)
+            if (requesterUser.Id != id)
             {
                 var serverMessage = $"requesterUser {requesterUser.Id} can't alter user {id}";
                 throw new ApiException(ErrorName.USER_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);

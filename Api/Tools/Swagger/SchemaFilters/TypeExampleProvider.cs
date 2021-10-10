@@ -1,27 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FireplaceApi.Api.Extensions;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Operators;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
-using FireplaceApi.Api.Extensions;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Operators;
 
 namespace FireplaceApi.Api.Tools
 {
     public class TypeExampleProvider : ISchemaFilter
     {
         private readonly ILogger<TypeExampleProvider> _logger;
-        private readonly IServiceProvider _serviceProvider; 
+        private readonly IServiceProvider _serviceProvider;
         //private Dictionary<string, IOpenApiAny> _example;
 
         public TypeExampleProvider(ILogger<TypeExampleProvider> logger, IServiceProvider serviceProvider)
@@ -30,7 +25,7 @@ namespace FireplaceApi.Api.Tools
             _serviceProvider = serviceProvider;
         }
 
-        public static async Task<OpenApiObject> FillErrorExampleFromName(OpenApiObject errorExample, 
+        public static async Task<OpenApiObject> FillErrorExampleFromName(OpenApiObject errorExample,
             IServiceProvider serviceProvider, ILogger logger)
         {
             //var errorService = _serviceProvider.GetService<ErrorService>();

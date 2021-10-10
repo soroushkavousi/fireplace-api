@@ -1,23 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FireplaceApi.Api.Converters;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using FireplaceApi.Api.Controllers;
-using FireplaceApi.Api.Extensions;
-using Microsoft.AspNetCore.JsonPatch;
-using FireplaceApi.Api.Converters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Authorization;
-using FireplaceApi.Core.Services;
-using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Extensions;
-using System.Diagnostics;
-using FireplaceApi.Core.Models;
+using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Api.Controllers
 {
@@ -52,7 +40,7 @@ namespace FireplaceApi.Api.Controllers
         {
             //var accessTokenValue = FindAccessTokenValue(inputHeaderParameters, inputCookieParameters);
             var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
-            var page = await _communityService.ListCommunitiesAsync(requesterUser, 
+            var page = await _communityService.ListCommunitiesAsync(requesterUser,
                 paginationInputParameters, inputQueryParameters.Name);
             var pageDto = _communityConverter.ConvertToDto(page, "/communities");
             //SetOutputHeaderParameters(communityDtos.HeaderParameters);
@@ -72,7 +60,7 @@ namespace FireplaceApi.Api.Controllers
             [FromQuery] ControllerGetCommunityInputQueryParameters inputQueryParameters)
         {
             var community = await _communityService
-                .GetCommunityByIdAsync(requesterUser, inputRouteParameters.Id, 
+                .GetCommunityByIdAsync(requesterUser, inputRouteParameters.Id,
                 inputQueryParameters.IncludeCreator);
             var communityDto = _communityConverter.ConvertToDto(community);
             return communityDto;

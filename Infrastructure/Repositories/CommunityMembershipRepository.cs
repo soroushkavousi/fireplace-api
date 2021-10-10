@@ -1,22 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using FireplaceApi.Infrastructure.Converters;
-using FireplaceApi.Infrastructure.Entities;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces;
-using FireplaceApi.Core.ValueObjects;
-using System.Diagnostics;
+using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
+using FireplaceApi.Infrastructure.Converters;
+using FireplaceApi.Infrastructure.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories
 {
@@ -37,7 +34,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _communityMembershipEntities = fireplaceApiContext.CommunityMembershipEntities;
             _communityMembershipConverter = communityMembershipConverter;
         }
-         
+
         public async Task<List<CommunityMembership>> ListCommunityMembershipsAsync(List<long> Ids)
         {
             var sw = Stopwatch.StartNew();
@@ -57,7 +54,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Where(e => e.UserEntityId == userId)
                 .Include(
-                    userEntity: false,    
+                    userEntity: false,
                     communityEntity: true
                 )
                 .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
@@ -85,7 +82,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return communityMembershipEntities;
         }
 
-        public async Task<CommunityMembership> GetCommunityMembershipByIdAsync(long id, 
+        public async Task<CommunityMembership> GetCommunityMembershipByIdAsync(long id,
             bool includeUser = false, bool includeCommunity = false)
         {
             var sw = Stopwatch.StartNew();
@@ -102,7 +99,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _communityMembershipConverter.ConvertToModel(communityMembershipEntity);
         }
 
-        public async Task<CommunityMembership> CreateCommunityMembershipAsync(long userId, 
+        public async Task<CommunityMembership> CreateCommunityMembershipAsync(long userId,
             string username, long communityId, string communityName)
         {
             var sw = Stopwatch.StartNew();
@@ -112,8 +109,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogIOInformation(sw, "Database", 
-                new { userId, username, communityId, communityName }, 
+            _logger.LogIOInformation(sw, "Database",
+                new { userId, username, communityId, communityName },
                 new { communityMembershipEntity });
             return _communityMembershipConverter.ConvertToModel(communityMembershipEntity);
         }

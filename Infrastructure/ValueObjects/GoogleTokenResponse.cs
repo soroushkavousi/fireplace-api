@@ -1,7 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FireplaceApi.Infrastructure.ValueObjects
 {
@@ -25,7 +22,7 @@ namespace FireplaceApi.Infrastructure.ValueObjects
 
         public GoogleTokenResponse() { }
 
-        public GoogleTokenResponse(string accessToken, int expiresIn, 
+        public GoogleTokenResponse(string accessToken, int expiresIn,
             string refreshToken, string scope, string tokenType)
         {
             AccessToken = accessToken;

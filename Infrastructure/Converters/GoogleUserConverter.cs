@@ -1,18 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
+﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Infrastructure.Entities;
-using FireplaceApi.Infrastructure.Repositories;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Enums;
 
 namespace FireplaceApi.Infrastructure.Converters
 {
@@ -40,12 +30,12 @@ namespace FireplaceApi.Infrastructure.Converters
                     .ConvertToEntity(googleUser.User.PureCopy());
 
             var googleUserEntity = new GoogleUserEntity(googleUser.UserId, googleUser.Code,
-                googleUser.AccessToken, googleUser.TokenType, googleUser.AccessTokenExpiresInSeconds, 
+                googleUser.AccessToken, googleUser.TokenType, googleUser.AccessTokenExpiresInSeconds,
                 googleUser.RefreshToken, googleUser.Scope, googleUser.IdToken,
                 googleUser.AccessTokenIssuedTime, googleUser.GmailAddress, googleUser.GmailVerified,
-                googleUser.GmailIssuedTimeInSeconds, googleUser.FullName, googleUser.FirstName, 
+                googleUser.GmailIssuedTimeInSeconds, googleUser.FullName, googleUser.FirstName,
                 googleUser.LastName, googleUser.Locale, googleUser.PictureUrl, googleUser.State,
-                googleUser.AuthUser, googleUser.Prompt, googleUser.RedirectToUserUrl, 
+                googleUser.AuthUser, googleUser.Prompt, googleUser.RedirectToUserUrl,
                 googleUser.CreationDate, googleUser.ModifiedDate,
                 googleUser.Id, userEntity);
 
@@ -63,14 +53,14 @@ namespace FireplaceApi.Infrastructure.Converters
                     .ConvertToModel(googleUserEntity.UserEntity.PureCopy());
 
             var googleUser = new GoogleUser(googleUserEntity.Id.Value, googleUserEntity.UserEntityId,
-                googleUserEntity.Code, googleUserEntity.AccessToken, googleUserEntity.TokenType, 
-                googleUserEntity.AccessTokenExpiresInSeconds, googleUserEntity.RefreshToken, 
-                googleUserEntity.Scope, googleUserEntity.IdToken, googleUserEntity.AccessTokenIssuedTime, 
-                googleUserEntity.GmailAddress, googleUserEntity.GmailVerified, 
-                googleUserEntity.GmailIssuedTimeInSeconds, googleUserEntity.FullName, 
-                googleUserEntity.FirstName, googleUserEntity.LastName, googleUserEntity.Locale, 
+                googleUserEntity.Code, googleUserEntity.AccessToken, googleUserEntity.TokenType,
+                googleUserEntity.AccessTokenExpiresInSeconds, googleUserEntity.RefreshToken,
+                googleUserEntity.Scope, googleUserEntity.IdToken, googleUserEntity.AccessTokenIssuedTime,
+                googleUserEntity.GmailAddress, googleUserEntity.GmailVerified,
+                googleUserEntity.GmailIssuedTimeInSeconds, googleUserEntity.FullName,
+                googleUserEntity.FirstName, googleUserEntity.LastName, googleUserEntity.Locale,
                 googleUserEntity.PictureUrl, googleUserEntity.State, googleUserEntity.AuthUser,
-                googleUserEntity.Prompt, googleUserEntity.RedirectToUserUrl, 
+                googleUserEntity.Prompt, googleUserEntity.RedirectToUserUrl,
                 googleUserEntity.CreationDate, googleUserEntity.ModifiedDate,
                 user);
 

@@ -1,15 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Tools;
+using FireplaceApi.Infrastructure.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using FireplaceApi.Infrastructure.Entities;
-using FireplaceApi.Infrastructure.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FireplaceApi.Core.Tools;
-using FireplaceApi.Core.Models;
 
 namespace FireplaceApi.Infrastructure.Converters
 {
@@ -21,7 +15,7 @@ namespace FireplaceApi.Infrastructure.Converters
         private readonly Uri _baseUri;
         private readonly string _basePhysicalPath;
 
-        public FileConverter(ILogger<FileConverter> logger, 
+        public FileConverter(ILogger<FileConverter> logger,
             IServiceProvider serviceProvider, IConfiguration configuration)
         {
             _logger = logger;
@@ -40,8 +34,8 @@ namespace FireplaceApi.Infrastructure.Converters
             var relativePhysicalPath = GetRelativePhysicalPath(file.PhysicalPath);
 
             var fileEntity = new FileEntity(file.Name, file.RealName,
-                relativeUri, relativePhysicalPath, file.CreationDate, 
-                file.ModifiedDate, file.Id);                
+                relativeUri, relativePhysicalPath, file.CreationDate,
+                file.ModifiedDate, file.Id);
 
             return fileEntity;
         }

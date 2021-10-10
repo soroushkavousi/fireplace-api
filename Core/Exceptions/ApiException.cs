@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Enums;
+using System;
 
 namespace FireplaceApi.Core.Exceptions
 {

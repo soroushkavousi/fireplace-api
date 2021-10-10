@@ -1,9 +1,4 @@
-﻿using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace FireplaceApi.Core.Models
 {
@@ -15,7 +10,7 @@ namespace FireplaceApi.Core.Models
         public User User { get; set; }
 
         public AccessToken(long id, long userId, string value,
-            DateTime creationDate, DateTime? modifiedDate = null, 
+            DateTime creationDate, DateTime? modifiedDate = null,
             User user = null) : base(creationDate, modifiedDate)
         {
             Id = id;
@@ -24,7 +19,7 @@ namespace FireplaceApi.Core.Models
             User = user;
         }
 
-        public AccessToken PureCopy() => new AccessToken(Id, UserId, Value, 
+        public AccessToken PureCopy() => new AccessToken(Id, UserId, Value,
             CreationDate, ModifiedDate);
 
         public void RemoveLoopReferencing()

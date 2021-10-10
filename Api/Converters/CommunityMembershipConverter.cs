@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using FireplaceApi.Api.Controllers;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Api.Controllers;
-using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Operators;
 
 namespace FireplaceApi.Api.Converters
 {
@@ -35,8 +35,8 @@ namespace FireplaceApi.Api.Converters
                 communityDto = _serviceProvider.GetService<CommunityConverter>()
                     .ConvertToDto(communityMembership.Community.PureCopy());
 
-            var communityMembershipDto = new CommunityMembershipDto(communityMembership.Id, 
-                communityMembership.UserId, communityMembership.Username, 
+            var communityMembershipDto = new CommunityMembershipDto(communityMembership.Id,
+                communityMembership.UserId, communityMembership.Username,
                 communityMembership.CommunityId, communityMembership.CommunityName,
                 communityMembership.CreationDate, userDto, communityDto);
 
@@ -49,8 +49,8 @@ namespace FireplaceApi.Api.Converters
                 return null;
 
             var listPath = $"{GlobalOperator.GlobalValues.Api.BaseUrlPath}{listRelativePath}";
-            
-            var paginationDto = new PaginationDto(page.QueryResultPointer, 
+
+            var paginationDto = new PaginationDto(page.QueryResultPointer,
                 listPath, page.Number, page.Start, page.End, page.Limit,
                 page.TotalItemsCount, page.TotalPagesCount);
 

@@ -1,14 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Validators;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
-using System.Net;
+using FireplaceApi.Core.Validators;
 using FireplaceApi.Core.ValueObjects;
+using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Services
 {
@@ -17,8 +12,8 @@ namespace FireplaceApi.Core.Services
         private readonly ILogger<CommunityMembershipService> _logger;
         private readonly CommunityMembershipValidator _communityMembershipValidator;
         private readonly CommunityMembershipOperator _communityMembershipOperator;
-        
-        public CommunityMembershipService(ILogger<CommunityMembershipService> logger, 
+
+        public CommunityMembershipService(ILogger<CommunityMembershipService> logger,
             CommunityMembershipValidator communityMembershipValidator, CommunityMembershipOperator communityMembershipOperator)
         {
             _logger = logger;
@@ -34,14 +29,14 @@ namespace FireplaceApi.Core.Services
             var page = await _communityMembershipOperator.ListCommunityMembershipsAsync(requesterUser,
                 paginationInputParameters);
             return page;
-        } 
+        }
 
         public async Task<CommunityMembership> GetCommunityMembershipByIdAsync(
             User requesterUser, long? id, bool? includeCreator, bool? includeCommunity)
         {
             await _communityMembershipValidator.ValidateGetCommunityMembershipByIdInputParametersAsync(
                 requesterUser, id, includeCreator, includeCommunity);
-            var communityMembership = await _communityMembershipOperator.GetCommunityMembershipByIdAsync(id.Value, 
+            var communityMembership = await _communityMembershipOperator.GetCommunityMembershipByIdAsync(id.Value,
                 includeCreator.Value, includeCommunity.Value);
             return communityMembership;
         }
@@ -53,7 +48,7 @@ namespace FireplaceApi.Core.Services
                 .ValidateCreateCommunityMembershipInputParametersAsync(
                 requesterUser, communityId, communityName);
             return await _communityMembershipOperator
-                .CreateCommunityMembershipAsync(requesterUser, 
+                .CreateCommunityMembershipAsync(requesterUser,
                     new Identifier(communityId, communityName));
         }
 

@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Enums;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Interfaces
 {
     public interface IUserRepository
     {
         public Task<List<User>> ListUsersAsync(
-            bool includeEmail = false, bool includeGoogleUser = false, 
+            bool includeEmail = false, bool includeGoogleUser = false,
             bool includeAccessTokens = false, bool includeSessions = false);
-        public Task<User> GetUserByIdAsync(long id, 
+        public Task<User> GetUserByIdAsync(long id,
             bool includeEmail = false, bool includeGoogleUser = false,
             bool includeAccessTokens = false, bool includeSessions = false);
         public Task<User> GetUserByUsernameAsync(string username,

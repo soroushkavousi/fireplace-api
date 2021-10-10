@@ -1,20 +1,12 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Validators;
+using FireplaceApi.Core.ValueObjects;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
-using System.Net;
-using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Interfaces;
-using Microsoft.AspNetCore.WebUtilities;
 
 namespace FireplaceApi.Core.Operators
 {

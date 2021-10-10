@@ -1,13 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -21,8 +14,8 @@ namespace FireplaceApi.Infrastructure.Entities
 
         private FileEntity() : base() { }
 
-        public FileEntity(string name, string realName, string relativeUri, 
-            string relativePhysicalPath, DateTime? creationDate = null, 
+        public FileEntity(string name, string realName, string relativeUri,
+            string relativePhysicalPath, DateTime? creationDate = null,
             DateTime? modifiedDate = null, long? id = null) : base(creationDate, modifiedDate)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));

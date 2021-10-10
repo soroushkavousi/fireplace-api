@@ -1,10 +1,10 @@
-﻿using Microsoft.OpenApi.Any;
-using FireplaceApi.Api.Tools;
+﻿using FireplaceApi.Api.Tools;
+using FireplaceApi.Core.Extensions;
+using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using FireplaceApi.Core.Extensions;
 
 namespace FireplaceApi.Api.Controllers
 {
@@ -108,7 +108,7 @@ namespace FireplaceApi.Api.Controllers
         public static IOpenApiAny Example { get; } = Example1;
         public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
         {
-            //[nameof(PostController.ListCommunitiesAsync)] = PageExample1,
+            //[nameof(PostController.ListPostsAsync)] = PageExample1,
             //[nameof(PostController.GetPostByIdAsync)] = PureExample1,
             //[nameof(PostController.CreatePostAsync)] = PureExample1,
             //[nameof(PostController.PatchPostByIdAsync)] = PureExample1,
@@ -120,8 +120,8 @@ namespace FireplaceApi.Api.Controllers
 
         }
 
-        public PostDto(long id, long authorId, string authorUsername, long communityId, 
-            string communityName, int vote, string content, DateTime creationDate, 
+        public PostDto(long id, long authorId, string authorUsername, long communityId,
+            string communityName, int vote, string content, DateTime creationDate,
             DateTime modifiedDate, UserDto author = null, CommunityDto community = null)
         {
             Id = id;

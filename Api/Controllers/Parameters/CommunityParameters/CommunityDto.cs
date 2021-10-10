@@ -1,10 +1,10 @@
-﻿using Microsoft.OpenApi.Any;
-using FireplaceApi.Api.Tools;
+﻿using FireplaceApi.Api.Tools;
+using FireplaceApi.Core.Extensions;
+using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using FireplaceApi.Core.Extensions;
 
 namespace FireplaceApi.Api.Controllers
 {
@@ -88,7 +88,7 @@ namespace FireplaceApi.Api.Controllers
 
         }
 
-        public CommunityDto(long id, string name, long creatorId, 
+        public CommunityDto(long id, string name, long creatorId,
             DateTime creationDate, UserDto creator = null)
         {
             Id = id;

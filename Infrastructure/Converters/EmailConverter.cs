@@ -1,18 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using FireplaceApi.Infrastructure.Entities;
-using FireplaceApi.Infrastructure.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Enums;
+using FireplaceApi.Infrastructure.Entities;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace FireplaceApi.Infrastructure.Converters
 {
@@ -39,8 +32,8 @@ namespace FireplaceApi.Infrastructure.Converters
                 userEntity = _serviceProvider.GetService<UserConverter>().ConvertToEntity(email.User.PureCopy());
 
             var emailEntity = new EmailEntity(email.UserId, email.Address,
-                email.Activation.Status.ToString(), email.CreationDate, 
-                email.ModifiedDate, email.Activation.Code, 
+                email.Activation.Status.ToString(), email.CreationDate,
+                email.ModifiedDate, email.Activation.Code,
                 email.Id, userEntity);
 
             return emailEntity;
@@ -58,7 +51,7 @@ namespace FireplaceApi.Infrastructure.Converters
             var activation = new Activation(emailEntity.ActivationStatus.ToEnum<ActivationStatus>(),
                 emailEntity.ActivationCode);
 
-            var email = new Email(emailEntity.Id.Value, emailEntity.UserEntityId, 
+            var email = new Email(emailEntity.Id.Value, emailEntity.UserEntityId,
                 emailEntity.Address, activation, emailEntity.CreationDate, emailEntity.ModifiedDate, user);
 
             return email;

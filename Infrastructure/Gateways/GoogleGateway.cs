@@ -1,29 +1,18 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Interfaces;
+using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.ValueObjects;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Flows;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Net;
-using System.Net.Mail;
-using FireplaceApi.Core.Interfaces;
-using Google.Apis.Auth.OAuth2;
-using static Google.Apis.Oauth2.v2.Oauth2Service;
-using Microsoft.AspNetCore.Authentication.Google;
-using System.Net.Http;
-using Google.Apis.Auth.OAuth2.Flows;
 using System.Threading;
-using FireplaceApi.Core.Operators;
-using FireplaceApi.Core.ValueObjects;
-using Microsoft.AspNetCore.WebUtilities;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Infrastructure.ValueObjects;
-using JWT;
-using JWT.Algorithms;
-using JWT.Serializers;
-using Google.Apis.Auth;
+using System.Threading.Tasks;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
-using FireplaceApi.Core.Exceptions;
+using static Google.Apis.Oauth2.v2.Oauth2Service;
 
 namespace FireplaceApi.Infrastructure.Gateways
 {
@@ -49,7 +38,7 @@ namespace FireplaceApi.Infrastructure.Gateways
                 code);
         }
 
-        public async Task<GoogleUserToken> GetgoogleUserToken(string clientId, 
+        public async Task<GoogleUserToken> GetgoogleUserToken(string clientId,
             string clientSecret, string redirectUrl, string code)
         {
             try

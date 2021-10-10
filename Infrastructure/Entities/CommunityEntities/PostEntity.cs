@@ -23,10 +23,10 @@ namespace FireplaceApi.Infrastructure.Entities
 
         private PostEntity() : base() { }
 
-        public PostEntity(long authorEntityId, long communityEntityId, 
-            string content, int vote, DateTime? creationDate = null, 
+        public PostEntity(long authorEntityId, long communityEntityId,
+            string content, int vote, DateTime? creationDate = null,
             DateTime? modifiedDate = null, long? id = null,
-            UserEntity author = null, 
+            UserEntity author = null,
             CommunityEntity communityEntity = null,
             List<PostVoteEntity> postVoteEntities = null,
             List<CommentEntity> commentEntities = null) : base(creationDate, modifiedDate)

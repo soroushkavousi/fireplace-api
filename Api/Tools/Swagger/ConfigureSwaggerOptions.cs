@@ -1,9 +1,7 @@
 ﻿using FireplaceApi.Core.Operators;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -46,7 +44,7 @@ namespace FireplaceApi.Api.Tools
         static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description, IWebHostEnvironment env)
         {
             var description_html = "<div>";
-            
+
             description_html += @"
                 <div>
                     <h5><strong>Welcome</strong>! Fireplace is a place where you can communicate with others wisely.</h5>
@@ -91,7 +89,7 @@ namespace FireplaceApi.Api.Tools
             {
                 info.Description += " This API version has been deprecated.";
             }
-            
+
             return info;
         }
     }

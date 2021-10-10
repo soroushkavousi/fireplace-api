@@ -1,14 +1,8 @@
-﻿using FireplaceApi.Api.Extensions;
-using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Core.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Api.Middlewares

@@ -1,12 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using FireplaceApi.Core.ValueObjects;
 using System.Threading.Tasks;
-using System.Net;
-using System.Net.Mail;
-using FireplaceApi.Core.ValueObjects;
 
 namespace FireplaceApi.Core.Interfaces
 {

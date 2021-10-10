@@ -1,20 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using FireplaceApi.Infrastructure.Converters;
-using FireplaceApi.Infrastructure.Entities;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Extensions;
+using FireplaceApi.Infrastructure.Converters;
+using FireplaceApi.Infrastructure.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories
 {
@@ -25,9 +24,9 @@ namespace FireplaceApi.Infrastructure.Repositories
         private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<FileEntity> _fileEntities;
         private readonly FileConverter _fileConverter;
-        
 
-        public FileRepository(ILogger<FileRepository> logger, IConfiguration configuration, 
+
+        public FileRepository(ILogger<FileRepository> logger, IConfiguration configuration,
             FireplaceApiContext fireplaceApiContext, FileConverter fileConverter)
         {
             _logger = logger;
@@ -35,7 +34,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _fireplaceApiContext = fireplaceApiContext;
             _fileEntities = fireplaceApiContext.FileEntities;
             _fileConverter = fileConverter;
-            
+
         }
 
         public async Task<List<File>> ListFilesAsync()
@@ -75,7 +74,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _fileEntities.Add(fileEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
-            
+
             _logger.LogIOInformation(sw, "Database", new { name, realName, uri, physicalPath }, new { fileEntity });
             return _fileConverter.ConvertToModel(fileEntity);
         }
@@ -95,7 +94,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 var serverMessage = $"Can't update the dbFile DbUpdateConcurrencyException. {fileEntity.ToJson()}";
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
-            
+
             _logger.LogIOInformation(sw, "Database", new { file }, new { fileEntity });
             return _fileConverter.ConvertToModel(fileEntity);
         }
@@ -110,7 +109,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _fileEntities.Remove(fileEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
-        
+
             _logger.LogIOInformation(sw, "Database", new { id }, new { fileEntity });
         }
 
@@ -121,7 +120,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .AnyAsync();
-        
+
             _logger.LogIOInformation(sw, "Database", new { id }, new { doesExist });
             return doesExist;
         }

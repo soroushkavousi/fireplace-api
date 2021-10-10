@@ -1,21 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using FireplaceApi.Infrastructure.Converters;
-using FireplaceApi.Infrastructure.Entities;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces;
-using FireplaceApi.Core.ValueObjects;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Infrastructure.Converters;
+using FireplaceApi.Infrastructure.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories
 {
@@ -27,7 +25,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         private readonly DbSet<GoogleUserEntity> _googleUserEntities;
         private readonly GoogleUserConverter _googleUserConverter;
 
-        public GoogleUserRepository(ILogger<GoogleUserRepository> logger, IConfiguration configuration, 
+        public GoogleUserRepository(ILogger<GoogleUserRepository> logger, IConfiguration configuration,
             FireplaceApiContext fireplaceApiContext, GoogleUserConverter googleUserConverter
             )
         {
@@ -68,7 +66,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _googleUserConverter.ConvertToModel(googleUserEntity);
         }
 
-        public async Task<GoogleUser> GetGoogleUserByGmailAddressAsync(string gmailAddress, 
+        public async Task<GoogleUser> GetGoogleUserByGmailAddressAsync(string gmailAddress,
             bool includeUser = false)
         {
             var sw = Stopwatch.StartNew();
@@ -85,10 +83,10 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public async Task<GoogleUser> CreateGoogleUserAsync(long userId, string code,
-            string accessToken, string tokenType, long accessTokenExpiresInSeconds, 
-            string refreshToken, string scope, string idToken, 
+            string accessToken, string tokenType, long accessTokenExpiresInSeconds,
+            string refreshToken, string scope, string idToken,
             DateTime accessTokenIssuedTime, string gmailAddress, bool gmailVerified,
-            long gmailIssuedTimeInSeconds, string fullName, string firstName, 
+            long gmailIssuedTimeInSeconds, string fullName, string firstName,
             string lastName, string locale, string pictureUrl, string state,
             string authUser, string prompt, string redirectToUserUrl)
         {
@@ -101,9 +99,9 @@ namespace FireplaceApi.Infrastructure.Repositories
             _googleUserEntities.Add(googleUserEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
-            
-            _logger.LogIOInformation(sw, "Database", 
-                new { userId, scope, accessTokenIssuedTime, gmailAddress, fullName, firstName, lastName }, 
+
+            _logger.LogIOInformation(sw, "Database",
+                new { userId, scope, accessTokenIssuedTime, gmailAddress, fullName, firstName, lastName },
                 new { googleUserEntity });
             return _googleUserConverter.ConvertToModel(googleUserEntity);
         }
@@ -149,7 +147,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .AnyAsync();
-        
+
             _logger.LogIOInformation(sw, "Database", new { id }, new { doesExist });
             return doesExist;
         }
@@ -161,7 +159,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Where(e => e.GmailAddress == gmailAddress)
                 .AnyAsync();
-        
+
             _logger.LogIOInformation(sw, "Database", new { gmailAddress }, new { doesExist });
             return doesExist;
         }

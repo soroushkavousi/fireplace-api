@@ -1,14 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using FireplaceApi.Infrastructure.Entities;
-using FireplaceApi.Infrastructure.Repositories;
-using System;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Infrastructure.Entities;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace FireplaceApi.Infrastructure.Converters
 {
@@ -48,8 +44,8 @@ namespace FireplaceApi.Infrastructure.Converters
             if (sessionEntity.UserEntity != null)
                 user = _serviceProvider.GetService<UserConverter>().ConvertToModel(sessionEntity.UserEntity.PureCopy());
 
-            var session = new Session(sessionEntity.Id.Value, sessionEntity.UserEntityId, 
-                sessionEntity.IpAddress.ToIPAddress(), sessionEntity.State.ToEnum<SessionState>(), 
+            var session = new Session(sessionEntity.Id.Value, sessionEntity.UserEntityId,
+                sessionEntity.IpAddress.ToIPAddress(), sessionEntity.State.ToEnum<SessionState>(),
                 sessionEntity.CreationDate, sessionEntity.ModifiedDate, user);
 
             return session;

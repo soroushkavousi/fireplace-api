@@ -1,9 +1,4 @@
-﻿using FireplaceApi.Core.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace FireplaceApi.Core.Models
 {
@@ -33,14 +28,14 @@ namespace FireplaceApi.Core.Models
         public string RedirectToUserUrl { get; set; }
         public User User { get; set; }
 
-        public GoogleUser(long id, long userId, string code, 
-            string accessToken, string tokenType, 
-            long accessTokenExpiresInSeconds, string refreshToken, 
-            string scope, string idToken, DateTime accessTokenIssuedTime, 
-            string gmailAddress, bool gmailVerified, long gmailIssuedTimeInSeconds, 
-            string fullName, string firstName, string lastName, string locale, 
-            string pictureUrl, string state, string authUser, string prompt, 
-            string redirectToUserUrl, DateTime creationDate, DateTime? modifiedDate = null, 
+        public GoogleUser(long id, long userId, string code,
+            string accessToken, string tokenType,
+            long accessTokenExpiresInSeconds, string refreshToken,
+            string scope, string idToken, DateTime accessTokenIssuedTime,
+            string gmailAddress, bool gmailVerified, long gmailIssuedTimeInSeconds,
+            string fullName, string firstName, string lastName, string locale,
+            string pictureUrl, string state, string authUser, string prompt,
+            string redirectToUserUrl, DateTime creationDate, DateTime? modifiedDate = null,
             User user = null) : base(creationDate, modifiedDate)
         {
             Id = id;
@@ -71,7 +66,7 @@ namespace FireplaceApi.Core.Models
         public GoogleUser PureCopy() => new GoogleUser(Id, UserId, Code, AccessToken,
             TokenType, AccessTokenExpiresInSeconds, RefreshToken, Scope, IdToken,
             AccessTokenIssuedTime, GmailAddress, GmailVerified, GmailIssuedTimeInSeconds,
-            FullName, FirstName, LastName, Locale, PictureUrl, State, AuthUser, Prompt, 
+            FullName, FirstName, LastName, Locale, PictureUrl, State, AuthUser, Prompt,
             RedirectToUserUrl, CreationDate, ModifiedDate);
 
         public void RemoveLoopReferencing()

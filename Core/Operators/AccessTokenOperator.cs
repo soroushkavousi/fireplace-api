@@ -1,11 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using FireplaceApi.Core.Interfaces;
 
 namespace FireplaceApi.Core.Operators
 {
@@ -56,7 +55,7 @@ namespace FireplaceApi.Core.Operators
             return accessToken;
         }
 
-        public async Task<AccessToken> PatchAccessTokenByIdAsync(long id, long? userId = null, 
+        public async Task<AccessToken> PatchAccessTokenByIdAsync(long id, long? userId = null,
             string value = null)
         {
             var accessToken = await _accessTokenRepository.GetAccessTokenByIdAsync(id, true);
@@ -91,7 +90,7 @@ namespace FireplaceApi.Core.Operators
             return accessTokenValueExists;
         }
 
-        public async Task<AccessToken> ApplyAccessTokenChangesAsync(AccessToken accessToken, long? userId = null, 
+        public async Task<AccessToken> ApplyAccessTokenChangesAsync(AccessToken accessToken, long? userId = null,
             string value = null)
         {
             if (userId != null)

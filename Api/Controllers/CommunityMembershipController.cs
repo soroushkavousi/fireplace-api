@@ -1,23 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FireplaceApi.Api.Converters;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using FireplaceApi.Api.Controllers;
-using FireplaceApi.Api.Extensions;
-using Microsoft.AspNetCore.JsonPatch;
-using FireplaceApi.Api.Converters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Authorization;
-using FireplaceApi.Core.Services;
-using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Extensions;
-using System.Diagnostics;
-using FireplaceApi.Core.Models;
+using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Api.Controllers
 {
@@ -32,7 +20,7 @@ namespace FireplaceApi.Api.Controllers
         private readonly CommunityMembershipService _communityMembershipService;
 
         public CommunityMembershipController(ILogger<CommunityMembershipController> logger,
-            CommunityMembershipConverter communityMembershipConverter, 
+            CommunityMembershipConverter communityMembershipConverter,
             CommunityMembershipService communityMembershipService)
         {
             _logger = logger;
@@ -53,7 +41,7 @@ namespace FireplaceApi.Api.Controllers
         {
             //var accessTokenValue = FindAccessTokenValue(inputHeaderParameters, inputCookieParameters);
             var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
-            var page = await _communityMembershipService.ListCommunityMembershipsAsync(requesterUser, 
+            var page = await _communityMembershipService.ListCommunityMembershipsAsync(requesterUser,
                 paginationInputParameters);
             var pageDto = _communityMembershipConverter.ConvertToDto(page, "/community-memberships");
             //SetOutputHeaderParameters(communityMembershipDtos.HeaderParameters);
@@ -73,7 +61,7 @@ namespace FireplaceApi.Api.Controllers
             [FromQuery] ControllerGetCommunityMembershipInputQueryParameters inputQueryParameters)
         {
             var communityMembership = await _communityMembershipService
-                .GetCommunityMembershipByIdAsync(requesterUser, inputRouteParameters.Id, 
+                .GetCommunityMembershipByIdAsync(requesterUser, inputRouteParameters.Id,
                 inputQueryParameters.IncludeCreator, inputQueryParameters.IncludeCommunity);
             var communityMembershipDto = _communityMembershipConverter.ConvertToDto(communityMembership);
             return communityMembershipDto;
@@ -110,12 +98,12 @@ namespace FireplaceApi.Api.Controllers
             [FromRoute] ControllerPatchCommunityMembershipByIdInputRouteParameters inputRouteParameters,
             [FromBody] ControllerPatchCommunityMembershipInputBodyParameters inputBodyParameters)
         {
-            var communityMembership = await _communityMembershipService.PatchCommunityMembershipByIdAsync(requesterUser, 
+            var communityMembership = await _communityMembershipService.PatchCommunityMembershipByIdAsync(requesterUser,
                 inputRouteParameters.Id);
             var communityMembershipDto = _communityMembershipConverter.ConvertToDto(communityMembership);
             return communityMembershipDto;
         }
-       
+
         /// <summary>
         /// Delete a single community membership by id.
         /// </summary>
@@ -127,7 +115,7 @@ namespace FireplaceApi.Api.Controllers
             [BindNever][FromHeader] User requesterUser,
             [FromRoute] ControllerDeleteCommunityMembershipByIdInputRouteParameters inputRouteParameters)
         {
-            await _communityMembershipService.DeleteCommunityMembershipByIdAsync(requesterUser, 
+            await _communityMembershipService.DeleteCommunityMembershipByIdAsync(requesterUser,
                 inputRouteParameters.Id);
             return Ok();
         }

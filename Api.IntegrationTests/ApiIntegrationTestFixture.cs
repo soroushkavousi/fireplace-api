@@ -1,8 +1,5 @@
-﻿using FireplaceApi.Api.IntegrationTests;
-using FireplaceApi.Api.Tools;
-using FireplaceApi.Core.Enums;
+﻿using FireplaceApi.Api.Tools;
 using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.AspNetCore.Hosting;
@@ -10,20 +7,11 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using NLog.Web;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace FireplaceApi.Api.IntegrationTests
 {

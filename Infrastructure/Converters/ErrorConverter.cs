@@ -1,16 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using FireplaceApi.Infrastructure.Entities;
-using FireplaceApi.Infrastructure.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Infrastructure.Entities;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace FireplaceApi.Infrastructure.Converters
 {
@@ -31,7 +24,7 @@ namespace FireplaceApi.Infrastructure.Converters
                 return null;
 
             var errorEntity = new ErrorEntity(error.Name.ToString(), error.Code,
-                error.ClientMessage, error.HttpStatusCode,  
+                error.ClientMessage, error.HttpStatusCode,
                 error.CreationDate, error.ModifiedDate,
                 error.Id);
 

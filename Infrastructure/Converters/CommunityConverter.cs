@@ -1,18 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
+﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Infrastructure.Entities;
-using FireplaceApi.Infrastructure.Repositories;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Enums;
 
 namespace FireplaceApi.Infrastructure.Converters
 {
@@ -39,7 +29,7 @@ namespace FireplaceApi.Infrastructure.Converters
                 creatorEntity = _serviceProvider.GetService<UserConverter>()
                     .ConvertToEntity(community.Creator.PureCopy());
 
-            var communityEntity = new CommunityEntity(community.Name, 
+            var communityEntity = new CommunityEntity(community.Name,
                 community.CreatorId, community.CreationDate, community.ModifiedDate,
                 community.Id, creatorEntity);
 
@@ -55,8 +45,8 @@ namespace FireplaceApi.Infrastructure.Converters
             if (communityEntity.CreatorEntity != null)
                 creator = _serviceProvider.GetService<UserConverter>().ConvertToModel(communityEntity.CreatorEntity.PureCopy());
 
-            var community = new Community(communityEntity.Id.Value, communityEntity.Name, 
-                communityEntity.CreatorEntityId, communityEntity.CreationDate, 
+            var community = new Community(communityEntity.Id.Value, communityEntity.Name,
+                communityEntity.CreatorEntityId, communityEntity.CreationDate,
                 communityEntity.ModifiedDate, creator);
 
             return community;

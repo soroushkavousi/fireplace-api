@@ -1,12 +1,6 @@
-﻿using FireplaceApi.Core.Extensions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -21,7 +15,7 @@ namespace FireplaceApi.Infrastructure.Entities
         private SessionEntity() : base() { }
 
         public SessionEntity(long userEntityId, string ipAddress, string state,
-            DateTime? creationDate = null, DateTime? modifiedDate = null, long? id = null, 
+            DateTime? creationDate = null, DateTime? modifiedDate = null, long? id = null,
             UserEntity userEntity = null) : base(creationDate, modifiedDate)
         {
             UserEntityId = userEntityId;

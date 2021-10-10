@@ -1,17 +1,12 @@
-﻿using System;
+﻿using FireplaceApi.Api.Converters;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using FireplaceApi.Api.Controllers;
-using FireplaceApi.Api.Converters;
-using FireplaceApi.Api.Extensions;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using FireplaceApi.Core.Services;
-using FireplaceApi.Core.Models;
 
 namespace FireplaceApi.Api.Controllers
 {
@@ -38,7 +33,7 @@ namespace FireplaceApi.Api.Controllers
         [HttpPost("{id}/revoke")]
         [ProducesResponseType(typeof(SessionDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> RevokeSession(
-            [BindNever] [FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requesterUser,
             [FromRoute] ControllerRevokeSessionInputRouteParameters inputRouteParameters)
         {
             await _sessionService.RevokeSessionByIdAsync(requesterUser, inputRouteParameters.Id);
@@ -53,7 +48,7 @@ namespace FireplaceApi.Api.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<SessionDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<SessionDto>>> ListSessionsAsync(
-            [BindNever] [FromHeader] User requesterUser)
+            [BindNever][FromHeader] User requesterUser)
         {
             var sessions = await _sessionService.ListSessionsAsync(requesterUser);
             var sessionDtos = sessions.Select(session => _sessionConverter.ConvertToDto(session)).ToList();
@@ -69,7 +64,7 @@ namespace FireplaceApi.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(SessionDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<SessionDto>> GetSessionByIdAsync(
-            [BindNever] [FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requesterUser,
             [FromRoute] ControllerGetSessionByIdInputRouteParameters inputRouteParameters,
             [FromQuery] ControllerGetSessionByIdInputQueryParameters inputQueryParameters)
         {

@@ -1,14 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Validators;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
-using System.Net;
+using FireplaceApi.Core.Validators;
 using FireplaceApi.Core.ValueObjects;
+using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Services
 {
@@ -17,8 +12,8 @@ namespace FireplaceApi.Core.Services
         private readonly ILogger<CommunityService> _logger;
         private readonly CommunityValidator _communityValidator;
         private readonly CommunityOperator _communityOperator;
-        
-        public CommunityService(ILogger<CommunityService> logger, 
+
+        public CommunityService(ILogger<CommunityService> logger,
             CommunityValidator communityValidator, CommunityOperator communityOperator)
         {
             _logger = logger;
@@ -26,7 +21,7 @@ namespace FireplaceApi.Core.Services
             _communityOperator = communityOperator;
         }
 
-        public async Task<Page<Community>> ListCommunitiesAsync(User requesterUser, 
+        public async Task<Page<Community>> ListCommunitiesAsync(User requesterUser,
             PaginationInputParameters paginationInputParameters, string name)
         {
             await _communityValidator.ValidateListCommunitiesInputParametersAsync(requesterUser,
@@ -34,7 +29,7 @@ namespace FireplaceApi.Core.Services
             var page = await _communityOperator.ListCommunitiesAsync(requesterUser,
                 paginationInputParameters, name);
             return page;
-        } 
+        }
 
         public async Task<Community> GetCommunityByIdAsync(User requesterUser, long? id, bool? includeCreator)
         {

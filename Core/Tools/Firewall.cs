@@ -5,10 +5,8 @@ using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -20,7 +18,7 @@ namespace FireplaceApi.Core.Tools
         private readonly AccessTokenOperator _accessTokenOperator;
         private readonly SessionOperator _sessionOperator;
 
-        public Firewall(ILogger<Firewall> logger, 
+        public Firewall(ILogger<Firewall> logger,
             AccessTokenOperator accessTokenOperator, SessionOperator sessionOperator)
         {
             _logger = logger;
@@ -44,7 +42,7 @@ namespace FireplaceApi.Core.Tools
 
         public void CheckRequestJsonBody(string requestJsonBody)
         {
-            if(requestJsonBody.IsJson() == false)
+            if (requestJsonBody.IsJson() == false)
             {
                 var serverMessage = $"Input request body is not json! requestJsonBody: {requestJsonBody}";
                 throw new ApiException(ErrorName.REQUEST_BODY_IS_NOT_JSON, serverMessage);

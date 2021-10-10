@@ -1,9 +1,4 @@
-﻿using FireplaceApi.Core.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace FireplaceApi.Core.Models
 {
@@ -17,10 +12,10 @@ namespace FireplaceApi.Core.Models
         public User User { get; set; }
         public Community Community { get; set; }
 
-        public CommunityMembership(long id, long userId, 
+        public CommunityMembership(long id, long userId,
             string username, long communityId, string communityName,
             DateTime creationDate, DateTime? modifiedDate = null,
-            User user = null, Community community = null) 
+            User user = null, Community community = null)
             : base(creationDate, modifiedDate)
         {
             Id = id;

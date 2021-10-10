@@ -1,19 +1,16 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FireplaceApi.Api.Converters;
+using FireplaceApi.Core.Interfaces;
+using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.Services;
+using FireplaceApi.Core.Tools;
+using FireplaceApi.Core.Validators;
+using FireplaceApi.Infrastructure.Gateways;
+using FireplaceApi.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
-using FireplaceApi.Api.Converters;
-using FireplaceApi.Core.Services;
-using FireplaceApi.Core.Operators;
-using FireplaceApi.Infrastructure.Repositories;
-using FireplaceApi.Core.Interfaces;
-using FireplaceApi.Core.Validators;
-using FireplaceApi.Infrastructure.Gateways;
-using FireplaceApi.Core.Tools;
 
 namespace FireplaceApi.Api.Extensions
 {

@@ -1,14 +1,8 @@
-﻿using NLog;
+﻿using FireplaceApi.Core.Extensions;
+using NLog;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Text.Json;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Models;
-using Microsoft.Extensions.Configuration;
-using System.Runtime.InteropServices;
 
 namespace FireplaceApi.Core.Tools
 {

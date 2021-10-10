@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -18,9 +17,9 @@ namespace FireplaceApi.Infrastructure.Entities
 
         private PostVoteEntity() : base() { }
 
-        public PostVoteEntity(long voterEntityId, long postEntityId, bool isUp, 
-            DateTime? creationDate = null, DateTime? modifiedDate = null, 
-            long? id = null, UserEntity voterEntity = null, 
+        public PostVoteEntity(long voterEntityId, long postEntityId, bool isUp,
+            DateTime? creationDate = null, DateTime? modifiedDate = null,
+            long? id = null, UserEntity voterEntity = null,
             PostEntity postEntity = null) : base(creationDate, modifiedDate)
         {
             VoterEntityId = voterEntityId;

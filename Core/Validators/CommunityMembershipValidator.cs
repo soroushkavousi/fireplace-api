@@ -1,18 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Tools;
+﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.ValueObjects;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Validators
 {
@@ -38,13 +30,13 @@ namespace FireplaceApi.Core.Validators
             await Task.CompletedTask;
         }
 
-        public async Task ValidateGetCommunityMembershipByIdInputParametersAsync(User requesterUser, long? id, 
+        public async Task ValidateGetCommunityMembershipByIdInputParametersAsync(User requesterUser, long? id,
             bool? includeCreator, bool? includeCommunity)
         {
             await Task.CompletedTask;
         }
 
-        public async Task ValidateCreateCommunityMembershipInputParametersAsync(User requesterUser, 
+        public async Task ValidateCreateCommunityMembershipInputParametersAsync(User requesterUser,
             long? communityId, string communityName)
         {
             await Task.CompletedTask;

@@ -1,18 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Entities;
-using FireplaceApi.Infrastructure.Repositories;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Enums;
 
 namespace FireplaceApi.Infrastructure.Converters
 {
@@ -33,7 +28,7 @@ namespace FireplaceApi.Infrastructure.Converters
                 return null;
 
             EmailEntity emailEntity = null;
-            if(user.Email != null)
+            if (user.Email != null)
                 emailEntity = _serviceProvider.GetService<EmailConverter>().ConvertToEntity(user.Email.PureCopy());
 
             GoogleUserEntity googleUserEntity = null;
@@ -41,7 +36,7 @@ namespace FireplaceApi.Infrastructure.Converters
                 googleUserEntity = _serviceProvider.GetService<GoogleUserConverter>().ConvertToEntity(user.GoogleUser.PureCopy());
 
             List<AccessTokenEntity> accessTokenEntities = null;
-            if(user.AccessTokens != null && user.AccessTokens.Count != 0)
+            if (user.AccessTokens != null && user.AccessTokens.Count != 0)
                 accessTokenEntities = user.AccessTokens.Select(
                     accessToken => _serviceProvider.GetService<AccessTokenConverter>().ConvertToEntity(accessToken.PureCopy())).ToList();
 
@@ -82,8 +77,8 @@ namespace FireplaceApi.Infrastructure.Converters
                     sessionEntity => _serviceProvider.GetService<SessionConverter>().ConvertToModel(sessionEntity.PureCopy())).ToList();
 
             var user = new User(userEntity.Id.Value, userEntity.FirstName, userEntity.LastName,
-                userEntity.Username, userEntity.State.ToEnum<UserState>(), userEntity.CreationDate, 
-                userEntity.ModifiedDate, Password.OfHash(userEntity.PasswordHash), email, 
+                userEntity.Username, userEntity.State.ToEnum<UserState>(), userEntity.CreationDate,
+                userEntity.ModifiedDate, Password.OfHash(userEntity.PasswordHash), email,
                 googleUser, accessTokens, sessions);
 
             return user;

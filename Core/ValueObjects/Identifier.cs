@@ -1,9 +1,5 @@
-﻿using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Core.Extensions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.ValueObjects
 {
@@ -12,26 +8,26 @@ namespace FireplaceApi.Core.ValueObjects
         private long? _id;
         private string _name;
 
-        public long? Id 
+        public long? Id
         {
             get { return _id; }
-            set 
-            { 
-                if(!value.HasValue)
+            set
+            {
+                if (!value.HasValue)
                     throw new ArgumentNullException(nameof(value));
-                _id = value; 
-                State = IdentifierState.HasBoth; 
+                _id = value;
+                State = IdentifierState.HasBoth;
             }
         }
         public string Name
         {
             get { return _name; }
-            set 
+            set
             {
                 if (string.IsNullOrWhiteSpace(value))
                     throw new ArgumentNullException(nameof(value));
                 _name = value;
-                State = IdentifierState.HasBoth; 
+                State = IdentifierState.HasBoth;
             }
         }
         public IdentifierState State { get; private set; }
@@ -59,12 +55,12 @@ namespace FireplaceApi.Core.ValueObjects
                 Id = id;
                 Name = name;
             }
-            else if(id.HasValue)
+            else if (id.HasValue)
             {
                 Id = id;
                 State = IdentifierState.HasId;
             }
-            else if(nameHasValue)
+            else if (nameHasValue)
             {
                 Name = name;
                 State = IdentifierState.HasName;
@@ -72,7 +68,7 @@ namespace FireplaceApi.Core.ValueObjects
             else
             {
                 throw new ArgumentException(
-                    $"One of id or name should have a value. {new { id, name}.ToJson()}");
+                    $"One of id or name should have a value. {new { id, name }.ToJson()}");
             }
         }
     }

@@ -1,15 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FireplaceApi.Core.Enums;
 using NLog;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Net;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Enums;
 
 namespace FireplaceApi.Core.Models
 {
@@ -36,7 +28,7 @@ namespace FireplaceApi.Core.Models
             creationDate: DateTime.UtcNow
         );
 
-        public Error(int id, ErrorName name, int code, 
+        public Error(int id, ErrorName name, int code,
             string clientMessage, int httpStatusCode,
             DateTime creationDate, DateTime? modifiedDate = null,
             string serverMessage = null, Exception exception = null) : base(creationDate, modifiedDate)
@@ -50,8 +42,8 @@ namespace FireplaceApi.Core.Models
             Exception = exception;
         }
 
-        public Error PureCopy() => new Error(Id, Name, Code, 
-            ClientMessage, HttpStatusCode, CreationDate, ModifiedDate, 
+        public Error PureCopy() => new Error(Id, Name, Code,
+            ClientMessage, HttpStatusCode, CreationDate, ModifiedDate,
             ServerMessage, Exception);
 
         public void RemoveLoopReferencing()

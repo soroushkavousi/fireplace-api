@@ -1,15 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using FireplaceApi.Api.Controllers;
+using FireplaceApi.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using FireplaceApi.Api.Extensions;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Api.Controllers;
 
 namespace FireplaceApi.Api.Converters
 {
@@ -34,7 +29,7 @@ namespace FireplaceApi.Api.Converters
                 emailDto = _serviceProvider.GetService<EmailConverter>().ConvertToDto(user.Email.PureCopy());
 
             string accessTokenValue = null;
-            if(user.AccessTokens != null && user.AccessTokens.Count != 0)
+            if (user.AccessTokens != null && user.AccessTokens.Count != 0)
                 accessTokenValue = user.AccessTokens.Last().Value;
 
             List<SessionDto> sessionDtos = null;
@@ -43,7 +38,7 @@ namespace FireplaceApi.Api.Converters
                     session => _serviceProvider.GetService<SessionConverter>().ConvertToDto(session.PureCopy())).ToList();
 
             var userDto = new UserDto(user.Id, user.FirstName, user.LastName,
-                user.Username, user.State.ToString(), user.CreationDate, 
+                user.Username, user.State.ToString(), user.CreationDate,
                 accessTokenValue, emailDto, sessionDtos);
 
             return userDto;

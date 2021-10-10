@@ -1,18 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
+﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Infrastructure.Entities;
-using FireplaceApi.Infrastructure.Repositories;
+using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Enums;
 
 namespace FireplaceApi.Infrastructure.Converters
 {
@@ -23,7 +12,7 @@ namespace FireplaceApi.Infrastructure.Converters
         private readonly UserConverter _userConverter;
         private readonly CommunityConverter _communityConverter;
 
-        public CommunityMembershipConverter(ILogger<CommunityMembershipConverter> logger, 
+        public CommunityMembershipConverter(ILogger<CommunityMembershipConverter> logger,
             IServiceProvider serviceProvider, UserConverter userConverter,
             CommunityConverter communityConverter)
         {
@@ -50,9 +39,9 @@ namespace FireplaceApi.Infrastructure.Converters
                 communityEntity = _communityConverter
                     .ConvertToEntity(communityMembership.Community.PureCopy());
 
-            var communityMembershipEntity = new CommunityMembershipEntity(communityMembership.UserId, 
-                communityMembership.Username, communityMembership.CommunityId, 
-                communityMembership.CommunityName, communityMembership.CreationDate, 
+            var communityMembershipEntity = new CommunityMembershipEntity(communityMembership.UserId,
+                communityMembership.Username, communityMembership.CommunityId,
+                communityMembership.CommunityName, communityMembership.CreationDate,
                 communityMembership.ModifiedDate, communityMembership.Id, userEntity, communityEntity);
 
             return communityMembershipEntity;
@@ -72,8 +61,8 @@ namespace FireplaceApi.Infrastructure.Converters
                 community = _communityConverter
                     .ConvertToModel(communityMembershipEntity.CommunityEntity.PureCopy());
 
-            var communityMembership = new CommunityMembership(communityMembershipEntity.Id.Value, 
-                communityMembershipEntity.UserEntityId, communityMembershipEntity.UserEntityName, 
+            var communityMembership = new CommunityMembership(communityMembershipEntity.Id.Value,
+                communityMembershipEntity.UserEntityId, communityMembershipEntity.UserEntityName,
                 communityMembershipEntity.CommunityEntityId, communityMembershipEntity.CommunityEntityName,
                 communityMembershipEntity.CreationDate, communityMembershipEntity.ModifiedDate, user,
                 community);

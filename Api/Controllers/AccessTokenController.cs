@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FireplaceApi.Api.Converters;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using FireplaceApi.Api.Controllers;
-using FireplaceApi.Api.Converters;
-using FireplaceApi.Api.Extensions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Authorization;
-using FireplaceApi.Core.Services;
-using FireplaceApi.Core.Models;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Api.Controllers
 {
@@ -39,7 +31,7 @@ namespace FireplaceApi.Api.Controllers
         [HttpGet("{value}")]
         [ProducesResponseType(typeof(AccessTokenDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<AccessTokenDto>> GetAccessTokenByValueAsync(
-            [BindNever] [FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requesterUser,
             [FromQuery] ControllerGetAccessTokenByValueInputRouteParameters inputRouteParameters,
             [FromQuery] ControllerGetAccessTokenByValueInputQueryParameters inputQueryParameters)
         {

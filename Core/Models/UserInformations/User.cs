@@ -2,11 +2,6 @@
 using FireplaceApi.Core.ValueObjects;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-using FireplaceApi.Core.Extensions;
 
 namespace FireplaceApi.Core.Models
 {
@@ -24,9 +19,9 @@ namespace FireplaceApi.Core.Models
         public List<Session> Sessions { get; set; }
 
         public User(long id, string firstName, string lastName,
-            string username, UserState state, DateTime creationDate, 
-            DateTime? modifiedDate = null, Password password = null, Email email = null, 
-            GoogleUser googleUser = null, List<AccessToken> accessTokens = null, 
+            string username, UserState state, DateTime creationDate,
+            DateTime? modifiedDate = null, Password password = null, Email email = null,
+            GoogleUser googleUser = null, List<AccessToken> accessTokens = null,
             List<Session> sessions = null) : base(creationDate, modifiedDate)
         {
             Id = id;

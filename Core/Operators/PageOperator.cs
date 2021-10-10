@@ -1,19 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.ValueObjects;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Validators;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
-using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Tools;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Interfaces;
 
 namespace FireplaceApi.Core.Operators
 {
@@ -68,7 +59,7 @@ namespace FireplaceApi.Core.Operators
             var totalPagesCount = totalItemsCount / limit + 1;
 
             var (start, end, page) = CalculateStartAndEndAndPage(paginationInputParameters, limit,
-                totalItemsCount, totalPagesCount, queryResult.LastStart, queryResult.LastEnd, 
+                totalItemsCount, totalPagesCount, queryResult.LastStart, queryResult.LastEnd,
                 queryResult.LastPage);
 
             queryResult = await _queryResultOperator.ApplyQueryResultChanges(

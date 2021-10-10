@@ -1,11 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace FireplaceApi.Core.Models
 {
@@ -19,8 +12,8 @@ namespace FireplaceApi.Core.Models
         //[JsonIgnore]
         //public IFormFile FormFile {get;set;}
 
-        public File(long id, string name, string realName, 
-            Uri uri, string physicalPath, DateTime creationDate, 
+        public File(long id, string name, string realName,
+            Uri uri, string physicalPath, DateTime creationDate,
             DateTime? modifiedDate = null) : base(creationDate, modifiedDate)
         {
             Id = id;
@@ -30,7 +23,7 @@ namespace FireplaceApi.Core.Models
             PhysicalPath = physicalPath ?? throw new ArgumentNullException(nameof(physicalPath));
         }
 
-        public File PureCopy() => new File(Id, Name, RealName, 
+        public File PureCopy() => new File(Id, Name, RealName,
             Uri, PhysicalPath, CreationDate, ModifiedDate);
 
         public void RemoveLoopReferencing()

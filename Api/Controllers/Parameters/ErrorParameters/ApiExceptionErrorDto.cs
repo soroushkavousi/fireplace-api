@@ -1,13 +1,8 @@
-﻿using Microsoft.OpenApi.Any;
-using FireplaceApi.Api.Tools;
-using Swashbuckle.AspNetCore.Annotations;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using FireplaceApi.Api.Tools;
 using FireplaceApi.Core.Extensions;
+using Microsoft.OpenApi.Any;
+using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Api.Controllers
 {

@@ -1,11 +1,6 @@
-﻿using System;
+﻿using FireplaceApi.Core.Models;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.ValueObjects;
 
 namespace FireplaceApi.Core.Interfaces
 {
@@ -24,6 +19,6 @@ namespace FireplaceApi.Core.Interfaces
         public Task DeleteCommunityByNameAsync(string name);
         public Task<bool> DoesCommunityIdExistAsync(long id);
         public Task<bool> DoesCommunityNameExistAsync(string name);
-        
+
     }
 }

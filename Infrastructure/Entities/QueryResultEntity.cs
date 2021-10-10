@@ -1,11 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -25,7 +21,7 @@ namespace FireplaceApi.Infrastructure.Entities
 
         public QueryResultEntity(string pointer, int lastStart,
             int lastEnd, int lastLimit, int lastPage, List<long> referenceEntityIds,
-            DateTime? creationDate = null, DateTime? modifiedDate = null, 
+            DateTime? creationDate = null, DateTime? modifiedDate = null,
             long? id = null) : base(creationDate, modifiedDate)
         {
             FillParameters(pointer, lastStart, lastEnd, lastLimit, lastPage,

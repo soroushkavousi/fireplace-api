@@ -1,19 +1,14 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Interfaces;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Tools;
+using FireplaceApi.Core.ValueObjects;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Validators;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
-using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Tools;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Interfaces;
 
 namespace FireplaceApi.Core.Operators
 {
@@ -70,7 +65,7 @@ namespace FireplaceApi.Core.Operators
             return email;
         }
 
-        public async Task<Email> CreateEmailAsync(long userId, string address, 
+        public async Task<Email> CreateEmailAsync(long userId, string address,
             ActivationStatus status = ActivationStatus.CREATED)
         {
             var activation = new Activation(status);
@@ -91,7 +86,7 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<Email> PatchEmailByIdAsync(long id, long? userId = null,
-            string address = null, ActivationStatus? activationStatus = null, 
+            string address = null, ActivationStatus? activationStatus = null,
             int? activationCode = null, string activationSubject = null,
             string activationMessage = null)
         {

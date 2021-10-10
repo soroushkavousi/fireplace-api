@@ -19,7 +19,7 @@ namespace FireplaceApi.Infrastructure.Entities
 
         public CommunityEntity(string name, long creatorEntityId,
             DateTime? creationDate = null, DateTime? modifiedDate = null,
-            long? id = null, UserEntity creatorEntity = null, 
+            long? id = null, UserEntity creatorEntity = null,
             List<CommunityMembershipEntity> members = null,
             List<PostEntity> postEntities = null) : base(creationDate, modifiedDate)
         {

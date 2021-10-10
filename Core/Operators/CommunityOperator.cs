@@ -1,19 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Validators;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using FireplaceApi.Core.ValueObjects;
-using FireplaceApi.Core.Tools;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Interfaces;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Core.ValueObjects;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Operators
 {
@@ -44,7 +36,7 @@ namespace FireplaceApi.Core.Operators
             {
                 var communityIds = await _communityRepository.ListCommunityIdsAsync(name);
                 resultPage = await _pageOperator.CreatePageWithoutPointerAsync(ModelName.COMMUNITY,
-                    paginationInputParameters, communityIds, 
+                    paginationInputParameters, communityIds,
                     _communityRepository.ListCommunitiesAsync);
             }
             else

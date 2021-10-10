@@ -1,14 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Validators;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
-using System.Net;
+using FireplaceApi.Core.Validators;
 using FireplaceApi.Core.ValueObjects;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Services
 {
@@ -17,7 +14,7 @@ namespace FireplaceApi.Core.Services
         private readonly ILogger<UserService> _logger;
         private readonly UserValidator _userValidator;
         private readonly UserOperator _userOperator;
-        
+
         public UserService(ILogger<UserService> logger, UserValidator userValidator, UserOperator userOperator)
         {
             _logger = logger;
@@ -25,21 +22,21 @@ namespace FireplaceApi.Core.Services
             _userOperator = userOperator;
         }
 
-        public async Task<User> LogInWithGoogleAsync(IPAddress ipAddress, string state, 
+        public async Task<User> LogInWithGoogleAsync(IPAddress ipAddress, string state,
             string code, string scope, string authUser, string prompt, string error)
         {
             await _userValidator.ValidateLogInWithGoogleInputParametersAsync(ipAddress, state, code, scope, authUser, prompt, error);
             return await _userOperator.LogInWithGoogleAsync(ipAddress, state, code, scope, authUser, prompt);
         }
 
-        public async Task<User> SignUpWithEmailAsync(IPAddress ipAddress, string firstName, 
+        public async Task<User> SignUpWithEmailAsync(IPAddress ipAddress, string firstName,
             string lastName, string username, Password password, string emailAddress)
         {
             await _userValidator.ValidateSignUpWithEmailInputParametersAsync(ipAddress, firstName, lastName,
                 username, password, emailAddress);
             return await _userOperator.SignUpWithEmailAsync(ipAddress, firstName, lastName,
                 username, password, emailAddress);
-            
+
         }
 
         public async Task<string> GetGoogleAuthUrlAsync(IPAddress ipAddress)

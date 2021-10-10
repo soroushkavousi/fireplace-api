@@ -1,24 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using FireplaceApi.Infrastructure.Converters;
-using FireplaceApi.Infrastructure.Entities;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using FireplaceApi.Core.Interfaces;
-using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Interfaces;
+using FireplaceApi.Core.Models;
+using FireplaceApi.Infrastructure.Converters;
+using FireplaceApi.Infrastructure.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories
 {
-    public class ErrorRepository: IErrorRepository
+    public class ErrorRepository : IErrorRepository
     {
         private readonly ILogger<ErrorRepository> _logger;
         private readonly IConfiguration _configuration;
@@ -26,7 +24,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         private readonly DbSet<ErrorEntity> _errorEntities;
         private readonly ErrorConverter _errorConverter;
 
-        public ErrorRepository(ILogger<ErrorRepository> logger, IConfiguration configuration, 
+        public ErrorRepository(ILogger<ErrorRepository> logger, IConfiguration configuration,
             FireplaceApiContext fireplaceApiContext, ErrorConverter errorConverter
             )
         {
@@ -74,12 +72,12 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Include(
                 )
                 .SingleOrDefaultAsync();
-        
+
             _logger.LogIOInformation(sw, "Database", new { code }, new { errorEntity });
             return _errorConverter.ConvertToModel(errorEntity);
         }
 
-        public async Task<Error> CreateErrorAsync(ErrorName name, int code, string clientMessage, 
+        public async Task<Error> CreateErrorAsync(ErrorName name, int code, string clientMessage,
             int httpStatusCode)
         {
             var sw = Stopwatch.StartNew();
@@ -87,7 +85,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _errorEntities.Add(errorEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
-            
+
             _logger.LogIOInformation(sw, "Database", new { name, code, clientMessage, httpStatusCode }, new { errorEntity });
             return _errorConverter.ConvertToModel(errorEntity);
         }
@@ -107,7 +105,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 var serverMessage = $"Can't update the errorEntity DbUpdateConcurrencyException. {errorEntity.ToJson()}";
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
-            
+
             _logger.LogIOInformation(sw, "Database", new { error }, new { errorEntity });
             return _errorConverter.ConvertToModel(errorEntity);
         }

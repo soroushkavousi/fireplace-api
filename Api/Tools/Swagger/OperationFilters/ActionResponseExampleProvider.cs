@@ -1,18 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using FireplaceApi.Api.Extensions;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
-using FireplaceApi.Api.Extensions;
-using FireplaceApi.Api.Interfaces;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using FireplaceApi.Api.Tools;
-using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Extensions;
 
 namespace FireplaceApi.Api.Tools
 {
@@ -21,7 +17,7 @@ namespace FireplaceApi.Api.Tools
         private readonly ILogger<ActionResponseExampleProvider> _logger;
         private readonly IServiceProvider _serviceProvider;
 
-        public ActionResponseExampleProvider(ILogger<ActionResponseExampleProvider> logger, 
+        public ActionResponseExampleProvider(ILogger<ActionResponseExampleProvider> logger,
             IServiceProvider serviceProvider)
         {
             _logger = logger;
@@ -34,9 +30,9 @@ namespace FireplaceApi.Api.Tools
             if (bodyParametersType == null)
                 return;
             IOpenApiAny example = ExtractExample(bodyParametersType, context.MethodInfo.Name);
-            if(bodyParametersType.Name.Contains("Error"))
+            if (bodyParametersType.Name.Contains("Error"))
             {
-                switch(example)
+                switch (example)
                 {
                     case OpenApiArray errorExampleList:
                         for (int i = 0; i < errorExampleList.Count; i++)

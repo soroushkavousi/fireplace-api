@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using FireplaceApi.Api.Interfaces;
+﻿using FireplaceApi.Api.Interfaces;
 using FireplaceApi.Api.Tools;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FireplaceApi.Api.Controllers
 {

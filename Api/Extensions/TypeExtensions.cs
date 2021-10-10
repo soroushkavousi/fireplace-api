@@ -1,13 +1,10 @@
-﻿using Microsoft.OpenApi.Any;
-using FireplaceApi.Core.Enums;
+﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Tools;
+using FireplaceApi.Core.Extensions;
+using Microsoft.OpenApi.Any;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using FireplaceApi.Core.Extensions;
 
 namespace FireplaceApi.Api.Extensions
 {

@@ -22,7 +22,7 @@ namespace FireplaceApi.Infrastructure.Entities
 
         public CommunityMembershipEntity(long userEntityId, string userEntityName,
             long communityEntityId, string communityEntityName,
-            DateTime? creationDate = null, DateTime? modifiedDate = null, long? id = null, 
+            DateTime? creationDate = null, DateTime? modifiedDate = null, long? id = null,
             UserEntity userEntity = null, CommunityEntity communityEntity = null) : base(creationDate, modifiedDate)
         {
             UserEntityId = userEntityId;
@@ -47,7 +47,7 @@ namespace FireplaceApi.Infrastructure.Entities
             modelBuilder
                 .HasOne(d => d.UserEntity)
                 .WithMany(p => p.JoinedCommunities)
-                .HasForeignKey(d => new { d.UserEntityId, d.UserEntityName})
+                .HasForeignKey(d => new { d.UserEntityId, d.UserEntityName })
                 .HasPrincipalKey(p => new { p.Id, p.Username })
                 .IsRequired();
 

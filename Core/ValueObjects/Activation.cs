@@ -1,9 +1,4 @@
 ﻿using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.ValueObjects
 {
@@ -14,7 +9,7 @@ namespace FireplaceApi.Core.ValueObjects
         public string Subject { get; set; }
         public string Message { get; set; }
 
-        public Activation(ActivationStatus status, int? code = null, 
+        public Activation(ActivationStatus status, int? code = null,
             string subject = null, string message = null)
         {
             Status = status;
