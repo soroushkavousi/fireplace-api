@@ -8,65 +8,73 @@ namespace FireplaceApi.Core.Extensions
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public static void LogTrace<T>(this ILogger<T> logger, Stopwatch sw, string message = "")
+        public static long Finish(this Stopwatch sw)
         {
+            if (sw == null)
+                return 0;
             sw.Stop();
-            var logMessage = CreateLogMessage(message);
-            logger.LogTrace(logMessage, sw.ElapsedMilliseconds);
+            return sw.ElapsedMilliseconds;
         }
 
-        public static void LogIOTrace<T>(this ILogger<T> logger, Stopwatch sw, string section = "", object inputs = null, object outputs = null)
+        public static void LogTrace<T>(this ILogger<T> logger, Stopwatch sw, string message = "")
         {
-            sw.Stop();
-            var logMessage = CreateLogMessage(section, inputs, outputs);
-            logger.LogTrace(logMessage, sw.ElapsedMilliseconds);
+            var executionTime = sw.Finish();
+            var logMessage = CreateLogMessage(message);
+            logger.LogTrace(logMessage, executionTime);
+        }
+
+        public static void LogIOTrace<T>(this ILogger<T> logger, Stopwatch sw, string section = "", object parameters = null)
+        {
+            var executionTime = sw.Finish();
+            var logMessage = CreateLogMessage(section, parameters);
+            logger.LogTrace(logMessage, executionTime);
         }
 
         public static void LogInformation<T>(this ILogger<T> logger, Stopwatch sw, string message = "")
         {
-            sw.Stop();
+            var executionTime = sw.Finish();
             var logMessage = CreateLogMessage(message);
-            logger.LogInformation(logMessage, sw.ElapsedMilliseconds);
+            logger.LogInformation(logMessage, executionTime);
         }
 
-        public static void LogIOInformation<T>(this ILogger<T> logger, Stopwatch sw, string section = "", object inputs = null, object outputs = null)
+        public static void LogIOInformation<T>(this ILogger<T> logger, Stopwatch sw, string section = "", object parameters = null)
         {
-            sw.Stop();
-            var logMessage = CreateLogMessage(section, inputs, outputs);
-            logger.LogInformation(logMessage, sw.ElapsedMilliseconds);
+            var executionTime = sw.Finish();
+            var logMessage = CreateLogMessage(section, parameters);
+            logger.LogInformation(logMessage, executionTime);
         }
 
         public static void LogTrace(this Logger logger, Stopwatch sw, string message = "")
         {
-            sw.Stop();
+            var executionTime = sw.Finish();
             var logMessage = CreateLogMessage(message);
-            logger.Trace(logMessage, sw.ElapsedMilliseconds);
+            logger.Trace(logMessage, executionTime);
         }
 
-        public static void LogIOTrace(this Logger logger, Stopwatch sw, string section = "", object inputs = null, object outputs = null)
+        public static void LogIOTrace(this Logger logger, Stopwatch sw, string section = "", object parameters = null)
         {
-            sw.Stop();
-            var logMessage = CreateLogMessage(section, inputs, outputs);
-            logger.Trace(logMessage, sw.ElapsedMilliseconds);
+            var executionTime = sw.Finish();
+            var logMessage = CreateLogMessage(section, parameters);
+            logger.Trace(logMessage, executionTime);
         }
 
         public static void LogInformation(this Logger logger, Stopwatch sw, string message = "")
         {
-            sw.Stop();
+            var executionTime = sw.Finish();
             var logMessage = CreateLogMessage(message);
-            logger.Info(logMessage, sw.ElapsedMilliseconds);
+            logger.Info(logMessage, executionTime);
         }
 
-        public static void LogIOInformation(this Logger logger, Stopwatch sw, string section = "", object inputs = null, object outputs = null)
+        public static void LogIOInformation(this Logger logger, Stopwatch sw, string section = "", object parameters = null)
         {
-            sw.Stop();
-            var logMessage = CreateLogMessage(section, inputs, outputs);
-            logger.Info(logMessage, sw.ElapsedMilliseconds);
+            var executionTime = sw.Finish();
+            var logMessage = CreateLogMessage(section, parameters);
+            logger.Info(logMessage, executionTime);
         }
 
-        public static string CreateLogMessage(string section, object inputs, object outputs)
+        public static string CreateLogMessage(string section, object parameters)
         {
-            var message = $"#{section} | Inputs: {inputs.ToJson()} | Outputs: {outputs.ToJson()}";
+            var message = $"#{section} | Parameters: {parameters.ToJson()}";
             return CreateLogMessage(message);
         }
 

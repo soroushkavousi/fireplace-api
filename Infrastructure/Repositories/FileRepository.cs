@@ -39,6 +39,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<List<File>> ListFilesAsync()
         {
+            _logger.LogIOInformation(null, "Database | Iutput", null);
             var sw = Stopwatch.StartNew();
             var fileEntities = await _fileEntities
                 .AsNoTracking()
@@ -46,12 +47,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
-            _logger.LogIOInformation(sw, "Database", null, new { fileEntities });
+            _logger.LogIOInformation(sw, "Database | Output", new { fileEntities });
             return fileEntities.Select(e => _fileConverter.ConvertToModel(e)).ToList();
         }
 
         public async Task<File> GetFileByIdAsync(long id)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
             var fileEntity = await _fileEntities
                 .AsNoTracking()
@@ -60,13 +62,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogIOInformation(sw, "Database", new { id }, new { fileEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { fileEntity });
             return _fileConverter.ConvertToModel(fileEntity);
         }
 
         public async Task<File> CreateFileAsync(string name, string realName, Uri uri,
             string physicalPath)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { name, realName, uri, physicalPath });
             var sw = Stopwatch.StartNew();
             var relativeUri = _fileConverter.GetRelativeUri(uri).ToString();
             var relativePhysicalPath = _fileConverter.GetRelativePhysicalPath(physicalPath);
@@ -75,12 +78,13 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogIOInformation(sw, "Database", new { name, realName, uri, physicalPath }, new { fileEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { fileEntity });
             return _fileConverter.ConvertToModel(fileEntity);
         }
 
         public async Task<File> UpdateFileAsync(File file)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { file });
             var sw = Stopwatch.StartNew();
             var fileEntity = _fileConverter.ConvertToEntity(file);
             _fileEntities.Update(fileEntity);
@@ -95,12 +99,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
 
-            _logger.LogIOInformation(sw, "Database", new { file }, new { fileEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { fileEntity });
             return _fileConverter.ConvertToModel(fileEntity);
         }
 
         public async Task DeleteFileAsync(long id)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
             var fileEntity = await _fileEntities
                 .Where(e => e.Id == id)
@@ -110,30 +115,32 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogIOInformation(sw, "Database", new { id }, new { fileEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { fileEntity });
         }
 
         public async Task<bool> DoesFileIdExistAsync(long id)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await _fileEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .AnyAsync();
 
-            _logger.LogIOInformation(sw, "Database", new { id }, new { doesExist });
+            _logger.LogIOInformation(sw, "Database | Output", new { doesExist });
             return doesExist;
         }
 
         public async Task<bool> DoesFileNameExistAsync(string name)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { name });
             var sw = Stopwatch.StartNew();
             var doesExist = await _fileEntities
                 .AsNoTracking()
                 .Where(e => e.Name == name)
                 .AnyAsync();
 
-            _logger.LogIOInformation(sw, "Database", new { name }, new { doesExist });
+            _logger.LogIOInformation(sw, "Database | Output", new { doesExist });
             return doesExist;
         }
     }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FireplaceApi.Infrastructure.Tools;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -59,6 +60,10 @@ namespace FireplaceApi.Infrastructure.Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasCollation(Constants.CaseInsensitiveCollationName, 
+                locale: "en-u-ks-primary", provider: "icu", deterministic: false);
+            modelBuilder.UseDefaultColumnCollation(Constants.CaseInsensitiveCollationName);
+
             modelBuilder.Ignore<QueryResultEntity>();
 
             modelBuilder.ApplyConfiguration(new CommentEntityConfiguration());

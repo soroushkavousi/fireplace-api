@@ -39,6 +39,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<List<GoogleUser>> ListGoogleUsersAsync(
                     bool includeUser = false)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { includeUser });
             var sw = Stopwatch.StartNew();
             var googleUserEntities = await _googleUserEntities
                 .AsNoTracking()
@@ -47,12 +48,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
-            _logger.LogIOInformation(sw, "Database", new { includeUser }, new { googleUserEntities });
+            _logger.LogIOInformation(sw, "Database | Output", new { googleUserEntities });
             return googleUserEntities.Select(e => _googleUserConverter.ConvertToModel(e)).ToList();
         }
 
         public async Task<GoogleUser> GetGoogleUserByIdAsync(long id, bool includeUser = false)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { id, includeUser });
             var sw = Stopwatch.StartNew();
             var googleUserEntity = await _googleUserEntities
                 .AsNoTracking()
@@ -62,13 +64,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogIOInformation(sw, "Database", new { id, includeUser }, new { googleUserEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { googleUserEntity });
             return _googleUserConverter.ConvertToModel(googleUserEntity);
         }
 
         public async Task<GoogleUser> GetGoogleUserByGmailAddressAsync(string gmailAddress,
             bool includeUser = false)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { gmailAddress, includeUser });
             var sw = Stopwatch.StartNew();
             var googleUserEntity = await _googleUserEntities
                 .AsNoTracking()
@@ -78,7 +81,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogIOInformation(sw, "Database", new { gmailAddress, includeUser }, new { googleUserEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { googleUserEntity });
             return _googleUserConverter.ConvertToModel(googleUserEntity);
         }
 
@@ -90,6 +93,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             string lastName, string locale, string pictureUrl, string state,
             string authUser, string prompt, string redirectToUserUrl)
         {
+            _logger.LogIOInformation(null, "Database | Iutput",
+                new { userId, scope, accessTokenIssuedTime, gmailAddress, fullName, firstName, lastName });
             var sw = Stopwatch.StartNew();
             var googleUserEntity = new GoogleUserEntity(userId, code, accessToken,
                 tokenType, accessTokenExpiresInSeconds, refreshToken, scope, idToken,
@@ -100,14 +105,13 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogIOInformation(sw, "Database",
-                new { userId, scope, accessTokenIssuedTime, gmailAddress, fullName, firstName, lastName },
-                new { googleUserEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { googleUserEntity });
             return _googleUserConverter.ConvertToModel(googleUserEntity);
         }
 
         public async Task<GoogleUser> UpdateGoogleUserAsync(GoogleUser googleUser)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { googleUser });
             var sw = Stopwatch.StartNew();
             var googleUserEntity = _googleUserConverter.ConvertToEntity(googleUser);
             _googleUserEntities.Update(googleUserEntity);
@@ -122,12 +126,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
 
-            _logger.LogIOInformation(sw, "Database", new { googleUser }, new { googleUserEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { googleUserEntity });
             return _googleUserConverter.ConvertToModel(googleUserEntity);
         }
 
         public async Task DeleteGoogleUserAsync(long id)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
             var googleUserEntity = await _googleUserEntities
                 .Where(e => e.Id == id)
@@ -137,30 +142,32 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogIOInformation(sw, "Database", new { id }, new { googleUserEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { googleUserEntity });
         }
 
         public async Task<bool> DoesGoogleUserIdExistAsync(long id)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await _googleUserEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .AnyAsync();
 
-            _logger.LogIOInformation(sw, "Database", new { id }, new { doesExist });
+            _logger.LogIOInformation(sw, "Database | Output", new { doesExist });
             return doesExist;
         }
 
         public async Task<bool> DoesGoogleUserGmailAddressExistAsync(string gmailAddress)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { gmailAddress });
             var sw = Stopwatch.StartNew();
             var doesExist = await _googleUserEntities
                 .AsNoTracking()
                 .Where(e => e.GmailAddress == gmailAddress)
                 .AnyAsync();
 
-            _logger.LogIOInformation(sw, "Database", new { gmailAddress }, new { doesExist });
+            _logger.LogIOInformation(sw, "Database | Output", new { doesExist });
             return doesExist;
         }
     }

@@ -16,6 +16,6 @@ namespace FireplaceApi.Api.Controllers
         public bool IncludeAuthor { get; set; } = false;
 
         [FromQuery(Name = "include_community")]
-        public bool IncludePost { get; set; } = false;
+        public bool IncludeCommunity { get; set; } = false;
     }
 }

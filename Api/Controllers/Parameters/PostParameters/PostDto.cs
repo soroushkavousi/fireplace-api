@@ -28,7 +28,7 @@ namespace FireplaceApi.Api.Controllers
         [Required]
         public DateTime CreationDate { get; set; }
         [Required]
-        public DateTime ModifiedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
         public UserDto Author { get; set; }
         public CommunityDto Community { get; set; }
 
@@ -42,7 +42,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(Vote).ToSnakeCase()] = new OpenApiInteger(53),
             [nameof(Content).ToSnakeCase()] = new OpenApiString("Hello guys.\nThis is my content!"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
-            [nameof(ModifiedDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetLastHourDate()),
+            [nameof(ModifiedDate).ToSnakeCase()] = new OpenApiNull(),
             [nameof(Author).ToSnakeCase()] = new OpenApiNull(),
             [nameof(Community).ToSnakeCase()] = new OpenApiNull(),
         };
@@ -108,11 +108,11 @@ namespace FireplaceApi.Api.Controllers
         public static IOpenApiAny Example { get; } = Example1;
         public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
         {
-            //[nameof(PostController.ListPostsAsync)] = PageExample1,
-            //[nameof(PostController.GetPostByIdAsync)] = PureExample1,
-            //[nameof(PostController.CreatePostAsync)] = PureExample1,
-            //[nameof(PostController.PatchPostByIdAsync)] = PureExample1,
-            //[nameof(PostController.DeletePostByIdAsync)] = PureExample1,
+            [nameof(PostController.ListPostsAsync)] = PageExample1,
+            [nameof(PostController.GetPostByIdAsync)] = PureExample1,
+            [nameof(PostController.CreatePostAsync)] = PureExample1,
+            [nameof(PostController.PatchPostByIdAsync)] = PureExample1,
+            [nameof(PostController.DeletePostByIdAsync)] = PureExample1,
         };
 
         static PostDto()
@@ -122,7 +122,7 @@ namespace FireplaceApi.Api.Controllers
 
         public PostDto(long id, long authorId, string authorUsername, long communityId,
             string communityName, int vote, string content, DateTime creationDate,
-            DateTime modifiedDate, UserDto author = null, CommunityDto community = null)
+            DateTime? modifiedDate, UserDto author = null, CommunityDto community = null)
         {
             Id = id;
             AuthorId = authorId;

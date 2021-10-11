@@ -38,6 +38,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<List<Global>> ListGlobalsAsync()
         {
+            _logger.LogIOInformation(null, "Database | Iutput", null);
             var sw = Stopwatch.StartNew();
             var globalEntites = await _globalEntities
                 .AsNoTracking()
@@ -45,12 +46,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
-            _logger.LogIOInformation(sw, "Database", null, new { globalEntites });
+            _logger.LogIOInformation(sw, "Database | Output", new { globalEntites });
             return globalEntites.Select(e => _globalConverter.ConvertToModel(e)).ToList();
         }
 
         public async Task<Global> GetGlobalByIdAsync(GlobalId globalId)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { globalId });
             var sw = Stopwatch.StartNew();
             var globalEntity = await _globalEntities
                 .AsNoTracking()
@@ -59,24 +61,26 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogIOInformation(sw, "Database", new { globalId }, new { globalEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { globalEntity });
             return _globalConverter.ConvertToModel(globalEntity);
         }
 
         public async Task<Global> CreateGlobalAsync(GlobalId globalId, GlobalValues globalValues)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { globalId, globalValues });
             var sw = Stopwatch.StartNew();
             var globalEntity = new GlobalEntity(globalId.To<int>(), globalValues);
             _globalEntities.Add(globalEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogIOInformation(sw, "Database", new { globalId, globalValues }, new { globalEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { globalEntity });
             return _globalConverter.ConvertToModel(globalEntity);
         }
 
         public async Task<Global> UpdateGlobalAsync(Global global)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { global });
             var sw = Stopwatch.StartNew();
             var globalEntity = _globalConverter.ConvertToEntity(global);
             _globalEntities.Update(globalEntity);
@@ -91,12 +95,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
 
-            _logger.LogIOInformation(sw, "Database", new { global }, new { globalEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { globalEntity });
             return _globalConverter.ConvertToModel(globalEntity);
         }
 
         public async Task DeleteGlobalAsync(GlobalId globalId)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { globalId });
             var sw = Stopwatch.StartNew();
             var globalEntity = await _globalEntities
                 .Where(e => e.Id == globalId.To<int>())
@@ -106,18 +111,19 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogIOInformation(sw, "Database", new { globalId }, new { globalEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { globalEntity });
         }
 
         public async Task<bool> DoesGlobalIdExistAsync(GlobalId globalId)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { globalId });
             var sw = Stopwatch.StartNew();
             var doesExist = await _globalEntities
                 .AsNoTracking()
                 .Where(e => e.Id == globalId.To<int>())
                 .AnyAsync();
 
-            _logger.LogIOInformation(sw, "Database", new { globalId }, new { doesExist });
+            _logger.LogIOInformation(sw, "Database | Output", new { doesExist });
             return doesExist;
         }
     }

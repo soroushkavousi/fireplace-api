@@ -28,19 +28,19 @@ namespace FireplaceApi.Core.ValueObjects
     {
         public string QueryResultPointer { get; set; }
         public int? Number { get; set; }
-        public int Start { get; set; }
-        public int End { get; set; }
-        public int Limit { get; set; }
+        public int? Start { get; set; }
+        public int? End { get; set; }
+        public int? Limit { get; set; }
         public int TotalItemsCount { get; set; }
         public int TotalPagesCount { get; set; }
         public List<T> Items { get; set; }
 
         private Page() { }
 
-        public Page(string queryResultPointer, int? number, int start, int end, int limit,
-            int totalItemsCount, int totalPagesCount, List<T> items)
+        public Page(string queryResultPointer, int? number, int? start, int? end, 
+            int? limit, int totalItemsCount, int totalPagesCount, List<T> items)
         {
-            QueryResultPointer = queryResultPointer ?? throw new ArgumentNullException(nameof(queryResultPointer));
+            QueryResultPointer = queryResultPointer;
             Number = number;
             Start = start;
             End = end;

@@ -39,6 +39,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                     bool includeEmail = false, bool includeGoogleUser = false,
                     bool includeAccessTokens = false, bool includeSessions = false)
         {
+            _logger.LogIOInformation(null, "Database | Iutput",
+                new { includeEmail, includeGoogleUser, includeAccessTokens, includeSessions });
             var sw = Stopwatch.StartNew();
             var userEntities = await _userEntities
                 .AsNoTracking()
@@ -50,8 +52,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
-            _logger.LogIOInformation(sw, "Database",
-                new { includeEmail, includeGoogleUser, includeAccessTokens, includeSessions },
+            _logger.LogIOInformation(sw, "Database | Output",
                 new { userEntities });
             return userEntities.Select(e => _userConverter.ConvertToModel(e)).ToList();
         }
@@ -60,6 +61,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             bool includeEmail = false, bool includeGoogleUser = false,
             bool includeAccessTokens = false, bool includeSessions = false)
         {
+            _logger.LogIOInformation(null, "Database | Iutput",
+                new { id, includeEmail, includeGoogleUser, includeAccessTokens, includeSessions });
             var sw = Stopwatch.StartNew();
             var userEntity = await _userEntities
                 .AsNoTracking()
@@ -72,8 +75,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogIOInformation(sw, "Database",
-                new { id, includeEmail, includeGoogleUser, includeAccessTokens, includeSessions },
+            _logger.LogIOInformation(sw, "Database | Output",
                 new { userEntity });
             return _userConverter.ConvertToModel(userEntity);
         }
@@ -82,6 +84,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             bool includeEmail = false, bool includeGoogleUser = false,
             bool includeAccessTokens = false, bool includeSessions = false)
         {
+            _logger.LogIOInformation(null, "Database | Iutput",
+                new { username, includeEmail, includeGoogleUser, includeAccessTokens, includeSessions });
             var sw = Stopwatch.StartNew();
             var userEntity = await _userEntities
                 .AsNoTracking()
@@ -94,14 +98,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogIOInformation(sw, "Database",
-                new { username, includeEmail, includeGoogleUser, includeAccessTokens, includeSessions },
+            _logger.LogIOInformation(sw, "Database | Output",
                 new { userEntity });
             return _userConverter.ConvertToModel(userEntity);
         }
 
         public async Task<string> GetUsernameByIdAsync(long id)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
             var username = (await _userEntities
                 .AsNoTracking()
@@ -109,14 +113,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleAsync(e => e.Id == id))
                 .Username;
 
-            _logger.LogIOInformation(sw, "Database",
-                new { id },
-                new { username });
+            _logger.LogIOInformation(sw, "Database | Output", new { username });
             return username;
         }
 
         public async Task<long> GetIdByUsernameAsync(string username)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { username });
             var sw = Stopwatch.StartNew();
             var userId = (await _userEntities
                 .AsNoTracking()
@@ -124,15 +127,15 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleAsync(e => string.Equals(e.Username, username)))
                 .Id;
 
-            _logger.LogIOInformation(sw, "Database",
-                new { username },
-                new { userId });
+            _logger.LogIOInformation(sw, "Database | Output", new { userId });
             return userId;
         }
 
         public async Task<User> CreateUserAsync(string firstName, string lastName,
             string username, UserState state, Password password = null)
         {
+            _logger.LogIOInformation(null, "Database | Iutput",
+                new { firstName, lastName, username, state, passwordHash = password?.Hash });
             var sw = Stopwatch.StartNew();
             var userEntity = new UserEntity(firstName, lastName,
                 username, state.ToString(), passwordHash: password?.Hash);
@@ -140,14 +143,14 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogIOInformation(sw, "Database",
-                new { firstName, lastName, username, state, passwordHash = password?.Hash },
+            _logger.LogIOInformation(sw, "Database | Output",
                 new { userEntity });
             return _userConverter.ConvertToModel(userEntity);
         }
 
         public async Task<User> UpdateUserAsync(User user)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { user });
             var sw = Stopwatch.StartNew();
             var userEntity = _userConverter.ConvertToEntity(user);
             _userEntities.Update(userEntity);
@@ -162,12 +165,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
 
-            _logger.LogIOInformation(sw, "Database", new { user }, new { userEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { userEntity });
             return _userConverter.ConvertToModel(userEntity);
         }
 
         public async Task DeleteUserByIdAsync(long id)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
             var userEntity = await _userEntities
                 .Where(e => e.Id == id)
@@ -177,11 +181,12 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogIOInformation(sw, "Database", new { id }, new { userEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { userEntity });
         }
 
         public async Task DeleteUserByUsernameAsync(string username)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { username });
             var sw = Stopwatch.StartNew();
             var userEntity = await _userEntities
                 .Where(e => e.Username == username)
@@ -191,30 +196,32 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogIOInformation(sw, "Database", new { username }, new { userEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { userEntity });
         }
 
         public async Task<bool> DoesUserIdExistAsync(long id)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await _userEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .AnyAsync();
 
-            _logger.LogIOInformation(sw, "Database", new { id }, new { doesExist });
+            _logger.LogIOInformation(sw, "Database | Output", new { doesExist });
             return doesExist;
         }
 
         public async Task<bool> DoesUsernameExistAsync(string username)
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { username });
             var sw = Stopwatch.StartNew();
             var doesExist = await _userEntities
                 .AsNoTracking()
                 .Where(e => e.Username == username)
                 .AnyAsync();
 
-            _logger.LogIOInformation(sw, "Database", new { username }, new { doesExist });
+            _logger.LogIOInformation(sw, "Database | Output", new { doesExist });
             return doesExist;
         }
     }

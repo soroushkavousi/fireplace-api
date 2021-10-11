@@ -50,6 +50,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         private async Task<QueryResult> GetQueryResultByPointerAsync<T>(DbSet<T> entities, string pointer) where T : QueryResultEntity
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { pointer });
             var sw = Stopwatch.StartNew();
 
             var queryResultEntity = await entities
@@ -59,7 +60,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogIOInformation(sw, "Database", new { pointer }, new { queryResultEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { queryResultEntity });
             return _queryResultConverter.ConvertToModel(queryResultEntity);
         }
 
@@ -85,6 +86,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             int lastStart, int lastEnd, int lastLimit, int lastPage,
             List<long> referenceEntityIds) where T : QueryResultEntity, new()
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { pointer, referenceEntityIds });
             var sw = Stopwatch.StartNew();
             var queryResultEntity = new T();
             queryResultEntity.FillParameters(pointer, lastStart,
@@ -93,7 +95,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogIOInformation(sw, "Database", new { pointer, referenceEntityIds }, new { queryResultEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { queryResultEntity });
             return _queryResultConverter.ConvertToModel(queryResultEntity);
         }
 
@@ -115,6 +117,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<QueryResult> UpdateQueryResultAsync<T>(DbSet<T> entities,
             QueryResult queryResult) where T : QueryResultEntity, new()
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { queryResult });
             var sw = Stopwatch.StartNew();
             var queryResultEntity = _queryResultConverter.ConvertToEntity<T>(queryResult);
             entities.Update(queryResultEntity);
@@ -129,7 +132,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
 
-            _logger.LogIOInformation(sw, "Database", new { queryResult }, new { queryResultEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { queryResultEntity });
             return _queryResultConverter.ConvertToModel(queryResultEntity);
         }
 
@@ -153,6 +156,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task DeleteQueryResultByPointerAsync<T>(DbSet<T> entities, string pointer)
             where T : QueryResultEntity
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { pointer });
             var sw = Stopwatch.StartNew();
             var queryResultEntity = await entities
                 .Where(e => e.Pointer == pointer)
@@ -162,7 +166,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogIOInformation(sw, "Database", new { pointer }, new { queryResultEntity });
+            _logger.LogIOInformation(sw, "Database | Output", new { queryResultEntity });
         }
 
         public async Task<bool> DoesQueryResultPointerExistAsync(ModelName modelName, string pointer)
@@ -183,13 +187,14 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<bool> DoesQueryResultPointerExistAsync<T>(DbSet<T> entities, string pointer)
             where T : QueryResultEntity
         {
+            _logger.LogIOInformation(null, "Database | Iutput", new { pointer });
             var sw = Stopwatch.StartNew();
             var doesExist = await entities
                 .AsNoTracking()
                 .Where(e => e.Pointer == pointer)
                 .AnyAsync();
 
-            _logger.LogIOInformation(sw, "Database", new { pointer }, new { doesExist });
+            _logger.LogIOInformation(sw, "Database | Output", new { doesExist });
             return doesExist;
         }
     }

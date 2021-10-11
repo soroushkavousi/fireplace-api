@@ -9,15 +9,15 @@ namespace FireplaceApi.Api.Controllers
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
     public class ControllerCreatePostInputBodyParameters
     {
+        public long? CommunityId { get; set; }
+        public string CommunityName { get; set; }
         [Required]
         public string Content { get; set; }
-        public long CommunityId { get; set; }
-        public string CommunityName { get; set; }
 
         public static IOpenApiAny Example { get; } = new OpenApiObject
         {
-            [nameof(Content).ToSnakeCase()] = PostDto.PureExample2[nameof(PostDto.Content).ToSnakeCase()],
             [nameof(CommunityName).ToSnakeCase()] = CommunityDto.PureExample1[nameof(CommunityDto.Name).ToSnakeCase()],
+            [nameof(Content).ToSnakeCase()] = PostDto.PureExample1[nameof(PostDto.Content).ToSnakeCase()],
         };
     }
 }

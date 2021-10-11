@@ -11,6 +11,7 @@ namespace FireplaceApi.Api.Controllers
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
     public class PageDto<T>
     {
+        [Required]
         [JsonPropertyName("pagination")]
         [JsonPropertyOrder(99)]
         public PaginationDto Pagination { get; set; }
@@ -31,7 +32,7 @@ namespace FireplaceApi.Api.Controllers
         //    [nameof(CommunityController.ListCommunitiesAsync)] = PageOfCommunitiesExample1,
         //};
 
-        public PageDto(List<T> items, PaginationDto paginationDto = null)
+        public PageDto(List<T> items, PaginationDto paginationDto)
         {
             Pagination = paginationDto;
             Items = items;
@@ -41,19 +42,13 @@ namespace FireplaceApi.Api.Controllers
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
     public class PaginationDto
     {
-        [Required]
         public string Pointer { get; set; }
-        [Required]
         public string NextLink { get; set; }
-        [Required]
         public string PerviousLink { get; set; }
         public int? PageNumber { get; set; }
-        [Required]
-        public int Start { get; set; }
-        [Required]
-        public int End { get; set; }
-        [Required]
-        public int Limit { get; set; }
+        public int? Start { get; set; }
+        public int? End { get; set; }
+        public int? Limit { get; set; }
         [Required]
         public int TotalItemsCount { get; set; }
         [Required]
@@ -74,12 +69,14 @@ namespace FireplaceApi.Api.Controllers
         public static IOpenApiAny Example { get; } = PureExample1;
 
         public PaginationDto(string queryResultPointer, string listPath,
-            int? pageNumber, int start, int end, int limit,
+            int? pageNumber, int? start, int? end, int? limit,
             int totalItemsCount, int totalPagesCount)
         {
             Pointer = queryResultPointer;
-            NextLink = $"{listPath}?pointer={queryResultPointer}&next";
-            PerviousLink = $"{listPath}?pointer={queryResultPointer}&previous";
+            if(end.HasValue && end.Value < totalItemsCount - 1)
+                NextLink = $"{listPath}?pointer={queryResultPointer}&next";
+            if(start.HasValue && start.Value > 0)
+                PerviousLink = $"{listPath}?pointer={queryResultPointer}&previous";
             PageNumber = pageNumber;
             Start = start;
             End = end;
