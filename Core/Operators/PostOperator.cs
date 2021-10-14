@@ -43,7 +43,7 @@ namespace FireplaceApi.Core.Operators
             if (string.IsNullOrWhiteSpace(paginationInputParameters.Pointer))
             {
                 var postIds = await _postRepository.ListPostIdsAsync(
-                    requesterUser.Id, self, joined, communityId, 
+                    requesterUser.Id, self, joined, communityId,
                     communityName, search, sort);
                 resultPage = await _pageOperator.CreatePageWithoutPointerAsync(
                     ModelName.COMMUNITY_MEMBERSHIP, paginationInputParameters, postIds,
@@ -84,7 +84,7 @@ namespace FireplaceApi.Core.Operators
                     break;
             }
             var post = await _postRepository
-                .CreatePostAsync(requesterUser.Id, requesterUser.Username, 
+                .CreatePostAsync(requesterUser.Id, requesterUser.Username,
                     communityIdentifier.Id.Value, communityIdentifier.Name,
                     content);
             return post;

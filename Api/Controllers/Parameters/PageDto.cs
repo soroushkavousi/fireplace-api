@@ -73,9 +73,9 @@ namespace FireplaceApi.Api.Controllers
             int totalItemsCount, int totalPagesCount)
         {
             Pointer = queryResultPointer;
-            if(end.HasValue && end.Value < totalItemsCount - 1)
+            if (end.HasValue && end.Value < totalItemsCount - 1)
                 NextLink = $"{listPath}?pointer={queryResultPointer}&next";
-            if(start.HasValue && start.Value > 0)
+            if (start.HasValue && start.Value > 0)
                 PerviousLink = $"{listPath}?pointer={queryResultPointer}&previous";
             PageNumber = pageNumber;
             Start = start;

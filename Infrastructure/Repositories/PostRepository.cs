@@ -24,7 +24,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<PostEntity> _postEntities;
         private readonly PostConverter _postConverter;
-        
+
         public PostRepository(ILogger<PostRepository> logger, IConfiguration configuration,
             FireplaceApiContext fireplaceApiContext, PostConverter postConverter)
         {
@@ -57,9 +57,11 @@ namespace FireplaceApi.Infrastructure.Repositories
             bool? self, bool? joined, long? communityId,
             string communityName, string search, SortType? sort)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", 
-                new { authorId, self, joined, communityId, communityName,
-                    search, sort});
+            _logger.LogIOInformation(null, "Database | Iutput", new
+            {
+                authorId, self, joined, communityId, 
+                communityName, search, sort
+            });
             var sw = Stopwatch.StartNew();
             var postEntities = await _postEntities
                 .AsNoTracking()
@@ -87,9 +89,11 @@ namespace FireplaceApi.Infrastructure.Repositories
             bool? self, bool? joined, long? communityId,
             string communityName, string search, SortType? sort)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", 
-                new { authorId, self, joined, communityId, communityName,
-                    search, sort});
+            _logger.LogIOInformation(null, "Database | Iutput", new
+            {
+                authorId, self, joined, communityId, communityName,
+                search, sort
+            });
             var sw = Stopwatch.StartNew();
             var postEntities = await _postEntities
                 .AsNoTracking()
@@ -117,8 +121,10 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<Post> GetPostByIdAsync(long id,
             bool includeAuthor = false, bool includeCommunity = false)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id, 
-                includeAuthor, includeCommunity });
+            _logger.LogIOInformation(null, "Database | Iutput", new
+            {
+                id, includeAuthor, includeCommunity
+            });
             var sw = Stopwatch.StartNew();
             var postEntity = await _postEntities
                 .AsNoTracking()
@@ -137,9 +143,11 @@ namespace FireplaceApi.Infrastructure.Repositories
             string authorUsername, long communityId, string communityName,
             string content)
         {
-            _logger.LogIOInformation(null, "Database | Iutput",
-                new { authorUserId, authorUsername, communityId, 
-                    communityName, content });
+            _logger.LogIOInformation(null, "Database | Iutput", new
+            {
+                authorUserId, authorUsername, communityId,
+                communityName, content
+            });
             var sw = Stopwatch.StartNew();
             var postEntity = new PostEntity(authorUserId, authorUsername,
                 communityId, communityName, content);
@@ -217,14 +225,14 @@ namespace FireplaceApi.Infrastructure.Repositories
             return q;
         }
 
-        
+
 
         public static IQueryable<PostEntity> Search(
-            [NotNull] this IQueryable<PostEntity> q, bool? self, 
-            bool? joined, long? authorId, long? communityId, 
+            [NotNull] this IQueryable<PostEntity> q, bool? self,
+            bool? joined, long? authorId, long? communityId,
             string communityName, string search, SortType? sort)
         {
-            if(self.HasValue)
+            if (self.HasValue)
                 q = q.Where(e => e.AuthorEntityId == authorId.Value);
 
             if (communityId.HasValue)

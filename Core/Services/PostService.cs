@@ -4,7 +4,6 @@ using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Validators;
 using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Services
@@ -23,9 +22,9 @@ namespace FireplaceApi.Core.Services
             _postOperator = postOperator;
         }
 
-        public async Task<Page<Post>> ListPostsAsync(User requesterUser, 
-            PaginationInputParameters paginationInputParameters, bool? self, 
-            bool? joined, long? communityId, string communityName, 
+        public async Task<Page<Post>> ListPostsAsync(User requesterUser,
+            PaginationInputParameters paginationInputParameters, bool? self,
+            bool? joined, long? communityId, string communityName,
             string search, SortType? sort)
         {
             await _postValidator.ValidateListPostsInputParametersAsync(requesterUser,
@@ -37,7 +36,7 @@ namespace FireplaceApi.Core.Services
             return page;
         }
 
-        public async Task<Post> GetPostByIdAsync(User requesterUser, long? id, 
+        public async Task<Post> GetPostByIdAsync(User requesterUser, long? id,
             bool? includeAuthor, bool? includeCommunity)
         {
             await _postValidator.ValidateGetPostByIdInputParametersAsync(
@@ -47,7 +46,7 @@ namespace FireplaceApi.Core.Services
             return post;
         }
 
-        public async Task<Post> CreatePostAsync(User requesterUser, long? communityId, 
+        public async Task<Post> CreatePostAsync(User requesterUser, long? communityId,
             string communityName, string content)
         {
             await _postValidator
@@ -60,7 +59,7 @@ namespace FireplaceApi.Core.Services
         }
 
 
-        public async Task<Post> PatchPostByIdAsync(User requesterUser, 
+        public async Task<Post> PatchPostByIdAsync(User requesterUser,
             long? id, string content)
         {
             await _postValidator

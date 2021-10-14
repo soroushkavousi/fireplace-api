@@ -45,7 +45,7 @@ namespace FireplaceApi.Core.Validators
             await Task.CompletedTask;
         }
 
-        public async Task ValidatePatchPostByIdInputParametersAsync(User requesterUser, 
+        public async Task ValidatePatchPostByIdInputParametersAsync(User requesterUser,
             long? id, string content)
         {
             await Task.CompletedTask;

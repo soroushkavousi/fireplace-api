@@ -41,7 +41,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<List<Session>> ListSessionsAsync(long userId,
             SessionState? filterSessionState = null, bool includeUser = false)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", 
+            _logger.LogIOInformation(null, "Database | Iutput",
                 new { userId, filterSessionState, includeUser });
             var sw = Stopwatch.StartNew();
             Expression<Func<SessionEntity, bool>> filterSessionStateFunction;
@@ -82,7 +82,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<Session> FindSessionAsync(long userId, IPAddress ipAddress,
             bool includeTracking = false, bool includeUser = false)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", 
+            _logger.LogIOInformation(null, "Database | Iutput",
                 new { userId, ipAddress, includeTracking, includeUser });
             var sw = Stopwatch.StartNew();
             var sessionEntity = await _sessionEntities
@@ -100,7 +100,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<Session> CreateSessionAsync(long userId, IPAddress ipAddress,
             SessionState state)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", 
+            _logger.LogIOInformation(null, "Database | Iutput",
                 new { userId, ipAddress, state });
             var sw = Stopwatch.StartNew();
             var sessionEntity = new SessionEntity(userId, ipAddress.ToString(),

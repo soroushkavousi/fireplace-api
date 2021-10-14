@@ -36,7 +36,7 @@ namespace FireplaceApi.Api.Middlewares
         {
             var inputCookieParameters = new ControllerInputCookieParameters(
                 httpContext);
-            httpContext.Items[Constants.ControllerInputCookieParametersKey] = 
+            httpContext.Items[Constants.ControllerInputCookieParametersKey] =
                 inputCookieParameters;
         }
 
@@ -58,7 +58,7 @@ namespace FireplaceApi.Api.Middlewares
             };
             foreach (Cookie cookie in cookieCollection)
             {
-                httpContext.Response.Cookies.Append(cookie.Name, cookie.Value, 
+                httpContext.Response.Cookies.Append(cookie.Name, cookie.Value,
                     cookieOptions);
             }
         }

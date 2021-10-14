@@ -1,7 +1,6 @@
 ﻿using FireplaceApi.Api.Converters;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Services;
-using FireplaceApi.Core.ValueObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -84,7 +83,7 @@ namespace FireplaceApi.Api.Controllers
             [FromBody] ControllerCreatePostInputBodyParameters inputBodyParameters)
         {
             var post = await _postService.CreatePostAsync(
-                requesterUser, inputBodyParameters.CommunityId, 
+                requesterUser, inputBodyParameters.CommunityId,
                 inputBodyParameters.CommunityName, inputBodyParameters.Content);
             var postDto = _postConverter.ConvertToDto(post);
             return postDto;

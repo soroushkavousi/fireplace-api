@@ -42,7 +42,7 @@ namespace FireplaceApi.Infrastructure.Converters
             var postEntity = new PostEntity(post.AuthorId,
                 post.AuthorUsername, post.CommunityId,
                 post.CommunityName, post.Content,
-                post.CreationDate, post.ModifiedDate, 
+                post.CreationDate, post.ModifiedDate,
                 post.Id, post.Vote, authorEntity, communityEntity);
 
             return postEntity;
@@ -65,7 +65,7 @@ namespace FireplaceApi.Infrastructure.Converters
             var post = new Post(postEntity.Id.Value,
                 postEntity.AuthorEntityId, postEntity.AuthorEntityUsername,
                 postEntity.CommunityEntityId, postEntity.CommunityEntityName,
-                postEntity.Vote, postEntity.Content, postEntity.CreationDate, 
+                postEntity.Vote, postEntity.Content, postEntity.CreationDate,
                 postEntity.ModifiedDate, author, community);
 
             return post;

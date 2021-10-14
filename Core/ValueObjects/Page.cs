@@ -37,7 +37,7 @@ namespace FireplaceApi.Core.ValueObjects
 
         private Page() { }
 
-        public Page(string queryResultPointer, int? number, int? start, int? end, 
+        public Page(string queryResultPointer, int? number, int? start, int? end,
             int? limit, int totalItemsCount, int totalPagesCount, List<T> items)
         {
             QueryResultPointer = queryResultPointer;

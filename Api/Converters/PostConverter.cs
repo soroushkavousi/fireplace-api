@@ -38,7 +38,7 @@ namespace FireplaceApi.Api.Converters
             var postDto = new PostDto(post.Id,
                 post.AuthorId, post.AuthorUsername,
                 post.CommunityId, post.CommunityName,
-                post.Vote, post.Content, post.CreationDate, 
+                post.Vote, post.Content, post.CreationDate,
                 post.ModifiedDate, authorDto, communityDto);
 
             return postDto;

@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -48,7 +47,7 @@ namespace FireplaceApi.Infrastructure.Entities
             CommentEntities = commentEntities;
         }
 
-        public PostEntity PureCopy() => new PostEntity(AuthorEntityId, 
+        public PostEntity PureCopy() => new PostEntity(AuthorEntityId,
             AuthorEntityUsername, CommunityEntityId, CommunityEntityName,
             Content, CreationDate, ModifiedDate, Id, Vote);
     }

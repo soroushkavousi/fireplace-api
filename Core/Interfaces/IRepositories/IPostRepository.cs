@@ -12,12 +12,12 @@ namespace FireplaceApi.Core.Interfaces
             bool? self, bool? joined, long? communityId,
             string communityName, string search, SortType? sort);
         public Task<List<long>> ListPostIdsAsync(long? authorId,
-            bool? self, bool? joined, long? communityId, 
+            bool? self, bool? joined, long? communityId,
             string communityName, string search, SortType? sort);
         public Task<Post> GetPostByIdAsync(long id,
             bool includeAuthor = false, bool includeCommunity = false);
         public Task<Post> CreatePostAsync(long authorUserId,
-            string authorUsername, long communityId, 
+            string authorUsername, long communityId,
             string communityName, string content);
         public Task<Post> UpdatePostAsync(
             Post post);

@@ -60,7 +60,7 @@ namespace FireplaceApi.Infrastructure.Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasCollation(Constants.CaseInsensitiveCollationName, 
+            modelBuilder.HasCollation(Constants.CaseInsensitiveCollationName,
                 locale: "en-u-ks-primary", provider: "icu", deterministic: false);
             modelBuilder.UseDefaultColumnCollation(Constants.CaseInsensitiveCollationName);
 

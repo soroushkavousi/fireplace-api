@@ -93,8 +93,8 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<CommunityMembership> GetCommunityMembershipByIdAsync(long id,
             bool includeUser = false, bool includeCommunity = false)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id, includeUser, 
-                includeCommunity });
+            _logger.LogIOInformation(null, "Database | Iutput",
+                new { id, includeUser, includeCommunity });
             var sw = Stopwatch.StartNew();
             var communityMembershipEntity = await _communityMembershipEntities
                 .AsNoTracking()
@@ -105,7 +105,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogIOInformation(sw, "Database | Output", new { communityMembershipEntity });
+            _logger.LogIOInformation(sw, "Database | Output",
+                new { communityMembershipEntity });
             return _communityMembershipConverter.ConvertToModel(communityMembershipEntity);
         }
 

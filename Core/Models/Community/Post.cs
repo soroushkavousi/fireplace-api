@@ -14,10 +14,10 @@ namespace FireplaceApi.Core.Models
         public User Author { get; set; }
         public Community Community { get; set; }
 
-        public Post(long id, long authorId, string authorUsername, 
-            long communityId, string communityName, int vote, 
+        public Post(long id, long authorId, string authorUsername,
+            long communityId, string communityName, int vote,
             string content, DateTime creationDate, DateTime? modifiedDate = null,
-            User author = null, Community community = null) 
+            User author = null, Community community = null)
             : base(creationDate, modifiedDate)
         {
             Id = id;
