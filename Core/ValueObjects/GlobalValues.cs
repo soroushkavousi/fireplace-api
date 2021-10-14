@@ -26,12 +26,14 @@ namespace FireplaceApi.Core.ValueObjects
         public class ApiGlobalValues
         {
             public string BaseUrlPath { get; set; }
+            public int CookieMaxAgeInDays { get; set; }
 
             private ApiGlobalValues() { }
 
-            public ApiGlobalValues(string baseUrlPath)
+            public ApiGlobalValues(string baseUrlPath, int cookieMaxAgeInDays)
             {
                 BaseUrlPath = baseUrlPath ?? throw new ArgumentNullException(nameof(baseUrlPath));
+                CookieMaxAgeInDays = cookieMaxAgeInDays;
             }
         }
 

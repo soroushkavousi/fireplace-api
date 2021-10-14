@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FireplaceApi.Api.Tools;
+using Microsoft.AspNetCore.Http;
 
 namespace FireplaceApi.Api.Controllers
 {
@@ -13,8 +14,12 @@ namespace FireplaceApi.Api.Controllers
 
         private string ExtractAccessTokenValue(HttpContext httpContext)
         {
-            string accessTokenValue = null;
-            return accessTokenValue;
+            var doesRequestHaveAccessToken = httpContext.Request.Cookies
+                .TryGetValue(Constants.ResponseAccessTokenCookieKey, out string accessTokenValue);
+            if (!doesRequestHaveAccessToken)
+                return null;
+            else
+                return accessTokenValue;
         }
     }
 }

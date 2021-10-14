@@ -2,6 +2,7 @@
 using FireplaceApi.Api.Interfaces;
 using FireplaceApi.Api.Tools;
 using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Operators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -33,25 +34,33 @@ namespace FireplaceApi.Api.Middlewares
 
         private static void GetInputCookies(HttpContext httpContext)
         {
-            var inputCookieParameters = new ControllerInputCookieParameters(httpContext);
-            httpContext.Items[Constants.ControllerInputCookieParametersKey] = inputCookieParameters;
+            var inputCookieParameters = new ControllerInputCookieParameters(
+                httpContext);
+            httpContext.Items[Constants.ControllerInputCookieParametersKey] = 
+                inputCookieParameters;
         }
 
         private void SetOutputCookies(HttpContext httpContext)
         {
-            var outputCookieParameters = httpContext.Items.GetValue(Constants.ControllerOutputCookieParametersKey, null)?.To<IControllerOutputCookieParameters>();
+            var outputCookieParameters = httpContext.Items
+                .GetValue(Constants.ControllerOutputCookieParametersKey, null)?
+                .To<IControllerOutputCookieParameters>();
             if (outputCookieParameters == null)
                 return;
             var cookieCollection = outputCookieParameters.GetCookieCollection();
             if (cookieCollection == null || cookieCollection.Count == 0)
                 return;
 
+            var cookieOptions = new CookieOptions
+            {
+                MaxAge = new System.TimeSpan(
+                    GlobalOperator.GlobalValues.Api.CookieMaxAgeInDays, 0, 0, 0)
+            };
             foreach (Cookie cookie in cookieCollection)
             {
-                httpContext.Response.Cookies.Append(cookie.Name, cookie.Value);
+                httpContext.Response.Cookies.Append(cookie.Name, cookie.Value, 
+                    cookieOptions);
             }
-            //var httpContextCookieCollection = httpContext.Response.Cookies.To<ResponseCookies>();
-            //httpContextCookieCollection.Add(cookieCollection);
         }
     }
 
