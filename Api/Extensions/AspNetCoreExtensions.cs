@@ -24,6 +24,7 @@ namespace FireplaceApi.Api.Extensions
         public static IServiceCollection AddInfrastructurConverters(this IServiceCollection services)
         {
             services.AddScoped<Infrastructure.Converters.AccessTokenConverter>();
+            services.AddScoped<Infrastructure.Converters.CommentConverter>();
             services.AddScoped<Infrastructure.Converters.CommunityConverter>();
             services.AddScoped<Infrastructure.Converters.CommunityMembershipConverter>();
             services.AddScoped<Infrastructure.Converters.EmailConverter>();
@@ -41,6 +42,7 @@ namespace FireplaceApi.Api.Extensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<IAccessTokenRepository, AccessTokenRepository>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<ICommunityRepository, CommunityRepository>();
             services.AddScoped<ICommunityMembershipRepository, CommunityMembershipRepository>();
             services.AddScoped<IEmailRepository, EmailRepository>();
@@ -72,6 +74,7 @@ namespace FireplaceApi.Api.Extensions
         public static IServiceCollection AddOperators(this IServiceCollection services)
         {
             services.AddScoped<AccessTokenOperator>();
+            services.AddScoped<CommentOperator>();
             services.AddScoped<CommunityOperator>();
             services.AddScoped<CommunityMembershipOperator>();
             services.AddScoped<EmailOperator>();
@@ -90,6 +93,7 @@ namespace FireplaceApi.Api.Extensions
         public static IServiceCollection AddValidators(this IServiceCollection services)
         {
             services.AddScoped<AccessTokenValidator>();
+            services.AddScoped<CommentValidator>();
             services.AddScoped<CommunityValidator>();
             services.AddScoped<CommunityMembershipValidator>();
             services.AddScoped<EmailValidator>();
@@ -105,6 +109,7 @@ namespace FireplaceApi.Api.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddScoped<AccessTokenService>();
+            services.AddScoped<CommentService>();
             services.AddScoped<CommunityService>();
             services.AddScoped<CommunityMembershipService>();
             services.AddScoped<EmailService>();
@@ -119,6 +124,7 @@ namespace FireplaceApi.Api.Extensions
         public static IServiceCollection AddApiConverters(this IServiceCollection services)
         {
             services.AddScoped<AccessTokenConverter>();
+            services.AddScoped<CommentConverter>();
             services.AddScoped<CommunityConverter>();
             services.AddScoped<CommunityMembershipConverter>();
             services.AddScoped<EmailConverter>();

@@ -33,7 +33,7 @@ namespace FireplaceApi.Core.Operators
             var totalPagesCount = totalItemsCount / limit + 1;
             if (totalItemsCount == 0)
                 return new Page<T>(null, null,
-                    null, null, null, 0, 0, new List<T>());
+                    null, null, null, 0, 0, new List<long>(), new List<T>());
 
             var (start, end, page) = CalculateStartAndEndAndPage(paginationInputParameters, limit,
                 totalItemsCount, totalPagesCount, 0, -1, -1);
@@ -46,7 +46,8 @@ namespace FireplaceApi.Core.Operators
             var resultItems = await getItemsAsync(pageItemIds);
 
             var resultPage = new Page<T>(pointer, page,
-                start, end, limit, totalItemsCount, totalPagesCount, resultItems);
+                start, end, limit, totalItemsCount, totalPagesCount,
+                pageItemIds, resultItems);
             return resultPage;
         }
 
@@ -71,7 +72,8 @@ namespace FireplaceApi.Core.Operators
             var resultItems = await getItemsAsync(pageItemIds);
 
             var resultPage = new Page<T>(queryResult.Pointer, page,
-                start, end, limit, totalItemsCount, totalPagesCount, resultItems);
+                start, end, limit, totalItemsCount, totalPagesCount,
+                pageItemIds, resultItems);
             return resultPage;
         }
 

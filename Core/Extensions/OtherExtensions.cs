@@ -19,5 +19,14 @@ namespace FireplaceApi.Core.Extensions
             }
             return false;
         }
+
+        public static List<T> CopyOrDefault<T>(this List<T> list)
+        {
+            if (list == null)
+                return new List<T>();
+
+            var copy = new List<T>(list);
+            return copy;
+        }
     }
 }

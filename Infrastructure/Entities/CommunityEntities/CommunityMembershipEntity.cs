@@ -4,10 +4,10 @@ using System;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
-    [Index(nameof(UserEntityId), IsUnique = true)]
-    [Index(nameof(UserEntityName), IsUnique = true)]
-    [Index(nameof(CommunityEntityId), IsUnique = true)]
-    [Index(nameof(CommunityEntityName), IsUnique = true)]
+    [Index(nameof(UserEntityId), IsUnique = false)]
+    [Index(nameof(UserEntityName), IsUnique = false)]
+    [Index(nameof(CommunityEntityId), IsUnique = false)]
+    [Index(nameof(CommunityEntityName), IsUnique = false)]
     public class CommunityMembershipEntity : BaseEntity
     {
         public long UserEntityId { get; set; }

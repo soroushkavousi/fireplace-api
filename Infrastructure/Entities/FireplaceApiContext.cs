@@ -33,6 +33,7 @@ namespace FireplaceApi.Infrastructure.Entities
         //Each entity has its own QueryResultEntity.
         public DbSet<CommunityQueryResultEntity> CommunityQueryResultEntities { get; set; }
         public DbSet<CommunityMembershipQueryResultEntity> CommunityMembershipQueryResultEntities { get; set; }
+        public DbSet<CommentQueryResultEntity> CommentQueryResultEntities { get; set; }
 
         public FireplaceApiContext(ILogger<FireplaceApiContext> logger, DbContextOptions<FireplaceApiContext> options)
             : base(options)
@@ -86,6 +87,7 @@ namespace FireplaceApi.Infrastructure.Entities
             modelBuilder.ApplyConfiguration(new GlobalEntityConfiguration());
             //modelBuilder.ApplyConfiguration(new CommunityQueryResultEntityConfiguration());
             //modelBuilder.ApplyConfiguration(new CommunityMembershipQueryResultEntityConfiguration());
+            //modelBuilder.ApplyConfiguration(new CommentQueryResultEntityConfiguration());
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,

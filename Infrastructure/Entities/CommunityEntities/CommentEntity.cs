@@ -5,43 +5,43 @@ using System.Collections.Generic;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
-    [Index(nameof(AuthorEntityId), IsUnique = true)]
-    [Index(nameof(PostEntityId), IsUnique = true)]
-    [Index(nameof(ParentCommentEntityId), IsUnique = true)]
+    [Index(nameof(AuthorEntityId), IsUnique = false)]
+    [Index(nameof(AuthorEntityUsername), IsUnique = false)]
+    [Index(nameof(PostEntityId), IsUnique = false)]
     public class CommentEntity : BaseEntity
     {
         public long AuthorEntityId { get; set; }
+        public string AuthorEntityUsername { get; set; }
         public long PostEntityId { get; set; }
-        public string Content { get; set; }
         public int Vote { get; set; }
-        public long? ParentCommentEntityId { get; set; }
+        public string Content { get; set; }
+        public List<long> ParentCommentEntityIds { get; set; }
         public long? Id { get; set; }
         public UserEntity AuthorEntity { get; set; }
         public PostEntity PostEntity { get; set; }
-        public CommentEntity ParentCommentEntity { get; set; }
-        public List<CommentVoteEntity> CommentVoteEntities { get; set; }
-        public List<CommentEntity> ChildCommentEntities { get; set; }
 
         private CommentEntity() : base() { }
 
-        public CommentEntity(long authorEntityId, long postEntityId,
-            string content, int vote, DateTime? creationDate = null,
-            DateTime? modifiedDate = null, long? id = null,
-            UserEntity author = null, PostEntity postEntity = null,
-            List<CommentVoteEntity> commentVoteEntities = null) : base(creationDate, modifiedDate)
+        public CommentEntity(long authorEntityId, string authorEntityUsername,
+            long postEntityId, string content, List<long> parentCommentEntityIds = null,
+            DateTime? creationDate = null, DateTime? modifiedDate = null,
+            long? id = null, int vote = 0, UserEntity authorEntity = null,
+            PostEntity postEntity = null) : base(creationDate, modifiedDate)
         {
             AuthorEntityId = authorEntityId;
+            AuthorEntityUsername = authorEntityUsername;
             PostEntityId = postEntityId;
             Content = content ?? throw new ArgumentNullException(nameof(content));
-            Vote = vote;
+            ParentCommentEntityIds = parentCommentEntityIds;
             Id = id;
-            AuthorEntity = author;
+            Vote = vote;
+            AuthorEntity = authorEntity;
             PostEntity = postEntity;
-            CommentVoteEntities = commentVoteEntities;
         }
 
-        public CommentEntity PureCopy() => new CommentEntity(AuthorEntityId, PostEntityId,
-            Content, Vote, CreationDate, ModifiedDate, Id);
+        public CommentEntity PureCopy() => new CommentEntity(AuthorEntityId,
+            AuthorEntityUsername, PostEntityId, Content, ParentCommentEntityIds,
+            CreationDate, ModifiedDate, Id, Vote);
     }
 
     public class CommentEntityConfiguration : IEntityTypeConfiguration<CommentEntity>
@@ -52,8 +52,8 @@ namespace FireplaceApi.Infrastructure.Entities
             modelBuilder
                 .HasOne(d => d.AuthorEntity)
                 .WithMany(p => p.CommentEntities)
-                .HasForeignKey(d => d.AuthorEntityId)
-                .HasPrincipalKey(p => p.Id)
+                .HasForeignKey(d => new { d.AuthorEntityId, d.AuthorEntityUsername })
+                .HasPrincipalKey(p => new { p.Id, p.Username })
                 .IsRequired();
 
             modelBuilder
@@ -62,13 +62,6 @@ namespace FireplaceApi.Infrastructure.Entities
                 .HasForeignKey(d => d.PostEntityId)
                 .HasPrincipalKey(p => p.Id)
                 .IsRequired();
-
-            modelBuilder
-                .HasOne(d => d.ParentCommentEntity)
-                .WithMany(p => p.ChildCommentEntities)
-                .HasForeignKey(d => d.ParentCommentEntityId)
-                .HasPrincipalKey(p => p.Id)
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

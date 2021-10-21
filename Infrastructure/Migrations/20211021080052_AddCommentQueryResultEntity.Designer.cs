@@ -5,15 +5,17 @@ using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FireplaceApi.Infrastructure.Migrations
 {
     [DbContext(typeof(FireplaceApiContext))]
-    partial class FireplaceApiContextModelSnapshot : ModelSnapshot
+    [Migration("20211021080052_AddCommentQueryResultEntity")]
+    partial class AddCommentQueryResultEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

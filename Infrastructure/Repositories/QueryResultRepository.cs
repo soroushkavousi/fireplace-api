@@ -43,6 +43,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                 case ModelName.COMMUNITY_MEMBERSHIP:
                     return await GetQueryResultByPointerAsync(
                         _fireplaceApiContext.CommunityMembershipQueryResultEntities, pointer);
+                case ModelName.COMMENT:
+                    return await GetQueryResultByPointerAsync(
+                        _fireplaceApiContext.CommentQueryResultEntities, pointer);
                 default:
                     throw new NotImplementedException($"Model name {modelName} is not supported!");
             }
@@ -77,6 +80,10 @@ namespace FireplaceApi.Infrastructure.Repositories
                     return await CreateQueryResultAsync(
                         _fireplaceApiContext.CommunityMembershipQueryResultEntities, pointer, lastStart,
                             lastEnd, lastLimit, lastPage, referenceEntityIds);
+                case ModelName.COMMENT:
+                    return await CreateQueryResultAsync(
+                        _fireplaceApiContext.CommentQueryResultEntities, pointer, lastStart,
+                            lastEnd, lastLimit, lastPage, referenceEntityIds);
                 default:
                     throw new NotImplementedException($"Model name {modelName} is not supported!");
             }
@@ -109,6 +116,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                 case ModelName.COMMUNITY_MEMBERSHIP:
                     return await UpdateQueryResultAsync(
                         _fireplaceApiContext.CommunityMembershipQueryResultEntities, queryResult);
+                case ModelName.COMMENT:
+                    return await UpdateQueryResultAsync(
+                        _fireplaceApiContext.CommentQueryResultEntities, queryResult);
                 default:
                     throw new NotImplementedException($"Model name {modelName} is not supported!");
             }
@@ -148,6 +158,10 @@ namespace FireplaceApi.Infrastructure.Repositories
                     await DeleteQueryResultByPointerAsync(
                         _fireplaceApiContext.CommunityMembershipQueryResultEntities, pointer);
                     break;
+                case ModelName.COMMENT:
+                    await DeleteQueryResultByPointerAsync(
+                        _fireplaceApiContext.CommentQueryResultEntities, pointer);
+                    break;
                 default:
                     throw new NotImplementedException($"Model name {modelName} is not supported!");
             }
@@ -179,6 +193,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                 case ModelName.COMMUNITY_MEMBERSHIP:
                     return await DoesQueryResultPointerExistAsync(
                         _fireplaceApiContext.CommunityMembershipQueryResultEntities, pointer);
+                case ModelName.COMMENT:
+                    return await DoesQueryResultPointerExistAsync(
+                        _fireplaceApiContext.CommentQueryResultEntities, pointer);
                 default:
                     throw new NotImplementedException($"Model name {modelName} is not supported!");
             }

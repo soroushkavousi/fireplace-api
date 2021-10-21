@@ -4,8 +4,8 @@ using System;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
-    [Index(nameof(VoterEntityId), IsUnique = true)]
-    [Index(nameof(CommentEntityId), IsUnique = true)]
+    [Index(nameof(VoterEntityId), IsUnique = false)]
+    [Index(nameof(CommentEntityId), IsUnique = false)]
     public class CommentVoteEntity : BaseEntity
     {
         public long VoterEntityId { get; set; }
@@ -49,7 +49,7 @@ namespace FireplaceApi.Infrastructure.Entities
 
             modelBuilder
                 .HasOne(d => d.CommentEntity)
-                .WithMany(p => p.CommentVoteEntities)
+                .WithMany()
                 .HasForeignKey(d => d.CommentEntityId)
                 .HasPrincipalKey(p => p.Id)
                 .IsRequired();

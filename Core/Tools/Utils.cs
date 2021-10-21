@@ -2,27 +2,28 @@
 using NLog;
 using System;
 using System.IO;
-using System.Linq;
 
 namespace FireplaceApi.Core.Tools
 {
     public static class Utils
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private static readonly Random random = new Random();
+        private static readonly Random _random = new Random();
 
         public static T CreateInstance<T>() => (T)Activator.CreateInstance(typeof(T), true);
 
         public static string RandomString(int length)
         {
-            string chars = "abcdefghijklmnopqrstuvwxyz0123456789".Shuffle();
-            return new string(Enumerable.Repeat(chars, length)
-              .Select(s => s[random.Next(s.Length)]).ToArray());
+            var chars = "abcdefghijklmnopqrstuvwxyz0123456789".Shuffle();
+            var randomString = "";
+            for (int i = 0; i < length; i++)
+                randomString += chars[_random.Next(chars.Length)];
+            return randomString;
         }
 
         public static int RandomNumber(int min, int max)
         {
-            return random.Next(min, max + 1);
+            return _random.Next(min, max + 1);
         }
 
         public static void CreateParentDirectoriesOfFileIfNotExists(string filePath)

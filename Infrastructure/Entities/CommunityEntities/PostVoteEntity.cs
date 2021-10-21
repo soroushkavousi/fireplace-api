@@ -4,8 +4,8 @@ using System;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
-    [Index(nameof(VoterEntityId), IsUnique = true)]
-    [Index(nameof(PostEntityId), IsUnique = true)]
+    [Index(nameof(VoterEntityId), IsUnique = false)]
+    [Index(nameof(PostEntityId), IsUnique = false)]
     public class PostVoteEntity : BaseEntity
     {
         public long VoterEntityId { get; set; }

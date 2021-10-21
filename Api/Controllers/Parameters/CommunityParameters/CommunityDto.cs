@@ -31,7 +31,7 @@ namespace FireplaceApi.Api.Controllers
         };
         public static OpenApiObject PureExample2 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(20002),
+            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(20001),
             [nameof(Name).ToSnakeCase()] = new OpenApiString("android-developers"),
             [nameof(CreatorId).ToSnakeCase()] = UserDto.PureExample2[nameof(Id).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),

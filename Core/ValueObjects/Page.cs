@@ -33,12 +33,14 @@ namespace FireplaceApi.Core.ValueObjects
         public int? Limit { get; set; }
         public int TotalItemsCount { get; set; }
         public int TotalPagesCount { get; set; }
+        public List<long> ItemIds { get; set; }
         public List<T> Items { get; set; }
 
         private Page() { }
 
         public Page(string queryResultPointer, int? number, int? start, int? end,
-            int? limit, int totalItemsCount, int totalPagesCount, List<T> items)
+            int? limit, int totalItemsCount, int totalPagesCount, List<long> itemIds,
+            List<T> items)
         {
             QueryResultPointer = queryResultPointer;
             Number = number;
@@ -47,6 +49,7 @@ namespace FireplaceApi.Core.ValueObjects
             Limit = limit;
             TotalItemsCount = totalItemsCount;
             TotalPagesCount = totalPagesCount;
+            ItemIds = itemIds ?? throw new ArgumentNullException(nameof(itemIds));
             Items = items ?? throw new ArgumentNullException(nameof(items));
         }
     }

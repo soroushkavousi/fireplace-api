@@ -5,15 +5,17 @@ using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FireplaceApi.Infrastructure.Migrations
 {
     [DbContext(typeof(FireplaceApiContext))]
-    partial class FireplaceApiContextModelSnapshot : ModelSnapshot
+    [Migration("20211020103749_UpdateCommentEntity3")]
+    partial class UpdateCommentEntity3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,45 +97,6 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.HasIndex("AuthorEntityId", "AuthorEntityUsername");
 
                     b.ToTable("CommentEntities");
-                });
-
-            modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.CommentQueryResultEntity", b =>
-                {
-                    b.Property<long?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("LastEnd")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("LastLimit")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("LastPage")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("LastStart")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Pointer")
-                        .HasColumnType("text");
-
-                    b.Property<List<long>>("ReferenceEntityIds")
-                        .HasColumnType("bigint[]");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Pointer")
-                        .IsUnique();
-
-                    b.ToTable("CommentQueryResultEntities");
                 });
 
             modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.CommentVoteEntity", b =>

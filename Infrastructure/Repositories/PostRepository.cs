@@ -59,7 +59,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Iutput", new
             {
-                authorId, self, joined, communityId, 
+                authorId, self, joined, communityId,
                 communityName, search, sort
             });
             var sw = Stopwatch.StartNew();
