@@ -119,6 +119,9 @@ namespace FireplaceApi.Api.Controllers
             [nameof(CommentController.GetCommentByIdAsync)] = PureExample1,
             [nameof(CommentController.ReplyToPostAsync)] = PureExample1,
             [nameof(CommentController.ReplyToCommentAsync)] = PureExample1,
+            [nameof(CommentController.VoteCommentAsync)] = PureExample1,
+            [nameof(CommentController.ToggleVoteForCommentAsync)] = PureExample1,
+            [nameof(CommentController.DeleteVoteForCommentAsync)] = PureExample1,
             [nameof(CommentController.PatchCommentByIdAsync)] = PureExample1,
             [nameof(CommentController.DeleteCommentByIdAsync)] = PureExample1,
         };

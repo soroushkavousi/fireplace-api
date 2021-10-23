@@ -1,13 +1,12 @@
 ﻿using FireplaceApi.Api.Controllers;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.ValueObjects;
-using System;
 using System.Linq;
 
 namespace FireplaceApi.Api.Converters
 {
-    public abstract class BaseConverter<M, DTO> 
-        where M : class 
+    public abstract class BaseConverter<M, DTO>
+        where M : class
         where DTO : class
     {
 

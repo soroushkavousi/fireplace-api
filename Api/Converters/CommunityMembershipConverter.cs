@@ -1,11 +1,8 @@
 ﻿using FireplaceApi.Api.Controllers;
 using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Operators;
-using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Linq;
 
 namespace FireplaceApi.Api.Converters
 {

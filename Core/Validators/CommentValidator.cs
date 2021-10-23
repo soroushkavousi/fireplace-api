@@ -62,6 +62,24 @@ namespace FireplaceApi.Core.Validators
             await Task.CompletedTask;
         }
 
+        public async Task ValidateVoteCommentInputParametersAsync(User requesterUser,
+            long id, bool? isUpvote)
+        {
+            await Task.CompletedTask;
+        }
+
+        public async Task ValidateToggleVoteForCommentInputParametersAsync(User requesterUser,
+            long id)
+        {
+            await Task.CompletedTask;
+        }
+
+        public async Task ValidateDeleteVoteForCommentInputParametersAsync(User requesterUser,
+            long id)
+        {
+            await Task.CompletedTask;
+        }
+
         public async Task ValidatePatchCommentByIdInputParametersAsync(User requesterUser,
             long? id, string content)
         {
@@ -73,5 +91,7 @@ namespace FireplaceApi.Core.Validators
         {
             await Task.CompletedTask;
         }
+
+
     }
 }

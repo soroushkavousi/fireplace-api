@@ -145,6 +145,62 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
+        /// Vote a comment.
+        /// </summary>
+        /// <returns>Voted comment</returns>
+        /// <response code="200">Returns the Voted comment</response>
+        [HttpPost("{id:long}/votes")]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<CommentDto>> VoteCommentAsync(
+            [BindNever][FromHeader] User requesterUser,
+            [FromRoute] ControllerVoteCommentInputRouteParameters inputRouteParameters,
+            [FromBody] ControllerVoteCommentInputBodyParameters inputBodyParameters)
+
+        {
+            var comment = await _commentService.VoteCommentAsync(
+                requesterUser, inputRouteParameters.Id, inputBodyParameters.IsUpvote);
+            var commentDto = _commentConverter.ConvertToDto(comment);
+            return commentDto;
+        }
+
+        /// <summary>
+        /// Toggle your vote for the comment.
+        /// </summary>
+        /// <returns>The comment</returns>
+        /// <response code="200">Returns the comment</response>
+        [HttpPatch("{id:long}/votes/me")]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<CommentDto>> ToggleVoteForCommentAsync(
+            [BindNever][FromHeader] User requesterUser,
+            [FromRoute] ControllerToggleVoteForCommentInputRouteParameters inputRouteParameters)
+        {
+            var comment = await _commentService.ToggleVoteForCommentAsync(
+                requesterUser, inputRouteParameters.Id);
+            var commentDto = _commentConverter.ConvertToDto(comment);
+            return commentDto;
+        }
+
+        /// <summary>
+        /// Delete your vote for the comment.
+        /// </summary>
+        /// <returns>The comment</returns>
+        /// <response code="200">Returns the comment</response>
+        [HttpDelete("{id:long}/votes/me")]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<CommentDto>> DeleteVoteForCommentAsync(
+            [BindNever][FromHeader] User requesterUser,
+            [FromRoute] ControllerDeleteVoteForCommentInputRouteParameters inputRouteParameters)
+        {
+            var comment = await _commentService.DeleteVoteForCommentAsync(
+                requesterUser, inputRouteParameters.Id);
+            var commentDto = _commentConverter.ConvertToDto(comment);
+            return commentDto;
+        }
+
+        /// <summary>
         /// Update a single comment by id.
         /// </summary>
         /// <returns>Updated comment</returns>

@@ -25,6 +25,7 @@ namespace FireplaceApi.Api.Extensions
         {
             services.AddScoped<Infrastructure.Converters.AccessTokenConverter>();
             services.AddScoped<Infrastructure.Converters.CommentConverter>();
+            services.AddScoped<Infrastructure.Converters.CommentVoteConverter>();
             services.AddScoped<Infrastructure.Converters.CommunityConverter>();
             services.AddScoped<Infrastructure.Converters.CommunityMembershipConverter>();
             services.AddScoped<Infrastructure.Converters.EmailConverter>();
@@ -43,6 +44,7 @@ namespace FireplaceApi.Api.Extensions
         {
             services.AddScoped<IAccessTokenRepository, AccessTokenRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<ICommentVoteRepository, CommentVoteRepository>();
             services.AddScoped<ICommunityRepository, CommunityRepository>();
             services.AddScoped<ICommunityMembershipRepository, CommunityMembershipRepository>();
             services.AddScoped<IEmailRepository, EmailRepository>();

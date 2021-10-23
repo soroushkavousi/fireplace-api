@@ -82,6 +82,36 @@ namespace FireplaceApi.Core.Services
                 commentId, content);
         }
 
+        public async Task<Comment> VoteCommentAsync(User requesterUser,
+            long id, bool? isUpvote)
+        {
+            await _commentValidator.ValidateVoteCommentInputParametersAsync(
+                requesterUser, id, isUpvote);
+            var comment = await _commentOperator.VoteCommentAsync(
+                requesterUser, id, isUpvote.Value);
+            return comment;
+        }
+
+        public async Task<Comment> ToggleVoteForCommentAsync(User requesterUser,
+            long id)
+        {
+            await _commentValidator.ValidateToggleVoteForCommentInputParametersAsync(
+                requesterUser, id);
+            var comment = await _commentOperator.ToggleVoteForCommentAsync(
+                requesterUser, id);
+            return comment;
+        }
+
+        public async Task<Comment> DeleteVoteForCommentAsync(User requesterUser,
+            long id)
+        {
+            await _commentValidator.ValidateDeleteVoteForCommentInputParametersAsync(
+                requesterUser, id);
+            var comment = await _commentOperator.DeleteVoteForCommentAsync(
+                requesterUser, id);
+            return comment;
+        }
+
         public async Task<Comment> PatchCommentByIdAsync(User requesterUser,
             long? id, string content)
         {
@@ -89,7 +119,7 @@ namespace FireplaceApi.Core.Services
                 .ValidatePatchCommentByIdInputParametersAsync(requesterUser,
                     id, content);
             var comment = await _commentOperator.PatchCommentByIdAsync(
-                id.Value, content);
+                id.Value, content, null);
             return comment;
         }
 

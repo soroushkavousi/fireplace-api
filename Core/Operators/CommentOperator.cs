@@ -18,6 +18,7 @@ namespace FireplaceApi.Core.Operators
         private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly ICommentRepository _commentRepository;
+        private readonly ICommentVoteRepository _commentVoteRepository;
         private readonly PageOperator _pageOperator;
         private readonly UserOperator _userOperator;
         private readonly PostOperator _postOperator;
@@ -25,6 +26,7 @@ namespace FireplaceApi.Core.Operators
         public CommentOperator(ILogger<CommentOperator> logger,
             IConfiguration configuration, IServiceProvider serviceProvider,
             ICommentRepository commentRepository,
+            ICommentVoteRepository commentVoteRepository,
             PageOperator pageOperator, UserOperator userOperator,
             PostOperator postOperator)
         {
@@ -32,6 +34,7 @@ namespace FireplaceApi.Core.Operators
             _configuration = configuration;
             _serviceProvider = serviceProvider;
             _commentRepository = commentRepository;
+            _commentVoteRepository = commentVoteRepository;
             _pageOperator = pageOperator;
             _userOperator = userOperator;
             _postOperator = postOperator;
@@ -150,11 +153,50 @@ namespace FireplaceApi.Core.Operators
             return comment;
         }
 
-        public async Task<Comment> PatchCommentByIdAsync(long id, string content)
+        public async Task<Comment> VoteCommentAsync(User requesterUser,
+            long id, bool isUp)
+        {
+            var commentVote = await _commentVoteRepository
+                .CreateCommentVoteAsync(requesterUser.Id, requesterUser.Username,
+                    id, isUp);
+            var voteChange = commentVote.IsUp ? +1 : -1;
+            var comment = await PatchCommentByIdAsync(id, null, voteChange: voteChange);
+            return comment;
+        }
+
+        public async Task<Comment> ToggleVoteForCommentAsync(User requesterUser,
+            long id)
+        {
+            var commentVote = await _commentVoteRepository.GetCommentVoteAsync(
+                requesterUser.Id, id, includeComment: true);
+            commentVote.IsUp = !commentVote.IsUp;
+            await _commentVoteRepository.UpdateCommentVoteAsync(commentVote);
+            var voteChange = commentVote.IsUp ? +2 : -2;
+            var comment = await ApplyCommentChangesAsync(commentVote.Comment,
+                null, voteChange: voteChange);
+            return comment;
+        }
+
+        public async Task<Comment> DeleteVoteForCommentAsync(User requesterUser,
+            long id)
+        {
+            var commentVote = await _commentVoteRepository.GetCommentVoteAsync(
+                requesterUser.Id, id, includeComment: true);
+            var voteChange = commentVote.IsUp ? -1 : +1;
+            await _commentVoteRepository.DeleteCommentVoteByIdAsync(
+                commentVote.Id);
+            var comment = await ApplyCommentChangesAsync(commentVote.Comment,
+                null, voteChange: voteChange);
+            return comment;
+        }
+
+        public async Task<Comment> PatchCommentByIdAsync(long id, string content,
+            int? voteChange)
         {
             var comment = await _commentRepository
                 .GetCommentByIdAsync(id);
-            comment = await ApplyCommentChangesAsync(comment, content);
+            comment = await ApplyCommentChangesAsync(comment, content,
+                voteChange);
             comment = await GetCommentByIdAsync(comment.Id,
                 false, false);
             return comment;
@@ -173,11 +215,16 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<Comment> ApplyCommentChangesAsync(
-            Comment comment, string content)
+            Comment comment, string content, int? voteChange)
         {
             if (content != null)
             {
                 comment.Content = content;
+            }
+
+            if (voteChange.HasValue)
+            {
+                comment.Vote += voteChange.Value;
             }
 
             comment = await _commentRepository

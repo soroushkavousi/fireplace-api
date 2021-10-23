@@ -5,10 +5,12 @@ using System;
 namespace FireplaceApi.Infrastructure.Entities
 {
     [Index(nameof(VoterEntityId), IsUnique = false)]
+    [Index(nameof(VoterEntityUsername), IsUnique = false)]
     [Index(nameof(CommentEntityId), IsUnique = false)]
     public class CommentVoteEntity : BaseEntity
     {
         public long VoterEntityId { get; set; }
+        public string VoterEntityUsername { get; set; }
         public long CommentEntityId { get; set; }
         public bool IsUp { get; set; }
         public long? Id { get; set; }
@@ -17,12 +19,13 @@ namespace FireplaceApi.Infrastructure.Entities
 
         private CommentVoteEntity() : base() { }
 
-        public CommentVoteEntity(long voterEntityId, long commentEntityId, bool isUp,
-            DateTime? creationDate = null, DateTime? modifiedDate = null,
-            long? id = null, UserEntity voterEntity = null,
+        public CommentVoteEntity(long voterEntityId, string voterEntityUsername,
+            long commentEntityId, bool isUp, DateTime? creationDate = null,
+            DateTime? modifiedDate = null, long? id = null, UserEntity voterEntity = null,
             CommentEntity commentEntity = null) : base(creationDate, modifiedDate)
         {
             VoterEntityId = voterEntityId;
+            VoterEntityUsername = voterEntityUsername;
             CommentEntityId = commentEntityId;
             IsUp = isUp;
             Id = id;
@@ -30,8 +33,8 @@ namespace FireplaceApi.Infrastructure.Entities
             CommentEntity = commentEntity;
         }
 
-        public CommentVoteEntity PureCopy() => new CommentVoteEntity(VoterEntityId, CommentEntityId,
-            IsUp, CreationDate, ModifiedDate, Id);
+        public CommentVoteEntity PureCopy() => new CommentVoteEntity(VoterEntityId,
+            VoterEntityUsername, CommentEntityId, IsUp, CreationDate, ModifiedDate, Id);
     }
 
     public class CommentVoteEntityConfiguration : IEntityTypeConfiguration<CommentVoteEntity>
@@ -43,8 +46,8 @@ namespace FireplaceApi.Infrastructure.Entities
             modelBuilder
                 .HasOne(d => d.VoterEntity)
                 .WithMany(p => p.CommentVoteEntities)
-                .HasForeignKey(d => d.VoterEntityId)
-                .HasPrincipalKey(p => p.Id)
+                .HasForeignKey(d => new { d.VoterEntityId, d.VoterEntityUsername })
+                .HasPrincipalKey(p => new { p.Id, p.Username })
                 .IsRequired();
 
             modelBuilder

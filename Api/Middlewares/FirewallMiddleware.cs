@@ -31,13 +31,17 @@ namespace FireplaceApi.Api.Middlewares
                 || httpMethod == HttpMethod.Put
                 || httpMethod == HttpMethod.Patch)
             {
-                firewall.CheckRequestContentType(httpContext.Request);
-
+                string requestBody = null;
                 if (httpContext.Request.ContentType == "application/json"
                     || httpContext.Request.ContentType == "application/merge-patch+json")
                 {
-                    var requestBody = await httpContext.Request.ReadRequestBodyAsync();
+                    requestBody = await httpContext.Request.ReadRequestBodyAsync();
                     firewall.CheckRequestJsonBody(requestBody);
+                }
+
+                if (!string.IsNullOrWhiteSpace(requestBody))
+                {
+                    firewall.CheckRequestContentType(httpContext.Request);
                 }
             }
 
