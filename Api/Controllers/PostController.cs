@@ -46,7 +46,8 @@ namespace FireplaceApi.Api.Controllers
                 inputQueryParameters.Joined, inputQueryParameters.CommunityId,
                 inputQueryParameters.CommunityName, inputQueryParameters.Search,
                 inputQueryParameters.Sort);
-            var pageDto = _postConverter.ConvertToDto(page, "/posts");
+            var requestPath = HttpContext.Request.Path;
+            var pageDto = _postConverter.ConvertToDto(page, requestPath);
             //SetOutputHeaderParameters(postDtos.HeaderParameters);
             return pageDto;
         }

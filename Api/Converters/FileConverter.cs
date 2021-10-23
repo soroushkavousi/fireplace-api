@@ -7,7 +7,7 @@ using System;
 
 namespace FireplaceApi.Api.Converters
 {
-    public class FileConverter
+    public class FileConverter : BaseConverter<File, FileDto>
     {
         private readonly ILogger<FileConverter> _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -25,7 +25,7 @@ namespace FireplaceApi.Api.Converters
             _basePhysicalPath = _configuration.GetValue<string>(Constants.FilesBasePhysicalPathKey);
         }
 
-        public FileDto ConvertToDto(File file)
+        public override FileDto ConvertToDto(File file)
         {
             if (file == null)
                 return null;

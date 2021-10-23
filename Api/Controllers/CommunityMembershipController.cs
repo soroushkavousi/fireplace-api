@@ -43,7 +43,8 @@ namespace FireplaceApi.Api.Controllers
             var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
             var page = await _communityMembershipService.ListCommunityMembershipsAsync(requesterUser,
                 paginationInputParameters);
-            var pageDto = _communityMembershipConverter.ConvertToDto(page, "/community-memberships");
+            var requestPath = HttpContext.Request.Path;
+            var pageDto = _communityMembershipConverter.ConvertToDto(page, requestPath);
             //SetOutputHeaderParameters(communityMembershipDtos.HeaderParameters);
             return pageDto;
         }

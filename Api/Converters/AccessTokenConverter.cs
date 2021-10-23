@@ -6,7 +6,7 @@ using System;
 
 namespace FireplaceApi.Api.Converters
 {
-    public class AccessTokenConverter
+    public class AccessTokenConverter : BaseConverter<AccessToken, AccessTokenDto>
     {
         private readonly ILogger<AccessTokenConverter> _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -17,7 +17,7 @@ namespace FireplaceApi.Api.Converters
             _serviceProvider = serviceProvider;
         }
 
-        public AccessTokenDto ConvertToDto(AccessToken accessToken)
+        public override AccessTokenDto ConvertToDto(AccessToken accessToken)
         {
             if (accessToken == null)
                 return null;

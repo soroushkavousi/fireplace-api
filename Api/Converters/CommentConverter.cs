@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace FireplaceApi.Api.Converters
 {
-    public class CommentConverter
+    public class CommentConverter : BaseConverter<Comment, CommentDto>
     {
         private readonly ILogger<CommentConverter> _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -21,7 +21,7 @@ namespace FireplaceApi.Api.Converters
             _serviceProvider = serviceProvider;
         }
 
-        public CommentDto ConvertToDto(Comment comment)
+        public override CommentDto ConvertToDto(Comment comment)
         {
             if (comment == null)
                 return null;
@@ -56,23 +56,6 @@ namespace FireplaceApi.Api.Converters
                 childComments: childCommentDtos);
 
             return commentDto;
-        }
-
-        public PageDto<CommentDto> ConvertToDto(Page<Comment> page, string pureRequestPath)
-        {
-            if (page == null)
-                return null;
-
-            var listPath = $"{GlobalOperator.GlobalValues.Api.BaseUrlPath}{pureRequestPath}";
-
-            var paginationDto = new PaginationDto(page.QueryResultPointer,
-                pureRequestPath, page.Number, page.Start, page.End, page.Limit,
-                page.TotalItemsCount, page.TotalPagesCount);
-
-            var itemDtos = page.Items.Select(comment => ConvertToDto(comment)).ToList();
-
-            var pageDto = new PageDto<CommentDto>(itemDtos, paginationDto);
-            return pageDto;
         }
     }
 }

@@ -5,7 +5,7 @@ using System;
 
 namespace FireplaceApi.Api.Converters
 {
-    public class ErrorConverter
+    public class ErrorConverter : BaseConverter<Error, ErrorDto>
     {
         private readonly ILogger<ErrorConverter> _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -16,7 +16,7 @@ namespace FireplaceApi.Api.Converters
             _serviceProvider = serviceProvider;
         }
 
-        public ErrorDto ConvertToDto(Error error)
+        public override ErrorDto ConvertToDto(Error error)
         {
             if (error == null)
                 return null;

@@ -6,7 +6,7 @@ using System;
 
 namespace FireplaceApi.Api.Converters
 {
-    public class SessionConverter
+    public class SessionConverter : BaseConverter<Session, SessionDto>
     {
         private readonly ILogger<SessionConverter> _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -17,7 +17,7 @@ namespace FireplaceApi.Api.Converters
             _serviceProvider = serviceProvider;
         }
 
-        public SessionDto ConvertToDto(Session session)
+        public override SessionDto ConvertToDto(Session session)
         {
             if (session == null)
                 return null;

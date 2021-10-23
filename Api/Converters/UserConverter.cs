@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace FireplaceApi.Api.Converters
 {
-    public class UserConverter
+    public class UserConverter : BaseConverter<User, UserDto>
     {
         private readonly ILogger<UserConverter> _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -19,7 +19,7 @@ namespace FireplaceApi.Api.Converters
             _serviceProvider = serviceProvider;
         }
 
-        public UserDto ConvertToDto(User user)
+        public override UserDto ConvertToDto(User user)
         {
             if (user == null)
                 return null;

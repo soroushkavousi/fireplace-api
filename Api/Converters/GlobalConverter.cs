@@ -3,7 +3,7 @@ using System;
 
 namespace FireplaceApi.Api.Converters
 {
-    public class GlobalConverter
+    public class GlobalConverter : BaseConverter<GlobalConverter, GlobalConverter>
     {
         private readonly ILogger<GlobalConverter> _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -12,6 +12,11 @@ namespace FireplaceApi.Api.Converters
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
+        }
+
+        public override GlobalConverter ConvertToDto(GlobalConverter model)
+        {
+            return model;
         }
     }
 }

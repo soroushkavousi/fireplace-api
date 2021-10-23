@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace FireplaceApi.Api.Converters
 {
-    public class CommunityConverter
+    public class CommunityConverter : BaseConverter<Community, CommunityDto>
     {
         private readonly ILogger<CommunityConverter> _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -20,7 +20,7 @@ namespace FireplaceApi.Api.Converters
             _serviceProvider = serviceProvider;
         }
 
-        public CommunityDto ConvertToDto(Community community)
+        public override CommunityDto ConvertToDto(Community community)
         {
             if (community == null)
                 return null;
@@ -34,23 +34,6 @@ namespace FireplaceApi.Api.Converters
                 community.CreationDate, creatorDto);
 
             return communityDto;
-        }
-
-        public PageDto<CommunityDto> ConvertToDto(Page<Community> page, string listRelativePath)
-        {
-            if (page == null)
-                return null;
-
-            var listPath = $"{GlobalOperator.GlobalValues.Api.BaseUrlPath}{listRelativePath}";
-
-            var paginationDto = new PaginationDto(page.QueryResultPointer,
-                listPath, page.Number, page.Start, page.End, page.Limit,
-                page.TotalItemsCount, page.TotalPagesCount);
-
-            var itemDtos = page.Items.Select(community => ConvertToDto(community)).ToList();
-
-            var pageDto = new PageDto<CommunityDto>(itemDtos, paginationDto);
-            return pageDto;
         }
     }
 }

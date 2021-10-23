@@ -6,7 +6,7 @@ using System;
 
 namespace FireplaceApi.Api.Converters
 {
-    public class EmailConverter
+    public class EmailConverter : BaseConverter<Email, EmailDto>
     {
         private readonly ILogger<EmailConverter> _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -17,7 +17,7 @@ namespace FireplaceApi.Api.Converters
             _serviceProvider = serviceProvider;
         }
 
-        public EmailDto ConvertToDto(Email email)
+        public override EmailDto ConvertToDto(Email email)
         {
             if (email == null)
                 return null;

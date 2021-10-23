@@ -45,7 +45,8 @@ namespace FireplaceApi.Api.Controllers
             var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
             var page = await _commentService.ListSelfCommentsAsync(requesterUser,
                 paginationInputParameters, inputQueryParameters.Sort);
-            var pageDto = _commentConverter.ConvertToDto(page, "/comments/me");
+            var requestPath = HttpContext.Request.Path;
+            var pageDto = _commentConverter.ConvertToDto(page, requestPath);
             return pageDto;
         }
 
