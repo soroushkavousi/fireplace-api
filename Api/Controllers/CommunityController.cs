@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Api.Converters;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -32,6 +33,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>List of communities</returns>
         /// <response code="200">All communities was successfully retrieved.</response>
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(typeof(PageDto<CommunityDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<PageDto<CommunityDto>>> ListCommunitiesAsync(
@@ -53,6 +55,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Requested community</returns>
         /// <response code="200">The community was successfully retrieved.</response>
+        [AllowAnonymous]
         [HttpGet("{id:long}")]
         [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommunityDto>> GetCommunityByIdAsync(
@@ -72,6 +75,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Requested community</returns>
         /// <response code="200">The community was successfully retrieved.</response>
+        [AllowAnonymous]
         [HttpGet("{name}")]
         [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommunityDto>> GetCommunityByNameAsync(

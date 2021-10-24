@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Api.Converters;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -54,6 +55,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>List of post comments</returns>
         /// <response code="200">Post comments was successfully retrieved.</response>
+        [AllowAnonymous]
         [HttpGet("/v{version:apiVersion}/posts/{postId:long}/comments")]
         [ProducesResponseType(typeof(PageDto<CommentDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<PageDto<CommentDto>>> ListPostCommentsAsync(
@@ -74,6 +76,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>List of child comments</returns>
         /// <response code="200">Child comments was successfully retrieved.</response>
+        [AllowAnonymous]
         [HttpGet("{parentId:long}/children")]
         [ProducesResponseType(typeof(List<CommentDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<List<CommentDto>>> ListChildCommentsAsync(
@@ -91,6 +94,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Requested comment</returns>
         /// <response code="200">The comment was successfully retrieved.</response>
+        [AllowAnonymous]
         [HttpGet("{id:long}")]
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> GetCommentByIdAsync(

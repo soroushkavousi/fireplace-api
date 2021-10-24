@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Api.Converters;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -33,6 +34,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>List of posts</returns>
         /// <response code="200">All posts was successfully retrieved.</response>
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(typeof(PageDto<PostDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<PageDto<PostDto>>> ListPostsAsync(
@@ -57,6 +59,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Requested post</returns>
         /// <response code="200">The post was successfully retrieved.</response>
+        [AllowAnonymous]
         [HttpGet("{id:long}")]
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> GetPostByIdAsync(
