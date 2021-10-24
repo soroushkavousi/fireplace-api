@@ -36,7 +36,6 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>List of self comments</returns>
         /// <response code="200">Self comments was successfully retrieved.</response>
         [HttpGet]
-        [HttpGet("me")]
         [ProducesResponseType(typeof(PageDto<CommentDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<PageDto<CommentDto>>> ListSelfCommentsAsync(
             [BindNever][FromHeader] User requesterUser,
@@ -75,7 +74,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>List of child comments</returns>
         /// <response code="200">Child comments was successfully retrieved.</response>
-        [HttpGet("{parentId:long}/childs")]
+        [HttpGet("{parentId:long}/children")]
         [ProducesResponseType(typeof(List<CommentDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<List<CommentDto>>> ListChildCommentsAsync(
             [BindNever][FromHeader] User requesterUser,
@@ -111,15 +110,16 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Created comment</returns>
         /// <response code="200">Returns the newly created item</response>
-        [HttpPost("reply-to-post")]
+        [HttpPost("/v{version:apiVersion}/posts/{postId:long}/comments")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> ReplyToPostAsync(
             [BindNever][FromHeader] User requesterUser,
+            [FromRoute] ControllerReplyToPostInputRouteParameters inputRouteParameters,
             [FromBody] ControllerReplyToPostInputBodyParameters inputBodyParameters)
         {
             var comment = await _commentService.ReplyToPostAsync(
-                requesterUser, inputBodyParameters.PostId,
+                requesterUser, inputRouteParameters.PostId,
                 inputBodyParameters.Content);
             var commentDto = _commentConverter.ConvertToDto(comment);
             return commentDto;
@@ -130,15 +130,16 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Created comment</returns>
         /// <response code="200">Returns the newly created item</response>
-        [HttpPost("reply-to-comment")]
+        [HttpPost("{id:long}/comments")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> ReplyToCommentAsync(
             [BindNever][FromHeader] User requesterUser,
+            [FromRoute] ControllerReplyToCommentInputRouteParameters inputRouteParameters,
             [FromBody] ControllerReplyToCommentInputBodyParameters inputBodyParameters)
         {
             var comment = await _commentService.ReplyToCommentAsync(
-                requesterUser, inputBodyParameters.CommentId,
+                requesterUser, inputRouteParameters.Id,
                 inputBodyParameters.Content);
             var commentDto = _commentConverter.ConvertToDto(comment);
             return commentDto;

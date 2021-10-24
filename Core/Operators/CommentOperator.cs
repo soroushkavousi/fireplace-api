@@ -89,21 +89,21 @@ namespace FireplaceApi.Core.Operators
         private void SetChilds(List<Comment> parentComments,
             List<Comment> childComments)
         {
-            var childsPerParentId = childComments
+            var childrenPerParentId = childComments
                 .GroupBy(cc => cc.ParentCommentIds.Last())
                 .ToDictionary(g => g.Key, g => g.ToList());
-            SetChilds(parentComments, childsPerParentId);
+            SetChilds(parentComments, childrenPerParentId);
         }
 
         private void SetChilds(List<Comment> parentComments,
-            Dictionary<long, List<Comment>> childsPerParentId)
+            Dictionary<long, List<Comment>> childrenPerParentId)
         {
             if (parentComments == null || parentComments.Count == 0)
                 return;
             foreach (var pc in parentComments)
             {
-                pc.ChildComments = childsPerParentId.GetValueOrDefault(pc.Id);
-                SetChilds(pc.ChildComments, childsPerParentId);
+                pc.ChildComments = childrenPerParentId.GetValueOrDefault(pc.Id);
+                SetChilds(pc.ChildComments, childrenPerParentId);
             }
         }
 
