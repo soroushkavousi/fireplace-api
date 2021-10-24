@@ -5,10 +5,12 @@ using System;
 namespace FireplaceApi.Infrastructure.Entities
 {
     [Index(nameof(VoterEntityId), IsUnique = false)]
+    [Index(nameof(VoterEntityUsername), IsUnique = false)]
     [Index(nameof(PostEntityId), IsUnique = false)]
     public class PostVoteEntity : BaseEntity
     {
         public long VoterEntityId { get; set; }
+        public string VoterEntityUsername { get; set; }
         public long PostEntityId { get; set; }
         public bool IsUp { get; set; }
         public long? Id { get; set; }
@@ -17,12 +19,14 @@ namespace FireplaceApi.Infrastructure.Entities
 
         private PostVoteEntity() : base() { }
 
-        public PostVoteEntity(long voterEntityId, long postEntityId, bool isUp,
-            DateTime? creationDate = null, DateTime? modifiedDate = null,
-            long? id = null, UserEntity voterEntity = null,
-            PostEntity postEntity = null) : base(creationDate, modifiedDate)
+        public PostVoteEntity(long voterEntityId, string voterEntityUsername,
+            long postEntityId, bool isUp, DateTime? creationDate = null,
+            DateTime? modifiedDate = null, long? id = null,
+            UserEntity voterEntity = null, PostEntity postEntity = null)
+            : base(creationDate, modifiedDate)
         {
             VoterEntityId = voterEntityId;
+            VoterEntityUsername = voterEntityUsername;
             PostEntityId = postEntityId;
             IsUp = isUp;
             Id = id;
@@ -30,8 +34,8 @@ namespace FireplaceApi.Infrastructure.Entities
             PostEntity = postEntity;
         }
 
-        public PostVoteEntity PureCopy() => new PostVoteEntity(VoterEntityId, PostEntityId,
-            IsUp, CreationDate, ModifiedDate, Id);
+        public PostVoteEntity PureCopy() => new PostVoteEntity(VoterEntityId,
+            VoterEntityUsername, PostEntityId, IsUp, CreationDate, ModifiedDate, Id);
     }
 
     public class PostVoteEntityConfiguration : IEntityTypeConfiguration<PostVoteEntity>
@@ -43,8 +47,8 @@ namespace FireplaceApi.Infrastructure.Entities
             modelBuilder
                 .HasOne(d => d.VoterEntity)
                 .WithMany(p => p.PostVoteEntities)
-                .HasForeignKey(d => d.VoterEntityId)
-                .HasPrincipalKey(p => p.Id)
+                .HasForeignKey(d => new { d.VoterEntityId, d.VoterEntityUsername })
+                .HasPrincipalKey(p => new { p.Id, p.Username })
                 .IsRequired();
 
             modelBuilder

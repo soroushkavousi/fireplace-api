@@ -45,6 +45,23 @@ namespace FireplaceApi.Core.Validators
             await Task.CompletedTask;
         }
 
+        public async Task ValidateVotePostInputParametersAsync(User requesterUser,
+            long id, bool? isUpvote)
+        {
+            await Task.CompletedTask;
+        }
+
+        public async Task ValidateToggleVoteForPostInputParametersAsync(User requesterUser,
+            long id)
+        {
+            await Task.CompletedTask;
+        }
+
+        public async Task ValidateDeleteVoteForPostInputParametersAsync(User requesterUser,
+            long id)
+        {
+            await Task.CompletedTask;
+        }
         public async Task ValidatePatchPostByIdInputParametersAsync(User requesterUser,
             long? id, string content)
         {

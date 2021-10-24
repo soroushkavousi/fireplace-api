@@ -15,6 +15,7 @@ namespace FireplaceApi.Core.Operators
         private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly IPostRepository _postRepository;
+        private readonly IPostVoteRepository _postVoteRepository;
         private readonly PageOperator _pageOperator;
         private readonly UserOperator _userOperator;
         private readonly CommunityOperator _communityOperator;
@@ -22,6 +23,7 @@ namespace FireplaceApi.Core.Operators
         public PostOperator(ILogger<PostOperator> logger,
             IConfiguration configuration, IServiceProvider serviceProvider,
             IPostRepository postRepository,
+            IPostVoteRepository postVoteRepository,
             PageOperator pageOperator, UserOperator userOperator,
             CommunityOperator communityOperator)
         {
@@ -29,6 +31,7 @@ namespace FireplaceApi.Core.Operators
             _configuration = configuration;
             _serviceProvider = serviceProvider;
             _postRepository = postRepository;
+            _postVoteRepository = postVoteRepository;
             _pageOperator = pageOperator;
             _userOperator = userOperator;
             _communityOperator = communityOperator;
@@ -90,11 +93,50 @@ namespace FireplaceApi.Core.Operators
             return post;
         }
 
-        public async Task<Post> PatchPostByIdAsync(long id, string content)
+        public async Task<Post> VotePostAsync(User requesterUser,
+            long id, bool isUp)
+        {
+            var postVote = await _postVoteRepository
+                .CreatePostVoteAsync(requesterUser.Id, requesterUser.Username,
+                    id, isUp);
+            var voteChange = postVote.IsUp ? +1 : -1;
+            var post = await PatchPostByIdAsync(id, null, voteChange: voteChange);
+            return post;
+        }
+
+        public async Task<Post> ToggleVoteForPostAsync(User requesterUser,
+            long id)
+        {
+            var postVote = await _postVoteRepository.GetPostVoteAsync(
+                requesterUser.Id, id, includePost: true);
+            postVote.IsUp = !postVote.IsUp;
+            await _postVoteRepository.UpdatePostVoteAsync(postVote);
+            var voteChange = postVote.IsUp ? +2 : -2;
+            var post = await ApplyPostChangesAsync(postVote.Post,
+                null, voteChange: voteChange);
+            return post;
+        }
+
+        public async Task<Post> DeleteVoteForPostAsync(User requesterUser,
+            long id)
+        {
+            var postVote = await _postVoteRepository.GetPostVoteAsync(
+                requesterUser.Id, id, includePost: true);
+            var voteChange = postVote.IsUp ? -1 : +1;
+            await _postVoteRepository.DeletePostVoteByIdAsync(
+                postVote.Id);
+            var post = await ApplyPostChangesAsync(postVote.Post,
+                null, voteChange: voteChange);
+            return post;
+        }
+
+        public async Task<Post> PatchPostByIdAsync(long id, string content,
+            int? voteChange)
         {
             var post = await _postRepository
                 .GetPostByIdAsync(id);
-            post = await ApplyPostChangesAsync(post, content);
+            post = await ApplyPostChangesAsync(post, content,
+                voteChange);
             post = await GetPostByIdAsync(post.Id,
                 false, false);
             return post;
@@ -113,11 +155,16 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<Post> ApplyPostChangesAsync(
-            Post post, string content)
+            Post post, string content, int? voteChange)
         {
             if (content != null)
             {
                 post.Content = content;
+            }
+
+            if (voteChange.HasValue)
+            {
+                post.Vote += voteChange.Value;
             }
 
             post = await _postRepository

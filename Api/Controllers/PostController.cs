@@ -91,6 +91,62 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
+        /// Vote a post.
+        /// </summary>
+        /// <returns>Voted post</returns>
+        /// <response code="200">Returns the Voted post</response>
+        [HttpPost("{id:long}/votes")]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<PostDto>> VotePostAsync(
+            [BindNever][FromHeader] User requesterUser,
+            [FromRoute] ControllerVotePostInputRouteParameters inputRouteParameters,
+            [FromBody] ControllerVotePostInputBodyParameters inputBodyParameters)
+
+        {
+            var post = await _postService.VotePostAsync(
+                requesterUser, inputRouteParameters.Id, inputBodyParameters.IsUpvote);
+            var postDto = _postConverter.ConvertToDto(post);
+            return postDto;
+        }
+
+        /// <summary>
+        /// Toggle your vote for the post.
+        /// </summary>
+        /// <returns>The post</returns>
+        /// <response code="200">Returns the post</response>
+        [HttpPatch("{id:long}/votes/me")]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<PostDto>> ToggleVoteForPostAsync(
+            [BindNever][FromHeader] User requesterUser,
+            [FromRoute] ControllerToggleVoteForPostInputRouteParameters inputRouteParameters)
+        {
+            var post = await _postService.ToggleVoteForPostAsync(
+                requesterUser, inputRouteParameters.Id);
+            var postDto = _postConverter.ConvertToDto(post);
+            return postDto;
+        }
+
+        /// <summary>
+        /// Delete your vote for the post.
+        /// </summary>
+        /// <returns>The post</returns>
+        /// <response code="200">Returns the post</response>
+        [HttpDelete("{id:long}/votes/me")]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<PostDto>> DeleteVoteForPostAsync(
+            [BindNever][FromHeader] User requesterUser,
+            [FromRoute] ControllerDeleteVoteForPostInputRouteParameters inputRouteParameters)
+        {
+            var post = await _postService.DeleteVoteForPostAsync(
+                requesterUser, inputRouteParameters.Id);
+            var postDto = _postConverter.ConvertToDto(post);
+            return postDto;
+        }
+
+        /// <summary>
         /// Update a single post by id.
         /// </summary>
         /// <returns>Updated post</returns>

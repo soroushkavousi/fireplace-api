@@ -52,7 +52,7 @@ namespace FireplaceApi.Infrastructure.Entities
 
             modelBuilder
                 .HasOne(d => d.CommentEntity)
-                .WithMany()
+                .WithMany(p => p.CommentVoteEntities)
                 .HasForeignKey(d => d.CommentEntityId)
                 .HasPrincipalKey(p => p.Id)
                 .IsRequired();

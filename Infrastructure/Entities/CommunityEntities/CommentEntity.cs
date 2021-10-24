@@ -19,6 +19,7 @@ namespace FireplaceApi.Infrastructure.Entities
         public long? Id { get; set; }
         public UserEntity AuthorEntity { get; set; }
         public PostEntity PostEntity { get; set; }
+        public List<CommentVoteEntity> CommentVoteEntities { get; set; }
 
         private CommentEntity() : base() { }
 
@@ -26,7 +27,8 @@ namespace FireplaceApi.Infrastructure.Entities
             long postEntityId, string content, List<long> parentCommentEntityIds = null,
             DateTime? creationDate = null, DateTime? modifiedDate = null,
             long? id = null, int vote = 0, UserEntity authorEntity = null,
-            PostEntity postEntity = null) : base(creationDate, modifiedDate)
+            PostEntity postEntity = null, List<CommentVoteEntity> commentVoteEntities = null)
+            : base(creationDate, modifiedDate)
         {
             AuthorEntityId = authorEntityId;
             AuthorEntityUsername = authorEntityUsername;
@@ -37,6 +39,7 @@ namespace FireplaceApi.Infrastructure.Entities
             Vote = vote;
             AuthorEntity = authorEntity;
             PostEntity = postEntity;
+            CommentVoteEntities = commentVoteEntities;
         }
 
         public CommentEntity PureCopy() => new CommentEntity(AuthorEntityId,

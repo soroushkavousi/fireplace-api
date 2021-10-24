@@ -58,6 +58,35 @@ namespace FireplaceApi.Core.Services
                     content);
         }
 
+        public async Task<Post> VotePostAsync(User requesterUser,
+            long id, bool? isUpvote)
+        {
+            await _postValidator.ValidateVotePostInputParametersAsync(
+                requesterUser, id, isUpvote);
+            var post = await _postOperator.VotePostAsync(
+                requesterUser, id, isUpvote.Value);
+            return post;
+        }
+
+        public async Task<Post> ToggleVoteForPostAsync(User requesterUser,
+            long id)
+        {
+            await _postValidator.ValidateToggleVoteForPostInputParametersAsync(
+                requesterUser, id);
+            var post = await _postOperator.ToggleVoteForPostAsync(
+                requesterUser, id);
+            return post;
+        }
+
+        public async Task<Post> DeleteVoteForPostAsync(User requesterUser,
+            long id)
+        {
+            await _postValidator.ValidateDeleteVoteForPostInputParametersAsync(
+                requesterUser, id);
+            var post = await _postOperator.DeleteVoteForPostAsync(
+                requesterUser, id);
+            return post;
+        }
 
         public async Task<Post> PatchPostByIdAsync(User requesterUser,
             long? id, string content)
@@ -65,7 +94,7 @@ namespace FireplaceApi.Core.Services
             await _postValidator
                 .ValidatePatchPostByIdInputParametersAsync(requesterUser, id, content);
             var post = await _postOperator
-                .PatchPostByIdAsync(id.Value, content);
+                .PatchPostByIdAsync(id.Value, content, null);
             return post;
         }
 
