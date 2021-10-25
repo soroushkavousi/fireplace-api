@@ -30,7 +30,7 @@ namespace FireplaceApi.Core.Operators
         {
             var limit = paginationInputParameters.Limit ?? GlobalOperator.GlobalValues.Pagination.MaximumOfPageItemsCount;
             var totalItemsCount = ItemIds.Count;
-            var totalPagesCount = totalItemsCount / limit + 1;
+            var totalPagesCount = (int)MathF.Ceiling((float)totalItemsCount / limit);
             if (totalItemsCount == 0)
                 return new Page<T>(null, null,
                     null, null, null, 0, 0, new List<long>(), new List<T>());
@@ -59,7 +59,7 @@ namespace FireplaceApi.Core.Operators
                 .GetQueryResultByPointerAsync(modelName, paginationInputParameters.Pointer);
             var limit = paginationInputParameters.Limit ?? queryResult.LastLimit;
             var totalItemsCount = queryResult.ReferenceIds.Count;
-            var totalPagesCount = totalItemsCount / limit + 1;
+            var totalPagesCount = (int)MathF.Ceiling((float)totalItemsCount / limit);
 
             var (start, end, page) = CalculateStartAndEndAndPage(paginationInputParameters, limit,
                 totalItemsCount, totalPagesCount, queryResult.LastStart, queryResult.LastEnd,
