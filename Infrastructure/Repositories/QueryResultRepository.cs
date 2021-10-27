@@ -43,6 +43,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                 case ModelName.COMMUNITY_MEMBERSHIP:
                     return await GetQueryResultByPointerAsync(
                         _fireplaceApiContext.CommunityMembershipQueryResultEntities, pointer);
+                case ModelName.POST:
+                    return await GetQueryResultByPointerAsync(
+                        _fireplaceApiContext.PostQueryResultEntities, pointer);
                 case ModelName.COMMENT:
                     return await GetQueryResultByPointerAsync(
                         _fireplaceApiContext.CommentQueryResultEntities, pointer);
@@ -80,6 +83,10 @@ namespace FireplaceApi.Infrastructure.Repositories
                     return await CreateQueryResultAsync(
                         _fireplaceApiContext.CommunityMembershipQueryResultEntities, pointer, lastStart,
                             lastEnd, lastLimit, lastPage, referenceEntityIds);
+                case ModelName.POST:
+                    return await CreateQueryResultAsync(
+                        _fireplaceApiContext.PostQueryResultEntities, pointer, lastStart,
+                            lastEnd, lastLimit, lastPage, referenceEntityIds);
                 case ModelName.COMMENT:
                     return await CreateQueryResultAsync(
                         _fireplaceApiContext.CommentQueryResultEntities, pointer, lastStart,
@@ -116,6 +123,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                 case ModelName.COMMUNITY_MEMBERSHIP:
                     return await UpdateQueryResultAsync(
                         _fireplaceApiContext.CommunityMembershipQueryResultEntities, queryResult);
+                case ModelName.POST:
+                    return await UpdateQueryResultAsync(
+                        _fireplaceApiContext.PostQueryResultEntities, queryResult);
                 case ModelName.COMMENT:
                     return await UpdateQueryResultAsync(
                         _fireplaceApiContext.CommentQueryResultEntities, queryResult);
@@ -158,6 +168,10 @@ namespace FireplaceApi.Infrastructure.Repositories
                     await DeleteQueryResultByPointerAsync(
                         _fireplaceApiContext.CommunityMembershipQueryResultEntities, pointer);
                     break;
+                case ModelName.POST:
+                    await DeleteQueryResultByPointerAsync(
+                        _fireplaceApiContext.PostQueryResultEntities, pointer);
+                    break;
                 case ModelName.COMMENT:
                     await DeleteQueryResultByPointerAsync(
                         _fireplaceApiContext.CommentQueryResultEntities, pointer);
@@ -193,6 +207,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                 case ModelName.COMMUNITY_MEMBERSHIP:
                     return await DoesQueryResultPointerExistAsync(
                         _fireplaceApiContext.CommunityMembershipQueryResultEntities, pointer);
+                case ModelName.POST:
+                    return await DoesQueryResultPointerExistAsync(
+                        _fireplaceApiContext.PostQueryResultEntities, pointer);
                 case ModelName.COMMENT:
                     return await DoesQueryResultPointerExistAsync(
                         _fireplaceApiContext.CommentQueryResultEntities, pointer);

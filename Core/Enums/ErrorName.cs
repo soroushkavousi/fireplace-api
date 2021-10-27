@@ -33,6 +33,9 @@
 
         SESSION_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED,
 
+        //New
+        PAGINATION_POINTER_DOES_NOT_EXIST,
+
 
         // Format errors
         REQUEST_CONTENT_TYPE_IS_NOT_VALID,
@@ -60,6 +63,13 @@
 
         ACCESS_TOKEN_VALUE_IS_NOT_VALID,
 
+        //New
+        PAGINATION_LIMIT_MIN_LIMIT,
+        PAGINATION_LIMIT_MAX_LIMIT,
+        PAGINATION_PAGE_POINTER_NOT_VALID,
+        PAGINATION_OFFSET_OUT_OF_RANGE,
+        PAGINATION_PAGE_OUT_OF_RANGE,
+
 
         // Missing parameter(s) errors
         FIRST_NAME_IS_MISSING,
@@ -74,5 +84,8 @@
         ERROR_CODE_IS_MISSING,
         ACCESS_TOKEN_VALUE_IS_MISSING,
         SESSION_ID_IS_MISSING,
+
+        //New
+        PAGINATION_POINTER_IS_MISSING,
     }
 }

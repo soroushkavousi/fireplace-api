@@ -75,7 +75,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { userId });
             var sw = Stopwatch.StartNew();
-            var communityMembershipEntities = await _communityMembershipEntities
+            var communityMembershipEntityIds = await _communityMembershipEntities
                 .AsNoTracking()
                 .Where(e => e.UserEntityId == userId)
                 .Include(
@@ -86,8 +86,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Select(e => e.Id.Value)
                 .ToListAsync();
 
-            _logger.LogIOInformation(sw, "Database | Output", new { communityMembershipEntities });
-            return communityMembershipEntities;
+            _logger.LogIOInformation(sw, "Database | Output", new { communityMembershipEntityIds });
+            return communityMembershipEntityIds;
         }
 
         public async Task<CommunityMembership> GetCommunityMembershipByIdAsync(long id,

@@ -3,6 +3,7 @@ using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Operators;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -60,7 +61,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 authorId, sort
             });
             var sw = Stopwatch.StartNew();
-            var commentEntities = await _commentEntities
+            var commentEntityIds = await _commentEntities
                 .AsNoTracking()
                 .Search(
                     authorId: authorId,
@@ -72,11 +73,12 @@ namespace FireplaceApi.Infrastructure.Repositories
                     parentCommentId: null,
                     isRoot: null
                 )
+                .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
                 .Select(e => e.Id.Value)
                 .ToListAsync();
 
-            _logger.LogIOInformation(sw, "Database | Output", new { commentEntities });
-            return commentEntities;
+            _logger.LogIOInformation(sw, "Database | Output", new { commentEntityIds });
+            return commentEntityIds;
         }
 
         public async Task<List<long>> ListPostCommentIdsAsync(long postId,
@@ -87,7 +89,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 postId, sort
             });
             var sw = Stopwatch.StartNew();
-            var commentEntities = await _commentEntities
+            var commentEntityIds = await _commentEntities
                 .AsNoTracking()
                 .Search(
                     authorId: null,
@@ -99,11 +101,12 @@ namespace FireplaceApi.Infrastructure.Repositories
                     parentCommentId: null,
                     isRoot: true
                 )
+                .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
                 .Select(e => e.Id.Value)
                 .ToListAsync();
 
-            _logger.LogIOInformation(sw, "Database | Output", new { commentEntities });
-            return commentEntities;
+            _logger.LogIOInformation(sw, "Database | Output", new { commentEntityIds });
+            return commentEntityIds;
         }
 
         public async Task<List<Comment>> ListChildCommentsAsync(long postId,

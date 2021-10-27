@@ -15,27 +15,32 @@ namespace FireplaceApi.Core.Validators
         private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly CommentOperator _commentOperator;
+        private readonly QueryResultValidator _queryResultValidator;
 
         public CommentValidator(ILogger<CommentValidator> logger, IConfiguration configuration,
-            IServiceProvider serviceProvider, CommentOperator commentOperator)
+            IServiceProvider serviceProvider, CommentOperator commentOperator,
+            QueryResultValidator queryResultValidator)
         {
             _logger = logger;
             _configuration = configuration;
             _serviceProvider = serviceProvider;
             _commentOperator = commentOperator;
+            _queryResultValidator = queryResultValidator;
         }
 
         public async Task ValidateListSelfCommentsInputParametersAsync(User requesterUser,
             PaginationInputParameters paginationInputParameters, SortType? sort)
         {
-            await Task.CompletedTask;
+            await _queryResultValidator.ValidatePaginationInputParameters(paginationInputParameters,
+                ModelName.COMMENT);
         }
 
         public async Task ValidateListPostCommentsInputParametersAsync(User requesterUser,
             PaginationInputParameters paginationInputParameters, long postId,
             SortType? sort)
         {
-            await Task.CompletedTask;
+            await _queryResultValidator.ValidatePaginationInputParameters(paginationInputParameters,
+                ModelName.COMMENT);
         }
 
         public async Task ValidateListChildCommentsAsyncInputParametersAsync(

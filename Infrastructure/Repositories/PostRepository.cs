@@ -95,7 +95,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 search, sort
             });
             var sw = Stopwatch.StartNew();
-            var postEntities = await _postEntities
+            var postEntityIds = await _postEntities
                 .AsNoTracking()
                 .Search(
                     authorId: authorId,
@@ -106,16 +106,12 @@ namespace FireplaceApi.Infrastructure.Repositories
                     search: search,
                     sort: sort
                 )
-                .Include(
-                    authorEntity: false,
-                    communityEntity: true
-                )
                 .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
                 .Select(e => e.Id.Value)
                 .ToListAsync();
 
-            _logger.LogIOInformation(sw, "Database | Output", new { postEntities });
-            return postEntities;
+            _logger.LogIOInformation(sw, "Database | Output", new { postEntityIds });
+            return postEntityIds;
         }
 
         public async Task<Post> GetPostByIdAsync(long id,

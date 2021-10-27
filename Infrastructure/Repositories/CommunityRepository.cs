@@ -71,15 +71,15 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { name });
             var sw = Stopwatch.StartNew();
-            var communityEntities = await _communityEntities
+            var communityEntityIds = await _communityEntities
                 .AsNoTracking()
                 .Where(e => e.Name.Contains(name))
                 .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
                 .Select(e => e.Id.Value)
                 .ToListAsync();
 
-            _logger.LogIOInformation(sw, "Database | Output", new { communityEntities });
-            return communityEntities;
+            _logger.LogIOInformation(sw, "Database | Output", new { communityEntityIds });
+            return communityEntityIds;
         }
 
         public async Task<Community> GetCommunityByIdAsync(long id, bool includeCreator = false)

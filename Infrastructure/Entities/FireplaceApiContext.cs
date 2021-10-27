@@ -33,6 +33,7 @@ namespace FireplaceApi.Infrastructure.Entities
         //Each entity has its own QueryResultEntity.
         public DbSet<CommunityQueryResultEntity> CommunityQueryResultEntities { get; set; }
         public DbSet<CommunityMembershipQueryResultEntity> CommunityMembershipQueryResultEntities { get; set; }
+        public DbSet<PostQueryResultEntity> PostQueryResultEntities { get; set; }
         public DbSet<CommentQueryResultEntity> CommentQueryResultEntities { get; set; }
 
         public FireplaceApiContext(ILogger<FireplaceApiContext> logger, DbContextOptions<FireplaceApiContext> options)

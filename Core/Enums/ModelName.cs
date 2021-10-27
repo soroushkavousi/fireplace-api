@@ -4,6 +4,7 @@
     {
         COMMUNITY,
         COMMUNITY_MEMBERSHIP,
+        POST,
         COMMENT,
         ACCESS_TOKEN,
         EMAIL,

@@ -15,14 +15,17 @@ namespace FireplaceApi.Core.Validators
         private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly PostOperator _postOperator;
+        private readonly QueryResultValidator _queryResultValidator;
 
         public PostValidator(ILogger<PostValidator> logger, IConfiguration configuration,
-            IServiceProvider serviceProvider, PostOperator postOperator)
+            IServiceProvider serviceProvider, PostOperator postOperator,
+            QueryResultValidator queryResultValidator)
         {
             _logger = logger;
             _configuration = configuration;
             _serviceProvider = serviceProvider;
             _postOperator = postOperator;
+            _queryResultValidator = queryResultValidator;
         }
 
         public async Task ValidateListPostsInputParametersAsync(User requesterUser,
@@ -30,7 +33,8 @@ namespace FireplaceApi.Core.Validators
             bool? joined, long? communityId, string communityName,
             string search, SortType? sort)
         {
-            await Task.CompletedTask;
+            await _queryResultValidator.ValidatePaginationInputParameters(
+                paginationInputParameters, ModelName.POST);
         }
 
         public async Task ValidateGetPostByIdInputParametersAsync(User requesterUser, long? id,

@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Configuration;
@@ -14,21 +15,25 @@ namespace FireplaceApi.Core.Validators
         private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly CommunityOperator _communityOperator;
+        private readonly QueryResultValidator _queryResultValidator;
 
 
         public CommunityValidator(ILogger<CommunityValidator> logger, IConfiguration configuration,
-            IServiceProvider serviceProvider, CommunityOperator communityOperator)
+            IServiceProvider serviceProvider, CommunityOperator communityOperator,
+            QueryResultValidator queryResultValidator)
         {
             _logger = logger;
             _configuration = configuration;
             _serviceProvider = serviceProvider;
             _communityOperator = communityOperator;
+            _queryResultValidator = queryResultValidator;
         }
 
         public async Task ValidateListCommunitiesInputParametersAsync(User requesterUser,
             PaginationInputParameters paginationInputParameters, string name)
         {
-            await Task.CompletedTask;
+            await _queryResultValidator.ValidatePaginationInputParameters(paginationInputParameters,
+                ModelName.COMMUNITY);
         }
 
         public async Task ValidateGetCommunityByIdInputParametersAsync(User requesterUser, long? id,

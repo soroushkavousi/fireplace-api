@@ -49,6 +49,7 @@ namespace FireplaceApi.Infrastructure.Entities
 
     public class CommunityQueryResultEntity : QueryResultEntity { }
     public class CommunityMembershipQueryResultEntity : QueryResultEntity { }
+    public class PostQueryResultEntity : QueryResultEntity { }
     public class CommentQueryResultEntity : QueryResultEntity { }
 
     //public class CommunityQueryResultEntityConfiguration : IEntityTypeConfiguration<CommunityQueryResultEntity>
