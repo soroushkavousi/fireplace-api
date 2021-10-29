@@ -31,10 +31,12 @@ namespace FireplaceApi.Core.Validators
         public async Task ValidateListPostsInputParametersAsync(User requesterUser,
             PaginationInputParameters paginationInputParameters, bool? self,
             bool? joined, long? communityId, string communityName,
-            string search, SortType? sort)
+            string search, SortType? sort, string stringOfSort)
         {
             await _queryResultValidator.ValidatePaginationInputParameters(
                 paginationInputParameters, ModelName.POST);
+
+            ValidateInputEnum(sort, stringOfSort, nameof(sort), ErrorName.INPUT_SORT_IS_NOT_VALID);
         }
 
         public async Task ValidateGetPostByIdInputParametersAsync(User requesterUser, long? id,

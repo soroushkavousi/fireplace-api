@@ -8,13 +8,32 @@ namespace FireplaceApi.Core.Validators
         public void ValidateParameterIsNotMissing(string parameter, string parameterName, ErrorName errorId)
         {
             if (string.IsNullOrWhiteSpace(parameter))
-                throw new ApiException(errorId, $"String parameter ({parameterName}) with input value ({parameter}) is missing!");
+            {
+                var serverMessage = $"String parameter ({parameterName}) with input value ({parameter}) is missing!";
+                throw new ApiException(errorId, serverMessage);
+            }
         }
 
         public void ValidateParameterIsNotMissing(object parameter, string parameterName, ErrorName errorId)
         {
             if (parameter == null)
-                throw new ApiException(errorId, $"Parameter ({parameterName}) is missing!");
+            {
+                var serverMessage = $"Parameter ({parameterName}) is missing!";
+                throw new ApiException(errorId, serverMessage);
+            }
+        }
+
+        public void ValidateInputEnum<TEnum>(TEnum? enumValue, string stringOfValue,
+            string enumParameterName, ErrorName errorId) where TEnum : struct
+        {
+            if (enumValue.HasValue)
+                return;
+
+            if (!string.IsNullOrWhiteSpace(stringOfValue))
+            {
+                var serverMessage = $"Enum parameter ({enumParameterName}) has illegal value!";
+                throw new ApiException(errorId, serverMessage);
+            }
         }
 
         //private void ValidateObjectParametersAreNotNull(ErrorId errorCode, object obj, params string[] exceptions)

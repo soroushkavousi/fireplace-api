@@ -22,5 +22,8 @@ namespace FireplaceApi.Api.Controllers
 
         [FromQuery(Name = "sort")]
         public SortType? Sort { get; set; }
+
+        [FromQuery(Name = "sort")]
+        public string StringOfSort { get; set; }
     }
 }

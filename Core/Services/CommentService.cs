@@ -24,10 +24,11 @@ namespace FireplaceApi.Core.Services
         }
 
         public async Task<Page<Comment>> ListSelfCommentsAsync(User requesterUser,
-            PaginationInputParameters paginationInputParameters, SortType? sort)
+            PaginationInputParameters paginationInputParameters, SortType? sort,
+            string stringOfSort)
         {
             await _commentValidator.ValidateListSelfCommentsInputParametersAsync(requesterUser,
-                paginationInputParameters, sort);
+                paginationInputParameters, sort, stringOfSort);
             var page = await _commentOperator.ListSelfCommentsAsync(requesterUser,
                 paginationInputParameters, sort);
             return page;
@@ -35,10 +36,10 @@ namespace FireplaceApi.Core.Services
 
         public async Task<Page<Comment>> ListPostCommentsAsync(User requesterUser,
             PaginationInputParameters paginationInputParameters, long postId,
-            SortType? sort)
+            SortType? sort, string stringOfSort)
         {
             await _commentValidator.ValidateListPostCommentsInputParametersAsync(requesterUser,
-                paginationInputParameters, postId, sort);
+                paginationInputParameters, postId, sort, stringOfSort);
             var page = await _commentOperator.ListPostCommentsAsync(requesterUser,
                 paginationInputParameters, postId, sort);
             return page;

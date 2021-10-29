@@ -4,11 +4,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Api.Controllers
 {
-
     public class ControllerListSelfCommentsInputQueryParameters : PaginationInputQueryParameters
     {
         [FromQuery(Name = "sort")]
         public SortType? Sort { get; set; }
+
+        [FromQuery(Name = "sort")]
+        public string StringOfSort { get; set; }
     }
 
     public class ControllerListPostCommentsInputRouteParameters
@@ -22,6 +24,9 @@ namespace FireplaceApi.Api.Controllers
     {
         [FromQuery(Name = "sort")]
         public SortType? Sort { get; set; }
+
+        [FromQuery(Name = "sort")]
+        public string StringOfSort { get; set; }
     }
 
     public class ControllerListChildCommentsInputRouteParameters

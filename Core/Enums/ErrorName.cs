@@ -70,6 +70,7 @@
         PAGINATION_OFFSET_OUT_OF_RANGE,
         PAGINATION_PAGE_OUT_OF_RANGE,
 
+        INPUT_SORT_IS_NOT_VALID,
 
         // Missing parameter(s) errors
         FIRST_NAME_IS_MISSING,

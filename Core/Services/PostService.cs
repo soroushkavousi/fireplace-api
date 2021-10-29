@@ -25,11 +25,11 @@ namespace FireplaceApi.Core.Services
         public async Task<Page<Post>> ListPostsAsync(User requesterUser,
             PaginationInputParameters paginationInputParameters, bool? self,
             bool? joined, long? communityId, string communityName,
-            string search, SortType? sort)
+            string search, SortType? sort, string stringOfSort)
         {
             await _postValidator.ValidateListPostsInputParametersAsync(requesterUser,
                 paginationInputParameters, self, joined, communityId, communityName,
-                search, sort);
+                search, sort, stringOfSort);
             var page = await _postOperator.ListPostsAsync(requesterUser,
                 paginationInputParameters, self, joined, communityId, communityName,
                 search, sort);
