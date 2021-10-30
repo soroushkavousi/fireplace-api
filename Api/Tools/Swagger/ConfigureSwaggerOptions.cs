@@ -53,8 +53,8 @@ namespace FireplaceApi.Api.Tools
             description_html += $@"
                 <div>
                     <div>Sample urls:</div>
-                    <div><a href=""{GlobalOperator.GlobalValues.Api.BaseUrlPath}/users/{{your-id}}\"">{GlobalOperator.GlobalValues.Api.BaseUrlPath}/users/{{your-id}}</a></div>
-                    <div><a href=""{GlobalOperator.GlobalValues.Api.BaseUrlPath}/v0.1/users/{{your-id}}\"">{GlobalOperator.GlobalValues.Api.BaseUrlPath}/v0.1/users/{{your-id}}</a></div>
+                    <div><a href=""{GlobalOperator.GlobalValues.Api.BaseUrlPath}/communities?name=developers"">{GlobalOperator.GlobalValues.Api.BaseUrlPath}/communities?name=developers</a></div>
+                    <div><a href=""{GlobalOperator.GlobalValues.Api.BaseUrlPath}/comments"">{GlobalOperator.GlobalValues.Api.BaseUrlPath}/comments</a></div>
                 </div>";
 
             description_html += $@"
