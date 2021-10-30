@@ -59,7 +59,10 @@ namespace FireplaceApi.Infrastructure.Repositories
             var sw = Stopwatch.StartNew();
             var communityEntities = await _communityEntities
                 .AsNoTracking()
-                .Where(e => e.Name.Contains(name))
+                .Search(
+                    search: name,
+                    sort: null
+                )
                 .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
                 .ToListAsync();
 
@@ -73,7 +76,10 @@ namespace FireplaceApi.Infrastructure.Repositories
             var sw = Stopwatch.StartNew();
             var communityEntityIds = await _communityEntities
                 .AsNoTracking()
-                .Where(e => e.Name.Contains(name))
+                .Search(
+                    search: name,
+                    sort: null
+                )
                 .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
                 .Select(e => e.Id.Value)
                 .ToListAsync();
@@ -243,6 +249,32 @@ namespace FireplaceApi.Infrastructure.Repositories
                 communityEntitiesQuery = communityEntitiesQuery.Include(e => e.CreatorEntity);
 
             return communityEntitiesQuery;
+        }
+
+        public static IQueryable<CommunityEntity> Search(
+            [NotNull] this IQueryable<CommunityEntity> q, string search, 
+            SortType? sort)
+        {
+            if (!string.IsNullOrWhiteSpace(search))
+                q = q.Where(e => EF.Functions
+                    .ILike(EF.Functions.Collate(e.Name, "default"), $"%{search}%"));
+
+            if (sort.HasValue)
+            {
+                switch (sort)
+                {
+                    case SortType.NEW:
+                        q = q.OrderByDescending(e => e.CreationDate);
+                        break;
+                    case SortType.OLD:
+                        q = q.OrderBy(e => e.CreationDate);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return q;
         }
     }
 }
