@@ -96,15 +96,24 @@ namespace FireplaceApi.Core.Operators
             return communityMembership;
         }
 
-        public async Task DeleteCommunityMembershipByIdAsync(long id)
+        public async Task DeleteCommunityMembershipByIdAsync(long userId,
+            Identifier communityIdentifier)
         {
-            await _communityMembershipRepository.DeleteCommunityMembershipByIdAsync(id);
+            await _communityMembershipRepository.DeleteCommunityMembershipByIdAsync(
+                userId, communityIdentifier);
         }
 
         public async Task<bool> DoesCommunityMembershipIdExistAsync(long id)
         {
             var communityMembershipIdExists = await _communityMembershipRepository
                 .DoesCommunityMembershipIdExistAsync(id);
+            return communityMembershipIdExists;
+        }
+
+        public async Task<bool> DoesCommunityMembershipExistAsync(long userId, long communityId)
+        {
+            var communityMembershipIdExists = await _communityMembershipRepository
+                .DoesCommunityMembershipExistAsync(userId, communityId);
             return communityMembershipIdExists;
         }
 

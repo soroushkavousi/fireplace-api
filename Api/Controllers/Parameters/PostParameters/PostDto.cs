@@ -113,9 +113,9 @@ namespace FireplaceApi.Api.Controllers
             [nameof(PostController.CreatePostAsync)] = PureExample1,
             [nameof(PostController.VotePostAsync)] = PureExample1,
             [nameof(PostController.ToggleVoteForPostAsync)] = PureExample1,
-            [nameof(PostController.DeleteVoteForPostAsync)] = PureExample1,
+            [nameof(PostController.DeleteVoteForPostAsync)] = new OpenApiNull(),
             [nameof(PostController.PatchPostByIdAsync)] = PureExample1,
-            [nameof(PostController.DeletePostByIdAsync)] = PureExample1,
+            [nameof(PostController.DeletePostByIdAsync)] = new OpenApiNull(),
         };
 
         static PostDto()

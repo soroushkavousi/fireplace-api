@@ -29,46 +29,6 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
-        /// List all community memberships.
-        /// </summary>
-        /// <returns>List of community memberships</returns>
-        /// <response code="200">All community memberships was successfully retrieved.</response>
-        [HttpGet]
-        [ProducesResponseType(typeof(PageDto<CommunityMembershipDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<PageDto<CommunityMembershipDto>>> ListCommunityMembershipsAsync(
-            [BindNever][FromHeader] User requesterUser,
-            [FromQuery] ControllerListCommunityMembershipsInputQueryParameters inputQueryParameters)
-        {
-            //var accessTokenValue = FindAccessTokenValue(inputHeaderParameters, inputCookieParameters);
-            var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
-            var page = await _communityMembershipService.ListCommunityMembershipsAsync(requesterUser,
-                paginationInputParameters);
-            var requestPath = HttpContext.Request.Path;
-            var pageDto = _communityMembershipConverter.ConvertToDto(page, requestPath);
-            //SetOutputHeaderParameters(communityMembershipDtos.HeaderParameters);
-            return pageDto;
-        }
-
-        /// <summary>
-        /// Get a single community membership by id.
-        /// </summary>
-        /// <returns>Requested community membership</returns>
-        /// <response code="200">The community membership was successfully retrieved.</response>
-        [HttpGet("{id:long}")]
-        [ProducesResponseType(typeof(CommunityMembershipDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<CommunityMembershipDto>> GetCommunityMembershipByIdAsync(
-            [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerGetCommunityMembershipByIdInputRouteParameters inputRouteParameters,
-            [FromQuery] ControllerGetCommunityMembershipInputQueryParameters inputQueryParameters)
-        {
-            var communityMembership = await _communityMembershipService
-                .GetCommunityMembershipByIdAsync(requesterUser, inputRouteParameters.Id,
-                inputQueryParameters.IncludeCreator, inputQueryParameters.IncludeCommunity);
-            var communityMembershipDto = _communityMembershipConverter.ConvertToDto(communityMembership);
-            return communityMembershipDto;
-        }
-
-        /// <summary>
         /// Create a community membership.
         /// </summary>
         /// <returns>Created community membership</returns>
@@ -87,37 +47,36 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
-        /// Update a single community membership by id.
-        /// </summary>
-        /// <returns>Updated community membership</returns>
-        /// <response code="200">The community membership was successfully updated.</response>
-        [HttpPatch("{id:long}")]
-        [Consumes("application/merge-patch+json")]
-        [ProducesResponseType(typeof(CommunityMembershipDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<CommunityMembershipDto>> PatchCommunityMembershipByIdAsync(
-            [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerPatchCommunityMembershipByIdInputRouteParameters inputRouteParameters,
-            [FromBody] ControllerPatchCommunityMembershipInputBodyParameters inputBodyParameters)
-        {
-            var communityMembership = await _communityMembershipService.PatchCommunityMembershipByIdAsync(requesterUser,
-                inputRouteParameters.Id);
-            var communityMembershipDto = _communityMembershipConverter.ConvertToDto(communityMembership);
-            return communityMembershipDto;
-        }
-
-        /// <summary>
-        /// Delete a single community membership by id.
+        /// Exit from a community.
         /// </summary>
         /// <returns>No content</returns>
         /// <response code="200">The community membership was successfully deleted.</response>
-        [HttpDelete("{id:long}")]
+        [HttpDelete("/v{version:apiVersion}/communities/{communityId:long}/members/me")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteCommunityMembershipByIdAsync(
+        public async Task<IActionResult> DeleteCommunityMembershipByCommunityIdAsync(
             [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerDeleteCommunityMembershipByIdInputRouteParameters inputRouteParameters)
+            [FromRoute] ControllerDeleteCommunityMembershipByCommunityIdInputRouteParameters inputRouteParameters)
+
         {
-            await _communityMembershipService.DeleteCommunityMembershipByIdAsync(requesterUser,
-                inputRouteParameters.Id);
+            await _communityMembershipService.DeleteCommunityMembershipAsync(requesterUser,
+                inputRouteParameters.CommunityId, null);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Exit from a community.
+        /// </summary>
+        /// <returns>No content</returns>
+        /// <response code="200">The community membership was successfully deleted.</response>
+        [HttpDelete("/v{version:apiVersion}/communities/{communityName:alpha}/members/me")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteCommunityMembershipByCommunityNameAsync(
+            [BindNever][FromHeader] User requesterUser,
+            [FromRoute] ControllerDeleteCommunityMembershipByCommunityNameInputRouteParameters inputRouteParameters)
+
+        {
+            await _communityMembershipService.DeleteCommunityMembershipAsync(requesterUser,
+                null, inputRouteParameters.CommunityName);
             return Ok();
         }
     }

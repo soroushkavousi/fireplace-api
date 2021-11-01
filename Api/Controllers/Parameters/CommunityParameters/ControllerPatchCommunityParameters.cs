@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace FireplaceApi.Api.Controllers
 {
@@ -11,7 +12,7 @@ namespace FireplaceApi.Api.Controllers
     {
         [Required]
         [FromRoute(Name = "id")]
-        public long? Id { get; set; }
+        public long Id { get; set; }
     }
 
     public class ControllerPatchCommunityByNameInputRouteParameters
@@ -24,11 +25,12 @@ namespace FireplaceApi.Api.Controllers
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
     public class ControllerPatchCommunityInputBodyParameters
     {
-        public string Name { get; set; }
+        [JsonPropertyName("name")]
+        public string NewName { get; set; }
 
         public static IOpenApiAny Example { get; } = new OpenApiObject
         {
-            [nameof(Name).ToSnakeCase()] = new OpenApiString("new-name"),
+            [nameof(NewName).ToSnakeCase()] = new OpenApiString("new-name"),
         };
     }
 }

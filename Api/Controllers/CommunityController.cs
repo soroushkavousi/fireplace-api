@@ -121,7 +121,8 @@ namespace FireplaceApi.Api.Controllers
             [FromRoute] ControllerPatchCommunityByIdInputRouteParameters inputRouteParameters,
             [FromBody] ControllerPatchCommunityInputBodyParameters inputBodyParameters)
         {
-            var community = await _communityService.PatchCommunityByIdAsync(requesterUser, inputRouteParameters.Id);
+            var community = await _communityService.PatchCommunityByIdAsync(requesterUser,
+                inputRouteParameters.Id, inputBodyParameters.NewName);
             var communityDto = _communityConverter.ConvertToDto(community);
             return communityDto;
         }
@@ -139,7 +140,8 @@ namespace FireplaceApi.Api.Controllers
             [FromRoute] ControllerPatchCommunityByNameInputRouteParameters inputRouteParameters,
             [FromBody] ControllerPatchCommunityInputBodyParameters inputBodyParameters)
         {
-            var community = await _communityService.PatchCommunityByNameAsync(requesterUser, inputRouteParameters.Name);
+            var community = await _communityService.PatchCommunityByNameAsync(requesterUser,
+                inputRouteParameters.Name, inputBodyParameters.NewName);
             var communityDto = _communityConverter.ConvertToDto(community);
             return communityDto;
         }

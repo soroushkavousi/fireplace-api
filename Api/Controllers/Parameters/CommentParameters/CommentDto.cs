@@ -121,9 +121,9 @@ namespace FireplaceApi.Api.Controllers
             [nameof(CommentController.ReplyToCommentAsync)] = PureExample1,
             [nameof(CommentController.VoteCommentAsync)] = PureExample1,
             [nameof(CommentController.ToggleVoteForCommentAsync)] = PureExample1,
-            [nameof(CommentController.DeleteVoteForCommentAsync)] = PureExample1,
+            [nameof(CommentController.DeleteVoteForCommentAsync)] = new OpenApiNull(),
             [nameof(CommentController.PatchCommentByIdAsync)] = PureExample1,
-            [nameof(CommentController.DeleteCommentByIdAsync)] = PureExample1,
+            [nameof(CommentController.DeleteCommentByIdAsync)] = new OpenApiNull(),
         };
 
         static CommentDto()

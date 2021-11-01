@@ -11,7 +11,7 @@ namespace FireplaceApi.Api.Controllers
     {
         [Required]
         [FromRoute(Name = "id")]
-        public long? Id { get; set; }
+        public long Id { get; set; }
     }
 
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]

@@ -99,8 +99,8 @@ namespace FireplaceApi.Api.Controllers
             [nameof(UserController.GetUserByUsernameAsync)] = Example1,
             [nameof(UserController.PatchUserByIdAsync)] = Example1,
             [nameof(UserController.PatchUserByUsernameAsync)] = Example1,
-            [nameof(UserController.DeleteUserByIdAsync)] = Example1,
-            [nameof(UserController.DeleteUserByUsernameAsync)] = Example1,
+            [nameof(UserController.DeleteUserByIdAsync)] = new OpenApiNull(),
+            [nameof(UserController.DeleteUserByUsernameAsync)] = new OpenApiNull(),
         };
 
         static UserDto()

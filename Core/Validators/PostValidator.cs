@@ -1,4 +1,6 @@
 ﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.ValueObjects;
@@ -16,16 +18,19 @@ namespace FireplaceApi.Core.Validators
         private readonly IServiceProvider _serviceProvider;
         private readonly PostOperator _postOperator;
         private readonly QueryResultValidator _queryResultValidator;
+        private readonly CommunityValidator _communityValidator;
 
         public PostValidator(ILogger<PostValidator> logger, IConfiguration configuration,
             IServiceProvider serviceProvider, PostOperator postOperator,
-            QueryResultValidator queryResultValidator)
+            QueryResultValidator queryResultValidator,
+            CommunityValidator communityValidator)
         {
             _logger = logger;
             _configuration = configuration;
             _serviceProvider = serviceProvider;
             _postOperator = postOperator;
             _queryResultValidator = queryResultValidator;
+            _communityValidator = communityValidator;
         }
 
         public async Task ValidateListPostsInputParametersAsync(User requesterUser,
@@ -37,24 +42,30 @@ namespace FireplaceApi.Core.Validators
                 paginationInputParameters, ModelName.POST);
 
             ValidateInputEnum(sort, stringOfSort, nameof(sort), ErrorName.INPUT_SORT_IS_NOT_VALID);
+            Community community;
+            if (communityId.HasValue || !string.IsNullOrWhiteSpace(communityName))
+                community = await _communityValidator.ValidateCommunityExistsAsync(
+                    communityId, communityName);
         }
 
-        public async Task ValidateGetPostByIdInputParametersAsync(User requesterUser, long? id,
+        public async Task ValidateGetPostByIdInputParametersAsync(User requesterUser, long id,
             bool? includeAuthor, bool? includeCommunity)
         {
-            await Task.CompletedTask;
+            var post = await ValidatePostExistsAsync(id);
         }
 
         public async Task ValidateCreatePostInputParametersAsync(User requesterUser,
             long? communityId, string communityName, string content)
         {
-            await Task.CompletedTask;
+            ValidatePostContentFormat(content);
+            var community = await _communityValidator.ValidateCommunityExistsAsync(
+                communityId, communityName);
         }
 
         public async Task ValidateVotePostInputParametersAsync(User requesterUser,
             long id, bool? isUpvote)
         {
-            await Task.CompletedTask;
+            var post = await ValidatePostExistsAsync(id);
         }
 
         public async Task ValidateToggleVoteForPostInputParametersAsync(User requesterUser,
@@ -68,15 +79,54 @@ namespace FireplaceApi.Core.Validators
         {
             await Task.CompletedTask;
         }
+
         public async Task ValidatePatchPostByIdInputParametersAsync(User requesterUser,
-            long? id, string content)
+            long id, string content)
         {
-            await Task.CompletedTask;
+            ValidatePostContentFormat(content);
+            var post = await ValidatePostExistsAsync(id);
+            ValidateRequesterUserCanAlterPost(requesterUser, post);
         }
 
-        public async Task ValidateDeletePostByIdInputParametersAsync(User requesterUser, long? id)
+        public async Task ValidateDeletePostByIdInputParametersAsync(User requesterUser,
+            long id)
         {
-            await Task.CompletedTask;
+            var post = await ValidatePostExistsAsync(id);
+            ValidateRequesterUserCanAlterPost(requesterUser, post);
+        }
+
+        public async Task<Post> ValidatePostExistsAsync(long id)
+        {
+            var post = await _postOperator.GetPostByIdAsync(id, true, true);
+            if (post == null)
+            {
+                var serverMessage = $"Post id {id} doesn't exist!";
+                throw new ApiException(ErrorName.POST_DOES_NOT_EXIST, serverMessage);
+            }
+            return post;
+        }
+
+        public void ValidatePostContentFormat(string content)
+        {
+            var maximumLength = 2000;
+            if (content.Length > maximumLength)
+            {
+                var serverMessage = $"POST content exceeds the maximum length! "
+                    + new { maximumLength, ContentLength = content.Length }.ToJson();
+                throw new ApiException(ErrorName.POST_CONTENT_MAX_LENGTH, serverMessage);
+            }
+        }
+
+        public void ValidateRequesterUserCanAlterPost(User requesterUser,
+            Post post)
+        {
+            if (requesterUser.Id != post.AuthorId)
+            {
+                var serverMessage = $"requesterUser {requesterUser.Id} can't alter " +
+                    $"post {post.Id}";
+                throw new ApiException(ErrorName.USER_CAN_NOT_ALTER_POST,
+                    serverMessage);
+            }
         }
     }
 }

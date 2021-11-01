@@ -53,24 +53,28 @@ namespace FireplaceApi.Core.Services
                 .CreateCommunityAsync(name, requesterUser.Id);
         }
 
-        public async Task<Community> PatchCommunityByIdAsync(User requesterUser, long? id)
+        public async Task<Community> PatchCommunityByIdAsync(User requesterUser,
+            long id, string newName)
         {
-            await _communityValidator.ValidatePatchCommunityByIdInputParametersAsync(requesterUser, id);
-            var community = await _communityOperator.PatchCommunityByIdAsync(id.Value);
+            await _communityValidator.ValidatePatchCommunityByIdInputParametersAsync(
+                requesterUser, id, newName);
+            var community = await _communityOperator.PatchCommunityByIdAsync(id, newName);
             return community;
         }
 
-        public async Task<Community> PatchCommunityByNameAsync(User requesterUser, string name)
+        public async Task<Community> PatchCommunityByNameAsync(User requesterUser,
+            string name, string newName)
         {
-            await _communityValidator.ValidatePatchCommunityByNameInputParametersAsync(requesterUser, name);
-            var community = await _communityOperator.PatchCommunityByNameAsync(name);
+            await _communityValidator.ValidatePatchCommunityByNameInputParametersAsync(requesterUser,
+                name, newName);
+            var community = await _communityOperator.PatchCommunityByNameAsync(name, newName);
             return community;
         }
 
-        public async Task DeleteCommunityByIdAsync(User requesterUser, long? id)
+        public async Task DeleteCommunityByIdAsync(User requesterUser, long id)
         {
             await _communityValidator.ValidateDeleteCommunityByIdInputParametersAsync(requesterUser, id);
-            await _communityOperator.DeleteCommunityByIdAsync(id.Value);
+            await _communityOperator.DeleteCommunityByIdAsync(id);
         }
 
         public async Task DeleteCommunityByNameAsync(User requesterUser, string name)

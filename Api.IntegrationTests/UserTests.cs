@@ -30,7 +30,7 @@ namespace FireplaceApi.Api.IntegrationTests
             var requestUri = $"/v0.1/users/{id}";
             var response = await _clientPool.TheHulkClient.GetAsync(requestUri);
 
-            await _testUtils.AssertResponseContainsErrorAsync(ErrorName.USER_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED,
+            await _testUtils.AssertResponseContainsErrorAsync(ErrorName.USER_DOES_NOT_EXIST_OR_ACCESS_DENIED,
                 response, nameof(TestGetUserWithIdReturnDoesNotExistsErrorAsync));
 
             _logger.LogInformation($"{nameof(TestGetUserWithIdReturnDoesNotExistsErrorAsync)} | End");

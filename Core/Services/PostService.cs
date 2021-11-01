@@ -36,12 +36,12 @@ namespace FireplaceApi.Core.Services
             return page;
         }
 
-        public async Task<Post> GetPostByIdAsync(User requesterUser, long? id,
+        public async Task<Post> GetPostByIdAsync(User requesterUser, long id,
             bool? includeAuthor, bool? includeCommunity)
         {
             await _postValidator.ValidateGetPostByIdInputParametersAsync(
                 requesterUser, id, includeAuthor, includeCommunity);
-            var post = await _postOperator.GetPostByIdAsync(id.Value,
+            var post = await _postOperator.GetPostByIdAsync(id,
                 includeAuthor.Value, includeCommunity.Value);
             return post;
         }
@@ -89,21 +89,21 @@ namespace FireplaceApi.Core.Services
         }
 
         public async Task<Post> PatchPostByIdAsync(User requesterUser,
-            long? id, string content)
+            long id, string content)
         {
             await _postValidator
                 .ValidatePatchPostByIdInputParametersAsync(requesterUser, id, content);
             var post = await _postOperator
-                .PatchPostByIdAsync(id.Value, content, null);
+                .PatchPostByIdAsync(id, content, null);
             return post;
         }
 
-        public async Task DeletePostByIdAsync(User requesterUser, long? id)
+        public async Task DeletePostByIdAsync(User requesterUser, long id)
         {
             await _postValidator
                 .ValidateDeletePostByIdInputParametersAsync(requesterUser, id);
             await _postOperator
-                .DeletePostByIdAsync(id.Value);
+                .DeletePostByIdAsync(id);
         }
     }
 }

@@ -211,7 +211,7 @@ namespace FireplaceApi.Core.Validators
             if (await _userOperator.DoesUserIdExistAsync(id) == false)
             {
                 var serverMessage = $"User {id} doesn't exists!";
-                throw new ApiException(ErrorName.USER_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
+                throw new ApiException(ErrorName.USER_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
         }
 
@@ -254,7 +254,7 @@ namespace FireplaceApi.Core.Validators
             if (await _userOperator.DoesUsernameExistAsync(username))
             {
                 var serverMessage = $"Username {username} already exists!";
-                throw new ApiException(ErrorName.USERNAME_EXISTS, serverMessage);
+                throw new ApiException(ErrorName.USERNAME_ALREADY_EXISTS, serverMessage);
             }
         }
 
@@ -322,7 +322,7 @@ namespace FireplaceApi.Core.Validators
             if (requesterUser.Id != id)
             {
                 var serverMessage = $"requesterUser {requesterUser.Id} can't alter user {id}";
-                throw new ApiException(ErrorName.USER_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
+                throw new ApiException(ErrorName.USER_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
         }
 

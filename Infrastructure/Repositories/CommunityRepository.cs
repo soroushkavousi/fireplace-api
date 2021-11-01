@@ -252,7 +252,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public static IQueryable<CommunityEntity> Search(
-            [NotNull] this IQueryable<CommunityEntity> q, string search, 
+            [NotNull] this IQueryable<CommunityEntity> q, string search,
             SortType? sort)
         {
             if (!string.IsNullOrWhiteSpace(search))

@@ -55,12 +55,12 @@ namespace FireplaceApi.Core.Services
             return page;
         }
 
-        public async Task<Comment> GetCommentByIdAsync(User requesterUser, long? id,
+        public async Task<Comment> GetCommentByIdAsync(User requesterUser, long id,
             bool? includeAuthor, bool? includePost)
         {
             await _commentValidator.ValidateGetCommentByIdInputParametersAsync(
                 requesterUser, id, includeAuthor, includePost);
-            var comment = await _commentOperator.GetCommentByIdAsync(id.Value,
+            var comment = await _commentOperator.GetCommentByIdAsync(id,
                 includeAuthor.Value, includePost.Value);
             return comment;
         }
@@ -114,22 +114,22 @@ namespace FireplaceApi.Core.Services
         }
 
         public async Task<Comment> PatchCommentByIdAsync(User requesterUser,
-            long? id, string content)
+            long id, string content)
         {
             await _commentValidator
                 .ValidatePatchCommentByIdInputParametersAsync(requesterUser,
                     id, content);
             var comment = await _commentOperator.PatchCommentByIdAsync(
-                id.Value, content, null);
+                id, content, null);
             return comment;
         }
 
-        public async Task DeleteCommentByIdAsync(User requesterUser, long? id)
+        public async Task DeleteCommentByIdAsync(User requesterUser, long id)
         {
             await _commentValidator
                 .ValidateDeleteCommentByIdInputParametersAsync(requesterUser, id);
             await _commentOperator
-                .DeleteCommentByIdAsync(id.Value);
+                .DeleteCommentByIdAsync(id);
         }
     }
 }

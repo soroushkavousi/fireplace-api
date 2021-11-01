@@ -21,26 +21,6 @@ namespace FireplaceApi.Core.Services
             _communityMembershipOperator = communityMembershipOperator;
         }
 
-        public async Task<Page<CommunityMembership>> ListCommunityMembershipsAsync(
-            User requesterUser, PaginationInputParameters paginationInputParameters)
-        {
-            await _communityMembershipValidator.ValidateListCommunityMembershipsInputParametersAsync(requesterUser,
-                paginationInputParameters);
-            var page = await _communityMembershipOperator.ListCommunityMembershipsAsync(requesterUser,
-                paginationInputParameters);
-            return page;
-        }
-
-        public async Task<CommunityMembership> GetCommunityMembershipByIdAsync(
-            User requesterUser, long? id, bool? includeCreator, bool? includeCommunity)
-        {
-            await _communityMembershipValidator.ValidateGetCommunityMembershipByIdInputParametersAsync(
-                requesterUser, id, includeCreator, includeCommunity);
-            var communityMembership = await _communityMembershipOperator.GetCommunityMembershipByIdAsync(id.Value,
-                includeCreator.Value, includeCommunity.Value);
-            return communityMembership;
-        }
-
         public async Task<CommunityMembership> CreateCommunityMembershipAsync(
             User requesterUser, long? communityId, string communityName)
         {
@@ -53,22 +33,15 @@ namespace FireplaceApi.Core.Services
                     communityIdentifier);
         }
 
-        public async Task<CommunityMembership> PatchCommunityMembershipByIdAsync(
-            User requesterUser, long? id)
+        public async Task DeleteCommunityMembershipAsync(User requesterUser,
+            long? communityId, string communityName)
         {
             await _communityMembershipValidator
-                .ValidatePatchCommunityMembershipByIdInputParametersAsync(requesterUser, id);
-            var communityMembership = await _communityMembershipOperator
-                .PatchCommunityMembershipByIdAsync(id.Value);
-            return communityMembership;
-        }
-
-        public async Task DeleteCommunityMembershipByIdAsync(User requesterUser, long? id)
-        {
-            await _communityMembershipValidator
-                .ValidateDeleteCommunityMembershipByIdInputParametersAsync(requesterUser, id);
+                .ValidateDeleteCommunityMembershipByIdInputParametersAsync(
+                    requesterUser, communityId, communityName);
+            var communityIdentifier = new Identifier(communityId, communityName);
             await _communityMembershipOperator
-                .DeleteCommunityMembershipByIdAsync(id.Value);
+                .DeleteCommunityMembershipByIdAsync(requesterUser.Id, communityIdentifier);
         }
     }
 }

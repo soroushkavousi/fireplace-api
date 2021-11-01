@@ -1,12 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FireplaceApi.Api.Tools;
+using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Api.Controllers
 {
-    public class ControllerDeleteCommunityMembershipByIdInputRouteParameters
+    [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
+    public class ControllerDeleteCommunityMembershipByCommunityIdInputRouteParameters
     {
         [Required]
-        [FromRoute(Name = "id")]
-        public long? Id { get; set; }
+        [FromRoute(Name = "communityId")]
+        public long CommunityId { get; set; }
+    }
+
+    [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
+    public class ControllerDeleteCommunityMembershipByCommunityNameInputRouteParameters
+    {
+        [Required]
+        [FromRoute(Name = "communityName")]
+        public string CommunityName { get; set; }
     }
 }
