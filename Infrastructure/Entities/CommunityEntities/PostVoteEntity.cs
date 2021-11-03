@@ -57,6 +57,10 @@ namespace FireplaceApi.Infrastructure.Entities
                 .HasForeignKey(d => d.PostEntityId)
                 .HasPrincipalKey(p => p.Id)
                 .IsRequired();
+
+            modelBuilder
+                .HasAlternateKey(p =>
+                    new { p.VoterEntityId, p.PostEntityId });
         }
     }
 }

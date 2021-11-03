@@ -44,13 +44,16 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public async Task ValidateAccessTokenValueExistsAsync(string value)
+        public async Task<AccessToken> ValidateAccessTokenValueExistsAsync(string value)
         {
-            if (await _accessTokenOperator.DoesAccessTokenValueExistAsync(value) == false)
+            var accessToken = await _accessTokenOperator
+                .GetAccessTokenByValueAsync(value, true);
+            if (accessToken == null)
             {
                 var serverMessage = $"Access token value {value} doesn't exist!";
                 throw new ApiException(ErrorName.ACCESS_TOKEN_VALUE_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
+            return accessToken;
         }
 
         public async Task ValidateUserCanAccessToAccessTokenValue(User requesterUser, string value)

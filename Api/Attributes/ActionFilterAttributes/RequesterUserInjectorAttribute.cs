@@ -13,7 +13,8 @@ namespace FireplaceApi.Api.Attributes
                 .Any(parameterDescriptor => parameterDescriptor.Name == Constants.RequesterUserActionArgumentKey);
             if (doesActionHaveRequesterUser == false)
                 return;
-            context.ActionArguments[Constants.RequesterUserActionArgumentKey] = context.HttpContext.Items.GetValue(Constants.RequesterUserKey);
+            context.ActionArguments[Constants.RequesterUserActionArgumentKey] =
+                context.HttpContext.Items.GetValue(Constants.RequesterUserKey);
         }
     }
 }

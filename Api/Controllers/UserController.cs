@@ -69,7 +69,7 @@ namespace FireplaceApi.Api.Controllers
 
 
         /// <summary>
-        /// Sign up with google.
+        /// Log in or Sign up with google.
         /// </summary>
         /// <returns>Created user</returns>
         /// <response code="200">Returns the newly created item</response>

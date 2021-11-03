@@ -61,7 +61,7 @@ namespace FireplaceApi.Core.Services
             await _commentValidator.ValidateGetCommentByIdInputParametersAsync(
                 requesterUser, id, includeAuthor, includePost);
             var comment = await _commentOperator.GetCommentByIdAsync(id,
-                includeAuthor.Value, includePost.Value);
+                includeAuthor.Value, includePost.Value, requesterUser);
             return comment;
         }
 
@@ -120,7 +120,7 @@ namespace FireplaceApi.Core.Services
                 .ValidatePatchCommentByIdInputParametersAsync(requesterUser,
                     id, content);
             var comment = await _commentOperator.PatchCommentByIdAsync(
-                id, content, null);
+                requesterUser, id, content, null);
             return comment;
         }
 

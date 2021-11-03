@@ -82,19 +82,23 @@ namespace FireplaceApi.Core.Validators
         public async Task ValidateVoteCommentInputParametersAsync(User requesterUser,
             long id, bool? isUpvote)
         {
-            var comment = await ValidateCommentExists(id);
+            ValidateParameterIsNotMissing(isUpvote, nameof(isUpvote), ErrorName.IS_UPVOTE_IS_MISSING);
+            var comment = await ValidateCommentExists(id, requesterUser);
+            ValidateCommentIsNotVotedByUser(comment, requesterUser);
         }
 
         public async Task ValidateToggleVoteForCommentInputParametersAsync(User requesterUser,
             long id)
         {
-            await Task.CompletedTask;
+            var comment = await ValidateCommentExists(id, requesterUser);
+            ValidateCommentVoteExists(comment, requesterUser);
         }
 
         public async Task ValidateDeleteVoteForCommentInputParametersAsync(User requesterUser,
             long id)
         {
-            await Task.CompletedTask;
+            var comment = await ValidateCommentExists(id, requesterUser);
+            ValidateCommentVoteExists(comment, requesterUser);
         }
 
         public async Task ValidatePatchCommentByIdInputParametersAsync(User requesterUser,
@@ -112,9 +116,28 @@ namespace FireplaceApi.Core.Validators
             ValidateRequesterUserCanAlterComment(requesterUser, comment);
         }
 
-        public async Task<Comment> ValidateCommentExists(long id)
+        public void ValidateCommentIsNotVotedByUser(Comment comment, User requesterUser)
         {
-            var comment = await _commentOperator.GetCommentByIdAsync(id, true, true);
+            if (comment.RequesterUserVote != 0)
+            {
+                var serverMessage = $"Comment id {comment.Id} is already voted by user {requesterUser.Username}!";
+                throw new ApiException(ErrorName.COMMENT_VOTE_ALREADY_EXISTS, serverMessage);
+            }
+        }
+
+        public void ValidateCommentVoteExists(Comment comment, User requesterUser)
+        {
+            if (comment.RequesterUserVote == 0)
+            {
+                var serverMessage = $"Comment id {comment.Id} is not voted by user {requesterUser.Username}!";
+                throw new ApiException(ErrorName.COMMENT_VOTE_DOES_NOT_EXIST, serverMessage);
+            }
+        }
+
+        public async Task<Comment> ValidateCommentExists(long id, User requesterUser = null)
+        {
+            var comment = await _commentOperator.GetCommentByIdAsync(id, true,
+                true, requesterUser);
             if (comment == null)
             {
                 var serverMessage = $"Comment id {id} doesn't exist!";

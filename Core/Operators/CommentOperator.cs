@@ -50,13 +50,13 @@ namespace FireplaceApi.Core.Operators
                     requesterUser.Id, sort);
                 resultPage = await _pageOperator.CreatePageWithoutPointerAsync(
                     ModelName.COMMENT, paginationInputParameters, commentIds,
-                    _commentRepository.ListCommentsAsync);
+                    _commentRepository.ListCommentsAsync, requesterUser);
             }
             else
             {
                 resultPage = await _pageOperator.CreatePageWithPointerAsync(
                     ModelName.COMMENT, paginationInputParameters,
-                    _commentRepository.ListCommentsAsync);
+                    _commentRepository.ListCommentsAsync, requesterUser);
             }
             return resultPage;
         }
@@ -72,16 +72,16 @@ namespace FireplaceApi.Core.Operators
                     postId, sort);
                 resultPage = await _pageOperator.CreatePageWithoutPointerAsync(
                     ModelName.COMMENT, paginationInputParameters, commentIds,
-                    _commentRepository.ListCommentsAsync);
+                    _commentRepository.ListCommentsAsync, requesterUser);
             }
             else
             {
                 resultPage = await _pageOperator.CreatePageWithPointerAsync(
                     ModelName.COMMENT, paginationInputParameters,
-                    _commentRepository.ListCommentsAsync);
+                    _commentRepository.ListCommentsAsync, requesterUser);
             }
             var childComments = await _commentRepository.ListChildCommentsAsync(
-                    postId, resultPage.ItemIds);
+                    postId, resultPage.ItemIds, requesterUser);
             SetChilds(resultPage.Items, childComments);
             return resultPage;
         }
@@ -110,9 +110,10 @@ namespace FireplaceApi.Core.Operators
         public async Task<List<Comment>> ListChildCommentsAsync(User requesterUser,
             long parentCommentId)
         {
-            var postId = (await GetCommentByIdAsync(parentCommentId, false, false)).PostId;
+            var postId = (await GetCommentByIdAsync(parentCommentId, false,
+                false, null)).PostId;
             var childComments = await _commentRepository.ListChildCommentsAsync(
-                    postId, parentCommentId);
+                    postId, parentCommentId, requesterUser);
             var rootComments = childComments.Where(cc => cc.ParentCommentIds.Last() == parentCommentId).ToList();
             rootComments.ForEach(rc => childComments.Remove(rc));
             SetChilds(rootComments, childComments);
@@ -120,10 +121,10 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<Comment> GetCommentByIdAsync(long id,
-            bool includeAuthor, bool includePost)
+            bool includeAuthor, bool includePost, User requesterUser)
         {
             var comment = await _commentRepository.GetCommentByIdAsync(
-                id, includeAuthor, includePost);
+                id, includeAuthor, includePost, requesterUser);
             if (comment == null)
                 return comment;
 
@@ -143,7 +144,8 @@ namespace FireplaceApi.Core.Operators
         public async Task<Comment> ReplyToCommentAsync(User requesterUser,
             long commentId, string content)
         {
-            var parentComment = await _commentRepository.GetCommentByIdAsync(commentId);
+            var parentComment = await _commentRepository
+                .GetCommentByIdAsync(commentId);
             var postId = parentComment.PostId;
             var parentCommentIds = parentComment.ParentCommentIds.CopyOrDefault();
             parentCommentIds.Add(parentComment.Id);
@@ -160,7 +162,8 @@ namespace FireplaceApi.Core.Operators
                 .CreateCommentVoteAsync(requesterUser.Id, requesterUser.Username,
                     id, isUp);
             var voteChange = commentVote.IsUp ? +1 : -1;
-            var comment = await PatchCommentByIdAsync(id, null, voteChange: voteChange);
+            var comment = await PatchCommentByIdAsync(requesterUser,
+                id, null, voteChange: voteChange);
             return comment;
         }
 
@@ -174,6 +177,8 @@ namespace FireplaceApi.Core.Operators
             var voteChange = commentVote.IsUp ? +2 : -2;
             var comment = await ApplyCommentChangesAsync(commentVote.Comment,
                 null, voteChange: voteChange);
+            comment = await GetCommentByIdAsync(comment.Id,
+                false, false, requesterUser);
             return comment;
         }
 
@@ -187,18 +192,20 @@ namespace FireplaceApi.Core.Operators
                 commentVote.Id);
             var comment = await ApplyCommentChangesAsync(commentVote.Comment,
                 null, voteChange: voteChange);
+            comment = await GetCommentByIdAsync(comment.Id,
+                false, false, requesterUser);
             return comment;
         }
 
-        public async Task<Comment> PatchCommentByIdAsync(long id, string content,
-            int? voteChange)
+        public async Task<Comment> PatchCommentByIdAsync(User requesterUser,
+            long id, string content, int? voteChange)
         {
             var comment = await _commentRepository
                 .GetCommentByIdAsync(id);
             comment = await ApplyCommentChangesAsync(comment, content,
                 voteChange);
             comment = await GetCommentByIdAsync(comment.Id,
-                false, false);
+                false, false, requesterUser);
             return comment;
         }
 

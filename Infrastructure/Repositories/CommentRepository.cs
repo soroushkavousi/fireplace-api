@@ -35,13 +35,20 @@ namespace FireplaceApi.Infrastructure.Repositories
             _commentConverter = commentConverter;
         }
 
-        public async Task<List<Comment>> ListCommentsAsync(List<long> Ids)
+        public async Task<List<Comment>> ListCommentsAsync(List<long> Ids,
+            User requesterUser = null)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { Ids });
             var sw = Stopwatch.StartNew();
             var commentEntities = await _commentEntities
                 .AsNoTracking()
                 .Where(e => Ids.Contains(e.Id.Value))
+                .Include(
+                    fireplaceApiContext: _fireplaceApiContext,
+                    authorEntity: false,
+                    postEntity: false,
+                    requesterUser: requesterUser
+                )
                 .ToListAsync();
 
             Dictionary<long, CommentEntity> commentEntityDictionary = new Dictionary<long, CommentEntity>();
@@ -110,7 +117,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public async Task<List<Comment>> ListChildCommentsAsync(long postId,
-            List<long> parentCommentIds)
+            List<long> parentCommentIds, User requesterUser = null)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new
             {
@@ -129,6 +136,12 @@ namespace FireplaceApi.Infrastructure.Repositories
                     parentCommentId: null,
                     isRoot: null
                 )
+                .Include(
+                    fireplaceApiContext: _fireplaceApiContext,
+                    authorEntity: false,
+                    postEntity: false,
+                    requesterUser: requesterUser
+                )
                 .ToListAsync();
 
             _logger.LogIOInformation(sw, "Database | Output", new { commentEntities });
@@ -136,7 +149,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public async Task<List<Comment>> ListChildCommentsAsync(long postId,
-            long parentCommentId)
+            long parentCommentId, User requesterUser = null)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new
             {
@@ -155,6 +168,12 @@ namespace FireplaceApi.Infrastructure.Repositories
                     parentCommentId: parentCommentId,
                     isRoot: null
                 )
+                .Include(
+                    fireplaceApiContext: _fireplaceApiContext,
+                    authorEntity: false,
+                    postEntity: false,
+                    requesterUser: requesterUser
+                )
                 .ToListAsync();
 
             _logger.LogIOInformation(sw, "Database | Output", new { commentEntities });
@@ -162,19 +181,22 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public async Task<Comment> GetCommentByIdAsync(long id,
-            bool includeAuthor = false, bool includePost = false)
+            bool includeAuthor = false, bool includePost = false,
+            User requesterUser = null)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new
             {
-                id, includeAuthor, includePost
+                id, includeAuthor, includePost, requesterUser = requesterUser != null
             });
             var sw = Stopwatch.StartNew();
             var commentEntity = await _commentEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .Include(
+                    fireplaceApiContext: _fireplaceApiContext,
                     authorEntity: includeAuthor,
-                    postEntity: includePost
+                    postEntity: includePost,
+                    requesterUser: requesterUser
                 )
                 .SingleOrDefaultAsync();
 
@@ -256,13 +278,22 @@ namespace FireplaceApi.Infrastructure.Repositories
     {
         public static IQueryable<CommentEntity> Include(
             [NotNull] this IQueryable<CommentEntity> q,
-            bool authorEntity, bool postEntity)
+            FireplaceApiContext fireplaceApiContext,
+            bool authorEntity, bool postEntity, User requesterUser)
         {
             if (authorEntity)
                 q = q.Include(e => e.AuthorEntity);
 
             if (postEntity)
                 q = q.Include(e => e.PostEntity);
+
+            if (requesterUser != null)
+            {
+                q = q.Include(
+                    c => c.CommentVoteEntities
+                        .Where(cv => cv.VoterEntityId == requesterUser.Id)
+                );
+            }
 
             return q;
         }

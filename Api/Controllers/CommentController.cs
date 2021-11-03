@@ -106,7 +106,7 @@ namespace FireplaceApi.Api.Controllers
         {
             var comment = await _commentService
                 .GetCommentByIdAsync(requesterUser, inputRouteParameters.Id,
-                inputQueryParameters.IncludeAuthor, inputQueryParameters.IncludePost);
+                    inputQueryParameters.IncludeAuthor, inputQueryParameters.IncludePost);
             var commentDto = _commentConverter.ConvertToDto(comment);
             return commentDto;
         }
@@ -152,7 +152,7 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
-        /// Vote a comment.
+        /// Create a vote for the comment.
         /// </summary>
         /// <returns>Voted comment</returns>
         /// <response code="200">Returns the Voted comment</response>

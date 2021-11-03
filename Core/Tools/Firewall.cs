@@ -3,9 +3,9 @@ using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.Validators;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
@@ -17,13 +17,16 @@ namespace FireplaceApi.Core.Tools
         private readonly ILogger<Firewall> _logger;
         private readonly AccessTokenOperator _accessTokenOperator;
         private readonly SessionOperator _sessionOperator;
+        private readonly AccessTokenValidator _accessTokenValidator;
 
         public Firewall(ILogger<Firewall> logger,
-            AccessTokenOperator accessTokenOperator, SessionOperator sessionOperator)
+            AccessTokenOperator accessTokenOperator,
+            SessionOperator sessionOperator, AccessTokenValidator accessTokenValidator)
         {
             _logger = logger;
             _accessTokenOperator = accessTokenOperator;
             _sessionOperator = sessionOperator;
+            _accessTokenValidator = accessTokenValidator;
         }
 
         public void CheckRequestContentType(HttpRequest request)
@@ -49,16 +52,14 @@ namespace FireplaceApi.Core.Tools
             }
         }
 
-        public async Task<User> CheckUser(string accessTokenValue, IPAddress ipAddress)
+        public async Task<User> CheckUser(User requesterUser, IPAddress ipAddress)
         {
             var sw = Stopwatch.StartNew();
-            var accessToken = await ValidateAccessTokenAsync(accessTokenValue);
-            var requesterUser = accessToken.User;
-            requesterUser.AccessTokens = new List<AccessToken> { accessToken };
             await ValidateSessionAsync(requesterUser.Id, ipAddress);
             await ValidateLimitationOfUserRequestCounts(requesterUser.Id);
             await ValidateLimitationOfIpRequestCounts(ipAddress);
-            _logger.LogTrace(sw, $"User {requesterUser.Id} doesn't have any problem to continue. {requesterUser.ToJson()}");
+            _logger.LogTrace(sw, $"User {requesterUser.Id} doesn't have any problem to continue. " +
+                $"{requesterUser.ToJson()}");
             return requesterUser;
         }
 
@@ -69,15 +70,20 @@ namespace FireplaceApi.Core.Tools
             _logger.LogTrace(sw, $"Guest doesn't have any problem to continue. {ipAddress}");
         }
 
+        public void ValidateRequesterUserExists(User requesterUser, string accessTokenValue)
+        {
+            if (requesterUser == null)
+                throw new ApiException(ErrorName.AUTHENTICATION_FAILED,
+                    $"There isn't any authorization in input header parameters! " +
+                    $"accessTokenValue: {accessTokenValue}");
+        }
+
         public async Task<AccessToken> ValidateAccessTokenAsync(string accessTokenValue)
         {
-            if (string.IsNullOrWhiteSpace(accessTokenValue))
-                throw new ApiException(ErrorName.AUTHENTICATION_FAILED,
-                    $"There isn't any authorization in input header parameters! accessTokenValue: {accessTokenValue}");
-
-            if (Regexes.AccessTokenValue.IsMatch(accessTokenValue) == false)
-                throw new ApiException(ErrorName.AUTHENTICATION_FAILED,
-                    $"Input access token doesn't have valid format! accessTokenValue: {accessTokenValue}");
+            _accessTokenValidator.ValidateAccessTokenValueFormat(accessTokenValue);
+            //if (Regexes.AccessTokenValue.IsMatch(accessTokenValue) == false)
+            //    throw new ApiException(ErrorName.AUTHENTICATION_FAILED,
+            //        $"Input access token doesn't have valid format! accessTokenValue: {accessTokenValue}");
 
             var accessToken = await _accessTokenOperator
                 .GetAccessTokenByValueAsync(accessTokenValue, true);

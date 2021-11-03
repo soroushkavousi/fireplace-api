@@ -57,6 +57,10 @@ namespace FireplaceApi.Infrastructure.Entities
                 .HasForeignKey(d => new { d.CommunityEntityId, d.CommunityEntityName })
                 .HasPrincipalKey(p => new { p.Id, p.Name })
                 .IsRequired();
+
+            modelBuilder
+                .HasAlternateKey(p =>
+                    new { p.UserEntityId, p.CommunityEntityId });
         }
     }
 }

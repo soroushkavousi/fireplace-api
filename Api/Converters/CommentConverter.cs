@@ -48,7 +48,8 @@ namespace FireplaceApi.Api.Converters
 
             var commentDto = new CommentDto(comment.Id,
                 comment.AuthorId, comment.AuthorUsername,
-                comment.PostId, comment.Vote, comment.Content, comment.CreationDate,
+                comment.PostId, comment.Vote, comment.RequesterUserVote,
+                comment.Content, comment.CreationDate,
                 comment.ModifiedDate, comment.ParentCommentIds, authorDto, postDto,
                 childComments: childCommentDtos);
 

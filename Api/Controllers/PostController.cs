@@ -94,7 +94,7 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
-        /// Vote a post.
+        /// Create a vote for the post.
         /// </summary>
         /// <returns>Voted post</returns>
         /// <response code="200">Returns the Voted post</response>
