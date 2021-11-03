@@ -10,12 +10,13 @@ namespace FireplaceApi.Core.Models
         public long CommunityId { get; set; }
         public string CommunityName { get; set; }
         public int Vote { get; set; }
+        public int RequesterUserVote { get; set; }
         public string Content { get; set; }
         public User Author { get; set; }
         public Community Community { get; set; }
 
         public Post(long id, long authorId, string authorUsername,
-            long communityId, string communityName, int vote,
+            long communityId, string communityName, int vote, int requesterUserVote,
             string content, DateTime creationDate, DateTime? modifiedDate = null,
             User author = null, Community community = null)
             : base(creationDate, modifiedDate)
@@ -26,14 +27,14 @@ namespace FireplaceApi.Core.Models
             CommunityId = communityId;
             CommunityName = communityName;
             Vote = vote;
+            RequesterUserVote = requesterUserVote;
             Content = content;
             Author = author;
             Community = community;
         }
 
-
         public Post PureCopy() => new Post(Id, AuthorId,
             AuthorUsername, CommunityId, CommunityName, Vote,
-            Content, CreationDate, ModifiedDate);
+            RequesterUserVote, Content, CreationDate, ModifiedDate);
     }
 }

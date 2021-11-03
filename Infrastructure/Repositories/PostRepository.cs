@@ -35,13 +35,22 @@ namespace FireplaceApi.Infrastructure.Repositories
             _postConverter = postConverter;
         }
 
-        public async Task<List<Post>> ListPostsAsync(List<long> Ids)
+        public async Task<List<Post>> ListPostsAsync(List<long> Ids,
+            User requesterUser = null)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { Ids });
+            _logger.LogIOInformation(null, "Database | Iutput", new
+            {
+                Ids, requesterUser = requesterUser != null
+            });
             var sw = Stopwatch.StartNew();
             var postEntities = await _postEntities
                 .AsNoTracking()
                 .Where(e => Ids.Contains(e.Id.Value))
+                .Include(
+                    authorEntity: false,
+                    communityEntity: false,
+                    requesterUser: requesterUser
+                )
                 .ToListAsync();
 
             Dictionary<long, PostEntity> postEntityDictionary = new Dictionary<long, PostEntity>();
@@ -55,7 +64,8 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<List<Post>> ListPostsAsync(long? authorId,
             bool? self, bool? joined, long? communityId,
-            string communityName, string search, SortType? sort)
+            string communityName, string search, SortType? sort,
+            User requesterUser)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new
             {
@@ -76,7 +86,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .Include(
                     authorEntity: false,
-                    communityEntity: true
+                    communityEntity: true,
+                    requesterUser: requesterUser
                 )
                 .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
                 .ToListAsync();
@@ -115,11 +126,13 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public async Task<Post> GetPostByIdAsync(long id,
-            bool includeAuthor = false, bool includeCommunity = false)
+            bool includeAuthor = false, bool includeCommunity = false,
+            User requesterUser = null)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new
             {
-                id, includeAuthor, includeCommunity
+                id, includeAuthor, includeCommunity,
+                requesterUser = requesterUser != null
             });
             var sw = Stopwatch.StartNew();
             var postEntity = await _postEntities
@@ -127,7 +140,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Where(e => e.Id == id)
                 .Include(
                     authorEntity: includeAuthor,
-                    communityEntity: includeCommunity
+                    communityEntity: includeCommunity,
+                    requesterUser: requesterUser
                 )
                 .SingleOrDefaultAsync();
 
@@ -210,7 +224,8 @@ namespace FireplaceApi.Infrastructure.Repositories
     {
         public static IQueryable<PostEntity> Include(
             [NotNull] this IQueryable<PostEntity> q,
-            bool authorEntity, bool communityEntity)
+            bool authorEntity, bool communityEntity,
+            User requesterUser)
         {
             if (authorEntity)
                 q = q.Include(e => e.AuthorEntity);
@@ -218,10 +233,16 @@ namespace FireplaceApi.Infrastructure.Repositories
             if (communityEntity)
                 q = q.Include(e => e.CommunityEntity);
 
+            if (requesterUser != null)
+            {
+                q = q.Include(
+                    c => c.PostVoteEntities
+                        .Where(cv => cv.VoterEntityId == requesterUser.Id)
+                );
+            }
+
             return q;
         }
-
-
 
         public static IQueryable<PostEntity> Search(
             [NotNull] this IQueryable<PostEntity> q, bool? self,
@@ -245,7 +266,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 switch (sort)
                 {
                     case SortType.TOP:
-                        q = q.OrderByDescending(e => e.Vote);
+                        q = q.OrderBy(e => e.Vote);
                         break;
                     case SortType.NEW:
                         q = q.OrderByDescending(e => e.CreationDate);

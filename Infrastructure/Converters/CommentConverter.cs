@@ -64,7 +64,8 @@ namespace FireplaceApi.Infrastructure.Converters
                     .ConvertToModel(commentEntity.PostEntity.PureCopy());
 
             int requesterUserVote = 0;
-            if (commentEntity.CommentVoteEntities != null && commentEntity.CommentVoteEntities.Count == 1)
+            if (commentEntity.CommentVoteEntities != null
+                && commentEntity.CommentVoteEntities.Count == 1)
             {
                 var voteEntity = commentEntity.CommentVoteEntities[0];
                 if (voteEntity.IsUp)

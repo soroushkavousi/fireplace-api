@@ -38,13 +38,15 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<List<Comment>> ListCommentsAsync(List<long> Ids,
             User requesterUser = null)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { Ids });
+            _logger.LogIOInformation(null, "Database | Iutput", new
+            {
+                Ids, requesterUser = requesterUser != null
+            });
             var sw = Stopwatch.StartNew();
             var commentEntities = await _commentEntities
                 .AsNoTracking()
                 .Where(e => Ids.Contains(e.Id.Value))
                 .Include(
-                    fireplaceApiContext: _fireplaceApiContext,
                     authorEntity: false,
                     postEntity: false,
                     requesterUser: requesterUser
@@ -121,7 +123,8 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Iutput", new
             {
-                postId, parentCommentIds
+                postId, parentCommentIds,
+                requesterUser = requesterUser != null
             });
             var sw = Stopwatch.StartNew();
             var commentEntities = await _commentEntities
@@ -137,7 +140,6 @@ namespace FireplaceApi.Infrastructure.Repositories
                     isRoot: null
                 )
                 .Include(
-                    fireplaceApiContext: _fireplaceApiContext,
                     authorEntity: false,
                     postEntity: false,
                     requesterUser: requesterUser
@@ -153,7 +155,8 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Iutput", new
             {
-                postId, parentCommentId
+                postId, parentCommentId,
+                requesterUser = requesterUser != null
             });
             var sw = Stopwatch.StartNew();
             var commentEntities = await _commentEntities
@@ -169,7 +172,6 @@ namespace FireplaceApi.Infrastructure.Repositories
                     isRoot: null
                 )
                 .Include(
-                    fireplaceApiContext: _fireplaceApiContext,
                     authorEntity: false,
                     postEntity: false,
                     requesterUser: requesterUser
@@ -186,14 +188,14 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Iutput", new
             {
-                id, includeAuthor, includePost, requesterUser = requesterUser != null
+                id, includeAuthor, includePost,
+                requesterUser = requesterUser != null
             });
             var sw = Stopwatch.StartNew();
             var commentEntity = await _commentEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .Include(
-                    fireplaceApiContext: _fireplaceApiContext,
                     authorEntity: includeAuthor,
                     postEntity: includePost,
                     requesterUser: requesterUser
@@ -278,7 +280,6 @@ namespace FireplaceApi.Infrastructure.Repositories
     {
         public static IQueryable<CommentEntity> Include(
             [NotNull] this IQueryable<CommentEntity> q,
-            FireplaceApiContext fireplaceApiContext,
             bool authorEntity, bool postEntity, User requesterUser)
         {
             if (authorEntity)

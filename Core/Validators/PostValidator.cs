@@ -65,19 +65,23 @@ namespace FireplaceApi.Core.Validators
         public async Task ValidateVotePostInputParametersAsync(User requesterUser,
             long id, bool? isUpvote)
         {
-            var post = await ValidatePostExistsAsync(id);
+            ValidateParameterIsNotMissing(isUpvote, nameof(isUpvote), ErrorName.IS_UPVOTE_IS_MISSING);
+            var post = await ValidatePostExistsAsync(id, requesterUser);
+            ValidatePostIsNotVotedByUser(post, requesterUser);
         }
 
         public async Task ValidateToggleVoteForPostInputParametersAsync(User requesterUser,
             long id)
         {
-            await Task.CompletedTask;
+            var post = await ValidatePostExistsAsync(id, requesterUser);
+            ValidatePostVoteExists(post, requesterUser);
         }
 
         public async Task ValidateDeleteVoteForPostInputParametersAsync(User requesterUser,
             long id)
         {
-            await Task.CompletedTask;
+            var post = await ValidatePostExistsAsync(id, requesterUser);
+            ValidatePostVoteExists(post, requesterUser);
         }
 
         public async Task ValidatePatchPostByIdInputParametersAsync(User requesterUser,
@@ -95,9 +99,10 @@ namespace FireplaceApi.Core.Validators
             ValidateRequesterUserCanAlterPost(requesterUser, post);
         }
 
-        public async Task<Post> ValidatePostExistsAsync(long id)
+        public async Task<Post> ValidatePostExistsAsync(long id, User requesterUser = null)
         {
-            var post = await _postOperator.GetPostByIdAsync(id, true, true);
+            var post = await _postOperator.GetPostByIdAsync(id, true, true,
+                requesterUser);
             if (post == null)
             {
                 var serverMessage = $"Post id {id} doesn't exist!";
@@ -126,6 +131,24 @@ namespace FireplaceApi.Core.Validators
                     $"post {post.Id}";
                 throw new ApiException(ErrorName.USER_CAN_NOT_ALTER_POST,
                     serverMessage);
+            }
+        }
+
+        public void ValidatePostIsNotVotedByUser(Post post, User requesterUser)
+        {
+            if (post.RequesterUserVote != 0)
+            {
+                var serverMessage = $"Post id {post.Id} is already voted by user {requesterUser.Username}!";
+                throw new ApiException(ErrorName.POST_VOTE_ALREADY_EXISTS, serverMessage);
+            }
+        }
+
+        public void ValidatePostVoteExists(Post post, User requesterUser)
+        {
+            if (post.RequesterUserVote == 0)
+            {
+                var serverMessage = $"Post id {post.Id} is not voted by user {requesterUser.Username}!";
+                throw new ApiException(ErrorName.POST_VOTE_DOES_NOT_EXIST, serverMessage);
             }
         }
     }

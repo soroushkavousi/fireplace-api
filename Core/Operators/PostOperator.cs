@@ -50,22 +50,22 @@ namespace FireplaceApi.Core.Operators
                     communityName, search, sort);
                 resultPage = await _pageOperator.CreatePageWithoutPointerAsync(
                     ModelName.COMMUNITY_MEMBERSHIP, paginationInputParameters, postIds,
-                    _postRepository.ListPostsAsync);
+                    _postRepository.ListPostsAsync, requesterUser);
             }
             else
             {
                 resultPage = await _pageOperator.CreatePageWithPointerAsync(
                     ModelName.COMMUNITY_MEMBERSHIP, paginationInputParameters,
-                    _postRepository.ListPostsAsync);
+                    _postRepository.ListPostsAsync, requesterUser);
             }
             return resultPage;
         }
 
         public async Task<Post> GetPostByIdAsync(long id,
-            bool includeAuthor, bool includeCommunity)
+            bool includeAuthor, bool includeCommunity, User requesterUser)
         {
-            var post = await _postRepository
-                .GetPostByIdAsync(id, includeAuthor, includeCommunity);
+            var post = await _postRepository.GetPostByIdAsync(
+                id, includeAuthor, includeCommunity, requesterUser);
             if (post == null)
                 return post;
 
@@ -100,7 +100,8 @@ namespace FireplaceApi.Core.Operators
                 .CreatePostVoteAsync(requesterUser.Id, requesterUser.Username,
                     id, isUp);
             var voteChange = postVote.IsUp ? +1 : -1;
-            var post = await PatchPostByIdAsync(id, null, voteChange: voteChange);
+            var post = await PatchPostByIdAsync(requesterUser,
+                id, null, voteChange: voteChange);
             return post;
         }
 
@@ -114,6 +115,8 @@ namespace FireplaceApi.Core.Operators
             var voteChange = postVote.IsUp ? +2 : -2;
             var post = await ApplyPostChangesAsync(postVote.Post,
                 null, voteChange: voteChange);
+            post = await GetPostByIdAsync(post.Id,
+                false, false, requesterUser);
             return post;
         }
 
@@ -130,15 +133,15 @@ namespace FireplaceApi.Core.Operators
             return post;
         }
 
-        public async Task<Post> PatchPostByIdAsync(long id, string content,
-            int? voteChange)
+        public async Task<Post> PatchPostByIdAsync(User requesterUser,
+            long id, string content, int? voteChange)
         {
             var post = await _postRepository
                 .GetPostByIdAsync(id);
             post = await ApplyPostChangesAsync(post, content,
                 voteChange);
             post = await GetPostByIdAsync(post.Id,
-                false, false);
+                false, false, requesterUser);
             return post;
         }
 

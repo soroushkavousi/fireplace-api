@@ -42,7 +42,7 @@ namespace FireplaceApi.Core.Services
             await _postValidator.ValidateGetPostByIdInputParametersAsync(
                 requesterUser, id, includeAuthor, includeCommunity);
             var post = await _postOperator.GetPostByIdAsync(id,
-                includeAuthor.Value, includeCommunity.Value);
+                includeAuthor.Value, includeCommunity.Value, requesterUser);
             return post;
         }
 
@@ -94,7 +94,7 @@ namespace FireplaceApi.Core.Services
             await _postValidator
                 .ValidatePatchPostByIdInputParametersAsync(requesterUser, id, content);
             var post = await _postOperator
-                .PatchPostByIdAsync(id, content, null);
+                .PatchPostByIdAsync(requesterUser, id, content, null);
             return post;
         }
 

@@ -192,8 +192,6 @@ namespace FireplaceApi.Core.Operators
                 commentVote.Id);
             var comment = await ApplyCommentChangesAsync(commentVote.Comment,
                 null, voteChange: voteChange);
-            comment = await GetCommentByIdAsync(comment.Id,
-                false, false, requesterUser);
             return comment;
         }
 

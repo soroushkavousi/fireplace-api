@@ -56,13 +56,13 @@ namespace FireplaceApi.Core.Validators
         public async Task ValidateListChildCommentsAsyncInputParametersAsync(
             User requesterUser, long parentCommentId)
         {
-            var parentComment = await ValidateCommentExists(parentCommentId);
+            var parentComment = await ValidateCommentExistsAsync(parentCommentId);
         }
 
         public async Task ValidateGetCommentByIdInputParametersAsync(User requesterUser,
             long id, bool? includeAuthor, bool? includePost)
         {
-            var comment = await ValidateCommentExists(id);
+            var comment = await ValidateCommentExistsAsync(id);
         }
 
         public async Task ValidateReplyToPostInputParametersAsync(User requesterUser,
@@ -76,28 +76,28 @@ namespace FireplaceApi.Core.Validators
             long parentCommentId, string content)
         {
             ValidateCommentContentFormat(content);
-            var parentComment = await ValidateCommentExists(parentCommentId);
+            var parentComment = await ValidateCommentExistsAsync(parentCommentId);
         }
 
         public async Task ValidateVoteCommentInputParametersAsync(User requesterUser,
             long id, bool? isUpvote)
         {
             ValidateParameterIsNotMissing(isUpvote, nameof(isUpvote), ErrorName.IS_UPVOTE_IS_MISSING);
-            var comment = await ValidateCommentExists(id, requesterUser);
+            var comment = await ValidateCommentExistsAsync(id, requesterUser);
             ValidateCommentIsNotVotedByUser(comment, requesterUser);
         }
 
         public async Task ValidateToggleVoteForCommentInputParametersAsync(User requesterUser,
             long id)
         {
-            var comment = await ValidateCommentExists(id, requesterUser);
+            var comment = await ValidateCommentExistsAsync(id, requesterUser);
             ValidateCommentVoteExists(comment, requesterUser);
         }
 
         public async Task ValidateDeleteVoteForCommentInputParametersAsync(User requesterUser,
             long id)
         {
-            var comment = await ValidateCommentExists(id, requesterUser);
+            var comment = await ValidateCommentExistsAsync(id, requesterUser);
             ValidateCommentVoteExists(comment, requesterUser);
         }
 
@@ -105,14 +105,14 @@ namespace FireplaceApi.Core.Validators
             long id, string content)
         {
             ValidateCommentContentFormat(content);
-            var comment = await ValidateCommentExists(id);
+            var comment = await ValidateCommentExistsAsync(id);
             ValidateRequesterUserCanAlterComment(requesterUser, comment);
         }
 
         public async Task ValidateDeleteCommentByIdInputParametersAsync(User requesterUser,
             long id)
         {
-            var comment = await ValidateCommentExists(id);
+            var comment = await ValidateCommentExistsAsync(id);
             ValidateRequesterUserCanAlterComment(requesterUser, comment);
         }
 
@@ -134,7 +134,8 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public async Task<Comment> ValidateCommentExists(long id, User requesterUser = null)
+        public async Task<Comment> ValidateCommentExistsAsync(long id,
+            User requesterUser = null)
         {
             var comment = await _commentOperator.GetCommentByIdAsync(id, true,
                 true, requesterUser);

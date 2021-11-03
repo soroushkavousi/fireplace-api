@@ -24,6 +24,8 @@ namespace FireplaceApi.Api.Controllers
         [Required]
         public int Vote { get; set; }
         [Required]
+        public int RequesterUserVote { get; set; }
+        [Required]
         public string Content { get; set; }
         [Required]
         public DateTime CreationDate { get; set; }
@@ -40,6 +42,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(CommunityId).ToSnakeCase()] = CommunityDto.PureExample1[nameof(CommunityDto.Id).ToSnakeCase()],
             [nameof(CommunityName).ToSnakeCase()] = CommunityDto.PureExample1[nameof(CommunityDto.Name).ToSnakeCase()],
             [nameof(Vote).ToSnakeCase()] = new OpenApiInteger(53),
+            [nameof(RequesterUserVote).ToSnakeCase()] = new OpenApiInteger(1),
             [nameof(Content).ToSnakeCase()] = new OpenApiString("Hello guys.\nThis is my content!"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(ModifiedDate).ToSnakeCase()] = new OpenApiNull(),
@@ -54,6 +57,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(CommunityId).ToSnakeCase()] = CommunityDto.PureExample2[nameof(CommunityDto.Id).ToSnakeCase()],
             [nameof(CommunityName).ToSnakeCase()] = CommunityDto.PureExample2[nameof(CommunityDto.Name).ToSnakeCase()],
             [nameof(Vote).ToSnakeCase()] = new OpenApiInteger(4),
+            [nameof(RequesterUserVote).ToSnakeCase()] = new OpenApiInteger(0),
             [nameof(Content).ToSnakeCase()] = new OpenApiString("What is the best way to ...?"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(ModifiedDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetLastHourDate()),
@@ -74,6 +78,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(CommunityId).ToSnakeCase()] = PureExample1[nameof(CommunityId).ToSnakeCase()],
             [nameof(CommunityName).ToSnakeCase()] = PureExample1[nameof(CommunityName).ToSnakeCase()],
             [nameof(Vote).ToSnakeCase()] = PureExample1[nameof(Vote).ToSnakeCase()],
+            [nameof(RequesterUserVote).ToSnakeCase()] = PureExample1[nameof(RequesterUserVote).ToSnakeCase()],
             [nameof(Content).ToSnakeCase()] = PureExample1[nameof(Content).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = PureExample1[nameof(CreationDate).ToSnakeCase()],
             [nameof(ModifiedDate).ToSnakeCase()] = PureExample1[nameof(ModifiedDate).ToSnakeCase()],
@@ -88,6 +93,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(CommunityId).ToSnakeCase()] = PureExample2[nameof(CommunityId).ToSnakeCase()],
             [nameof(CommunityName).ToSnakeCase()] = PureExample2[nameof(CommunityName).ToSnakeCase()],
             [nameof(Vote).ToSnakeCase()] = PureExample2[nameof(Vote).ToSnakeCase()],
+            [nameof(RequesterUserVote).ToSnakeCase()] = PureExample2[nameof(RequesterUserVote).ToSnakeCase()],
             [nameof(Content).ToSnakeCase()] = PureExample2[nameof(Content).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = PureExample2[nameof(CreationDate).ToSnakeCase()],
             [nameof(ModifiedDate).ToSnakeCase()] = PureExample2[nameof(ModifiedDate).ToSnakeCase()],
@@ -124,8 +130,9 @@ namespace FireplaceApi.Api.Controllers
         }
 
         public PostDto(long id, long authorId, string authorUsername, long communityId,
-            string communityName, int vote, string content, DateTime creationDate,
-            DateTime? modifiedDate, UserDto author = null, CommunityDto community = null)
+            string communityName, int vote, int requesterUserVote, string content,
+            DateTime creationDate, DateTime? modifiedDate, UserDto author = null,
+            CommunityDto community = null)
         {
             Id = id;
             AuthorId = authorId;
@@ -133,6 +140,7 @@ namespace FireplaceApi.Api.Controllers
             CommunityId = communityId;
             CommunityName = communityName;
             Vote = vote;
+            RequesterUserVote = requesterUserVote;
             Content = content;
             CreationDate = creationDate;
             ModifiedDate = modifiedDate;
