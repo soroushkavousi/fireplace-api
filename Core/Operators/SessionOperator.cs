@@ -26,11 +26,6 @@ namespace FireplaceApi.Core.Operators
             _sessionRepository = sessionRepository;
         }
 
-        public async Task RevokeSessionByIdAsync(long id)
-        {
-            await PatchSessionByIdAsync(id, state: SessionState.CLOSED);
-        }
-
         public async Task<List<Session>> ListSessionsAsync(User requesterUser)
         {
             var session = await _sessionRepository.ListSessionsAsync(requesterUser.Id, SessionState.OPENED, false);
@@ -44,6 +39,11 @@ namespace FireplaceApi.Core.Operators
                 return session;
 
             return session;
+        }
+
+        public async Task RevokeSessionByIdAsync(long id)
+        {
+            await PatchSessionByIdAsync(id, state: SessionState.CLOSED);
         }
 
         public async Task<Session> FindSessionAsync(long userId, IPAddress IpAddress,

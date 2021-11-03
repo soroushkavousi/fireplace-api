@@ -25,13 +25,6 @@ namespace FireplaceApi.Core.Validators
             _sessionOperator = sessionOperator;
         }
 
-        public async Task ValidateRevokeSessionByIdInputParametersAsync(User requesterUser, long? id)
-        {
-            ValidateParameterIsNotMissing(id, nameof(id), ErrorName.SESSION_ID_IS_MISSING);
-            await ValidateSessionIdExists(id.Value);
-            await ValidateUserCanAccessToSessionId(requesterUser, id.Value);
-        }
-
         public async Task ValidateListSessionsInputParametersAsync(User requesterUser)
         {
             await Task.CompletedTask;
@@ -61,6 +54,13 @@ namespace FireplaceApi.Core.Validators
                 var serverMessage = $"Session {id} doesn't exists!";
                 throw new ApiException(ErrorName.SESSION_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
+        }
+
+        public async Task ValidateRevokeSessionByIdInputParametersAsync(User requesterUser, long id)
+        {
+            ValidateParameterIsNotMissing(id, nameof(id), ErrorName.SESSION_ID_IS_MISSING);
+            await ValidateSessionIdExists(id);
+            await ValidateUserCanAccessToSessionId(requesterUser, id);
         }
     }
 }

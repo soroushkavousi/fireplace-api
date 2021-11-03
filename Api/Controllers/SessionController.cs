@@ -26,21 +26,6 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
-        /// Revoke session or session.
-        /// </summary>
-        /// <returns>Created basic authentication</returns>
-        /// <response code="200">Returns the newly registered session.</response>
-        [HttpPost("{id}/revoke")]
-        [ProducesResponseType(typeof(SessionDto), StatusCodes.Status200OK)]
-        public async Task<IActionResult> RevokeSession(
-            [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerRevokeSessionInputRouteParameters inputRouteParameters)
-        {
-            await _sessionService.RevokeSessionByIdAsync(requesterUser, inputRouteParameters.Id);
-            return Ok();
-        }
-
-        /// <summary>
         /// List all sessions.
         /// </summary>
         /// <returns>List of sessions</returns>
@@ -72,6 +57,22 @@ namespace FireplaceApi.Api.Controllers
                 inputQueryParameters.IncludeUser);
             var sessionDto = _sessionConverter.ConvertToDto(session);
             return sessionDto;
+        }
+
+
+        /// <summary>
+        /// Revoke session or session.
+        /// </summary>
+        /// <returns>Created basic authentication</returns>
+        /// <response code="200">Returns the newly registered session.</response>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(SessionDto), StatusCodes.Status200OK)]
+        public async Task<IActionResult> RevokeSession(
+            [BindNever][FromHeader] User requesterUser,
+            [FromRoute] ControllerRevokeSessionInputRouteParameters inputRouteParameters)
+        {
+            await _sessionService.RevokeSessionByIdAsync(requesterUser, inputRouteParameters.Id);
+            return Ok();
         }
     }
 }

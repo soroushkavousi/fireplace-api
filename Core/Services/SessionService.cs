@@ -20,12 +20,6 @@ namespace FireplaceApi.Core.Services
             _sessionOperator = sessionOperator;
         }
 
-        public async Task RevokeSessionByIdAsync(User requesterUser, long? id)
-        {
-            await _sessionValidator.ValidateRevokeSessionByIdInputParametersAsync(requesterUser, id);
-            await _sessionOperator.RevokeSessionByIdAsync(id.Value);
-        }
-
         public async Task<List<Session>> ListSessionsAsync(User requesterUser)
         {
             await _sessionValidator.ValidateListSessionsInputParametersAsync(requesterUser);
@@ -38,6 +32,12 @@ namespace FireplaceApi.Core.Services
             await _sessionValidator.ValidateGetSessionByIdInputParametersAsync(requesterUser, id, includeUser);
             var session = await _sessionOperator.GetSessionByIdAsync(id.Value, includeUser.Value);
             return session;
+        }
+
+        public async Task RevokeSessionByIdAsync(User requesterUser, long id)
+        {
+            await _sessionValidator.ValidateRevokeSessionByIdInputParametersAsync(requesterUser, id);
+            await _sessionOperator.RevokeSessionByIdAsync(id);
         }
     }
 }
