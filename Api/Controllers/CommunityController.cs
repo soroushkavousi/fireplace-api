@@ -114,7 +114,7 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Updated community</returns>
         /// <response code="200">The community was successfully updated.</response>
         [HttpPatch("{id:long}")]
-        [Consumes("application/merge-patch+json")]
+        [Consumes("application/json")]
         [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommunityDto>> PatchCommunityByIdAsync(
             [BindNever][FromHeader] User requesterUser,
@@ -133,7 +133,7 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Updated community</returns>
         /// <response code="200">The community was successfully updated.</response>
         [HttpPatch("{name}")]
-        [Consumes("application/merge-patch+json")]
+        [Consumes("application/json")]
         [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommunityDto>> PatchCommunityByNameAsync(
             [BindNever][FromHeader] User requesterUser,

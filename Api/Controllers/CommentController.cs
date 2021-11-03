@@ -213,7 +213,7 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Updated comment</returns>
         /// <response code="200">The comment was successfully updated.</response>
         [HttpPatch("{id:long}")]
-        [Consumes("application/merge-patch+json")]
+        [Consumes("application/json")]
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> PatchCommentByIdAsync(
             [BindNever][FromHeader] User requesterUser,

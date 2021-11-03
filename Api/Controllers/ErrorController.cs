@@ -66,7 +66,7 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Updated error</returns>
         /// <response code="200">The error was successfully updated.</response>
         [HttpPatch("{code}")]
-        [Consumes("application/merge-patch+json")]
+        [Consumes("application/json")]
         [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<ErrorDto>> PatchErrorAsync(
             [BindNever][FromHeader] User requesterUser,

@@ -197,7 +197,7 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Updated user</returns>
         /// <response code="200">The user was successfully updated.</response>
         [HttpPatch("{id:long}")]
-        [Consumes("application/merge-patch+json")]
+        [Consumes("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> PatchUserByIdAsync(
             [BindNever][FromHeader] User requesterUser,
@@ -218,7 +218,7 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Updated user</returns>
         /// <response code="200">The user was successfully updated.</response>
         [HttpPatch("{username}")]
-        [Consumes("application/merge-patch+json")]
+        [Consumes("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> PatchUserByUsernameAsync(
             [BindNever][FromHeader] User requesterUser,

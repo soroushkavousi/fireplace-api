@@ -155,7 +155,7 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Updated post</returns>
         /// <response code="200">The post was successfully updated.</response>
         [HttpPatch("{id:long}")]
-        [Consumes("application/merge-patch+json")]
+        [Consumes("application/json")]
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> PatchPostByIdAsync(
             [BindNever][FromHeader] User requesterUser,
