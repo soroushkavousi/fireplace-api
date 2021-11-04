@@ -51,6 +51,8 @@ namespace FireplaceApi.Infrastructure.Entities
         {
             // p => principal / d => dependent / e => entity
 
+            modelBuilder.DoBaseConfiguration();
+
             modelBuilder
                .Property(e => e.Name)
                .HasDefaultValue(ErrorName.INTERNAL_SERVER.ToString())

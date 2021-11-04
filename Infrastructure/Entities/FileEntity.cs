@@ -40,6 +40,8 @@ namespace FireplaceApi.Infrastructure.Entities
         {
             // p => principal / d => dependent / v => value
 
+            modelBuilder.DoBaseConfiguration();
+
             //modelBuilder
             //    .Property(e => e.RelativeUri)
             //    .HasConversion(

@@ -52,6 +52,9 @@ namespace FireplaceApi.Infrastructure.Entities
         public void Configure(EntityTypeBuilder<CommentEntity> modelBuilder)
         {
             // p => principal / d => dependent
+
+            modelBuilder.DoBaseConfiguration();
+
             modelBuilder
                 .HasOne(d => d.AuthorEntity)
                 .WithMany(p => p.CommentEntities)

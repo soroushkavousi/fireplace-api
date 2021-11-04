@@ -77,6 +77,9 @@ namespace FireplaceApi.Infrastructure.Entities
         public void Configure(EntityTypeBuilder<UserEntity> modelBuilder)
         {
             // p => principal / d => dependent
+
+            modelBuilder.DoBaseConfiguration();
+
         }
     }
 }

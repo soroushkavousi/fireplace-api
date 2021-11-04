@@ -35,6 +35,9 @@ namespace FireplaceApi.Infrastructure.Entities
         public void Configure(EntityTypeBuilder<GlobalEntity> modelBuilder)
         {
             // p => principal / d => dependent / v => value
+
+            modelBuilder.DoBaseConfiguration();
+
         }
     }
 }

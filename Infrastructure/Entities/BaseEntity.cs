@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -17,6 +19,18 @@ namespace FireplaceApi.Infrastructure.Entities
             if (creationDate.HasValue)
                 CreationDate = creationDate.Value;
             ModifiedDate = modifiedDate;
+        }
+    }
+
+    public static class BaseEntityExtensions
+    {
+        public static void DoBaseConfiguration<T>(this EntityTypeBuilder<T> modelBuilder) where T : BaseEntity
+        {
+            // p => principal / d => dependent / e => entity
+
+            modelBuilder
+               .Property(e => e.CreationDate)
+               .HasDefaultValueSql("NOW()");
         }
     }
 }

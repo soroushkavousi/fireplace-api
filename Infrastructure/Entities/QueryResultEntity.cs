@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
@@ -47,28 +48,46 @@ namespace FireplaceApi.Infrastructure.Entities
         }
     }
 
+            
     public class CommunityQueryResultEntity : QueryResultEntity { }
     public class CommunityMembershipQueryResultEntity : QueryResultEntity { }
     public class PostQueryResultEntity : QueryResultEntity { }
     public class CommentQueryResultEntity : QueryResultEntity { }
 
-    //public class CommunityQueryResultEntityConfiguration : IEntityTypeConfiguration<CommunityQueryResultEntity>
-    //{
-    //    public void Configure(EntityTypeBuilder<CommunityQueryResultEntity> modelBuilder)
-    //    {
-    //        // p => principal / d => dependent
+    public class CommunityQueryResultEntityConfiguration : IEntityTypeConfiguration<CommunityQueryResultEntity>
+    {
+        public void Configure(EntityTypeBuilder<CommunityQueryResultEntity> modelBuilder)
+        {
+            // p => principal / d => dependent
 
-    //        modelBuilder.ToTable("CommunityQueryResultEntities");
-    //    }
-    //}
+            modelBuilder.DoBaseConfiguration();
+        }
+    }
+    public class CommunityMembershipQueryResultEntityConfiguration : IEntityTypeConfiguration<CommunityMembershipQueryResultEntity>
+    {
+        public void Configure(EntityTypeBuilder<CommunityMembershipQueryResultEntity> modelBuilder)
+        {
+            // p => principal / d => dependent
 
-    //public class CommunityMembershipQueryResultEntityConfiguration : IEntityTypeConfiguration<CommunityMembershipQueryResultEntity>
-    //{
-    //    public void Configure(EntityTypeBuilder<CommunityMembershipQueryResultEntity> modelBuilder)
-    //    {
-    //        // p => principal / d => dependent
+            modelBuilder.DoBaseConfiguration();
+        }
+    }
+    public class PostQueryResultEntityConfiguration : IEntityTypeConfiguration<PostQueryResultEntity>
+    {
+        public void Configure(EntityTypeBuilder<PostQueryResultEntity> modelBuilder)
+        {
+            // p => principal / d => dependent
 
-    //        modelBuilder.ToTable("CommunityMembershipQueryResultEntities");
-    //    }
-    //}
+            modelBuilder.DoBaseConfiguration();
+        }
+    }
+    public class CommentQueryResultEntityConfiguration : IEntityTypeConfiguration<CommentQueryResultEntity>
+    {
+        public void Configure(EntityTypeBuilder<CommentQueryResultEntity> modelBuilder)
+        {
+            // p => principal / d => dependent
+
+            modelBuilder.DoBaseConfiguration();
+        }
+    }
 }

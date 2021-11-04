@@ -86,9 +86,11 @@ namespace FireplaceApi.Infrastructure.Entities
             modelBuilder.ApplyConfiguration(new ErrorEntityConfiguration());
             modelBuilder.ApplyConfiguration(new FileEntityConfiguration());
             modelBuilder.ApplyConfiguration(new GlobalEntityConfiguration());
-            //modelBuilder.ApplyConfiguration(new CommunityQueryResultEntityConfiguration());
-            //modelBuilder.ApplyConfiguration(new CommunityMembershipQueryResultEntityConfiguration());
-            //modelBuilder.ApplyConfiguration(new CommentQueryResultEntityConfiguration());
+
+            modelBuilder.ApplyConfiguration(new CommunityQueryResultEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new CommunityMembershipQueryResultEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new PostQueryResultEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new CommentQueryResultEntityConfiguration());
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,

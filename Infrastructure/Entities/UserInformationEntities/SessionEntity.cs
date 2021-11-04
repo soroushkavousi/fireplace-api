@@ -40,6 +40,8 @@ namespace FireplaceApi.Infrastructure.Entities
         {
             // p => principal / d => dependent
 
+            modelBuilder.DoBaseConfiguration();
+
             modelBuilder
                 .HasOne(d => d.UserEntity)
                 .WithMany(p => p.SessionEntities)
