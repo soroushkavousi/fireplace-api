@@ -57,7 +57,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return userEntities.Select(e => _userConverter.ConvertToModel(e)).ToList();
         }
 
-        public async Task<User> GetUserByIdAsync(long id,
+        public async Task<User> GetUserByIdAsync(ulong id,
             bool includeEmail = false, bool includeGoogleUser = false,
             bool includeAccessTokens = false, bool includeSessions = false)
         {
@@ -103,13 +103,13 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _userConverter.ConvertToModel(userEntity);
         }
 
-        public async Task<string> GetUsernameByIdAsync(long id)
+        public async Task<string> GetUsernameByIdAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
             var username = (await _userEntities
                 .AsNoTracking()
-                .Select(e => new { Id = e.Id.Value, e.Username })
+                .Select(e => new { e.Id, e.Username })
                 .SingleAsync(e => e.Id == id))
                 .Username;
 
@@ -117,13 +117,13 @@ namespace FireplaceApi.Infrastructure.Repositories
             return username;
         }
 
-        public async Task<long> GetIdByUsernameAsync(string username)
+        public async Task<ulong> GetIdByUsernameAsync(string username)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { username });
             var sw = Stopwatch.StartNew();
             var userId = (await _userEntities
                 .AsNoTracking()
-                .Select(e => new { Id = e.Id.Value, e.Username })
+                .Select(e => new { e.Id, e.Username })
                 .SingleAsync(e => string.Equals(e.Username, username)))
                 .Id;
 
@@ -131,13 +131,13 @@ namespace FireplaceApi.Infrastructure.Repositories
             return userId;
         }
 
-        public async Task<User> CreateUserAsync(string firstName, string lastName,
+        public async Task<User> CreateUserAsync(ulong id, string firstName, string lastName,
             string username, UserState state, Password password = null)
         {
             _logger.LogIOInformation(null, "Database | Iutput",
-                new { firstName, lastName, username, state, passwordHash = password?.Hash });
+                new { id, firstName, lastName, username, state, passwordHash = password?.Hash });
             var sw = Stopwatch.StartNew();
-            var userEntity = new UserEntity(firstName, lastName,
+            var userEntity = new UserEntity(id, firstName, lastName,
                 username, state.ToString(), passwordHash: password?.Hash);
             _userEntities.Add(userEntity);
             await _fireplaceApiContext.SaveChangesAsync();
@@ -169,7 +169,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _userConverter.ConvertToModel(userEntity);
         }
 
-        public async Task DeleteUserByIdAsync(long id)
+        public async Task DeleteUserByIdAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
@@ -199,7 +199,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _logger.LogIOInformation(sw, "Database | Output", new { userEntity });
         }
 
-        public async Task<bool> DoesUserIdExistAsync(long id)
+        public async Task<bool> DoesUserIdExistAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();

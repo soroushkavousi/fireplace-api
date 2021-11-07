@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Api.Tools;
-using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Tools;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -12,13 +12,13 @@ namespace FireplaceApi.Api.Controllers
     public class CommunityMembershipDto
     {
         [Required]
-        public long Id { get; set; }
+        public string Id { get; set; }
         [Required]
-        public long UserId { get; set; }
+        public string UserId { get; set; }
         [Required]
         public string Username { get; set; }
         [Required]
-        public long CommunityId { get; set; }
+        public string CommunityId { get; set; }
         [Required]
         public string CommunityName { get; set; }
         [Required]
@@ -28,7 +28,7 @@ namespace FireplaceApi.Api.Controllers
 
         public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(10001),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id todo"),
             [nameof(UserId).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Id).ToSnakeCase()],
             [nameof(Username).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Username).ToSnakeCase()],
             [nameof(CommunityId).ToSnakeCase()] = CommunityDto.PureExample1[nameof(CommunityDto.Id).ToSnakeCase()],
@@ -39,7 +39,7 @@ namespace FireplaceApi.Api.Controllers
         };
         public static OpenApiObject PureExample2 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(20001),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id 2 todo"),
             [nameof(UserId).ToSnakeCase()] = UserDto.PureExample2[nameof(UserDto.Id).ToSnakeCase()],
             [nameof(Username).ToSnakeCase()] = UserDto.PureExample2[nameof(UserDto.Username).ToSnakeCase()],
             [nameof(CommunityId).ToSnakeCase()] = CommunityDto.PureExample2[nameof(CommunityDto.Id).ToSnakeCase()],
@@ -100,8 +100,8 @@ namespace FireplaceApi.Api.Controllers
 
         }
 
-        public CommunityMembershipDto(long id, long userId, string username,
-            long communityId, string communityName, DateTime creationDate,
+        public CommunityMembershipDto(string id, string userId, string username,
+            string communityId, string communityName, DateTime creationDate,
             UserDto user = null, CommunityDto community = null)
         {
             Id = id;

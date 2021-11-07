@@ -68,6 +68,12 @@ namespace FireplaceApi.Api
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 options.JsonSerializerOptions.Converters.Add(new JsonPropertyOrderConverter());
             });
+
+            services.AddRouting(options =>
+            {
+                options.ConstraintMap.Add(UlongRouteConstraint.Name, typeof(UlongRouteConstraint));
+            });
+
             //services.AddControllers().AddNewtonsoftJson(options =>
             //{
             //    options.SerializerSettings.ContractResolver = new DefaultContractResolver()

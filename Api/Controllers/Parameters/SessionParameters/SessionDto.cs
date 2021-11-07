@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Api.Tools;
-using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Tools;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -12,9 +12,9 @@ namespace FireplaceApi.Api.Controllers
     public class SessionDto
     {
         [Required]
-        public long Id { get; set; }
+        public string Id { get; set; }
         [Required]
-        public long UserId { get; set; }
+        public string UserId { get; set; }
         [Required]
         public string IpAddress { get; set; }
         [Required]
@@ -23,7 +23,7 @@ namespace FireplaceApi.Api.Controllers
 
         public static OpenApiObject PureExample11 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(10001),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id 11 todo"),
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(IpAddress).ToSnakeCase()] = new OpenApiString("111.111.111.111"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
@@ -31,7 +31,7 @@ namespace FireplaceApi.Api.Controllers
         };
         public static OpenApiObject PureExample12 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(10002),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id 12 todo"),
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(IpAddress).ToSnakeCase()] = new OpenApiString("111.111.111.112"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
@@ -39,7 +39,7 @@ namespace FireplaceApi.Api.Controllers
         };
         public static OpenApiObject PureExample21 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(20001),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id 21 todo"),
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(IpAddress).ToSnakeCase()] = new OpenApiString("222.222.222.222"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
@@ -47,7 +47,7 @@ namespace FireplaceApi.Api.Controllers
         };
         public static OpenApiObject PureExample22 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(20002),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id 22 todo"),
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(IpAddress).ToSnakeCase()] = new OpenApiString("222.222.222.223"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
@@ -118,7 +118,7 @@ namespace FireplaceApi.Api.Controllers
             PureExample22[nameof(UserId).ToSnakeCase()] = UserDto.PureExample2[nameof(UserDto.Id).ToSnakeCase()];
         }
 
-        public SessionDto(long id, long userId, string ipAddress,
+        public SessionDto(string id, string userId, string ipAddress,
             DateTime creationDate, UserDto user)
         {
             Id = id;

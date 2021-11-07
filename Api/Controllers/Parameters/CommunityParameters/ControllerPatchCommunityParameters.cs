@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Api.Tools;
-using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Tools;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
@@ -12,7 +12,7 @@ namespace FireplaceApi.Api.Controllers
     {
         [Required]
         [FromRoute(Name = "id")]
-        public long Id { get; set; }
+        public string Id { get; set; }
     }
 
     public class ControllerPatchCommunityByNameInputRouteParameters

@@ -43,75 +43,85 @@ namespace FireplaceApi.Core.Validators
         }
 
         public async Task ValidateListPostCommentsInputParametersAsync(User requesterUser,
-            PaginationInputParameters paginationInputParameters, long postId,
+            PaginationInputParameters paginationInputParameters, string encodedPostId,
             SortType? sort, string stringOfSort)
         {
             await _queryResultValidator.ValidatePaginationInputParameters(paginationInputParameters,
                 ModelName.COMMENT);
 
             ValidateInputEnum(sort, stringOfSort, nameof(sort), ErrorName.INPUT_SORT_IS_NOT_VALID);
+            var postId = ValidateEncodedIdFormatValid(encodedPostId, nameof(encodedPostId));
             var post = await _postValidator.ValidatePostExistsAsync(postId);
         }
 
         public async Task ValidateListChildCommentsAsyncInputParametersAsync(
-            User requesterUser, long parentCommentId)
+            User requesterUser, string encodedParentCommentId)
         {
+            var parentCommentId = ValidateEncodedIdFormatValid(encodedParentCommentId, nameof(encodedParentCommentId));
             var parentComment = await ValidateCommentExistsAsync(parentCommentId);
         }
 
         public async Task ValidateGetCommentByIdInputParametersAsync(User requesterUser,
-            long id, bool? includeAuthor, bool? includePost)
+            string encodedId, bool? includeAuthor, bool? includePost)
         {
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
             var comment = await ValidateCommentExistsAsync(id);
         }
 
         public async Task ValidateReplyToPostInputParametersAsync(User requesterUser,
-            long postId, string content)
+            string encodedPostId, string content)
         {
             ValidateCommentContentFormat(content);
+            var postId = ValidateEncodedIdFormatValid(encodedPostId, nameof(encodedPostId));
             var post = await _postValidator.ValidatePostExistsAsync(postId);
         }
 
         public async Task ValidateReplyToCommentInputParametersAsync(User requesterUser,
-            long parentCommentId, string content)
+            string encodedParentCommentId, string content)
         {
             ValidateCommentContentFormat(content);
+            var parentCommentId = ValidateEncodedIdFormatValid(encodedParentCommentId, nameof(encodedParentCommentId));
             var parentComment = await ValidateCommentExistsAsync(parentCommentId);
         }
 
         public async Task ValidateVoteCommentInputParametersAsync(User requesterUser,
-            long id, bool? isUpvote)
+            string encodedId, bool? isUpvote)
         {
             ValidateParameterIsNotMissing(isUpvote, nameof(isUpvote), ErrorName.IS_UPVOTE_IS_MISSING);
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
             var comment = await ValidateCommentExistsAsync(id, requesterUser);
             ValidateCommentIsNotVotedByUser(comment, requesterUser);
         }
 
         public async Task ValidateToggleVoteForCommentInputParametersAsync(User requesterUser,
-            long id)
+            string encodedId)
         {
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
             var comment = await ValidateCommentExistsAsync(id, requesterUser);
             ValidateCommentVoteExists(comment, requesterUser);
         }
 
         public async Task ValidateDeleteVoteForCommentInputParametersAsync(User requesterUser,
-            long id)
+            string encodedId)
         {
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
             var comment = await ValidateCommentExistsAsync(id, requesterUser);
             ValidateCommentVoteExists(comment, requesterUser);
         }
 
         public async Task ValidatePatchCommentByIdInputParametersAsync(User requesterUser,
-            long id, string content)
+            string encodedId, string content)
         {
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
             ValidateCommentContentFormat(content);
             var comment = await ValidateCommentExistsAsync(id);
             ValidateRequesterUserCanAlterComment(requesterUser, comment);
         }
 
         public async Task ValidateDeleteCommentByIdInputParametersAsync(User requesterUser,
-            long id)
+            string encodedId)
         {
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
             var comment = await ValidateCommentExistsAsync(id);
             ValidateRequesterUserCanAlterComment(requesterUser, comment);
         }
@@ -134,7 +144,7 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public async Task<Comment> ValidateCommentExistsAsync(long id,
+        public async Task<Comment> ValidateCommentExistsAsync(ulong id,
             User requesterUser = null)
         {
             var comment = await _commentOperator.GetCommentByIdAsync(id, true,

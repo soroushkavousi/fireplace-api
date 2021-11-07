@@ -1,5 +1,6 @@
 ﻿using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Tools;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -30,7 +31,7 @@ namespace FireplaceApi.Core.Operators
             return accessToken;
         }
 
-        public async Task<AccessToken> GetAccessTokenByIdAsync(long id, bool includeUser = false)
+        public async Task<AccessToken> GetAccessTokenByIdAsync(ulong id, bool includeUser = false)
         {
             var accessToken = await _accessTokenRepository.GetAccessTokenByIdAsync(id, includeUser);
             if (accessToken == null)
@@ -48,14 +49,16 @@ namespace FireplaceApi.Core.Operators
             return accessToken;
         }
 
-        public async Task<AccessToken> CreateAccessTokenAsync(long userId)
+        public async Task<AccessToken> CreateAccessTokenAsync(ulong userId)
         {
             var accessTokenValue = GenerateNewAccessTokenValue();
-            var accessToken = await _accessTokenRepository.CreateAccessTokenAsync(userId, accessTokenValue);
+            var id = await IdGenerator.GenerateNewIdAsync(DoesAccessTokenIdExistAsync);
+            var accessToken = await _accessTokenRepository.CreateAccessTokenAsync(
+                id, userId, accessTokenValue);
             return accessToken;
         }
 
-        public async Task<AccessToken> PatchAccessTokenByIdAsync(long id, long? userId = null,
+        public async Task<AccessToken> PatchAccessTokenByIdAsync(ulong id, ulong? userId = null,
             string value = null)
         {
             var accessToken = await _accessTokenRepository.GetAccessTokenByIdAsync(id, true);
@@ -64,7 +67,7 @@ namespace FireplaceApi.Core.Operators
             return accessToken;
         }
 
-        public async Task<AccessToken> PatchAccessTokenByValueAsync(string existingValue, long? userId = null,
+        public async Task<AccessToken> PatchAccessTokenByValueAsync(string existingValue, ulong? userId = null,
             string value = null)
         {
             var accessToken = await _accessTokenRepository.GetAccessTokenByValueAsync(existingValue, true);
@@ -73,12 +76,12 @@ namespace FireplaceApi.Core.Operators
             return accessToken;
         }
 
-        public async Task DeleteAccessTokenAsync(long id)
+        public async Task DeleteAccessTokenAsync(ulong id)
         {
             await _accessTokenRepository.DeleteAccessTokenAsync(id);
         }
 
-        public async Task<bool> DoesAccessTokenIdExistAsync(long id)
+        public async Task<bool> DoesAccessTokenIdExistAsync(ulong id)
         {
             var accessTokenIdExists = await _accessTokenRepository.DoesAccessTokenIdExistAsync(id);
             return accessTokenIdExists;
@@ -90,7 +93,7 @@ namespace FireplaceApi.Core.Operators
             return accessTokenValueExists;
         }
 
-        public async Task<AccessToken> ApplyAccessTokenChangesAsync(AccessToken accessToken, long? userId = null,
+        public async Task<AccessToken> ApplyAccessTokenChangesAsync(AccessToken accessToken, ulong? userId = null,
             string value = null)
         {
             if (userId != null)

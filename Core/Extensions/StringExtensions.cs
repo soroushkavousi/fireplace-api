@@ -29,29 +29,6 @@ namespace FireplaceApi.Core.Extensions
             return JsonConvert.DeserializeObject<T>(json, _jsonSerializerSettings);
         }
 
-        public static bool IsJson(this string strInput)
-        {
-            strInput = strInput.Trim();
-            if ((strInput.StartsWith("{") && strInput.EndsWith("}")) || //For object
-                (strInput.StartsWith("[") && strInput.EndsWith("]"))) //For array
-            {
-                try
-                {
-                    var obj = System.Text.Json.JsonDocument.Parse(strInput);
-                    return true;
-                }
-                catch (Exception) //some other exception
-                {
-                    //Console.WriteLine(ex.ToString());
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
-        }
-
         public static string FirstCharToUpper(this string str) =>
             str switch
             {

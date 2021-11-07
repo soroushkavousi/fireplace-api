@@ -39,11 +39,11 @@ namespace FireplaceApi.Infrastructure.Converters
                 communityEntity = _communityConverter
                     .ConvertToEntity(post.Community.PureCopy());
 
-            var postEntity = new PostEntity(post.AuthorId,
+            var postEntity = new PostEntity(post.Id, post.AuthorId,
                 post.AuthorUsername, post.CommunityId,
                 post.CommunityName, post.Content,
                 post.CreationDate, post.ModifiedDate,
-                post.Id, post.Vote, authorEntity, communityEntity);
+                post.Vote, authorEntity, communityEntity);
 
             return postEntity;
         }
@@ -73,7 +73,7 @@ namespace FireplaceApi.Infrastructure.Converters
                     requesterUserVote = -1;
             }
 
-            var post = new Post(postEntity.Id.Value,
+            var post = new Post(postEntity.Id,
                 postEntity.AuthorEntityId, postEntity.AuthorEntityUsername,
                 postEntity.CommunityEntityId, postEntity.CommunityEntityName,
                 postEntity.Vote, requesterUserVote,

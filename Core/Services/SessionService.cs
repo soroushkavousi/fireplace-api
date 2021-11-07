@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Validators;
 using Microsoft.Extensions.Logging;
@@ -27,16 +28,21 @@ namespace FireplaceApi.Core.Services
             return session;
         }
 
-        public async Task<Session> GetSessionByIdAsync(User requesterUser, long? id, bool? includeUser)
+        public async Task<Session> GetSessionByIdAsync(User requesterUser, string encodedId,
+            bool? includeUser)
         {
-            await _sessionValidator.ValidateGetSessionByIdInputParametersAsync(requesterUser, id, includeUser);
-            var session = await _sessionOperator.GetSessionByIdAsync(id.Value, includeUser.Value);
+            await _sessionValidator.ValidateGetSessionByIdInputParametersAsync(requesterUser,
+                encodedId, includeUser);
+            var id = encodedId.Decode();
+            var session = await _sessionOperator.GetSessionByIdAsync(id, includeUser.Value);
             return session;
         }
 
-        public async Task RevokeSessionByIdAsync(User requesterUser, long id)
+        public async Task RevokeSessionByIdAsync(User requesterUser, string encodedId)
         {
-            await _sessionValidator.ValidateRevokeSessionByIdInputParametersAsync(requesterUser, id);
+            await _sessionValidator.ValidateRevokeSessionByIdInputParametersAsync(
+                requesterUser, encodedId);
+            var id = encodedId.Decode();
             await _sessionOperator.RevokeSessionByIdAsync(id);
         }
     }

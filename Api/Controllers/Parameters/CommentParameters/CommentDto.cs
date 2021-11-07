@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Api.Tools;
-using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Tools;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -12,13 +12,13 @@ namespace FireplaceApi.Api.Controllers
     public class CommentDto
     {
         [Required]
-        public long Id { get; set; }
+        public string Id { get; set; }
         [Required]
-        public long AuthorId { get; set; }
+        public string AuthorId { get; set; }
         [Required]
         public string AuthorUsername { get; set; }
         [Required]
-        public long PostId { get; set; }
+        public string PostId { get; set; }
         [Required]
         public int Vote { get; set; }
         [Required]
@@ -30,14 +30,14 @@ namespace FireplaceApi.Api.Controllers
         [Required]
         public DateTime? ModifiedDate { get; set; }
         [Required]
-        public List<long> ParentCommentIds { get; set; }
+        public List<string> ParentCommentIds { get; set; }
         public UserDto Author { get; set; }
         public PostDto Post { get; set; }
         public List<CommentDto> ChildComments { get; set; }
 
         public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(10001),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id todo"),
             [nameof(AuthorId).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Id).ToSnakeCase()],
             [nameof(AuthorUsername).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Username).ToSnakeCase()],
             [nameof(PostId).ToSnakeCase()] = PostDto.PureExample1[nameof(PostDto.Id).ToSnakeCase()],
@@ -53,7 +53,7 @@ namespace FireplaceApi.Api.Controllers
         };
         public static OpenApiObject PureExample2 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(20001),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id todo"),
             [nameof(AuthorId).ToSnakeCase()] = UserDto.PureExample2[nameof(UserDto.Id).ToSnakeCase()],
             [nameof(AuthorUsername).ToSnakeCase()] = UserDto.PureExample2[nameof(UserDto.Username).ToSnakeCase()],
             [nameof(PostId).ToSnakeCase()] = PostDto.PureExample2[nameof(PostDto.Id).ToSnakeCase()],
@@ -137,10 +137,10 @@ namespace FireplaceApi.Api.Controllers
 
         }
 
-        public CommentDto(long id, long authorId, string authorUsername,
-            long postId, int vote, int requesterUserVote, string content,
+        public CommentDto(string id, string authorId, string authorUsername,
+            string postId, int vote, int requesterUserVote, string content,
             DateTime creationDate, DateTime? modifiedDate = null,
-            List<long> parentCommentIds = null,
+            List<string> parentCommentIds = null,
             UserDto author = null, PostDto post = null,
             List<CommentDto> childComments = null)
         {

@@ -36,13 +36,14 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<QueryResult> CreateQueryResultAsync(ModelName modelName,
-            int lastStart, int lastEnd, int lastLimit, int lastPage, List<long> referenceIds,
+            int lastStart, int lastEnd, int lastLimit, int lastPage, List<ulong> referenceIds,
             string pointer = null)
         {
             if (pointer == null)
                 pointer = await GenerateUniquePointerAsync(modelName);
+            var id = await IdGenerator.GenerateNewIdAsync((id) => DoesQueryResultIdExistAsync(modelName, id));
             var queryResult = await _queryResultRepository.CreateQueryResultAsync(modelName,
-                pointer, lastStart, lastEnd, lastLimit, lastPage, referenceIds);
+                id, pointer, lastStart, lastEnd, lastLimit, lastPage, referenceIds);
             return queryResult;
         }
 
@@ -56,12 +57,17 @@ namespace FireplaceApi.Core.Operators
             return await _queryResultRepository.DoesQueryResultPointerExistAsync(modelName, pointer);
         }
 
+        public async Task<bool> DoesQueryResultIdExistAsync(ModelName modelName, ulong id)
+        {
+            return await _queryResultRepository.DoesQueryResultIdExistAsync(modelName, id);
+        }
+
         private async Task<string> GenerateUniquePointerAsync(ModelName modelName)
         {
             string pointer;
             do
             {
-                pointer = Utils.RandomString(GlobalOperator.GlobalValues.Pagination.GeneratedPointerLength);
+                pointer = Utils.GenerateRandomString(GlobalOperator.GlobalValues.Pagination.GeneratedPointerLength);
             } while (await DoesQueryResultPointerExistAsync(modelName, pointer));
 
             return pointer;

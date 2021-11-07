@@ -40,7 +40,7 @@ namespace FireplaceApi.Core.Operators
             return file;
         }
 
-        public async Task<File> GetFileByIdAsync(long id)
+        public async Task<File> GetFileByIdAsync(ulong id)
         {
             var file = await _fileRepository.GetFileByIdAsync(id);
             if (file == null)
@@ -57,7 +57,9 @@ namespace FireplaceApi.Core.Operators
             var relativePath = name;
             var uri = new Uri(_baseUri, relativePath);
             var physicalPath = System.IO.Path.GetFullPath(relativePath, _basePhysicalPath);
-            var file = await _fileRepository.CreateFileAsync(name, realName, uri, physicalPath);
+            var id = await IdGenerator.GenerateNewIdAsync(DoesFileIdExistAsync);
+            var file = await _fileRepository.CreateFileAsync(id, name, realName,
+                uri, physicalPath);
             await _fileGateway.CreateFileAsync(formFile, physicalPath);
             _logger.LogInformation($"New uploaded file: {file.ToJson()}");
 
@@ -65,7 +67,7 @@ namespace FireplaceApi.Core.Operators
             return file;
         }
 
-        public async Task<File> PatchFileByIdAsync(long id, string name = null,
+        public async Task<File> PatchFileByIdAsync(ulong id, string name = null,
             string realName = null, Uri uri = null, string physicalPath = null)
         {
             var file = await _fileRepository.GetFileByIdAsync(id);
@@ -74,12 +76,12 @@ namespace FireplaceApi.Core.Operators
             return file;
         }
 
-        public async Task DeleteFileAsync(long id)
+        public async Task DeleteFileAsync(ulong id)
         {
             await _fileRepository.DeleteFileAsync(id);
         }
 
-        public async Task<bool> DoesFileIdExistAsync(long id)
+        public async Task<bool> DoesFileIdExistAsync(ulong id)
         {
             var fileIdExists = await _fileRepository.DoesFileIdExistAsync(id);
             return fileIdExists;
@@ -124,7 +126,7 @@ namespace FireplaceApi.Core.Operators
             string fileName;
             do
             {
-                fileName = Utils.RandomString(GlobalOperator.GlobalValues.File.GeneratedFileNameLength) + extension;
+                fileName = Utils.GenerateRandomString(GlobalOperator.GlobalValues.File.GeneratedFileNameLength) + extension;
             } while (await DoesFileNameExistAsync(fileName));
 
             return fileName;

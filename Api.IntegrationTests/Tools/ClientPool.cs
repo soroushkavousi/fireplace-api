@@ -1,5 +1,6 @@
 ﻿using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -56,12 +57,16 @@ namespace FireplaceApi.Api.IntegrationTests
 
         private async Task<HttpClient> CreateTheHulkClientAsync()
         {
-            var user = await _userRepository.CreateUserAsync("Bruce", "Banner",
+            var id = await IdGenerator.GenerateNewIdAsync();
+            var user = await _userRepository.CreateUserAsync(id, "Bruce", "Banner",
                 "TheHulk", Core.Enums.UserState.NOT_VERIFIED, Password.OfValue("TheHulkP0"));
             var emailActivation = new Activation(Core.Enums.ActivationStatus.SENT, 12345, "Code: 12345");
-            var email = await _emailRepository.CreateEmailAsync(user.Id, "TheHulk", emailActivation);
+            id = await IdGenerator.GenerateNewIdAsync();
+            var email = await _emailRepository.CreateEmailAsync(id, user.Id, "TheHulk", emailActivation);
             var newAccessTokenValue = _accessTokenOperator.GenerateNewAccessTokenValue();
-            var accessToken = await _accessTokenRepository.CreateAccessTokenAsync(user.Id, newAccessTokenValue);
+            id = await IdGenerator.GenerateNewIdAsync();
+            var accessToken = await _accessTokenRepository.CreateAccessTokenAsync(id, user.Id,
+                newAccessTokenValue);
             var theHulkClient = _apiFactory.CreateClient(_clientOptions);
             var defaultRequestHeaders = theHulkClient.DefaultRequestHeaders;
             defaultRequestHeaders.Add(Api.Tools.Constants.AuthorizationHeaderKey, $"Bearer {newAccessTokenValue}");

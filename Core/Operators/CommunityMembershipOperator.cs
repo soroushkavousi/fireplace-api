@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -55,7 +56,7 @@ namespace FireplaceApi.Core.Operators
             return resultPage;
         }
 
-        public async Task<CommunityMembership> GetCommunityMembershipByIdAsync(long id,
+        public async Task<CommunityMembership> GetCommunityMembershipByIdAsync(ulong id,
             bool includeCreator, bool includeCommunity)
         {
             var communityMembership = await _communityMembershipRepository
@@ -80,13 +81,14 @@ namespace FireplaceApi.Core.Operators
                         .GetIdByNameAsync(communityIdentifier.Name);
                     break;
             }
+            var id = await IdGenerator.GenerateNewIdAsync(DoesCommunityMembershipIdExistAsync);
             var communityMembership = await _communityMembershipRepository
-                .CreateCommunityMembershipAsync(requesterUser.Id,
+                .CreateCommunityMembershipAsync(id, requesterUser.Id,
                     requesterUser.Username, communityIdentifier.Id.Value, communityIdentifier.Name);
             return communityMembership;
         }
 
-        public async Task<CommunityMembership> PatchCommunityMembershipByIdAsync(long id)
+        public async Task<CommunityMembership> PatchCommunityMembershipByIdAsync(ulong id)
         {
             var communityMembership = await _communityMembershipRepository
                 .GetCommunityMembershipByIdAsync(id);
@@ -96,21 +98,21 @@ namespace FireplaceApi.Core.Operators
             return communityMembership;
         }
 
-        public async Task DeleteCommunityMembershipByIdAsync(long userId,
+        public async Task DeleteCommunityMembershipByIdAsync(ulong userId,
             Identifier communityIdentifier)
         {
             await _communityMembershipRepository.DeleteCommunityMembershipByIdAsync(
                 userId, communityIdentifier);
         }
 
-        public async Task<bool> DoesCommunityMembershipIdExistAsync(long id)
+        public async Task<bool> DoesCommunityMembershipIdExistAsync(ulong id)
         {
             var communityMembershipIdExists = await _communityMembershipRepository
                 .DoesCommunityMembershipIdExistAsync(id);
             return communityMembershipIdExists;
         }
 
-        public async Task<bool> DoesCommunityMembershipExistAsync(long userId, long communityId)
+        public async Task<bool> DoesCommunityMembershipExistAsync(ulong userId, ulong communityId)
         {
             var communityMembershipIdExists = await _communityMembershipRepository
                 .DoesCommunityMembershipExistAsync(userId, communityId);

@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Api.Tools;
-using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Tools;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
@@ -9,7 +9,7 @@ namespace FireplaceApi.Api.Controllers
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
     public class ControllerCreatePostInputBodyParameters
     {
-        public long? CommunityId { get; set; }
+        public string CommunityId { get; set; }
         public string CommunityName { get; set; }
         [Required]
         public string Content { get; set; }

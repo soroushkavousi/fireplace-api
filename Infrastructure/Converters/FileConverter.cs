@@ -33,9 +33,9 @@ namespace FireplaceApi.Infrastructure.Converters
             var relativeUri = GetRelativeUri(file.Uri).ToString();
             var relativePhysicalPath = GetRelativePhysicalPath(file.PhysicalPath);
 
-            var fileEntity = new FileEntity(file.Name, file.RealName,
+            var fileEntity = new FileEntity(file.Id, file.Name, file.RealName,
                 relativeUri, relativePhysicalPath, file.CreationDate,
-                file.ModifiedDate, file.Id);
+                file.ModifiedDate);
 
             return fileEntity;
         }
@@ -48,7 +48,7 @@ namespace FireplaceApi.Infrastructure.Converters
             var uri = GetAbsoluteUri(new Uri(fileEntity.RelativeUri, UriKind.Relative));
             var physicalPath = GetAbsolutePhysicalPath(fileEntity.RelativePhysicalPath);
 
-            var file = new File(fileEntity.Id.Value, fileEntity.Name, fileEntity.RealName,
+            var file = new File(fileEntity.Id, fileEntity.Name, fileEntity.RealName,
                 uri, physicalPath, fileEntity.CreationDate, fileEntity.ModifiedDate);
 
             return file;

@@ -9,30 +9,27 @@ namespace FireplaceApi.Infrastructure.Entities
     public class CommunityEntity : BaseEntity
     {
         public string Name { get; set; }
-        public long CreatorEntityId { get; set; }
-        public long? Id { get; set; }
+        public ulong CreatorEntityId { get; set; }
         public UserEntity CreatorEntity { get; set; }
         public List<CommunityMembershipEntity> CommunityMemberEntities { get; set; }
         public List<PostEntity> PostEntities { get; set; }
 
         private CommunityEntity() : base() { }
 
-        public CommunityEntity(string name, long creatorEntityId,
+        public CommunityEntity(ulong id, string name, ulong creatorEntityId,
             DateTime? creationDate = null, DateTime? modifiedDate = null,
-            long? id = null, UserEntity creatorEntity = null,
-            List<CommunityMembershipEntity> members = null,
-            List<PostEntity> postEntities = null) : base(creationDate, modifiedDate)
+            UserEntity creatorEntity = null, List<CommunityMembershipEntity> members = null,
+            List<PostEntity> postEntities = null) : base(id, creationDate, modifiedDate)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             CreatorEntityId = creatorEntityId;
-            Id = id;
             CreatorEntity = creatorEntity;
             CommunityMemberEntities = members;
             PostEntities = postEntities;
         }
 
-        public CommunityEntity PureCopy() => new CommunityEntity(Name, CreatorEntityId,
-            CreationDate, ModifiedDate, Id);
+        public CommunityEntity PureCopy() => new CommunityEntity(Id, Name, CreatorEntityId,
+            CreationDate, ModifiedDate);
     }
 
     public class CommunityEntityConfiguration : IEntityTypeConfiguration<CommunityEntity>

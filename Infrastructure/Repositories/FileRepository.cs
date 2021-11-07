@@ -51,7 +51,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return fileEntities.Select(e => _fileConverter.ConvertToModel(e)).ToList();
         }
 
-        public async Task<File> GetFileByIdAsync(long id)
+        public async Task<File> GetFileByIdAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
@@ -66,14 +66,15 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _fileConverter.ConvertToModel(fileEntity);
         }
 
-        public async Task<File> CreateFileAsync(string name, string realName, Uri uri,
-            string physicalPath)
+        public async Task<File> CreateFileAsync(ulong id, string name, string realName,
+            Uri uri, string physicalPath)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { name, realName, uri, physicalPath });
+            _logger.LogIOInformation(null, "Database | Iutput",
+                new { id, name, realName, uri, physicalPath });
             var sw = Stopwatch.StartNew();
             var relativeUri = _fileConverter.GetRelativeUri(uri).ToString();
             var relativePhysicalPath = _fileConverter.GetRelativePhysicalPath(physicalPath);
-            var fileEntity = new FileEntity(name, realName, relativeUri, relativePhysicalPath);
+            var fileEntity = new FileEntity(id, name, realName, relativeUri, relativePhysicalPath);
             _fileEntities.Add(fileEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
@@ -103,7 +104,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _fileConverter.ConvertToModel(fileEntity);
         }
 
-        public async Task DeleteFileAsync(long id)
+        public async Task DeleteFileAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
@@ -118,7 +119,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _logger.LogIOInformation(sw, "Database | Output", new { fileEntity });
         }
 
-        public async Task<bool> DoesFileIdExistAsync(long id)
+        public async Task<bool> DoesFileIdExistAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();

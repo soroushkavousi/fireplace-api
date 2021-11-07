@@ -39,11 +39,11 @@ namespace FireplaceApi.Infrastructure.Converters
                 commentEntity = _commentConverter
                     .ConvertToEntity(commentVote.Comment.PureCopy());
 
-            var commentVoteEntity = new CommentVoteEntity(commentVote.VoterId,
+            var commentVoteEntity = new CommentVoteEntity(
+                commentVote.Id, commentVote.VoterId,
                 commentVote.VoterUsername, commentVote.CommentId,
                 commentVote.IsUp, commentVote.CreationDate,
-                commentVote.ModifiedDate, commentVote.Id,
-                voterEntity, commentEntity);
+                commentVote.ModifiedDate, voterEntity, commentEntity);
 
             return commentVoteEntity;
         }
@@ -62,7 +62,7 @@ namespace FireplaceApi.Infrastructure.Converters
                 comment = _commentConverter
                     .ConvertToModel(commentVoteEntity.CommentEntity.PureCopy());
 
-            var commentVote = new CommentVote(commentVoteEntity.Id.Value,
+            var commentVote = new CommentVote(commentVoteEntity.Id,
                 commentVoteEntity.VoterEntityId, commentVoteEntity.VoterEntityUsername,
                 commentVoteEntity.CommentEntityId, commentVoteEntity.IsUp,
                 commentVoteEntity.CreationDate, commentVoteEntity.ModifiedDate,

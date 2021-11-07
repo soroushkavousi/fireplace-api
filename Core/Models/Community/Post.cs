@@ -4,10 +4,9 @@ namespace FireplaceApi.Core.Models
 {
     public class Post : BaseModel
     {
-        public long Id { get; set; }
-        public long AuthorId { get; set; }
+        public ulong AuthorId { get; set; }
         public string AuthorUsername { get; set; }
-        public long CommunityId { get; set; }
+        public ulong CommunityId { get; set; }
         public string CommunityName { get; set; }
         public int Vote { get; set; }
         public int RequesterUserVote { get; set; }
@@ -15,13 +14,12 @@ namespace FireplaceApi.Core.Models
         public User Author { get; set; }
         public Community Community { get; set; }
 
-        public Post(long id, long authorId, string authorUsername,
-            long communityId, string communityName, int vote, int requesterUserVote,
+        public Post(ulong id, ulong authorId, string authorUsername,
+            ulong communityId, string communityName, int vote, int requesterUserVote,
             string content, DateTime creationDate, DateTime? modifiedDate = null,
             User author = null, Community community = null)
-            : base(creationDate, modifiedDate)
+            : base(id, creationDate, modifiedDate)
         {
-            Id = id;
             AuthorId = authorId;
             AuthorUsername = authorUsername;
             CommunityId = communityId;

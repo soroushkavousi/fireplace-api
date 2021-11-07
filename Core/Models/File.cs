@@ -4,7 +4,6 @@ namespace FireplaceApi.Core.Models
 {
     public class File : BaseModel
     {
-        public long Id { get; set; }
         public string Name { get; set; }
         public string RealName { get; set; }
         public Uri Uri { get; set; }
@@ -12,11 +11,10 @@ namespace FireplaceApi.Core.Models
         //[JsonIgnore]
         //public IFormFile FormFile {get;set;}
 
-        public File(long id, string name, string realName,
+        public File(ulong id, string name, string realName,
             Uri uri, string physicalPath, DateTime creationDate,
-            DateTime? modifiedDate = null) : base(creationDate, modifiedDate)
+            DateTime? modifiedDate = null) : base(id, creationDate, modifiedDate)
         {
-            Id = id;
             Name = name ?? throw new ArgumentNullException(nameof(name));
             RealName = realName ?? throw new ArgumentNullException(nameof(realName));
             Uri = uri ?? throw new ArgumentNullException(nameof(uri));

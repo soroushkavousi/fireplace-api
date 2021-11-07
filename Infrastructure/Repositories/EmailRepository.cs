@@ -52,7 +52,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return emailEntities.Select(e => _emailConverter.ConvertToModel(e)).ToList();
         }
 
-        public async Task<Email> GetEmailByIdAsync(long id, bool includeUser = false)
+        public async Task<Email> GetEmailByIdAsync(ulong id, bool includeUser = false)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id, includeUser });
             var sw = Stopwatch.StartNew();
@@ -84,12 +84,13 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _emailConverter.ConvertToModel(emailEntity);
         }
 
-        public async Task<Email> CreateEmailAsync(long userId, string address,
-            Activation activation)
+        public async Task<Email> CreateEmailAsync(ulong id, ulong userId,
+            string address, Activation activation)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { userId, address, activation });
+            _logger.LogIOInformation(null, "Database | Iutput",
+                new { id, userId, address, activation });
             var sw = Stopwatch.StartNew();
-            var emailEntity = new EmailEntity(userId, address,
+            var emailEntity = new EmailEntity(id, userId, address,
                 activation.Status.ToString(), activationCode: activation.Code);
             _emailEntities.Add(emailEntity);
             await _fireplaceApiContext.SaveChangesAsync();
@@ -120,7 +121,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _emailConverter.ConvertToModel(emailEntity);
         }
 
-        public async Task DeleteEmailAsync(long id)
+        public async Task DeleteEmailAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
@@ -135,7 +136,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _logger.LogIOInformation(sw, "Database | Output", new { emailEntity });
         }
 
-        public async Task<bool> DoesEmailIdExistAsync(long id)
+        public async Task<bool> DoesEmailIdExistAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();

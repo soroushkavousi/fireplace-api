@@ -7,6 +7,6 @@ namespace FireplaceApi.Api.Controllers
     {
         [Required]
         [FromRoute(Name = "id")]
-        public long Id { get; set; }
+        public string Id { get; set; }
     }
 }

@@ -7,18 +7,18 @@ namespace FireplaceApi.Core.Interfaces
 {
     public interface ICommunityMembershipRepository
     {
-        public Task<List<CommunityMembership>> ListCommunityMembershipsAsync(List<long> Ids);
-        public Task<List<CommunityMembership>> ListCommunityMembershipsAsync(long userId);
-        public Task<List<long>> ListCommunityMembershipIdsAsync(long userId);
-        public Task<CommunityMembership> GetCommunityMembershipByIdAsync(long id,
+        public Task<List<CommunityMembership>> ListCommunityMembershipsAsync(List<ulong> Ids);
+        public Task<List<CommunityMembership>> ListCommunityMembershipsAsync(ulong userId);
+        public Task<List<ulong>> ListCommunityMembershipIdsAsync(ulong userId);
+        public Task<CommunityMembership> GetCommunityMembershipByIdAsync(ulong id,
             bool includeUser = false, bool includeCommunity = false);
-        public Task<CommunityMembership> CreateCommunityMembershipAsync(long userId,
-            string username, long communityId, string communityName);
+        public Task<CommunityMembership> CreateCommunityMembershipAsync(ulong id,
+            ulong userId, string username, ulong communityId, string communityName);
         public Task<CommunityMembership> UpdateCommunityMembershipAsync(
             CommunityMembership communityMembership);
-        public Task DeleteCommunityMembershipByIdAsync(long userId,
+        public Task DeleteCommunityMembershipByIdAsync(ulong userId,
             Identifier communityIdentifier);
-        public Task<bool> DoesCommunityMembershipIdExistAsync(long id);
-        public Task<bool> DoesCommunityMembershipExistAsync(long userId, long communityId);
+        public Task<bool> DoesCommunityMembershipIdExistAsync(ulong id);
+        public Task<bool> DoesCommunityMembershipExistAsync(ulong userId, ulong communityId);
     }
 }

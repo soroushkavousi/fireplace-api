@@ -45,10 +45,10 @@ namespace FireplaceApi.Infrastructure.Converters
                 sessionEntities = user.Sessions.Select(
                     session => _serviceProvider.GetService<SessionConverter>().ConvertToEntity(session.PureCopy())).ToList();
 
-            var userEntity = new UserEntity(user.FirstName, user.LastName,
+            var userEntity = new UserEntity(user.Id, user.FirstName, user.LastName,
                 user.Username, user.State.ToString(), user.CreationDate,
-                user.ModifiedDate, user.Password?.Hash, user.Id,
-                emailEntity, googleUserEntity, accessTokenEntities, sessionEntities);
+                user.ModifiedDate, user.Password?.Hash, emailEntity, googleUserEntity,
+                accessTokenEntities, sessionEntities);
 
             return userEntity;
         }
@@ -76,7 +76,7 @@ namespace FireplaceApi.Infrastructure.Converters
                 sessions = userEntity.SessionEntities.Select(
                     sessionEntity => _serviceProvider.GetService<SessionConverter>().ConvertToModel(sessionEntity.PureCopy())).ToList();
 
-            var user = new User(userEntity.Id.Value, userEntity.FirstName, userEntity.LastName,
+            var user = new User(userEntity.Id, userEntity.FirstName, userEntity.LastName,
                 userEntity.Username, userEntity.State.ToEnum<UserState>(), userEntity.CreationDate,
                 userEntity.ModifiedDate, Password.OfHash(userEntity.PasswordHash), email,
                 googleUser, accessTokens, sessions);

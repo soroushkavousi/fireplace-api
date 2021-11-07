@@ -4,18 +4,17 @@ namespace FireplaceApi.Core.Models
 {
     public class CommentVote : BaseModel
     {
-        public long Id { get; set; }
-        public long VoterId { get; set; }
+        public ulong VoterId { get; set; }
         public string VoterUsername { get; set; }
-        public long CommentId { get; set; }
+        public ulong CommentId { get; set; }
         public bool IsUp { get; set; }
         public User Voter { get; set; }
         public Comment Comment { get; set; }
 
-        public CommentVote(long id, long voterId, string voterUsername,
-            long commentId, bool isUp, DateTime creationDate,
+        public CommentVote(ulong id, ulong voterId, string voterUsername,
+            ulong commentId, bool isUp, DateTime creationDate,
             DateTime? modifiedDate = null, User voter = null,
-            Comment comment = null) : base(creationDate, modifiedDate)
+            Comment comment = null) : base(id, creationDate, modifiedDate)
         {
             Id = id;
             VoterId = voterId;

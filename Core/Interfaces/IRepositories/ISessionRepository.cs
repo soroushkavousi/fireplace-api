@@ -8,15 +8,15 @@ namespace FireplaceApi.Core.Interfaces
 {
     public interface ISessionRepository
     {
-        public Task<List<Session>> ListSessionsAsync(long userId,
+        public Task<List<Session>> ListSessionsAsync(ulong userId,
             SessionState? filterSessionState = null, bool includeUser = false);
-        public Task<Session> GetSessionByIdAsync(long id, bool includeUser = false);
-        public Task<Session> FindSessionAsync(long userId, IPAddress IpAddress,
+        public Task<Session> GetSessionByIdAsync(ulong id, bool includeUser = false);
+        public Task<Session> FindSessionAsync(ulong userId, IPAddress IpAddress,
             bool includeTracking = false, bool includeUser = false);
-        public Task<Session> CreateSessionAsync(long userId, IPAddress ipAddress,
-            SessionState state);
+        public Task<Session> CreateSessionAsync(ulong id, ulong userId,
+            IPAddress ipAddress, SessionState state);
         public Task<Session> UpdateSessionAsync(Session session);
-        public Task DeleteSessionAsync(long id);
-        public Task<bool> DoesSessionIdExistAsync(long id);
+        public Task DeleteSessionAsync(ulong id);
+        public Task<bool> DoesSessionIdExistAsync(ulong id);
     }
 }

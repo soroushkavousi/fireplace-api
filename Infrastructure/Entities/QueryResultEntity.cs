@@ -15,25 +15,24 @@ namespace FireplaceApi.Infrastructure.Entities
         public int LastLimit { get; set; }
         public int LastPage { get; set; }
         [JsonIgnore]
-        public List<long> ReferenceEntityIds { get; set; }
-        public long? Id { get; set; }
+        public List<ulong> ReferenceEntityIds { get; set; }
 
         protected QueryResultEntity() : base() { }
 
-        public QueryResultEntity(string pointer, int lastStart,
-            int lastEnd, int lastLimit, int lastPage, List<long> referenceEntityIds,
-            DateTime? creationDate = null, DateTime? modifiedDate = null,
-            long? id = null) : base(creationDate, modifiedDate)
+        public QueryResultEntity(ulong id, string pointer, int lastStart,
+            int lastEnd, int lastLimit, int lastPage, List<ulong> referenceEntityIds,
+            DateTime? creationDate = null, DateTime? modifiedDate = null)
+            : base(id, creationDate, modifiedDate)
         {
-            FillParameters(pointer, lastStart, lastEnd, lastLimit, lastPage,
-                referenceEntityIds, creationDate, modifiedDate, id);
+            FillParameters(id, pointer, lastStart, lastEnd, lastLimit, lastPage,
+                referenceEntityIds, creationDate, modifiedDate);
         }
 
-        public void FillParameters(string pointer, int lastStart,
-            int lastEnd, int lastLimit, int lastPage, List<long> referenceEntityIds,
-            DateTime? creationDate = null, DateTime? modifiedDate = null,
-            long? id = null)
+        public void FillParameters(ulong id, string pointer, int lastStart,
+            int lastEnd, int lastLimit, int lastPage, List<ulong> referenceEntityIds,
+            DateTime? creationDate = null, DateTime? modifiedDate = null)
         {
+            Id = id;
             Pointer = pointer ?? throw new ArgumentNullException(nameof(pointer));
             LastStart = lastStart;
             LastEnd = lastEnd;
@@ -44,11 +43,10 @@ namespace FireplaceApi.Infrastructure.Entities
                 CreationDate = creationDate.Value;
             if (modifiedDate.HasValue)
                 ModifiedDate = modifiedDate.Value;
-            Id = id;
         }
     }
 
-            
+
     public class CommunityQueryResultEntity : QueryResultEntity { }
     public class CommunityMembershipQueryResultEntity : QueryResultEntity { }
     public class PostQueryResultEntity : QueryResultEntity { }

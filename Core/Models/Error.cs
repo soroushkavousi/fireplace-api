@@ -8,7 +8,6 @@ namespace FireplaceApi.Core.Models
     public class Error : BaseModel
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        public int Id { get; set; }
         public ErrorName Name { get; set; }
         public int Code { get; set; }
         public string ClientMessage { get; set; }
@@ -28,12 +27,12 @@ namespace FireplaceApi.Core.Models
             creationDate: DateTime.UtcNow
         );
 
-        public Error(int id, ErrorName name, int code,
+        public Error(ulong id, ErrorName name, int code,
             string clientMessage, int httpStatusCode,
             DateTime creationDate, DateTime? modifiedDate = null,
-            string serverMessage = null, Exception exception = null) : base(creationDate, modifiedDate)
+            string serverMessage = null, Exception exception = null)
+            : base(id, creationDate, modifiedDate)
         {
-            Id = id;
             Name = name;
             Code = code;
             ClientMessage = clientMessage ?? throw new ArgumentNullException(nameof(clientMessage));

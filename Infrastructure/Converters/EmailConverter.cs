@@ -29,12 +29,12 @@ namespace FireplaceApi.Infrastructure.Converters
 
             UserEntity userEntity = null;
             if (email.User != null)
-                userEntity = _serviceProvider.GetService<UserConverter>().ConvertToEntity(email.User.PureCopy());
+                userEntity = _serviceProvider.GetService<UserConverter>()
+                    .ConvertToEntity(email.User.PureCopy());
 
-            var emailEntity = new EmailEntity(email.UserId, email.Address,
+            var emailEntity = new EmailEntity(email.Id, email.UserId, email.Address,
                 email.Activation.Status.ToString(), email.CreationDate,
-                email.ModifiedDate, email.Activation.Code,
-                email.Id, userEntity);
+                email.ModifiedDate, email.Activation.Code, userEntity);
 
             return emailEntity;
         }
@@ -51,7 +51,7 @@ namespace FireplaceApi.Infrastructure.Converters
             var activation = new Activation(emailEntity.ActivationStatus.ToEnum<ActivationStatus>(),
                 emailEntity.ActivationCode);
 
-            var email = new Email(emailEntity.Id.Value, emailEntity.UserEntityId,
+            var email = new Email(emailEntity.Id, emailEntity.UserEntityId,
                 emailEntity.Address, activation, emailEntity.CreationDate, emailEntity.ModifiedDate, user);
 
             return email;

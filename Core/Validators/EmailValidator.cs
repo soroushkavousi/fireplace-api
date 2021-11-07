@@ -28,20 +28,20 @@ namespace FireplaceApi.Core.Validators
             _emailOperator = emailOperator;
         }
 
-        public async Task ValidateGetEmailByIdInputParametersAsync(User requesterUser, long? id, bool? includeUser)
+        public async Task ValidateGetEmailByIdInputParametersAsync(User requesterUser, string encodedId, bool? includeUser)
         {
-            ValidateParameterIsNotMissing(id, nameof(id), ErrorName.EMAIL_ID_IS_MISSING);
-            await ValidateEmailIdExistsAsync(id.Value);
-            await ValidateRequesterUserCanAccessToEmailIdAsync(requesterUser, id.Value);
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
+            await ValidateEmailIdExistsAsync(id);
+            await ValidateRequesterUserCanAccessToEmailIdAsync(requesterUser, id);
         }
 
-        public async Task ValidateActivateEmailByIdInputParametersAsync(User requesterUser, long? id, int? activationCode)
+        public async Task ValidateActivateEmailByIdInputParametersAsync(User requesterUser, string encodedId, int? activationCode)
         {
-            ValidateParameterIsNotMissing(id, nameof(id), ErrorName.EMAIL_ID_IS_MISSING);
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
             ValidateParameterIsNotMissing(activationCode, nameof(activationCode), ErrorName.ACTIVATION_CODE_IS_MISSING);
-            await ValidateEmailIdExistsAsync(id.Value);
-            await ValidateRequesterUserCanAccessToEmailIdAsync(requesterUser, id.Value);
-            await ValidateActivationCodeIsCorrectAsync(id.Value, activationCode.Value);
+            await ValidateEmailIdExistsAsync(id);
+            await ValidateRequesterUserCanAccessToEmailIdAsync(requesterUser, id);
+            await ValidateActivationCodeIsCorrectAsync(id, activationCode.Value);
         }
 
         public void ValidateEmailAddressFormat(string address)
@@ -71,7 +71,7 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public async Task ValidateEmailIdDoesNotExistAsync(long id)
+        public async Task ValidateEmailIdDoesNotExistAsync(ulong id)
         {
             if (await _emailOperator.DoesEmailIdExistAsync(id))
             {
@@ -80,7 +80,7 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public async Task ValidateEmailIdExistsAsync(long id)
+        public async Task ValidateEmailIdExistsAsync(ulong id)
         {
             if (await _emailOperator.DoesEmailIdExistAsync(id) == false)
             {
@@ -105,7 +105,7 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public async Task ValidateRequesterUserCanAccessToEmailIdAsync(User requesterUser, long id)
+        public async Task ValidateRequesterUserCanAccessToEmailIdAsync(User requesterUser, ulong id)
         {
             var email = await _emailOperator.GetEmailByIdAsync(id);
             if (email.UserId != requesterUser.Id)
@@ -115,7 +115,7 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public async Task ValidateActivationCodeIsCorrectAsync(long id, int activationCode)
+        public async Task ValidateActivationCodeIsCorrectAsync(ulong id, int activationCode)
         {
             var email = await _emailOperator.GetEmailByIdAsync(id);
             if (activationCode != email.Activation.Code && activationCode != 55555)

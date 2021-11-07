@@ -2,6 +2,7 @@
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -62,7 +63,7 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<Page<Comment>> ListPostCommentsAsync(User requesterUser,
-            PaginationInputParameters paginationInputParameters, long postId,
+            PaginationInputParameters paginationInputParameters, ulong postId,
             SortType? sort)
         {
             Page<Comment> resultPage = default;
@@ -96,7 +97,7 @@ namespace FireplaceApi.Core.Operators
         }
 
         private void SetChilds(List<Comment> parentComments,
-            Dictionary<long, List<Comment>> childrenPerParentId)
+            Dictionary<ulong, List<Comment>> childrenPerParentId)
         {
             if (parentComments == null || parentComments.Count == 0)
                 return;
@@ -108,7 +109,7 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<List<Comment>> ListChildCommentsAsync(User requesterUser,
-            long parentCommentId)
+            ulong parentCommentId)
         {
             var postId = (await GetCommentByIdAsync(parentCommentId, false,
                 false, null)).PostId;
@@ -120,7 +121,7 @@ namespace FireplaceApi.Core.Operators
             return rootComments;
         }
 
-        public async Task<Comment> GetCommentByIdAsync(long id,
+        public async Task<Comment> GetCommentByIdAsync(ulong id,
             bool includeAuthor, bool includePost, User requesterUser)
         {
             var comment = await _commentRepository.GetCommentByIdAsync(
@@ -132,35 +133,39 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<Comment> ReplyToPostAsync(User requesterUser,
-            long postId, string content)
+            ulong postId, string content)
         {
+            var id = await IdGenerator.GenerateNewIdAsync(DoesCommentIdExistAsync);
             var comment = await _commentRepository
-                .CreateCommentAsync(requesterUser.Id,
+                .CreateCommentAsync(id, requesterUser.Id,
                     requesterUser.Username, postId, content,
-                    new List<long>());
+                    new List<ulong>());
             return comment;
         }
 
         public async Task<Comment> ReplyToCommentAsync(User requesterUser,
-            long commentId, string content)
+            ulong commentId, string content)
         {
             var parentComment = await _commentRepository
                 .GetCommentByIdAsync(commentId);
             var postId = parentComment.PostId;
             var parentCommentIds = parentComment.ParentCommentIds.CopyOrDefault();
             parentCommentIds.Add(parentComment.Id);
+            var id = await IdGenerator.GenerateNewIdAsync(DoesCommentIdExistAsync);
             var comment = await _commentRepository
-                .CreateCommentAsync(requesterUser.Id, requesterUser.Username,
+                .CreateCommentAsync(id, requesterUser.Id, requesterUser.Username,
                     postId, content, parentCommentIds);
             return comment;
         }
 
         public async Task<Comment> VoteCommentAsync(User requesterUser,
-            long id, bool isUp)
+            ulong id, bool isUp)
         {
+            var commentVoteId = await IdGenerator.GenerateNewIdAsync(
+                DoesCommentVoteIdExistAsync);
             var commentVote = await _commentVoteRepository
-                .CreateCommentVoteAsync(requesterUser.Id, requesterUser.Username,
-                    id, isUp);
+                .CreateCommentVoteAsync(commentVoteId, requesterUser.Id,
+                    requesterUser.Username, id, isUp);
             var voteChange = commentVote.IsUp ? +1 : -1;
             var comment = await PatchCommentByIdAsync(requesterUser,
                 id, null, voteChange: voteChange);
@@ -168,7 +173,7 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<Comment> ToggleVoteForCommentAsync(User requesterUser,
-            long id)
+            ulong id)
         {
             var commentVote = await _commentVoteRepository.GetCommentVoteAsync(
                 requesterUser.Id, id, includeComment: true);
@@ -183,7 +188,7 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<Comment> DeleteVoteForCommentAsync(User requesterUser,
-            long id)
+            ulong id)
         {
             var commentVote = await _commentVoteRepository.GetCommentVoteAsync(
                 requesterUser.Id, id, includeComment: true);
@@ -196,7 +201,7 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<Comment> PatchCommentByIdAsync(User requesterUser,
-            long id, string content, int? voteChange)
+            ulong id, string content, int? voteChange)
         {
             var comment = await _commentRepository
                 .GetCommentByIdAsync(id);
@@ -207,15 +212,22 @@ namespace FireplaceApi.Core.Operators
             return comment;
         }
 
-        public async Task DeleteCommentByIdAsync(long id)
+        public async Task DeleteCommentByIdAsync(ulong id)
         {
             await _commentRepository.DeleteCommentByIdAsync(id);
         }
 
-        public async Task<bool> DoesCommentIdExistAsync(long id)
+        public async Task<bool> DoesCommentIdExistAsync(ulong id)
         {
             var commentIdExists = await _commentRepository
                 .DoesCommentIdExistAsync(id);
+            return commentIdExists;
+        }
+
+        public async Task<bool> DoesCommentVoteIdExistAsync(ulong commentVoteId)
+        {
+            var commentIdExists = await _commentVoteRepository
+                .DoesCommentVoteIdExistAsync(commentVoteId);
             return commentIdExists;
         }
 

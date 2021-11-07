@@ -7,7 +7,7 @@ namespace FireplaceApi.Infrastructure.Entities
     [Index(nameof(GmailAddress), IsUnique = true)]
     public class GoogleUserEntity : BaseEntity
     {
-        public long UserEntityId { get; set; }
+        public ulong UserEntityId { get; set; }
         public string Code { get; set; }
         public string AccessToken { get; set; }
         public string TokenType { get; set; }
@@ -28,12 +28,11 @@ namespace FireplaceApi.Infrastructure.Entities
         public string AuthUser { get; set; }
         public string Prompt { get; set; }
         public string RedirectToUserUrl { get; set; }
-        public long? Id { get; set; }
         public UserEntity UserEntity { get; set; }
 
         private GoogleUserEntity() : base() { }
 
-        public GoogleUserEntity(long userEntityId, string code,
+        public GoogleUserEntity(ulong id, ulong userEntityId, string code,
             string accessToken, string tokenType,
             long accessTokenExpiresInSeconds, string refreshToken,
             string scope, string idToken, DateTime accessTokenIssuedTime,
@@ -43,7 +42,7 @@ namespace FireplaceApi.Infrastructure.Entities
             string pictureUrl, string state, string authUser,
             string prompt, string redirectToUserUrl,
             DateTime? creationDate = null, DateTime? modifiedDate = null,
-            long? id = null, UserEntity userEntity = null) : base(creationDate, modifiedDate)
+            UserEntity userEntity = null) : base(id, creationDate, modifiedDate)
         {
             UserEntityId = userEntityId;
             Code = code ?? throw new ArgumentNullException(nameof(code));
@@ -66,15 +65,14 @@ namespace FireplaceApi.Infrastructure.Entities
             AuthUser = authUser ?? throw new ArgumentNullException(nameof(authUser));
             Prompt = prompt ?? throw new ArgumentNullException(nameof(prompt));
             RedirectToUserUrl = redirectToUserUrl ?? throw new ArgumentNullException(nameof(redirectToUserUrl));
-            Id = id;
             UserEntity = userEntity;
         }
 
-        public GoogleUserEntity PureCopy() => new GoogleUserEntity(UserEntityId, Code, AccessToken,
+        public GoogleUserEntity PureCopy() => new GoogleUserEntity(Id, UserEntityId, Code, AccessToken,
             TokenType, AccessTokenExpiresInSeconds, RefreshToken, Scope, IdToken,
             AccessTokenIssuedTime, GmailAddress, GmailVerified, GmailIssuedTimeInSeconds,
             FullName, FirstName, LastName, Locale, PictureUrl, State, AuthUser, Prompt,
-            RedirectToUserUrl, CreationDate, ModifiedDate, Id);
+            RedirectToUserUrl, CreationDate, ModifiedDate);
 
         public void RemoveLoopReferencing()
         {

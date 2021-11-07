@@ -7,7 +7,6 @@ namespace FireplaceApi.Core.Models
 {
     public class User : BaseModel
     {
-        public long Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Username { get; set; }
@@ -18,13 +17,12 @@ namespace FireplaceApi.Core.Models
         public List<AccessToken> AccessTokens { get; set; }
         public List<Session> Sessions { get; set; }
 
-        public User(long id, string firstName, string lastName,
+        public User(ulong id, string firstName, string lastName,
             string username, UserState state, DateTime creationDate,
             DateTime? modifiedDate = null, Password password = null, Email email = null,
             GoogleUser googleUser = null, List<AccessToken> accessTokens = null,
-            List<Session> sessions = null) : base(creationDate, modifiedDate)
+            List<Session> sessions = null) : base(id, creationDate, modifiedDate)
         {
-            Id = id;
             FirstName = firstName ?? throw new ArgumentNullException(nameof(username));
             LastName = lastName ?? throw new ArgumentNullException(nameof(username));
             Username = username ?? throw new ArgumentNullException(nameof(username));

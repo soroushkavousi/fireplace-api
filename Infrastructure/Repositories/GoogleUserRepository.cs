@@ -52,7 +52,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return googleUserEntities.Select(e => _googleUserConverter.ConvertToModel(e)).ToList();
         }
 
-        public async Task<GoogleUser> GetGoogleUserByIdAsync(long id, bool includeUser = false)
+        public async Task<GoogleUser> GetGoogleUserByIdAsync(ulong id, bool includeUser = false)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id, includeUser });
             var sw = Stopwatch.StartNew();
@@ -85,8 +85,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _googleUserConverter.ConvertToModel(googleUserEntity);
         }
 
-        public async Task<GoogleUser> CreateGoogleUserAsync(long userId, string code,
-            string accessToken, string tokenType, long accessTokenExpiresInSeconds,
+        public async Task<GoogleUser> CreateGoogleUserAsync(ulong id, ulong userId,
+            string code, string accessToken, string tokenType, long accessTokenExpiresInSeconds,
             string refreshToken, string scope, string idToken,
             DateTime accessTokenIssuedTime, string gmailAddress, bool gmailVerified,
             long gmailIssuedTimeInSeconds, string fullName, string firstName,
@@ -94,9 +94,13 @@ namespace FireplaceApi.Infrastructure.Repositories
             string authUser, string prompt, string redirectToUserUrl)
         {
             _logger.LogIOInformation(null, "Database | Iutput",
-                new { userId, scope, accessTokenIssuedTime, gmailAddress, fullName, firstName, lastName });
+                new
+                {
+                    id, userId, scope, accessTokenIssuedTime,
+                    gmailAddress, fullName, firstName, lastName
+                });
             var sw = Stopwatch.StartNew();
-            var googleUserEntity = new GoogleUserEntity(userId, code, accessToken,
+            var googleUserEntity = new GoogleUserEntity(id, userId, code, accessToken,
                 tokenType, accessTokenExpiresInSeconds, refreshToken, scope, idToken,
                 accessTokenIssuedTime, gmailAddress, gmailVerified, gmailIssuedTimeInSeconds,
                 fullName, firstName, lastName, locale, pictureUrl, state, authUser,
@@ -130,7 +134,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _googleUserConverter.ConvertToModel(googleUserEntity);
         }
 
-        public async Task DeleteGoogleUserAsync(long id)
+        public async Task DeleteGoogleUserAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
@@ -145,7 +149,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _logger.LogIOInformation(sw, "Database | Output", new { googleUserEntity });
         }
 
-        public async Task<bool> DoesGoogleUserIdExistAsync(long id)
+        public async Task<bool> DoesGoogleUserIdExistAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();

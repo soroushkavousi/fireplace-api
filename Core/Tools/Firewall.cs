@@ -4,7 +4,6 @@ using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Validators;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Net;
@@ -27,29 +26,6 @@ namespace FireplaceApi.Core.Tools
             _accessTokenOperator = accessTokenOperator;
             _sessionOperator = sessionOperator;
             _accessTokenValidator = accessTokenValidator;
-        }
-
-        public void CheckRequestContentType(HttpRequest request)
-        {
-            if (request.ContentType == null
-                || (
-                    request.ContentType.Contains("application/json") == false
-                    && request.ContentType.Contains("multipart/form-data") == false
-                    && request.ContentType.Contains("application/merge-patch+json") == false
-                    ))
-            {
-                var serverMessage = $"Input request content type is not valid! request.ContentType: {request.ContentType}";
-                throw new ApiException(ErrorName.REQUEST_CONTENT_TYPE_IS_NOT_VALID, serverMessage);
-            }
-        }
-
-        public void CheckRequestJsonBody(string requestJsonBody)
-        {
-            if (requestJsonBody.IsJson() == false)
-            {
-                var serverMessage = $"Input request body is not json! requestJsonBody: {requestJsonBody}";
-                throw new ApiException(ErrorName.REQUEST_BODY_IS_NOT_JSON, serverMessage);
-            }
         }
 
         public async Task<User> CheckUser(User requesterUser, IPAddress ipAddress)
@@ -78,7 +54,7 @@ namespace FireplaceApi.Core.Tools
                     $"accessTokenValue: {accessTokenValue}");
         }
 
-        public async Task<AccessToken> ValidateAccessTokenAsync(string accessTokenValue)
+        public async Task<AccessToken> ValidateAccessTokenAsync(string accessTokenValue, bool isUserEndpoint)
         {
             _accessTokenValidator.ValidateAccessTokenValueFormat(accessTokenValue);
             //if (Regexes.AccessTokenValue.IsMatch(accessTokenValue) == false)
@@ -87,14 +63,14 @@ namespace FireplaceApi.Core.Tools
 
             var accessToken = await _accessTokenOperator
                 .GetAccessTokenByValueAsync(accessTokenValue, true);
-            if (accessToken == null)
+            if (isUserEndpoint && accessToken == null)
                 throw new ApiException(ErrorName.AUTHENTICATION_FAILED,
                     $"Input access token does not exist! accessTokenValue: {accessTokenValue}");
 
             return accessToken;
         }
 
-        public async Task<Session> ValidateSessionAsync(long userId, IPAddress ipAddress)
+        public async Task<Session> ValidateSessionAsync(ulong userId, IPAddress ipAddress)
         {
             var session = await _sessionOperator.FindSessionAsync(userId, ipAddress);
             if (session != null && session.State == SessionState.CLOSED)
@@ -105,7 +81,7 @@ namespace FireplaceApi.Core.Tools
             return session;
         }
 
-        public async Task ValidateLimitationOfUserRequestCounts(long userId)
+        public async Task ValidateLimitationOfUserRequestCounts(ulong userId)
         {
             await Task.CompletedTask;
         }

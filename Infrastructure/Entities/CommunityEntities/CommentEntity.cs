@@ -10,41 +10,39 @@ namespace FireplaceApi.Infrastructure.Entities
     [Index(nameof(PostEntityId), IsUnique = false)]
     public class CommentEntity : BaseEntity
     {
-        public long AuthorEntityId { get; set; }
+        public ulong AuthorEntityId { get; set; }
         public string AuthorEntityUsername { get; set; }
-        public long PostEntityId { get; set; }
+        public ulong PostEntityId { get; set; }
         public int Vote { get; set; }
         public string Content { get; set; }
-        public List<long> ParentCommentEntityIds { get; set; }
-        public long? Id { get; set; }
+        public List<ulong> ParentCommentEntityIds { get; set; }
         public UserEntity AuthorEntity { get; set; }
         public PostEntity PostEntity { get; set; }
         public List<CommentVoteEntity> CommentVoteEntities { get; set; }
 
         private CommentEntity() : base() { }
 
-        public CommentEntity(long authorEntityId, string authorEntityUsername,
-            long postEntityId, string content, List<long> parentCommentEntityIds = null,
+        public CommentEntity(ulong id, ulong authorEntityId, string authorEntityUsername,
+            ulong postEntityId, string content, List<ulong> parentCommentEntityIds = null,
             DateTime? creationDate = null, DateTime? modifiedDate = null,
-            long? id = null, int vote = 0, UserEntity authorEntity = null,
+            int vote = 0, UserEntity authorEntity = null,
             PostEntity postEntity = null, List<CommentVoteEntity> commentVoteEntities = null)
-            : base(creationDate, modifiedDate)
+            : base(id, creationDate, modifiedDate)
         {
             AuthorEntityId = authorEntityId;
             AuthorEntityUsername = authorEntityUsername;
             PostEntityId = postEntityId;
             Content = content ?? throw new ArgumentNullException(nameof(content));
             ParentCommentEntityIds = parentCommentEntityIds;
-            Id = id;
             Vote = vote;
             AuthorEntity = authorEntity;
             PostEntity = postEntity;
             CommentVoteEntities = commentVoteEntities;
         }
 
-        public CommentEntity PureCopy() => new CommentEntity(AuthorEntityId,
+        public CommentEntity PureCopy() => new CommentEntity(Id, AuthorEntityId,
             AuthorEntityUsername, PostEntityId, Content, ParentCommentEntityIds,
-            CreationDate, ModifiedDate, Id, Vote);
+            CreationDate, ModifiedDate, Vote);
     }
 
     public class CommentEntityConfiguration : IEntityTypeConfiguration<CommentEntity>

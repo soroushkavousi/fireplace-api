@@ -97,7 +97,7 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Requested comment</returns>
         /// <response code="200">The comment was successfully retrieved.</response>
         [AllowAnonymous]
-        [HttpGet("{id:long}")]
+        [HttpGet("{id:ulong}")]
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> GetCommentByIdAsync(
             [BindNever][FromHeader] User requesterUser,
@@ -136,7 +136,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Created comment</returns>
         /// <response code="200">Returns the newly created item</response>
-        [HttpPost("{id:long}/comments")]
+        [HttpPost("{id:ulong}/comments")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> ReplyToCommentAsync(
@@ -156,7 +156,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Voted comment</returns>
         /// <response code="200">Returns the Voted comment</response>
-        [HttpPost("{id:long}/votes")]
+        [HttpPost("{id:ulong}/votes")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> VoteCommentAsync(
@@ -176,7 +176,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>The comment</returns>
         /// <response code="200">Returns the comment</response>
-        [HttpPatch("{id:long}/votes/me")]
+        [HttpPatch("{id:ulong}/votes/me")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> ToggleVoteForCommentAsync(
@@ -194,7 +194,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>The comment</returns>
         /// <response code="200">Returns the comment</response>
-        [HttpDelete("{id:long}/votes/me")]
+        [HttpDelete("{id:ulong}/votes/me")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> DeleteVoteForCommentAsync(
@@ -212,7 +212,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Updated comment</returns>
         /// <response code="200">The comment was successfully updated.</response>
-        [HttpPatch("{id:long}")]
+        [HttpPatch("{id:ulong}")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> PatchCommentByIdAsync(
@@ -231,7 +231,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>No content</returns>
         /// <response code="200">The comment was successfully deleted.</response>
-        [HttpDelete("{id:long}")]
+        [HttpDelete("{id:ulong}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteCommentByIdAsync(
             [BindNever][FromHeader] User requesterUser,

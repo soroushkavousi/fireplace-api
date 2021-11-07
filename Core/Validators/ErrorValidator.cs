@@ -55,7 +55,6 @@ namespace FireplaceApi.Core.Validators
                 var serverMessage = $"Error {code} doesn't exists!";
                 throw new ApiException(ErrorName.ERROR_CODE_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
-            await Task.CompletedTask;
         }
 
         public void ValidateClientMessageFormat(string clientMessage)

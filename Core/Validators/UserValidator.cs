@@ -83,51 +83,54 @@ namespace FireplaceApi.Core.Validators
             await ValidateUsernameMatchWithPasswordAsync(username, password);
         }
 
-        public async Task ValidateListUsersInputParametersAsync(User requesterUser, bool? includeEmail,
-            bool? includeSessions)
+        public async Task ValidateListUsersInputParametersAsync(User requesterUser,
+            bool? includeEmail, bool? includeSessions)
         {
             await Task.CompletedTask;
         }
 
-        public async Task ValidateGetUserByIdInputParametersAsync(User requesterUser, long? id,
-            bool? includeEmail, bool? includeSessions)
+        public async Task ValidateGetUserByIdInputParametersAsync(User requesterUser,
+            string encodedId, bool? includeEmail, bool? includeSessions)
         {
-            ValidateParameterIsNotMissing(id, nameof(id), ErrorName.USER_ID_IS_MISSING);
-            await ValidateUserIdExists(id.Value);
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
+            await ValidateUserIdExists(id);
         }
 
-        public async Task ValidateGetUserByUsernameInputParametersAsync(User requesterUser, string username,
-            bool? includeEmail, bool? includeSessions)
+        public async Task ValidateGetUserByUsernameInputParametersAsync(User requesterUser,
+            string username, bool? includeEmail, bool? includeSessions)
         {
-            ValidateParameterIsNotMissing(username, nameof(username), ErrorName.USERNAME_IS_MISSING);
             ValidateUsernameFormat(username);
             await ValidateUsernameExists(username);
         }
 
-        public async Task ValidateDeleteUserByIdInputParametersAsync(User requesterUser, long? id)
+        public async Task ValidateDeleteUserByIdInputParametersAsync(User requesterUser,
+            string encodedId)
         {
-            ValidateParameterIsNotMissing(id, nameof(id), ErrorName.USER_ID_IS_MISSING);
-            await ValidateUserIdExists(id.Value);
-            ValidateRequesterUserCanAlterUser(requesterUser, id.Value);
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
+            await ValidateUserIdExists(id);
+            ValidateRequesterUserCanAlterUser(requesterUser, id);
         }
 
-        public async Task ValidateDeleteUserByUsernameInputParametersAsync(User requesterUser, string username)
+        public async Task ValidateDeleteUserByUsernameInputParametersAsync(User requesterUser,
+            string username)
         {
             ValidateParameterIsNotMissing(username, nameof(username), ErrorName.USERNAME_IS_MISSING);
             await ValidateUsernameExists(username);
             ValidateRequesterUserCanAlterUser(requesterUser, username);
         }
 
-        public async Task ValidatePatchUserByIdInputParametersAsync(User requesterUser, long? id, string firstName,
-            string lastName, string username, Password currentPassword, Password password, string emailAddress)
+        public async Task ValidatePatchUserByIdInputParametersAsync(User requesterUser,
+            string encodedId, string firstName, string lastName, string username,
+            Password currentPassword, Password password, string emailAddress)
         {
-            ValidateParameterIsNotMissing(id, nameof(id), ErrorName.USER_ID_IS_MISSING);
-            await ValidateUserIdExists(id.Value);
-            ValidateRequesterUserCanAlterUser(requesterUser, id.Value);
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
+            await ValidateUserIdExists(id);
+            ValidateRequesterUserCanAlterUser(requesterUser, id);
         }
 
-        public async Task ValidatePatchUserByUsernameInputParametersAsync(User requesterUser, string currentUsername, string firstName,
-            string lastName, string username, Password currentPassword, Password password, string emailAddress)
+        public async Task ValidatePatchUserByUsernameInputParametersAsync(User requesterUser,
+            string currentUsername, string firstName, string lastName, string username,
+            Password currentPassword, Password password, string emailAddress)
         {
             ValidateParameterIsNotMissing(currentUsername, nameof(username), ErrorName.USERNAME_IS_MISSING);
             ValidateUsernameFormat(currentUsername);
@@ -136,7 +139,8 @@ namespace FireplaceApi.Core.Validators
         }
 
         public async Task ValidatePatchUserInputParametersAsync(User user, string firstName,
-            string lastName, string username, Password oldPassword, Password password, string emailAddress)
+            string lastName, string username, Password oldPassword, Password password,
+            string emailAddress)
         {
             if (firstName != null)
             {
@@ -206,7 +210,7 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public async Task ValidateUserIdExists(long id)
+        public async Task ValidateUserIdExists(ulong id)
         {
             if (await _userOperator.DoesUserIdExistAsync(id) == false)
             {
@@ -317,7 +321,7 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public void ValidateRequesterUserCanAlterUser(User requesterUser, long id)
+        public void ValidateRequesterUserCanAlterUser(User requesterUser, ulong id)
         {
             if (requesterUser.Id != id)
             {
@@ -354,7 +358,7 @@ namespace FireplaceApi.Core.Validators
         //    }
         //}
 
-        //public async Task<bool?> DoesUsernameBelong?ToUser(string username, long? userId)
+        //public async Task<bool?> DoesUsernameBelong?ToUser(string username, ulong? userId)
         //{
         //    var userEntity = await _userOperator.GetIdentityByUsernameAsync(username);
         //    if (string.Equals(userEntity.Username, username, StringComparison.OrdinalIgnoreCase))

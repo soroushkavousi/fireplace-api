@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Api.Tools;
-using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Tools;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
@@ -11,7 +11,7 @@ namespace FireplaceApi.Api.Controllers
     {
         [Required]
         [FromRoute(Name = "code")]
-        public int? Code { get; set; }
+        public int Code { get; set; }
     }
 
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]

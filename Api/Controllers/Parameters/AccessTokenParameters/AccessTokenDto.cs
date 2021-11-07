@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Api.Tools;
-using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Tools;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -12,7 +12,7 @@ namespace FireplaceApi.Api.Controllers
     public class AccessTokenDto
     {
         [Required]
-        public long UserId { get; set; }
+        public string UserId { get; set; }
         [Required]
         public string Value { get; set; }
         [Required]
@@ -21,14 +21,14 @@ namespace FireplaceApi.Api.Controllers
 
         public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
-            [nameof(UserId).ToSnakeCase()] = null,
+            [nameof(UserId).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Id).ToSnakeCase()],
             [nameof(Value).ToSnakeCase()] = new OpenApiString("e207d1b29e9146a2b143cb1a6e3aaa26"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(User).ToSnakeCase()] = new OpenApiNull(),
         };
         public static OpenApiObject PureExample2 { get; } = new OpenApiObject
         {
-            [nameof(UserId).ToSnakeCase()] = null,
+            [nameof(UserId).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Id).ToSnakeCase()],
             [nameof(Value).ToSnakeCase()] = new OpenApiString("957b25e5ef5c4de68a135eafab380918"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(User).ToSnakeCase()] = new OpenApiNull(),
@@ -61,7 +61,7 @@ namespace FireplaceApi.Api.Controllers
             PureExample2[nameof(UserId).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Id).ToSnakeCase()];
         }
 
-        public AccessTokenDto(long userId, string value,
+        public AccessTokenDto(string userId, string value,
             DateTime creationDate, UserDto user)
         {
             UserId = userId;

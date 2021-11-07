@@ -11,20 +11,21 @@ namespace FireplaceApi.Core.Interfaces
         public Task<List<User>> ListUsersAsync(
             bool includeEmail = false, bool includeGoogleUser = false,
             bool includeAccessTokens = false, bool includeSessions = false);
-        public Task<User> GetUserByIdAsync(long id,
+        public Task<User> GetUserByIdAsync(ulong id,
             bool includeEmail = false, bool includeGoogleUser = false,
             bool includeAccessTokens = false, bool includeSessions = false);
         public Task<User> GetUserByUsernameAsync(string username,
             bool includeEmail = false, bool includeGoogleUser = false,
             bool includeAccessTokens = false, bool includeSessions = false);
-        public Task<string> GetUsernameByIdAsync(long id);
-        public Task<long> GetIdByUsernameAsync(string username);
-        public Task<User> CreateUserAsync(string firstName, string lastName,
-            string username, UserState state, Password password = null);
+        public Task<string> GetUsernameByIdAsync(ulong id);
+        public Task<ulong> GetIdByUsernameAsync(string username);
+        public Task<User> CreateUserAsync(ulong id, string firstName,
+            string lastName, string username, UserState state,
+            Password password = null);
         public Task<User> UpdateUserAsync(User user);
-        public Task DeleteUserByIdAsync(long id);
+        public Task DeleteUserByIdAsync(ulong id);
         public Task DeleteUserByUsernameAsync(string username);
-        public Task<bool> DoesUserIdExistAsync(long id);
+        public Task<bool> DoesUserIdExistAsync(ulong id);
         public Task<bool> DoesUsernameExistAsync(string username);
     }
 }

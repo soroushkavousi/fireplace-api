@@ -90,6 +90,7 @@
         POST_CONTENT_MAX_LENGTH,
 
         //// New
+        ENCODED_ID_FORMAT_IS_NOT_VALID,
 
         // Missing parameter(s) errors
         FIRST_NAME_IS_MISSING,

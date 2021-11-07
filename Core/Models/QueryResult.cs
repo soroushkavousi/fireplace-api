@@ -6,21 +6,19 @@ namespace FireplaceApi.Core.Models
 {
     public class QueryResult : BaseModel
     {
-        public long Id { get; set; }
         public string Pointer { get; set; }
         public int LastStart { get; set; }
         public int LastEnd { get; set; }
         public int LastLimit { get; set; }
         public int LastPage { get; set; }
         [JsonIgnore]
-        public List<long> ReferenceIds { get; set; }
+        public List<ulong> ReferenceIds { get; set; }
 
-        public QueryResult(long id, string pointer, int lastStart,
-            int lastEnd, int lastLimit, int lastPage, List<long> referenceIds,
+        public QueryResult(ulong id, string pointer, int lastStart,
+            int lastEnd, int lastLimit, int lastPage, List<ulong> referenceIds,
             DateTime creationDate, DateTime? modifiedDate = null)
-            : base(creationDate, modifiedDate)
+            : base(id, creationDate, modifiedDate)
         {
-            Id = id;
             Pointer = pointer ?? throw new ArgumentNullException(nameof(pointer));
             LastStart = lastStart;
             LastEnd = lastEnd;

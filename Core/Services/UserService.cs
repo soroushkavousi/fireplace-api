@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Validators;
 using FireplaceApi.Core.ValueObjects;
@@ -25,18 +26,19 @@ namespace FireplaceApi.Core.Services
         public async Task<User> LogInWithGoogleAsync(IPAddress ipAddress, string state,
             string code, string scope, string authUser, string prompt, string error)
         {
-            await _userValidator.ValidateLogInWithGoogleInputParametersAsync(ipAddress, state, code, scope, authUser, prompt, error);
-            return await _userOperator.LogInWithGoogleAsync(ipAddress, state, code, scope, authUser, prompt);
+            await _userValidator.ValidateLogInWithGoogleInputParametersAsync(ipAddress,
+                state, code, scope, authUser, prompt, error);
+            return await _userOperator.LogInWithGoogleAsync(ipAddress, state, code,
+                scope, authUser, prompt);
         }
 
         public async Task<User> SignUpWithEmailAsync(IPAddress ipAddress, string firstName,
             string lastName, string username, Password password, string emailAddress)
         {
-            await _userValidator.ValidateSignUpWithEmailInputParametersAsync(ipAddress, firstName, lastName,
-                username, password, emailAddress);
+            await _userValidator.ValidateSignUpWithEmailInputParametersAsync(ipAddress,
+                firstName, lastName, username, password, emailAddress);
             return await _userOperator.SignUpWithEmailAsync(ipAddress, firstName, lastName,
                 username, password, emailAddress);
-
         }
 
         public async Task<string> GetGoogleAuthUrlAsync(IPAddress ipAddress)
@@ -66,26 +68,33 @@ namespace FireplaceApi.Core.Services
             return user;
         }
 
-        public async Task<User> GetUserByIdAsync(User requesterUser, long? id, bool? includeEmail, bool? includeSessions)
+        public async Task<User> GetUserByIdAsync(User requesterUser, string encodedId,
+            bool? includeEmail, bool? includeSessions)
         {
-            await _userValidator.ValidateGetUserByIdInputParametersAsync(requesterUser, id, includeEmail, includeSessions);
-            var user = await _userOperator.GetUserByIdAsync(id.Value, includeEmail.Value, false, false, includeSessions.Value);
+            await _userValidator.ValidateGetUserByIdInputParametersAsync(requesterUser,
+                encodedId, includeEmail, includeSessions);
+            var id = encodedId.Decode();
+            var user = await _userOperator.GetUserByIdAsync(id, includeEmail.Value, false, false, includeSessions.Value);
             return user;
         }
 
-        public async Task<User> GetUserByUsernameAsync(User requesterUser, string username, bool? includeEmail, bool? includeSessions)
+        public async Task<User> GetUserByUsernameAsync(User requesterUser, string username,
+            bool? includeEmail, bool? includeSessions)
         {
-            await _userValidator.ValidateGetUserByUsernameInputParametersAsync(requesterUser, username, includeEmail, includeSessions);
-            var user = await _userOperator.GetUserByUsernameAsync(username, includeEmail.Value, false, false, includeSessions.Value);
+            await _userValidator.ValidateGetUserByUsernameInputParametersAsync(requesterUser,
+                username, includeEmail, includeSessions);
+            var user = await _userOperator.GetUserByUsernameAsync(username, includeEmail.Value,
+                false, false, includeSessions.Value);
             return user;
         }
 
-        public async Task<User> PatchUserByIdAsync(User requesterUser, long? id, string firstName,
+        public async Task<User> PatchUserByIdAsync(User requesterUser, string encodedId, string firstName,
             string lastName, string username, Password oldPassword, Password password, string emailAddress)
         {
-            await _userValidator.ValidatePatchUserByIdInputParametersAsync(requesterUser, id, firstName,
+            await _userValidator.ValidatePatchUserByIdInputParametersAsync(requesterUser, encodedId, firstName,
                 lastName, username, oldPassword, password, emailAddress);
-            var user = await _userOperator.PatchUserByIdAsync(id.Value, firstName: firstName, lastName: lastName,
+            var id = encodedId.Decode();
+            var user = await _userOperator.PatchUserByIdAsync(id, firstName: firstName, lastName: lastName,
                 username: username, password: password, emailAddress: emailAddress);
             return user;
         }
@@ -100,10 +109,11 @@ namespace FireplaceApi.Core.Services
             return user;
         }
 
-        public async Task DeleteUserByIdAsync(User requesterUser, long? id)
+        public async Task DeleteUserByIdAsync(User requesterUser, string encodedId)
         {
-            await _userValidator.ValidateDeleteUserByIdInputParametersAsync(requesterUser, id);
-            await _userOperator.DeleteUserByIdAsync(id.Value);
+            await _userValidator.ValidateDeleteUserByIdInputParametersAsync(requesterUser, encodedId);
+            var id = encodedId.Decode();
+            await _userOperator.DeleteUserByIdAsync(id);
         }
 
         public async Task DeleteUserByUsernameAsync(User requesterUser, string username)

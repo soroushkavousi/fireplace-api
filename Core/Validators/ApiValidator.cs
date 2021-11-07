@@ -1,5 +1,7 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Tools;
 
 namespace FireplaceApi.Core.Validators
 {
@@ -34,6 +36,23 @@ namespace FireplaceApi.Core.Validators
                 var serverMessage = $"Enum parameter ({enumParameterName}) has illegal value!";
                 throw new ApiException(errorId, serverMessage);
             }
+        }
+
+        public ulong ValidateEncodedIdFormatValid(string encodedId, string parameterName)
+        {
+            if (!IdGenerator.IsEncodedIdFormatValid(encodedId))
+            {
+                var serverMessage = $"Id ({encodedId}) in parameter ({parameterName}) is not valid!";
+                throw new ApiException(ErrorName.ENCODED_ID_FORMAT_IS_NOT_VALID, serverMessage);
+            }
+            return encodedId.Decode();
+        }
+
+        public ulong? ValidateEncodedIdFormatValidIfExists(string encodedId, string parameterName)
+        {
+            if (string.IsNullOrWhiteSpace(encodedId))
+                return default;
+            return ValidateEncodedIdFormatValid(encodedId, parameterName);
         }
 
         //private void ValidateObjectParametersAreNotNull(ErrorId errorCode, object obj, params string[] exceptions)

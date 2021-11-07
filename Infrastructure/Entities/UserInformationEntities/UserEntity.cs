@@ -13,7 +13,6 @@ namespace FireplaceApi.Infrastructure.Entities
         public string Username { get; set; }
         public string State { get; set; }
         public string PasswordHash { get; set; }
-        public long? Id { get; set; }
         public EmailEntity EmailEntity { get; set; }
         public GoogleUserEntity GoogleUserEntity { get; set; }
         public List<AccessTokenEntity> AccessTokenEntities { get; set; }
@@ -27,9 +26,9 @@ namespace FireplaceApi.Infrastructure.Entities
 
         private UserEntity() : base() { }
 
-        public UserEntity(string firstName, string lastName,
+        public UserEntity(ulong id, string firstName, string lastName,
             string username, string state, DateTime? creationDate = null,
-            DateTime? modifiedDate = null, string passwordHash = null, long? id = null,
+            DateTime? modifiedDate = null, string passwordHash = null,
             EmailEntity emailEntity = null, GoogleUserEntity googleUserEntity = null,
             List<AccessTokenEntity> accessTokenEntities = null,
             List<SessionEntity> sessionEntities = null,
@@ -38,14 +37,13 @@ namespace FireplaceApi.Infrastructure.Entities
             List<PostEntity> postEntities = null,
             List<PostVoteEntity> postVoteEntities = null,
             List<CommentEntity> commentEntities = null,
-            List<CommentVoteEntity> commentVoteEntities = null) : base(creationDate, modifiedDate)
+            List<CommentVoteEntity> commentVoteEntities = null) : base(id, creationDate, modifiedDate)
         {
             FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
             LastName = lastName ?? throw new ArgumentNullException(nameof(lastName));
             Username = username ?? throw new ArgumentNullException(nameof(username));
             State = state ?? throw new ArgumentNullException(nameof(state));
             PasswordHash = passwordHash;
-            Id = id;
             EmailEntity = emailEntity;
             GoogleUserEntity = googleUserEntity;
             AccessTokenEntities = accessTokenEntities;
@@ -58,8 +56,8 @@ namespace FireplaceApi.Infrastructure.Entities
             CommentVoteEntities = commentVoteEntities;
         }
 
-        public UserEntity PureCopy() => new UserEntity(FirstName, LastName,
-            Username, State, CreationDate, ModifiedDate, PasswordHash, Id);
+        public UserEntity PureCopy() => new UserEntity(Id, FirstName, LastName,
+            Username, State, CreationDate, ModifiedDate, PasswordHash);
 
         //public void RemoveLoopReferencing()
         //{

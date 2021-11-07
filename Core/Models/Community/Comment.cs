@@ -5,26 +5,24 @@ namespace FireplaceApi.Core.Models
 {
     public class Comment : BaseModel
     {
-        public long Id { get; set; }
-        public long AuthorId { get; set; }
+        public ulong AuthorId { get; set; }
         public string AuthorUsername { get; set; }
-        public long PostId { get; set; }
+        public ulong PostId { get; set; }
         public int Vote { get; set; }
         public int RequesterUserVote { get; set; }
         public string Content { get; set; }
-        public List<long> ParentCommentIds { get; set; }
+        public List<ulong> ParentCommentIds { get; set; }
         public User Author { get; set; }
         public Post Post { get; set; }
         public List<Comment> ChildComments { get; set; }
 
-        public Comment(long id, long authorId, string authorUsername,
-            long postId, int vote, int requesterUserVote, string content,
-            DateTime creationDate, List<long> parentCommentIds = null,
+        public Comment(ulong id, ulong authorId, string authorUsername,
+            ulong postId, int vote, int requesterUserVote, string content,
+            DateTime creationDate, List<ulong> parentCommentIds = null,
             DateTime? modifiedDate = null, User author = null,
             Post post = null, List<Comment> childComments = null)
-            : base(creationDate, modifiedDate)
+            : base(id, creationDate, modifiedDate)
         {
-            Id = id;
             AuthorId = authorId;
             AuthorUsername = authorUsername ?? throw new ArgumentNullException(nameof(authorUsername));
             PostId = postId;

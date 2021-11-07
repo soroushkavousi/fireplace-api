@@ -32,20 +32,22 @@ namespace FireplaceApi.Core.Validators
         }
 
         public async Task ValidateCreateCommunityMembershipInputParametersAsync(User requesterUser,
-            long? communityId, string communityName)
+            string encodedCommunityId, string communityName)
         {
-            var community = _communityValidator.ValidateCommunityExistsAsync(communityId, communityName);
+            var communityId = ValidateEncodedIdFormatValidIfExists(encodedCommunityId, nameof(encodedCommunityId));
+            var community = await _communityValidator.ValidateCommunityExistsAsync(communityId, communityName);
             await ValidateCommunityMembershipDoesNotAlreadyExist(requesterUser.Id, community.Id);
         }
 
         public async Task ValidateDeleteCommunityMembershipByIdInputParametersAsync(User requesterUser,
-            long? communityId, string communityName)
+            string encodedCommunityId, string communityName)
         {
-            var community = _communityValidator.ValidateCommunityExistsAsync(communityId, communityName);
+            var communityId = ValidateEncodedIdFormatValidIfExists(encodedCommunityId, nameof(encodedCommunityId));
+            var community = await _communityValidator.ValidateCommunityExistsAsync(communityId, communityName);
             await ValidateCommunityMembershipAlreadyExists(requesterUser.Id, community.Id);
         }
 
-        public async Task<CommunityMembership> ValidateCommunityMembershipExists(long id)
+        public async Task<CommunityMembership> ValidateCommunityMembershipExists(ulong id)
         {
             var communityMembership = await _communityMembershipOperator
                 .GetCommunityMembershipByIdAsync(id, true, true);
@@ -68,7 +70,7 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public async Task ValidateCommunityMembershipDoesNotAlreadyExist(long userId, long communityId)
+        public async Task ValidateCommunityMembershipDoesNotAlreadyExist(ulong userId, ulong communityId)
         {
             var exists = await _communityMembershipOperator
                 .DoesCommunityMembershipExistAsync(userId, communityId);
@@ -79,7 +81,7 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public async Task ValidateCommunityMembershipAlreadyExists(long userId, long communityId)
+        public async Task ValidateCommunityMembershipAlreadyExists(ulong userId, ulong communityId)
         {
             var exists = await _communityMembershipOperator
                 .DoesCommunityMembershipExistAsync(userId, communityId);

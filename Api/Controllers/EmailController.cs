@@ -36,7 +36,8 @@ namespace FireplaceApi.Api.Controllers
             [FromRoute] ControllerActivateEmailInputRouteParameters inputRouteParameters,
             [FromBody] ControllerActivateEmailInputBodyParameters inputBodyParameters)
         {
-            var email = await _emailService.ActivateEmailByIdAsync(requesterUser, inputRouteParameters.Id, inputBodyParameters.ActivationCode);
+            var email = await _emailService.ActivateEmailByIdAsync(requesterUser,
+                inputRouteParameters.Id, inputBodyParameters.ActivationCode);
             var emailDto = _emailConverter.ConvertToDto(email);
             return emailDto;
         }

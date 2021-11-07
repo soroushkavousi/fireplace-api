@@ -26,11 +26,12 @@ namespace FireplaceApi.Infrastructure.Converters
 
             UserEntity userEntity = null;
             if (session.User != null)
-                userEntity = _serviceProvider.GetService<UserConverter>().ConvertToEntity(session.User.PureCopy());
+                userEntity = _serviceProvider.GetService<UserConverter>()
+                    .ConvertToEntity(session.User.PureCopy());
 
-            var sessionEntity = new SessionEntity(session.UserId, session.IpAddress.ToString(),
-                session.State.ToString(), session.CreationDate, session.ModifiedDate,
-                session.Id, userEntity);
+            var sessionEntity = new SessionEntity(session.Id, session.UserId,
+                session.IpAddress.ToString(), session.State.ToString(),
+                session.CreationDate, session.ModifiedDate, userEntity);
 
             return sessionEntity;
         }
@@ -42,9 +43,10 @@ namespace FireplaceApi.Infrastructure.Converters
 
             User user = null;
             if (sessionEntity.UserEntity != null)
-                user = _serviceProvider.GetService<UserConverter>().ConvertToModel(sessionEntity.UserEntity.PureCopy());
+                user = _serviceProvider.GetService<UserConverter>()
+                    .ConvertToModel(sessionEntity.UserEntity.PureCopy());
 
-            var session = new Session(sessionEntity.Id.Value, sessionEntity.UserEntityId,
+            var session = new Session(sessionEntity.Id, sessionEntity.UserEntityId,
                 sessionEntity.IpAddress.ToIPAddress(), sessionEntity.State.ToEnum<SessionState>(),
                 sessionEntity.CreationDate, sessionEntity.ModifiedDate, user);
 

@@ -29,15 +29,14 @@ namespace FireplaceApi.Infrastructure.Converters
                 userEntity = _serviceProvider.GetService<UserConverter>()
                     .ConvertToEntity(googleUser.User.PureCopy());
 
-            var googleUserEntity = new GoogleUserEntity(googleUser.UserId, googleUser.Code,
+            var googleUserEntity = new GoogleUserEntity(googleUser.Id, googleUser.UserId, googleUser.Code,
                 googleUser.AccessToken, googleUser.TokenType, googleUser.AccessTokenExpiresInSeconds,
                 googleUser.RefreshToken, googleUser.Scope, googleUser.IdToken,
                 googleUser.AccessTokenIssuedTime, googleUser.GmailAddress, googleUser.GmailVerified,
                 googleUser.GmailIssuedTimeInSeconds, googleUser.FullName, googleUser.FirstName,
                 googleUser.LastName, googleUser.Locale, googleUser.PictureUrl, googleUser.State,
                 googleUser.AuthUser, googleUser.Prompt, googleUser.RedirectToUserUrl,
-                googleUser.CreationDate, googleUser.ModifiedDate,
-                googleUser.Id, userEntity);
+                googleUser.CreationDate, googleUser.ModifiedDate, userEntity);
 
             return googleUserEntity;
         }
@@ -52,7 +51,7 @@ namespace FireplaceApi.Infrastructure.Converters
                 user = _serviceProvider.GetService<UserConverter>()
                     .ConvertToModel(googleUserEntity.UserEntity.PureCopy());
 
-            var googleUser = new GoogleUser(googleUserEntity.Id.Value, googleUserEntity.UserEntityId,
+            var googleUser = new GoogleUser(googleUserEntity.Id, googleUserEntity.UserEntityId,
                 googleUserEntity.Code, googleUserEntity.AccessToken, googleUserEntity.TokenType,
                 googleUserEntity.AccessTokenExpiresInSeconds, googleUserEntity.RefreshToken,
                 googleUserEntity.Scope, googleUserEntity.IdToken, googleUserEntity.AccessTokenIssuedTime,

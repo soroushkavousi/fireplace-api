@@ -1,6 +1,6 @@
-﻿using FireplaceApi.Api.Interfaces;
+﻿using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Interfaces;
 using FireplaceApi.Api.Tools;
-using FireplaceApi.Core.Extensions;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
@@ -18,7 +18,7 @@ namespace FireplaceApi.Api.Controllers
 
         public static IOpenApiAny Example { get; } = new OpenApiObject
         {
-            [nameof(Username).ToSnakeCase()] = UserDto.Example1[nameof(UserDto.Username).ToSnakeCase()],
+            [nameof(Username).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Username).ToSnakeCase()],
             [nameof(Password).ToSnakeCase()] = new OpenApiString("P@ssw0rd"),
         };
     }

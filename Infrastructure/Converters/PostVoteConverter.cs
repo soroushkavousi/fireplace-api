@@ -39,11 +39,10 @@ namespace FireplaceApi.Infrastructure.Converters
                 postEntity = _postConverter
                     .ConvertToEntity(postVote.Post.PureCopy());
 
-            var postVoteEntity = new PostVoteEntity(postVote.VoterId,
-                postVote.VoterUsername, postVote.PostId,
+            var postVoteEntity = new PostVoteEntity(postVote.Id,
+                postVote.VoterId, postVote.VoterUsername, postVote.PostId,
                 postVote.IsUp, postVote.CreationDate,
-                postVote.ModifiedDate, postVote.Id,
-                voterEntity, postEntity);
+                postVote.ModifiedDate, voterEntity, postEntity);
 
             return postVoteEntity;
         }
@@ -62,7 +61,7 @@ namespace FireplaceApi.Infrastructure.Converters
                 post = _postConverter
                     .ConvertToModel(postVoteEntity.PostEntity.PureCopy());
 
-            var postVote = new PostVote(postVoteEntity.Id.Value,
+            var postVote = new PostVote(postVoteEntity.Id,
                 postVoteEntity.VoterEntityId, postVoteEntity.VoterEntityUsername,
                 postVoteEntity.PostEntityId, postVoteEntity.IsUp,
                 postVoteEntity.CreationDate, postVoteEntity.ModifiedDate,

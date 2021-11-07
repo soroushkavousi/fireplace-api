@@ -17,7 +17,7 @@ namespace FireplaceApi.Api.Controllers
     {
         [Required]
         [FromRoute(Name = "postId")]
-        public long PostId { get; set; }
+        public string PostId { get; set; }
     }
 
     public class ControllerListPostCommentsInputQueryParameters : PaginationInputQueryParameters
@@ -33,6 +33,6 @@ namespace FireplaceApi.Api.Controllers
     {
         [Required]
         [FromRoute(Name = "parentId")]
-        public long ParentId { get; set; }
+        public string ParentId { get; set; }
     }
 }

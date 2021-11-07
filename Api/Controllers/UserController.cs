@@ -160,7 +160,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Requested user</returns>
         /// <response code="200">The user was successfully retrieved.</response>
-        [HttpGet("{id:long}")]
+        [HttpGet("{id:ulong}")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> GetUserByIdAsync(
             [BindNever][FromHeader] User requesterUser,
@@ -196,7 +196,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Updated user</returns>
         /// <response code="200">The user was successfully updated.</response>
-        [HttpPatch("{id:long}")]
+        [HttpPatch("{id:ulong}")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> PatchUserByIdAsync(
@@ -238,7 +238,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>No content</returns>
         /// <response code="200">The user was successfully deleted.</response>
-        [HttpDelete("{id:long}")]
+        [HttpDelete("{id:ulong}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteUserByIdAsync(
             [BindNever][FromHeader] User requesterUser,

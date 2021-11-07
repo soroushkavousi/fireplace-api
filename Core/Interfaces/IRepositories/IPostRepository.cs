@@ -7,25 +7,24 @@ namespace FireplaceApi.Core.Interfaces
 {
     public interface IPostRepository
     {
-        public Task<List<Post>> ListPostsAsync(List<long> Ids,
+        public Task<List<Post>> ListPostsAsync(List<ulong> Ids,
             User requesterUser = null);
-        public Task<List<Post>> ListPostsAsync(long? authorId,
-            bool? self, bool? joined, long? communityId,
+        public Task<List<Post>> ListPostsAsync(ulong? authorId,
+            bool? self, bool? joined, ulong? communityId,
             string communityName, string search, SortType? sort,
             User requesterUser = null);
-        public Task<List<long>> ListPostIdsAsync(long? authorId,
-            bool? self, bool? joined, long? communityId,
+        public Task<List<ulong>> ListPostIdsAsync(ulong? authorId,
+            bool? self, bool? joined, ulong? communityId,
             string communityName, string search, SortType? sort);
-        public Task<Post> GetPostByIdAsync(long id,
-            bool includeAuthor = false, bool includeCommunity = false,
-            User requesterUser = null);
-        public Task<Post> CreatePostAsync(long authorUserId,
-            string authorUsername, long communityId,
+        public Task<Post> GetPostByIdAsync(ulong id, bool includeAuthor = false,
+            bool includeCommunity = false, User requesterUser = null);
+        public Task<Post> CreatePostAsync(ulong id, ulong authorUserId,
+            string authorUsername, ulong communityId,
             string communityName, string content);
         public Task<Post> UpdatePostAsync(
             Post post);
-        public Task DeletePostByIdAsync(long id);
-        public Task<bool> DoesPostIdExistAsync(long id);
+        public Task DeletePostByIdAsync(ulong id);
+        public Task<bool> DoesPostIdExistAsync(ulong id);
 
     }
 }

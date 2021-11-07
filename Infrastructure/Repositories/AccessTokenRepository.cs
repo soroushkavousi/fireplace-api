@@ -25,8 +25,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         private readonly AccessTokenConverter _accessTokenConverter;
 
         public AccessTokenRepository(ILogger<AccessTokenRepository> logger, IConfiguration configuration,
-            FireplaceApiContext fireplaceApiContext, AccessTokenConverter accessTokenConverter
-            )
+            FireplaceApiContext fireplaceApiContext, AccessTokenConverter accessTokenConverter)
         {
             _logger = logger;
             _configuration = configuration;
@@ -51,7 +50,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return accessTokenEntities.Select(e => _accessTokenConverter.ConvertToModel(e)).ToList();
         }
 
-        public async Task<AccessToken> GetAccessTokenByIdAsync(long id, bool includeUser = false)
+        public async Task<AccessToken> GetAccessTokenByIdAsync(ulong id, bool includeUser = false)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id, includeUser });
             var sw = Stopwatch.StartNew();
@@ -83,11 +82,11 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _accessTokenConverter.ConvertToModel(accessTokenEntity);
         }
 
-        public async Task<AccessToken> CreateAccessTokenAsync(long userId, string value)
+        public async Task<AccessToken> CreateAccessTokenAsync(ulong id, ulong userId, string value)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { userId, value });
+            _logger.LogIOInformation(null, "Database | Iutput", new { id, userId, value });
             var sw = Stopwatch.StartNew();
-            var accessTokenEntity = new AccessTokenEntity(userId, value);
+            var accessTokenEntity = new AccessTokenEntity(id, userId, value);
             _accessTokenEntities.Add(accessTokenEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
@@ -117,7 +116,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _accessTokenConverter.ConvertToModel(accessTokenEntity);
         }
 
-        public async Task DeleteAccessTokenAsync(long id)
+        public async Task DeleteAccessTokenAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
@@ -132,7 +131,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _logger.LogIOInformation(sw, "Database | Output", new { accessTokenEntity });
         }
 
-        public async Task<bool> DoesAccessTokenIdExistAsync(long id)
+        public async Task<bool> DoesAccessTokenIdExistAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();

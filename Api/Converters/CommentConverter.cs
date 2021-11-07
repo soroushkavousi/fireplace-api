@@ -1,9 +1,11 @@
 ﻿using FireplaceApi.Api.Controllers;
+using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FireplaceApi.Api.Converters
 {
@@ -46,12 +48,15 @@ namespace FireplaceApi.Api.Converters
                 }
             }
 
-            var commentDto = new CommentDto(comment.Id,
-                comment.AuthorId, comment.AuthorUsername,
-                comment.PostId, comment.Vote, comment.RequesterUserVote,
+            var encodedParentCommentIds = comment.ParentCommentIds
+                .Select(pcid => pcid.Encode()).ToList();
+
+            var commentDto = new CommentDto(comment.Id.Encode(),
+                comment.AuthorId.Encode(), comment.AuthorUsername,
+                comment.PostId.Encode(), comment.Vote, comment.RequesterUserVote,
                 comment.Content, comment.CreationDate,
-                comment.ModifiedDate, comment.ParentCommentIds, authorDto, postDto,
-                childComments: childCommentDtos);
+                comment.ModifiedDate, encodedParentCommentIds,
+                authorDto, postDto, childComments: childCommentDtos);
 
             return commentDto;
         }

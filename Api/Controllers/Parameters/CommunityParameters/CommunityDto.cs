@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Api.Tools;
-using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Tools;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -12,18 +12,18 @@ namespace FireplaceApi.Api.Controllers
     public class CommunityDto
     {
         [Required]
-        public long Id { get; set; }
+        public string Id { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
-        public long CreatorId { get; set; }
+        public string CreatorId { get; set; }
         [Required]
         public DateTime CreationDate { get; set; }
         public UserDto Creator { get; set; }
 
         public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(10001),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id todo"),
             [nameof(Name).ToSnakeCase()] = new OpenApiString("backend-developers"),
             [nameof(CreatorId).ToSnakeCase()] = UserDto.PureExample1[nameof(Id).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
@@ -31,7 +31,7 @@ namespace FireplaceApi.Api.Controllers
         };
         public static OpenApiObject PureExample2 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(20001),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id 2 todo"),
             [nameof(Name).ToSnakeCase()] = new OpenApiString("android-developers"),
             [nameof(CreatorId).ToSnakeCase()] = UserDto.PureExample2[nameof(Id).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
@@ -88,7 +88,7 @@ namespace FireplaceApi.Api.Controllers
 
         }
 
-        public CommunityDto(long id, string name, long creatorId,
+        public CommunityDto(string id, string name, string creatorId,
             DateTime creationDate, UserDto creator = null)
         {
             Id = id;

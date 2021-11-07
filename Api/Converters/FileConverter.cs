@@ -1,5 +1,6 @@
 ﻿using FireplaceApi.Api.Controllers;
 using FireplaceApi.Api.Tools;
+using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -30,7 +31,7 @@ namespace FireplaceApi.Api.Converters
             if (file == null)
                 return null;
 
-            var fileDto = new FileDto(file.Id, file.Uri.AbsoluteUri, file.CreationDate);
+            var fileDto = new FileDto(file.Id.Encode(), file.Uri.AbsoluteUri, file.CreationDate);
 
             return fileDto;
         }

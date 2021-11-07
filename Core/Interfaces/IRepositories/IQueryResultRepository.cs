@@ -9,11 +9,13 @@ namespace FireplaceApi.Core.Interfaces
     {
         public Task<QueryResult> GetQueryResultByPointerAsync(ModelName modelName,
             string pointer);
-        public Task<QueryResult> CreateQueryResultAsync(ModelName modelName, string pointer,
-            int lastStart, int lastEnd, int lastLimit, int lastPage, List<long> referenceEntityIds);
+        public Task<QueryResult> CreateQueryResultAsync(ModelName modelName, ulong id, string pointer,
+            int lastStart, int lastEnd, int lastLimit, int lastPage, List<ulong> referenceEntityIds);
         public Task<QueryResult> UpdateQueryResultAsync(ModelName modelName, QueryResult queryResult);
         public Task DeleteQueryResultByPointerAsync(ModelName modelName, string pointer);
         public Task<bool> DoesQueryResultPointerExistAsync(ModelName modelName,
             string pointer);
+        public Task<bool> DoesQueryResultIdExistAsync(ModelName modelName,
+            ulong id);
     }
 }

@@ -34,17 +34,17 @@ namespace FireplaceApi.Infrastructure.Repositories
             _commentVoteConverter = commentVoteConverter;
         }
 
-        public async Task<List<CommentVote>> ListCommentVotesAsync(List<long> Ids)
+        public async Task<List<CommentVote>> ListCommentVotesAsync(List<ulong> Ids)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { Ids });
             var sw = Stopwatch.StartNew();
             var commentEntities = await _commentVoteEntities
                 .AsNoTracking()
-                .Where(e => Ids.Contains(e.Id.Value))
+                .Where(e => Ids.Contains(e.Id))
                 .ToListAsync();
 
-            Dictionary<long, CommentVoteEntity> commentEntityDictionary = new Dictionary<long, CommentVoteEntity>();
-            commentEntities.ForEach(e => commentEntityDictionary[e.Id.Value] = e);
+            Dictionary<ulong, CommentVoteEntity> commentEntityDictionary = new Dictionary<ulong, CommentVoteEntity>();
+            commentEntities.ForEach(e => commentEntityDictionary[e.Id] = e);
             commentEntities = new List<CommentVoteEntity>();
             Ids.ForEach(id => commentEntities.Add(commentEntityDictionary[id]));
 
@@ -52,7 +52,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return commentEntities.Select(e => _commentVoteConverter.ConvertToModel(e)).ToList();
         }
 
-        public async Task<CommentVote> GetCommentVoteByIdAsync(long id,
+        public async Task<CommentVote> GetCommentVoteByIdAsync(ulong id,
             bool includeVoter = false, bool includeComment = false)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new
@@ -73,8 +73,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _commentVoteConverter.ConvertToModel(commentEntity);
         }
 
-        public async Task<CommentVote> GetCommentVoteAsync(long voterId,
-            long commentId, bool includeVoter = false, bool includeComment = false)
+        public async Task<CommentVote> GetCommentVoteAsync(ulong voterId,
+            ulong commentId, bool includeVoter = false, bool includeComment = false)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new
             {
@@ -95,15 +95,15 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _commentVoteConverter.ConvertToModel(commentEntity);
         }
 
-        public async Task<CommentVote> CreateCommentVoteAsync(long voterUserId,
-            string voterUsername, long commentId, bool isUp)
+        public async Task<CommentVote> CreateCommentVoteAsync(ulong id, ulong voterUserId,
+            string voterUsername, ulong commentId, bool isUp)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new
             {
-                voterUserId, voterUsername, commentId, isUp
+                id, voterUserId, voterUsername, commentId, isUp
             });
             var sw = Stopwatch.StartNew();
-            var commentEntity = new CommentVoteEntity(voterUserId,
+            var commentEntity = new CommentVoteEntity(id, voterUserId,
                 voterUsername, commentId, isUp);
             _commentVoteEntities.Add(commentEntity);
             await _fireplaceApiContext.SaveChangesAsync();
@@ -135,7 +135,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _commentVoteConverter.ConvertToModel(commentEntity);
         }
 
-        public async Task DeleteCommentVoteByIdAsync(long id)
+        public async Task DeleteCommentVoteByIdAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
@@ -150,7 +150,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _logger.LogIOInformation(sw, "Database | Output", new { commentEntity });
         }
 
-        public async Task<bool> DoesCommentVoteIdExistAsync(long id)
+        public async Task<bool> DoesCommentVoteIdExistAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
@@ -163,7 +163,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return doesExist;
         }
 
-        public async Task<bool> DoesCommentVoteIdExistAsync(long voterId, long commentId)
+        public async Task<bool> DoesCommentVoteIdExistAsync(ulong voterId, ulong commentId)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { voterId, commentId });
             var sw = Stopwatch.StartNew();
@@ -195,7 +195,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public static IQueryable<CommentVoteEntity> Search(
             [NotNull] this IQueryable<CommentVoteEntity> q,
-            long? voterId, long? commentId, SortType? sort)
+            ulong? voterId, ulong? commentId, SortType? sort)
         {
             if (voterId.HasValue)
                 q = q.Where(e => e.VoterEntityId == voterId.Value);

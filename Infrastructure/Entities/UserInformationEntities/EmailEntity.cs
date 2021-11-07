@@ -7,29 +7,27 @@ namespace FireplaceApi.Infrastructure.Entities
     [Index(nameof(Address), IsUnique = true)]
     public class EmailEntity : BaseEntity
     {
-        public long UserEntityId { get; set; }
+        public ulong UserEntityId { get; set; }
         public string Address { get; set; }
         public string ActivationStatus { get; set; }
         public int? ActivationCode { get; set; }
-        public long? Id { get; set; }
         public UserEntity UserEntity { get; set; }
 
         private EmailEntity() : base() { }
 
-        public EmailEntity(long userEntityId, string address, string activationStatus,
+        public EmailEntity(ulong id, ulong userEntityId, string address, string activationStatus,
             DateTime? creationDate = null, DateTime? modifiedDate = null, int? activationCode = null,
-            long? id = null, UserEntity userEntity = null) : base(creationDate, modifiedDate)
+            UserEntity userEntity = null) : base(id, creationDate, modifiedDate)
         {
             UserEntityId = userEntityId;
             Address = address ?? throw new ArgumentNullException(nameof(address));
             ActivationStatus = activationStatus ?? throw new ArgumentNullException(nameof(activationStatus));
             ActivationCode = activationCode;
-            Id = id;
             UserEntity = userEntity;
         }
 
-        public EmailEntity PureCopy() => new EmailEntity(UserEntityId, Address,
-            ActivationStatus, CreationDate, ModifiedDate, ActivationCode, Id);
+        public EmailEntity PureCopy() => new EmailEntity(Id, UserEntityId, Address,
+            ActivationStatus, CreationDate, ModifiedDate, ActivationCode);
 
         public void RemoveLoopReferencing()
         {

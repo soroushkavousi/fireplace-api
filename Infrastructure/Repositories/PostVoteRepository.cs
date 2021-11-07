@@ -34,17 +34,17 @@ namespace FireplaceApi.Infrastructure.Repositories
             _postVoteConverter = postVoteConverter;
         }
 
-        public async Task<List<PostVote>> ListPostVotesAsync(List<long> Ids)
+        public async Task<List<PostVote>> ListPostVotesAsync(List<ulong> Ids)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { Ids });
             var sw = Stopwatch.StartNew();
             var postEntities = await _postVoteEntities
                 .AsNoTracking()
-                .Where(e => Ids.Contains(e.Id.Value))
+                .Where(e => Ids.Contains(e.Id))
                 .ToListAsync();
 
-            Dictionary<long, PostVoteEntity> postEntityDictionary = new Dictionary<long, PostVoteEntity>();
-            postEntities.ForEach(e => postEntityDictionary[e.Id.Value] = e);
+            Dictionary<ulong, PostVoteEntity> postEntityDictionary = new Dictionary<ulong, PostVoteEntity>();
+            postEntities.ForEach(e => postEntityDictionary[e.Id] = e);
             postEntities = new List<PostVoteEntity>();
             Ids.ForEach(id => postEntities.Add(postEntityDictionary[id]));
 
@@ -52,7 +52,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return postEntities.Select(e => _postVoteConverter.ConvertToModel(e)).ToList();
         }
 
-        public async Task<PostVote> GetPostVoteByIdAsync(long id,
+        public async Task<PostVote> GetPostVoteByIdAsync(ulong id,
             bool includeVoter = false, bool includePost = false)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new
@@ -73,8 +73,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _postVoteConverter.ConvertToModel(postEntity);
         }
 
-        public async Task<PostVote> GetPostVoteAsync(long voterId,
-            long postId, bool includeVoter = false, bool includePost = false)
+        public async Task<PostVote> GetPostVoteAsync(ulong voterId,
+            ulong postId, bool includeVoter = false, bool includePost = false)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new
             {
@@ -95,15 +95,15 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _postVoteConverter.ConvertToModel(postEntity);
         }
 
-        public async Task<PostVote> CreatePostVoteAsync(long voterUserId,
-            string voterUsername, long postId, bool isUp)
+        public async Task<PostVote> CreatePostVoteAsync(ulong id, ulong voterUserId,
+            string voterUsername, ulong postId, bool isUp)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new
             {
-                voterUserId, voterUsername, postId, isUp
+                id, voterUserId, voterUsername, postId, isUp
             });
             var sw = Stopwatch.StartNew();
-            var postEntity = new PostVoteEntity(voterUserId,
+            var postEntity = new PostVoteEntity(id, voterUserId,
                 voterUsername, postId, isUp);
             _postVoteEntities.Add(postEntity);
             await _fireplaceApiContext.SaveChangesAsync();
@@ -135,7 +135,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _postVoteConverter.ConvertToModel(postEntity);
         }
 
-        public async Task DeletePostVoteByIdAsync(long id)
+        public async Task DeletePostVoteByIdAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
@@ -150,7 +150,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _logger.LogIOInformation(sw, "Database | Output", new { postEntity });
         }
 
-        public async Task<bool> DoesPostVoteIdExistAsync(long id)
+        public async Task<bool> DoesPostVoteIdExistAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
@@ -163,7 +163,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return doesExist;
         }
 
-        public async Task<bool> DoesPostVoteIdExistAsync(long voterId, long postId)
+        public async Task<bool> DoesPostVoteIdExistAsync(ulong voterId, ulong postId)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { voterId, postId });
             var sw = Stopwatch.StartNew();
@@ -195,7 +195,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public static IQueryable<PostVoteEntity> Search(
             [NotNull] this IQueryable<PostVoteEntity> q,
-            long? voterId, long? postId, SortType? sort)
+            ulong? voterId, ulong? postId, SortType? sort)
         {
             if (voterId.HasValue)
                 q = q.Where(e => e.VoterEntityId == voterId.Value);

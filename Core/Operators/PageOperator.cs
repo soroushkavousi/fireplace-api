@@ -26,25 +26,25 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<Page<T>> CreatePageWithoutPointerAsync<T>(ModelName modelName,
-            PaginationInputParameters paginationInputParameters, List<long> ItemIds,
-            Func<List<long>, User, Task<List<T>>> getItemsAsync, User requesterUser)
+            PaginationInputParameters paginationInputParameters, List<ulong> ItemIds,
+            Func<List<ulong>, User, Task<List<T>>> getItemsAsync, User requesterUser)
         {
             return await CreatePageWithoutPointerAsync(modelName, paginationInputParameters,
                 ItemIds, null, getItemsAsync, requesterUser);
         }
 
         public async Task<Page<T>> CreatePageWithoutPointerAsync<T>(ModelName modelName,
-            PaginationInputParameters paginationInputParameters, List<long> ItemIds,
-            Func<List<long>, Task<List<T>>> getItemsAsync)
+            PaginationInputParameters paginationInputParameters, List<ulong> ItemIds,
+            Func<List<ulong>, Task<List<T>>> getItemsAsync)
         {
             return await CreatePageWithoutPointerAsync(modelName, paginationInputParameters,
                 ItemIds, getItemsAsync);
         }
 
         private async Task<Page<T>> CreatePageWithoutPointerAsync<T>(ModelName modelName,
-            PaginationInputParameters paginationInputParameters, List<long> ItemIds,
-            Func<List<long>, Task<List<T>>> getItemsAsync = null,
-            Func<List<long>, User, Task<List<T>>> getItemsIncludeRequesterUserAsync = null,
+            PaginationInputParameters paginationInputParameters, List<ulong> ItemIds,
+            Func<List<ulong>, Task<List<T>>> getItemsAsync = null,
+            Func<List<ulong>, User, Task<List<T>>> getItemsIncludeRequesterUserAsync = null,
             User requesterUser = null)
         {
             var limit = paginationInputParameters.Limit ?? GlobalOperator.GlobalValues.Pagination.MaximumOfPageItemsCount;
@@ -52,7 +52,7 @@ namespace FireplaceApi.Core.Operators
             var totalPagesCount = (int)MathF.Ceiling((float)totalItemsCount / limit);
             if (totalItemsCount == 0)
                 return new Page<T>(null, null,
-                    null, null, null, 0, 0, new List<long>(), new List<T>());
+                    null, null, null, 0, 0, new List<ulong>(), new List<T>());
 
             var start = 0;
             var end = Math.Min(totalItemsCount - 1, limit - 1);
@@ -76,7 +76,7 @@ namespace FireplaceApi.Core.Operators
 
         public async Task<Page<T>> CreatePageWithPointerAsync<T>(ModelName modelName,
             PaginationInputParameters paginationInputParameters,
-            Func<List<long>, User, Task<List<T>>> getItemsAsync, User requesterUser)
+            Func<List<ulong>, User, Task<List<T>>> getItemsAsync, User requesterUser)
         {
             return await CreatePageWithPointerAsync(modelName, paginationInputParameters,
                 null, getItemsAsync, requesterUser);
@@ -84,7 +84,7 @@ namespace FireplaceApi.Core.Operators
 
         public async Task<Page<T>> CreatePageWithPointerAsync<T>(ModelName modelName,
             PaginationInputParameters paginationInputParameters,
-            Func<List<long>, Task<List<T>>> getItemsAsync)
+            Func<List<ulong>, Task<List<T>>> getItemsAsync)
         {
             return await CreatePageWithPointerAsync(modelName, paginationInputParameters,
                 getItemsAsync);
@@ -92,8 +92,8 @@ namespace FireplaceApi.Core.Operators
 
         private async Task<Page<T>> CreatePageWithPointerAsync<T>(ModelName modelName,
             PaginationInputParameters paginationInputParameters,
-            Func<List<long>, Task<List<T>>> getItemsAsync = null,
-            Func<List<long>, User, Task<List<T>>> getItemsIncludeRequesterUserAsync = null,
+            Func<List<ulong>, Task<List<T>>> getItemsAsync = null,
+            Func<List<ulong>, User, Task<List<T>>> getItemsIncludeRequesterUserAsync = null,
             User requesterUser = null)
         {
             var queryResult = await _queryResultOperator

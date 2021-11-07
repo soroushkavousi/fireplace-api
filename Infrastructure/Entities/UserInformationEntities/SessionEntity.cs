@@ -6,27 +6,25 @@ namespace FireplaceApi.Infrastructure.Entities
 {
     public class SessionEntity : BaseEntity
     {
-        public long UserEntityId { get; set; }
+        public ulong UserEntityId { get; set; }
         public string IpAddress { get; set; }
         public string State { get; set; }
-        public long? Id { get; set; }
         public UserEntity UserEntity { get; set; }
 
         private SessionEntity() : base() { }
 
-        public SessionEntity(long userEntityId, string ipAddress, string state,
-            DateTime? creationDate = null, DateTime? modifiedDate = null, long? id = null,
-            UserEntity userEntity = null) : base(creationDate, modifiedDate)
+        public SessionEntity(ulong id, ulong userEntityId, string ipAddress, string state,
+            DateTime? creationDate = null, DateTime? modifiedDate = null,
+            UserEntity userEntity = null) : base(id, creationDate, modifiedDate)
         {
             UserEntityId = userEntityId;
             IpAddress = ipAddress ?? throw new ArgumentNullException(nameof(ipAddress));
             State = state ?? throw new ArgumentNullException(nameof(state));
-            Id = id;
             UserEntity = userEntity;
         }
 
-        public SessionEntity PureCopy() => new SessionEntity(UserEntityId, IpAddress,
-            State, CreationDate, ModifiedDate, Id);
+        public SessionEntity PureCopy() => new SessionEntity(Id, UserEntityId, IpAddress,
+            State, CreationDate, ModifiedDate);
 
         public void RemoveLoopReferencing()
         {

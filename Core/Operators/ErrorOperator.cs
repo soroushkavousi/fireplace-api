@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Tools;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -49,16 +50,17 @@ namespace FireplaceApi.Core.Operators
             return error;
         }
 
-        public async Task<Error> CreateErrorAsync(ErrorName id, int code, string clientMessage,
-            int httpStatusCode)
+        public async Task<Error> CreateErrorAsync(ErrorName name, int code,
+            string clientMessage, int httpStatusCode)
         {
-            var error = await _errorRepository.CreateErrorAsync(id, code, clientMessage,
-                 httpStatusCode);
+            var id = await IdGenerator.GenerateNewIdAsync(DoesErrorIdExistAsync);
+            var error = await _errorRepository.CreateErrorAsync(id, name,
+                code, clientMessage, httpStatusCode);
             return error;
         }
 
-        public async Task<Error> PatchErrorByIdAsync(ErrorName id, int? code = null, string clientMessage = null,
-            int? httpStatusCode = null)
+        public async Task<Error> PatchErrorByIdAsync(ErrorName id, int? code = null,
+            string clientMessage = null, int? httpStatusCode = null)
         {
             var error = await _errorRepository.GetErrorByNameAsync(id);
             error = await ApplyErrorChanges(error, code, clientMessage, httpStatusCode);
@@ -66,8 +68,8 @@ namespace FireplaceApi.Core.Operators
             return error;
         }
 
-        public async Task<Error> PatchErrorByCodeAsync(int existingCode, int? code = null, string clientMessage = null,
-            int? httpStatusCode = null)
+        public async Task<Error> PatchErrorByCodeAsync(int existingCode, int? code = null,
+            string clientMessage = null, int? httpStatusCode = null)
         {
             var error = await _errorRepository.GetErrorByCodeAsync(existingCode);
             error = await ApplyErrorChanges(error, code, clientMessage, httpStatusCode);
@@ -93,8 +95,14 @@ namespace FireplaceApi.Core.Operators
             return errorCodeExists;
         }
 
-        private async Task<Error> ApplyErrorChanges(Error error, int? code = null, string clientMessage = null,
-            int? httpStatusCode = null)
+        public async Task<bool> DoesErrorIdExistAsync(ulong id)
+        {
+            var errorCodeExists = await _errorRepository.DoesErrorIdExistAsync(id);
+            return errorCodeExists;
+        }
+
+        private async Task<Error> ApplyErrorChanges(Error error, int? code = null,
+            string clientMessage = null, int? httpStatusCode = null)
         {
             if (code != null)
             {

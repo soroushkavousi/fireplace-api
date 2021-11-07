@@ -9,32 +9,30 @@ namespace FireplaceApi.Infrastructure.Entities
     [Index(nameof(CommentEntityId), IsUnique = false)]
     public class CommentVoteEntity : BaseEntity
     {
-        public long VoterEntityId { get; set; }
+        public ulong VoterEntityId { get; set; }
         public string VoterEntityUsername { get; set; }
-        public long CommentEntityId { get; set; }
+        public ulong CommentEntityId { get; set; }
         public bool IsUp { get; set; }
-        public long? Id { get; set; }
         public UserEntity VoterEntity { get; set; }
         public CommentEntity CommentEntity { get; set; }
 
         private CommentVoteEntity() : base() { }
 
-        public CommentVoteEntity(long voterEntityId, string voterEntityUsername,
-            long commentEntityId, bool isUp, DateTime? creationDate = null,
-            DateTime? modifiedDate = null, long? id = null, UserEntity voterEntity = null,
-            CommentEntity commentEntity = null) : base(creationDate, modifiedDate)
+        public CommentVoteEntity(ulong id, ulong voterEntityId, string voterEntityUsername,
+            ulong commentEntityId, bool isUp, DateTime? creationDate = null,
+            DateTime? modifiedDate = null, UserEntity voterEntity = null,
+            CommentEntity commentEntity = null) : base(id, creationDate, modifiedDate)
         {
             VoterEntityId = voterEntityId;
             VoterEntityUsername = voterEntityUsername;
             CommentEntityId = commentEntityId;
             IsUp = isUp;
-            Id = id;
             VoterEntity = voterEntity;
             CommentEntity = commentEntity;
         }
 
-        public CommentVoteEntity PureCopy() => new CommentVoteEntity(VoterEntityId,
-            VoterEntityUsername, CommentEntityId, IsUp, CreationDate, ModifiedDate, Id);
+        public CommentVoteEntity PureCopy() => new CommentVoteEntity(Id, VoterEntityId,
+            VoterEntityUsername, CommentEntityId, IsUp, CreationDate, ModifiedDate);
     }
 
     public class CommentVoteEntityConfiguration : IEntityTypeConfiguration<CommentVoteEntity>

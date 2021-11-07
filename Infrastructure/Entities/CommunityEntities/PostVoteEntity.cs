@@ -9,33 +9,30 @@ namespace FireplaceApi.Infrastructure.Entities
     [Index(nameof(PostEntityId), IsUnique = false)]
     public class PostVoteEntity : BaseEntity
     {
-        public long VoterEntityId { get; set; }
+        public ulong VoterEntityId { get; set; }
         public string VoterEntityUsername { get; set; }
-        public long PostEntityId { get; set; }
+        public ulong PostEntityId { get; set; }
         public bool IsUp { get; set; }
-        public long? Id { get; set; }
         public UserEntity VoterEntity { get; set; }
         public PostEntity PostEntity { get; set; }
 
         private PostVoteEntity() : base() { }
 
-        public PostVoteEntity(long voterEntityId, string voterEntityUsername,
-            long postEntityId, bool isUp, DateTime? creationDate = null,
-            DateTime? modifiedDate = null, long? id = null,
-            UserEntity voterEntity = null, PostEntity postEntity = null)
-            : base(creationDate, modifiedDate)
+        public PostVoteEntity(ulong id, ulong voterEntityId, string voterEntityUsername,
+            ulong postEntityId, bool isUp, DateTime? creationDate = null,
+            DateTime? modifiedDate = null, UserEntity voterEntity = null,
+            PostEntity postEntity = null) : base(id, creationDate, modifiedDate)
         {
             VoterEntityId = voterEntityId;
             VoterEntityUsername = voterEntityUsername;
             PostEntityId = postEntityId;
             IsUp = isUp;
-            Id = id;
             VoterEntity = voterEntity;
             PostEntity = postEntity;
         }
 
-        public PostVoteEntity PureCopy() => new PostVoteEntity(VoterEntityId,
-            VoterEntityUsername, PostEntityId, IsUp, CreationDate, ModifiedDate, Id);
+        public PostVoteEntity PureCopy() => new PostVoteEntity(Id, VoterEntityId,
+            VoterEntityUsername, PostEntityId, IsUp, CreationDate, ModifiedDate);
     }
 
     public class PostVoteEntityConfiguration : IEntityTypeConfiguration<PostVoteEntity>

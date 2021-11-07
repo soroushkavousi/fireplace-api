@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Api.Tools;
-using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Tools;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
@@ -11,9 +11,9 @@ namespace FireplaceApi.Api.Controllers
     public class EmailDto
     {
         [Required]
-        public long Id { get; set; }
+        public string Id { get; set; }
         [Required]
-        public long UserId { get; set; }
+        public string UserId { get; set; }
         [Required]
         public string Address { get; set; }
         [Required]
@@ -22,7 +22,7 @@ namespace FireplaceApi.Api.Controllers
 
         public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(10001),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id todo"),
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(Address).ToSnakeCase()] = new OpenApiString("tedmosby@gmail.com"),
             [nameof(ActivationStatus).ToSnakeCase()] = new OpenApiString(Core.Enums.ActivationStatus.COMPLETED.ToString()),
@@ -30,7 +30,7 @@ namespace FireplaceApi.Api.Controllers
         };
         public static OpenApiObject PureExample2 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(20001),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id 2 todo"),
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(Address).ToSnakeCase()] = new OpenApiString("barneystinson@gmail.com"),
             [nameof(ActivationStatus).ToSnakeCase()] = new OpenApiString(Core.Enums.ActivationStatus.SENT.ToString()),
@@ -71,7 +71,7 @@ namespace FireplaceApi.Api.Controllers
             PureExample2[nameof(UserId).ToSnakeCase()] = UserDto.PureExample2[nameof(UserDto.Id).ToSnakeCase()];
         }
 
-        public EmailDto(long id, long userId, string address,
+        public EmailDto(string id, string userId, string address,
             string activationStatus, UserDto user = null)
         {
             Id = id;

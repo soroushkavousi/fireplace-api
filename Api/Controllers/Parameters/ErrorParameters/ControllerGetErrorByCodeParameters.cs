@@ -8,7 +8,7 @@ namespace FireplaceApi.Api.Controllers
     {
         [Required]
         [FromRoute(Name = "code")]
-        public int? Code { get; set; }
+        public int Code { get; set; }
     }
 
     [BindNever]

@@ -10,32 +10,31 @@ namespace FireplaceApi.Infrastructure.Entities
     [Index(nameof(CommunityEntityName), IsUnique = false)]
     public class CommunityMembershipEntity : BaseEntity
     {
-        public long UserEntityId { get; set; }
+        public ulong UserEntityId { get; set; }
         public string UserEntityName { get; set; }
-        public long CommunityEntityId { get; set; }
+        public ulong CommunityEntityId { get; set; }
         public string CommunityEntityName { get; set; }
-        public long? Id { get; set; }
         public UserEntity UserEntity { get; set; }
         public CommunityEntity CommunityEntity { get; set; }
 
         private CommunityMembershipEntity() : base() { }
 
-        public CommunityMembershipEntity(long userEntityId, string userEntityName,
-            long communityEntityId, string communityEntityName,
-            DateTime? creationDate = null, DateTime? modifiedDate = null, long? id = null,
-            UserEntity userEntity = null, CommunityEntity communityEntity = null) : base(creationDate, modifiedDate)
+        public CommunityMembershipEntity(ulong id, ulong userEntityId, string userEntityName,
+            ulong communityEntityId, string communityEntityName,
+            DateTime? creationDate = null, DateTime? modifiedDate = null,
+            UserEntity userEntity = null, CommunityEntity communityEntity = null)
+            : base(id, creationDate, modifiedDate)
         {
             UserEntityId = userEntityId;
             UserEntityName = userEntityName;
             CommunityEntityId = communityEntityId;
             CommunityEntityName = communityEntityName;
-            Id = id;
             UserEntity = userEntity;
             CommunityEntity = communityEntity;
         }
 
-        public CommunityMembershipEntity PureCopy() => new CommunityMembershipEntity(UserEntityId,
-            UserEntityName, CommunityEntityId, CommunityEntityName, CreationDate, ModifiedDate, Id);
+        public CommunityMembershipEntity PureCopy() => new CommunityMembershipEntity(Id, UserEntityId,
+            UserEntityName, CommunityEntityId, CommunityEntityName, CreationDate, ModifiedDate);
     }
 
     public class CommunityMembershipEntityConfiguration : IEntityTypeConfiguration<CommunityMembershipEntity>

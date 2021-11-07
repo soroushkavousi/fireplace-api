@@ -1,5 +1,6 @@
 ﻿using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -34,7 +35,7 @@ namespace FireplaceApi.Core.Operators
             return googleUser;
         }
 
-        public async Task<GoogleUser> GetGoogleUserByIdAsync(long id, bool includeUser = false)
+        public async Task<GoogleUser> GetGoogleUserByIdAsync(ulong id, bool includeUser = false)
         {
             var googleUser = await _googleUserRepository.GetGoogleUserByIdAsync(id, includeUser);
             if (googleUser == null)
@@ -54,12 +55,13 @@ namespace FireplaceApi.Core.Operators
             return googleUser;
         }
 
-        public async Task<GoogleUser> CreateGoogleUserAsync(long userId,
+        public async Task<GoogleUser> CreateGoogleUserAsync(ulong userId,
             GoogleUserToken googleUserToken, string state,
             string authUser, string prompt, string redirectToUserUrl)
         {
-            var googleUser = await _googleUserRepository.CreateGoogleUserAsync(userId,
-                googleUserToken.Code, googleUserToken.AccessToken,
+            var id = await IdGenerator.GenerateNewIdAsync(DoesGoogleUserIdExistAsync);
+            var googleUser = await _googleUserRepository.CreateGoogleUserAsync(id,
+                userId, googleUserToken.Code, googleUserToken.AccessToken,
                 googleUserToken.TokenType, googleUserToken.AccessTokenExpiresInSeconds,
                 googleUserToken.RefreshToken, googleUserToken.Scope,
                 googleUserToken.IdToken, googleUserToken.AccessTokenIssuedTime,
@@ -71,7 +73,7 @@ namespace FireplaceApi.Core.Operators
             return googleUser;
         }
 
-        public async Task DeleteGoogleUserAsync(long id)
+        public async Task DeleteGoogleUserAsync(ulong id)
         {
             await _googleUserRepository.DeleteGoogleUserAsync(id);
         }
@@ -84,8 +86,8 @@ namespace FireplaceApi.Core.Operators
             return redirectToUserUrl;
         }
 
-        public async Task<GoogleUser> PatchGoogleUserByIdAsync(long id,
-            long? userId = null, GoogleUserToken googleUserToken = null,
+        public async Task<GoogleUser> PatchGoogleUserByIdAsync(ulong id,
+            ulong? userId = null, GoogleUserToken googleUserToken = null,
             string code = null, string accessToken = null, string tokenType = null,
             long? accessTokenExpiresInSeconds = null, string refreshToken = null, string scope = null,
             string idToken = null, DateTime? accessTokenIssuedTime = null, string gmailAddress = null,
@@ -103,7 +105,7 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<GoogleUser> PatchGoogleUserByGmailAddressAsync(string existingGmailAddress,
-            long? userId = null, GoogleUserToken googleUserToken = null,
+            ulong? userId = null, GoogleUserToken googleUserToken = null,
             string code = null, string accessToken = null, string tokenType = null,
             long? accessTokenExpiresInSeconds = null, string refreshToken = null, string scope = null,
             string idToken = null, DateTime? accessTokenIssuedTime = null, string gmailAddress = null,
@@ -121,7 +123,7 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<GoogleUser> PatchGoogleUserAsync(GoogleUser googleUser,
-            long? userId = null, GoogleUserToken googleUserToken = null,
+            ulong? userId = null, GoogleUserToken googleUserToken = null,
             string code = null, string accessToken = null, string tokenType = null,
             long? accessTokenExpiresInSeconds = null, string refreshToken = null, string scope = null,
             string idToken = null, DateTime? accessTokenIssuedTime = null, string gmailAddress = null,
@@ -217,7 +219,7 @@ namespace FireplaceApi.Core.Operators
             return googleUser;
         }
 
-        public async Task<bool> DoesGoogleUserIdExistAsync(long id)
+        public async Task<bool> DoesGoogleUserIdExistAsync(ulong id)
         {
             var googleUserIdExists = await _googleUserRepository.DoesGoogleUserIdExistAsync(id);
             return googleUserIdExists;

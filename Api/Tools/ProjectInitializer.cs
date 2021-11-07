@@ -1,6 +1,4 @@
-﻿using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Operators;
+﻿using FireplaceApi.Core.Operators;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,11 +27,11 @@ namespace FireplaceApi.Api.Tools
 
         public static void SetupGlobalValues()
         {
-            var globalId = ReadFromConfig("GlobalId").ToEnum<GlobalId>();
+            var globalId = ulong.Parse(ReadFromConfig("GlobalId"));
             var connectionString = _config.GetConnectionString("MainDatabase");
             var fireplaceApiContext = new FireplaceApiContext(connectionString);
             GlobalOperator.GlobalValues = fireplaceApiContext.GlobalEntities
-                .AsNoTracking().Where(e => e.Id == globalId.To<int>()).Single().Values;
+                .AsNoTracking().Where(e => e.Id == globalId).Single().Values;
         }
 
         public static void SetupLogger()

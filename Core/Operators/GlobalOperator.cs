@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Interfaces;
+﻿using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Configuration;
@@ -36,7 +35,7 @@ namespace FireplaceApi.Core.Operators
             return globals;
         }
 
-        public async Task<Global> GetGlobalByIdAsync(GlobalId id)
+        public async Task<Global> GetGlobalByIdAsync(ulong id)
         {
             var global = await _globalRepository.GetGlobalByIdAsync(id);
 
@@ -46,18 +45,18 @@ namespace FireplaceApi.Core.Operators
             return global;
         }
 
-        public async Task<Global> CreateGlobalAsync(GlobalId id, GlobalValues globalValues)
+        public async Task<Global> CreateGlobalAsync(ulong id, GlobalValues globalValues)
         {
             var global = await _globalRepository.CreateGlobalAsync(id, globalValues);
             return global;
         }
 
-        public async Task DeleteGlobalAsync(GlobalId id)
+        public async Task DeleteGlobalAsync(ulong id)
         {
             await _globalRepository.DeleteGlobalAsync(id);
         }
 
-        public async Task<bool> DoesGlobalIdExistAsync(GlobalId id)
+        public async Task<bool> DoesGlobalIdExistAsync(ulong id)
         {
             var globalIdExists = await _globalRepository.DoesGlobalIdExistAsync(id);
             return globalIdExists;

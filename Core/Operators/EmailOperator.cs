@@ -31,7 +31,7 @@ namespace FireplaceApi.Core.Operators
             _emailGateway = emailGateway;
         }
 
-        public async Task<Email> ActivateEmailByIdAsync(long id)
+        public async Task<Email> ActivateEmailByIdAsync(ulong id)
         {
             var email = await PatchEmailByIdAsync(id, activationStatus: ActivationStatus.COMPLETED);
 
@@ -47,7 +47,7 @@ namespace FireplaceApi.Core.Operators
             return email;
         }
 
-        public async Task<Email> GetEmailByIdAsync(long id, bool includeUser = false)
+        public async Task<Email> GetEmailByIdAsync(ulong id, bool includeUser = false)
         {
             var email = await _emailRepository.GetEmailByIdAsync(id, includeUser);
             if (email == null)
@@ -65,11 +65,13 @@ namespace FireplaceApi.Core.Operators
             return email;
         }
 
-        public async Task<Email> CreateEmailAsync(long userId, string address,
+        public async Task<Email> CreateEmailAsync(ulong userId, string address,
             ActivationStatus status = ActivationStatus.CREATED)
         {
             var activation = new Activation(status);
-            var email = await _emailRepository.CreateEmailAsync(userId, address, activation);
+            var id = await IdGenerator.GenerateNewIdAsync(DoesEmailIdExistAsync);
+            var email = await _emailRepository.CreateEmailAsync(id, userId,
+                address, activation);
             return email;
         }
 
@@ -85,7 +87,7 @@ namespace FireplaceApi.Core.Operators
             return email;
         }
 
-        public async Task<Email> PatchEmailByIdAsync(long id, long? userId = null,
+        public async Task<Email> PatchEmailByIdAsync(ulong id, ulong? userId = null,
             string address = null, ActivationStatus? activationStatus = null,
             int? activationCode = null, string activationSubject = null,
             string activationMessage = null)
@@ -97,7 +99,7 @@ namespace FireplaceApi.Core.Operators
             return email;
         }
 
-        public async Task<Email> PatchEmailByAddressAsync(string existingAddress, long? userId = null,
+        public async Task<Email> PatchEmailByAddressAsync(string existingAddress, ulong? userId = null,
             string address = null, ActivationStatus? activationStatus = null,
             int? activationCode = null, string activationSubject = null,
             string activationMessage = null)
@@ -109,18 +111,18 @@ namespace FireplaceApi.Core.Operators
             return email;
         }
 
-        public async Task DeleteEmailAsync(long id)
+        public async Task DeleteEmailAsync(ulong id)
         {
             await _emailRepository.DeleteEmailAsync(id);
         }
 
-        public async Task<bool> DoesEmailIdExistAsync(long id)
+        public async Task<bool> DoesEmailIdExistAsync(ulong id)
         {
             var emailIdExists = await _emailRepository.DoesEmailIdExistAsync(id);
             return emailIdExists;
         }
 
-        public async Task<Email> ApplyEmailChangesAsync(Email email, long? userId = null,
+        public async Task<Email> ApplyEmailChangesAsync(Email email, ulong? userId = null,
             string address = null, ActivationStatus? activationStatus = null,
             int? activationCode = null, string activationSubject = null,
             string activationMessage = null)
@@ -174,7 +176,7 @@ namespace FireplaceApi.Core.Operators
 
         public int GenerateNewActivationCode()
         {
-            var activationCode = Utils.RandomNumber(10000, 99999);
+            var activationCode = Utils.GenerateRandomNumber(10000, 99999);
             return activationCode;
         }
 

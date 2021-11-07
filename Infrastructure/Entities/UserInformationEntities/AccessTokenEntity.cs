@@ -1,33 +1,29 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
     [Index(nameof(Value), IsUnique = true)]
     public class AccessTokenEntity : BaseEntity
     {
-        public long UserEntityId { get; set; }
+        public ulong UserEntityId { get; set; }
         public string Value { get; set; }
-        [Key]
-        public long? Id { get; set; }
         public UserEntity UserEntity { get; set; }
 
         private AccessTokenEntity() : base() { }
 
-        public AccessTokenEntity(long userEntityId, string value,
+        public AccessTokenEntity(ulong id, ulong userEntityId, string value,
             DateTime? creationDate = null, DateTime? modifiedDate = null,
-            long? id = null, UserEntity userEntity = null) : base(creationDate, modifiedDate)
+            UserEntity userEntity = null) : base(id, creationDate, modifiedDate)
         {
             UserEntityId = userEntityId;
             Value = value ?? throw new ArgumentNullException(nameof(value));
-            Id = id;
             UserEntity = userEntity;
         }
 
-        public AccessTokenEntity PureCopy() => new AccessTokenEntity(UserEntityId,
-            Value, CreationDate, ModifiedDate, Id);
+        public AccessTokenEntity PureCopy() => new AccessTokenEntity(Id, UserEntityId,
+            Value, CreationDate, ModifiedDate);
 
         public void RemoveLoopReferencing()
         {

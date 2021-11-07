@@ -87,7 +87,7 @@ namespace FireplaceApi.Core.Operators
             var googleUserOperator = _serviceProvider.GetService<GoogleUserOperator>(); // TODO too many GetService call
             var emailOperator = _serviceProvider.GetService<EmailOperator>();
             User user;
-            long userId;
+            ulong userId;
             var googleUserToken = await _googleGateway.GetgoogleUserToken(code);
             var gmailAddress = googleUserToken.GmailAddress;
 
@@ -205,7 +205,7 @@ namespace FireplaceApi.Core.Operators
             return users;
         }
 
-        public async Task<User> GetUserByIdAsync(long id,
+        public async Task<User> GetUserByIdAsync(ulong id,
             bool includeEmail = false, bool includeGoogleUser = false,
             bool includeAccessTokens = false, bool includeSessions = false)
         {
@@ -248,13 +248,13 @@ namespace FireplaceApi.Core.Operators
             return user;
         }
 
-        public async Task<string> GetUsernameByIdAsync(long id)
+        public async Task<string> GetUsernameByIdAsync(ulong id)
         {
             var username = await _userRepository.GetUsernameByIdAsync(id);
             return username;
         }
 
-        public async Task<long> GetIdByUsernameAsync(string username)
+        public async Task<ulong> GetIdByUsernameAsync(string username)
         {
             var userId = await _userRepository.GetIdByUsernameAsync(username);
             return userId;
@@ -263,12 +263,13 @@ namespace FireplaceApi.Core.Operators
         public async Task<User> CreateUserAsync(string firstName, string lastName,
             string username, Password password = null, UserState state = UserState.NOT_VERIFIED)
         {
-            var user = await _userRepository.CreateUserAsync(firstName, lastName,
+            var id = await IdGenerator.GenerateNewIdAsync(DoesUserIdExistAsync);
+            var user = await _userRepository.CreateUserAsync(id, firstName, lastName,
                 username, state, password);
             return user;
         }
 
-        public async Task<User> PatchUserByIdAsync(long id, string firstName = null,
+        public async Task<User> PatchUserByIdAsync(ulong id, string firstName = null,
             string lastName = null, string username = null, Password password = null,
             UserState? state = null, string emailAddress = null)
         {
@@ -290,7 +291,7 @@ namespace FireplaceApi.Core.Operators
             return user;
         }
 
-        public async Task DeleteUserByIdAsync(long id)
+        public async Task DeleteUserByIdAsync(ulong id)
         {
             await _userRepository.DeleteUserByIdAsync(id);
         }
@@ -300,7 +301,7 @@ namespace FireplaceApi.Core.Operators
             await _userRepository.DeleteUserByUsernameAsync(username);
         }
 
-        public async Task<bool> DoesUserIdExistAsync(long id)
+        public async Task<bool> DoesUserIdExistAsync(ulong id)
         {
             var userIdExists = await _userRepository.DoesUserIdExistAsync(id);
             return userIdExists;
@@ -357,7 +358,7 @@ namespace FireplaceApi.Core.Operators
             string newUsername;
             do
             {
-                randomNumber = Utils.RandomNumber(1000000, 9999999);
+                randomNumber = Utils.GenerateRandomNumber(1000000, 9999999);
                 newUsername = $"gamer{randomNumber}";
             }
             while (await DoesUsernameExistAsync(newUsername));

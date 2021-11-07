@@ -56,7 +56,7 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Requested community</returns>
         /// <response code="200">The community was successfully retrieved.</response>
         [AllowAnonymous]
-        [HttpGet("{id:long}")]
+        [HttpGet("{id:ulong}")]
         [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommunityDto>> GetCommunityByIdAsync(
             [BindNever][FromHeader] User requesterUser,
@@ -113,7 +113,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Updated community</returns>
         /// <response code="200">The community was successfully updated.</response>
-        [HttpPatch("{id:long}")]
+        [HttpPatch("{id:ulong}")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommunityDto>> PatchCommunityByIdAsync(
@@ -151,7 +151,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>No content</returns>
         /// <response code="200">The community was successfully deleted.</response>
-        [HttpDelete("{id:long}")]
+        [HttpDelete("{id:ulong}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteCommunityByIdAsync(
             [BindNever][FromHeader] User requesterUser,

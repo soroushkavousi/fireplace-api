@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Tools;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -32,7 +33,7 @@ namespace FireplaceApi.Core.Operators
             return session;
         }
 
-        public async Task<Session> GetSessionByIdAsync(long id, bool includeUser = false)
+        public async Task<Session> GetSessionByIdAsync(ulong id, bool includeUser = false)
         {
             var session = await _sessionRepository.GetSessionByIdAsync(id, includeUser);
             if (session == null)
@@ -41,12 +42,12 @@ namespace FireplaceApi.Core.Operators
             return session;
         }
 
-        public async Task RevokeSessionByIdAsync(long id)
+        public async Task RevokeSessionByIdAsync(ulong id)
         {
             await PatchSessionByIdAsync(id, state: SessionState.CLOSED);
         }
 
-        public async Task<Session> FindSessionAsync(long userId, IPAddress IpAddress,
+        public async Task<Session> FindSessionAsync(ulong userId, IPAddress IpAddress,
             bool includeUser = false)
         {
             var session = await _sessionRepository.FindSessionAsync(userId, IpAddress, false, includeUser);
@@ -56,13 +57,15 @@ namespace FireplaceApi.Core.Operators
             return session;
         }
 
-        public async Task<Session> CreateSessionAsync(long userId, IPAddress ipAddress)
+        public async Task<Session> CreateSessionAsync(ulong userId, IPAddress ipAddress)
         {
-            var session = await _sessionRepository.CreateSessionAsync(userId, ipAddress, SessionState.OPENED);
+            var id = await IdGenerator.GenerateNewIdAsync(DoesSessionIdExistAsync);
+            var session = await _sessionRepository.CreateSessionAsync(id, userId, ipAddress,
+                SessionState.OPENED);
             return session;
         }
 
-        public async Task<Session> CreateOrUpdateSessionAsync(long userId, IPAddress ipAddress)
+        public async Task<Session> CreateOrUpdateSessionAsync(ulong userId, IPAddress ipAddress)
         {
             var session = await FindSessionAsync(userId, ipAddress, true);
             if (session == null)
@@ -81,30 +84,30 @@ namespace FireplaceApi.Core.Operators
             return session;
         }
 
-        public async Task<Session> PatchSessionByIdAsync(long id, long? userId = null,
+        public async Task<Session> PatchSessionByIdAsync(ulong id, ulong? userId = null,
             IPAddress ipAddress = null, SessionState? state = null)
         {
             var session = await _sessionRepository.GetSessionByIdAsync(id, true);
             if (session == null)
                 return session;
 
-            session = await ApplySessionChangesAsync(session, userId, ipAddress, state);
+            _ = await ApplySessionChangesAsync(session, userId, ipAddress, state);
             session = await GetSessionByIdAsync(id, true);
             return session;
         }
 
-        public async Task DeleteSessionAsync(long id)
+        public async Task DeleteSessionAsync(ulong id)
         {
             await _sessionRepository.DeleteSessionAsync(id);
         }
 
-        public async Task<bool> DoesSessionIdExistAsync(long id)
+        public async Task<bool> DoesSessionIdExistAsync(ulong id)
         {
             var sessionIdExists = await _sessionRepository.DoesSessionIdExistAsync(id);
             return sessionIdExists;
         }
 
-        public async Task<Session> ApplySessionChangesAsync(Session session, long? userId = null,
+        public async Task<Session> ApplySessionChangesAsync(Session session, ulong? userId = null,
             IPAddress ipAddress = null, SessionState? state = null)
         {
             if (userId != null)

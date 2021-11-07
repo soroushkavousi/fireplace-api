@@ -4,21 +4,19 @@ namespace FireplaceApi.Core.Models
 {
     public class CommunityMembership : BaseModel
     {
-        public long Id { get; set; }
-        public long UserId { get; set; }
+        public ulong UserId { get; set; }
         public string Username { get; set; }
-        public long CommunityId { get; set; }
+        public ulong CommunityId { get; set; }
         public string CommunityName { get; set; }
         public User User { get; set; }
         public Community Community { get; set; }
 
-        public CommunityMembership(long id, long userId,
-            string username, long communityId, string communityName,
+        public CommunityMembership(ulong id, ulong userId,
+            string username, ulong communityId, string communityName,
             DateTime creationDate, DateTime? modifiedDate = null,
             User user = null, Community community = null)
-            : base(creationDate, modifiedDate)
+            : base(id, creationDate, modifiedDate)
         {
-            Id = id;
             UserId = userId;
             Username = username;
             CommunityId = communityId;

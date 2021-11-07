@@ -4,16 +4,14 @@ namespace FireplaceApi.Core.Models
 {
     public class AccessToken : BaseModel
     {
-        public long Id { get; set; }
-        public long UserId { get; set; }
+        public ulong UserId { get; set; }
         public string Value { get; set; }
         public User User { get; set; }
 
-        public AccessToken(long id, long userId, string value,
+        public AccessToken(ulong id, ulong userId, string value,
             DateTime creationDate, DateTime? modifiedDate = null,
-            User user = null) : base(creationDate, modifiedDate)
+            User user = null) : base(id, creationDate, modifiedDate)
         {
-            Id = id;
             UserId = userId;
             Value = value ?? throw new ArgumentNullException(nameof(value));
             User = user;

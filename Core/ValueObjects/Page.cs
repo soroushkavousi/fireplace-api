@@ -33,13 +33,13 @@ namespace FireplaceApi.Core.ValueObjects
         public int? Limit { get; set; }
         public int TotalItemsCount { get; set; }
         public int TotalPagesCount { get; set; }
-        public List<long> ItemIds { get; set; }
+        public List<ulong> ItemIds { get; set; }
         public List<T> Items { get; set; }
 
         private Page() { }
 
         public Page(string queryResultPointer, int? number, int? start, int? end,
-            int? limit, int totalItemsCount, int totalPagesCount, List<long> itemIds,
+            int? limit, int totalItemsCount, int totalPagesCount, List<ulong> itemIds,
             List<T> items)
         {
             QueryResultPointer = queryResultPointer;

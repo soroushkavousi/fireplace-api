@@ -37,9 +37,10 @@ namespace FireplaceApi.Core.Validators
                 ModelName.COMMUNITY);
         }
 
-        public async Task ValidateGetCommunityByIdInputParametersAsync(User requesterUser, long? id,
+        public async Task ValidateGetCommunityByIdInputParametersAsync(User requesterUser, string encodedId,
             bool? includeCreator)
         {
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
             var community = await ValidateCommunityExistsAsync(id: id);
         }
 
@@ -49,14 +50,15 @@ namespace FireplaceApi.Core.Validators
             var community = await ValidateCommunityExistsAsync(name: name);
         }
 
-        public async Task ValidateCreateCommunityInputParametersAsync(string name, long creatorId)
+        public async Task ValidateCreateCommunityInputParametersAsync(User requesterUser, string name)
         {
             await ValidateCommunityNameDoesNotExistAsync(name);
         }
 
         public async Task ValidatePatchCommunityByIdInputParametersAsync(User requesterUser,
-            long id, string newName)
+            string encodedId, string newName)
         {
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
             var community = await ValidateCommunityExistsAsync(id: id);
             ValidateRequesterUserCanAlterCommunity(requesterUser, community);
             await ValidateCommunityNameDoesNotExistAsync(newName);
@@ -71,8 +73,9 @@ namespace FireplaceApi.Core.Validators
         }
 
         public async Task ValidateDeleteCommunityByIdInputParametersAsync(User requesterUser,
-            long id)
+            string encodedId)
         {
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
             var community = await ValidateCommunityExistsAsync(id: id);
             ValidateRequesterUserCanAlterCommunity(requesterUser, community);
         }
@@ -84,7 +87,7 @@ namespace FireplaceApi.Core.Validators
             ValidateRequesterUserCanAlterCommunity(requesterUser, community);
         }
 
-        public async Task<Community> ValidateCommunityExistsAsync(long? id = null, string name = null)
+        public async Task<Community> ValidateCommunityExistsAsync(ulong? id = null, string name = null)
         {
             if (id.HasValue)
             {
@@ -96,7 +99,7 @@ namespace FireplaceApi.Core.Validators
                 }
                 return community;
             }
-            else if (string.IsNullOrWhiteSpace(name))
+            else if (!string.IsNullOrWhiteSpace(name))
             {
                 var community = await _communityOperator.GetCommunityByNameAsync(name, true);
                 if (community == null)

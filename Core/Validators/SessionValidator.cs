@@ -30,14 +30,23 @@ namespace FireplaceApi.Core.Validators
             await Task.CompletedTask;
         }
 
-        public async Task ValidateGetSessionByIdInputParametersAsync(User requesterUser, long? id, bool? includeUser)
+        public async Task ValidateGetSessionByIdInputParametersAsync(User requesterUser,
+            string encodedId, bool? includeUser)
         {
-            ValidateParameterIsNotMissing(id, nameof(id), ErrorName.SESSION_ID_IS_MISSING);
-            await ValidateSessionIdExists(id.Value);
-            await ValidateUserCanAccessToSessionId(requesterUser, id.Value);
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
+            await ValidateSessionIdExists(id);
+            await ValidateUserCanAccessToSessionId(requesterUser, id);
         }
 
-        public async Task ValidateUserCanAccessToSessionId(User requesterUser, long id)
+        public async Task ValidateRevokeSessionByIdInputParametersAsync(User requesterUser,
+            string encodedId)
+        {
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
+            await ValidateSessionIdExists(id);
+            await ValidateUserCanAccessToSessionId(requesterUser, id);
+        }
+
+        public async Task ValidateUserCanAccessToSessionId(User requesterUser, ulong id)
         {
             var email = await _sessionOperator.GetSessionByIdAsync(id);
             if (email.UserId != requesterUser.Id)
@@ -47,20 +56,13 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public async Task ValidateSessionIdExists(long id)
+        public async Task ValidateSessionIdExists(ulong id)
         {
             if (await _sessionOperator.DoesSessionIdExistAsync(id) == false)
             {
                 var serverMessage = $"Session {id} doesn't exists!";
                 throw new ApiException(ErrorName.SESSION_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
-        }
-
-        public async Task ValidateRevokeSessionByIdInputParametersAsync(User requesterUser, long id)
-        {
-            ValidateParameterIsNotMissing(id, nameof(id), ErrorName.SESSION_ID_IS_MISSING);
-            await ValidateSessionIdExists(id);
-            await ValidateUserCanAccessToSessionId(requesterUser, id);
         }
     }
 }

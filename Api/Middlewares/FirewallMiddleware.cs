@@ -1,5 +1,7 @@
 ﻿using FireplaceApi.Api.Controllers;
 using FireplaceApi.Api.Extensions;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
@@ -36,15 +38,20 @@ namespace FireplaceApi.Api.Middlewares
             var ipAddress = inputHeaderParameters.IpAddress;
 
             User requesterUser = null;
+            AccessToken accessToken = null;
+            var isUserEndpoint = IsUserEndpoint(httpContext);
             if (!string.IsNullOrWhiteSpace(accessTokenValue))
             {
-                var accessToken = await firewall.ValidateAccessTokenAsync(accessTokenValue);
-                requesterUser = accessToken.User;
-                requesterUser.AccessTokens = new List<AccessToken> { accessToken };
-                httpContext.Items[Tools.Constants.RequesterUserKey] = requesterUser;
+                accessToken = await firewall.ValidateAccessTokenAsync(accessTokenValue, isUserEndpoint);
+                if (accessToken != null)
+                {
+                    requesterUser = accessToken.User;
+                    requesterUser.AccessTokens = new List<AccessToken> { accessToken };
+                    httpContext.Items[Tools.Constants.RequesterUserKey] = requesterUser;
+                }
             }
 
-            if (IsUserEndpoint(httpContext))
+            if (isUserEndpoint)
             {
                 firewall.ValidateRequesterUserExists(requesterUser, accessTokenValue);
                 await firewall.CheckUser(requesterUser, ipAddress);
@@ -70,12 +77,12 @@ namespace FireplaceApi.Api.Middlewares
                     || httpContext.Request.ContentType == "application/merge-patch+json")
                 {
                     requestBody = await httpContext.Request.ReadRequestBodyAsync();
-                    firewall.CheckRequestJsonBody(requestBody);
+                    CheckRequestJsonBody(requestBody);
                 }
 
                 if (!string.IsNullOrWhiteSpace(requestBody))
                 {
-                    firewall.CheckRequestContentType(httpContext.Request);
+                    CheckRequestContentType(httpContext.Request);
                 }
             }
         }
@@ -95,6 +102,29 @@ namespace FireplaceApi.Api.Middlewares
             if (string.IsNullOrWhiteSpace(accessTokenValue))
                 accessTokenValue = inputCookieParameters.AccessTokenValue;
             return accessTokenValue;
+        }
+
+        public void CheckRequestContentType(HttpRequest request)
+        {
+            if (request.ContentType == null
+                || (
+                    request.ContentType.Contains("application/json") == false
+                    && request.ContentType.Contains("multipart/form-data") == false
+                    && request.ContentType.Contains("application/merge-patch+json") == false
+                    ))
+            {
+                var serverMessage = $"Input request content type is not valid! request.ContentType: {request.ContentType}";
+                throw new ApiException(ErrorName.REQUEST_CONTENT_TYPE_IS_NOT_VALID, serverMessage);
+            }
+        }
+
+        public void CheckRequestJsonBody(string requestJsonBody)
+        {
+            if (requestJsonBody.IsJson() == false)
+            {
+                var serverMessage = $"Input request body is not json! requestJsonBody: {requestJsonBody}";
+                throw new ApiException(ErrorName.REQUEST_BODY_IS_NOT_JSON, serverMessage);
+            }
         }
     }
 

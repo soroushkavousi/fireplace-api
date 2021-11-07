@@ -2,7 +2,7 @@
 using System;
 using System.Web;
 
-namespace FireplaceApi.Core.Extensions
+namespace FireplaceApi.Api.Extensions
 {
     public static class StringExtensions
     {

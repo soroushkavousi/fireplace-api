@@ -4,16 +4,14 @@ namespace FireplaceApi.Core.Models
 {
     public class Community : BaseModel
     {
-        public long Id { get; set; }
         public string Name { get; set; }
-        public long CreatorId { get; set; }
+        public ulong CreatorId { get; set; }
         public User Creator { get; set; }
 
-        public Community(long id, string name, long creatorId,
+        public Community(ulong id, string name, ulong creatorId,
             DateTime creationDate, DateTime? modifiedDate = null,
-            User creator = null) : base(creationDate, modifiedDate)
+            User creator = null) : base(id, creationDate, modifiedDate)
         {
-            Id = id;
             Name = name ?? throw new ArgumentNullException(nameof(name));
             CreatorId = creatorId;
             Creator = creator;

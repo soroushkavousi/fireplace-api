@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Validators;
@@ -35,101 +36,110 @@ namespace FireplaceApi.Core.Services
         }
 
         public async Task<Page<Comment>> ListPostCommentsAsync(User requesterUser,
-            PaginationInputParameters paginationInputParameters, long postId,
+            PaginationInputParameters paginationInputParameters, string encodedPostId,
             SortType? sort, string stringOfSort)
         {
             await _commentValidator.ValidateListPostCommentsInputParametersAsync(requesterUser,
-                paginationInputParameters, postId, sort, stringOfSort);
+                paginationInputParameters, encodedPostId, sort, stringOfSort);
+            var postId = encodedPostId.Decode();
             var page = await _commentOperator.ListPostCommentsAsync(requesterUser,
                 paginationInputParameters, postId, sort);
             return page;
         }
 
         public async Task<List<Comment>> ListChildCommentsAsync(User requesterUser,
-            long parentCommentId)
+            string encodedParentCommentId)
         {
             await _commentValidator.ValidateListChildCommentsAsyncInputParametersAsync(
-                requesterUser, parentCommentId);
+                requesterUser, encodedParentCommentId);
+            var parentCommentId = encodedParentCommentId.Decode();
             var page = await _commentOperator.ListChildCommentsAsync(requesterUser,
                 parentCommentId);
             return page;
         }
 
-        public async Task<Comment> GetCommentByIdAsync(User requesterUser, long id,
+        public async Task<Comment> GetCommentByIdAsync(User requesterUser, string encodedId,
             bool? includeAuthor, bool? includePost)
         {
             await _commentValidator.ValidateGetCommentByIdInputParametersAsync(
-                requesterUser, id, includeAuthor, includePost);
+                requesterUser, encodedId, includeAuthor, includePost);
+            var id = encodedId.Decode();
             var comment = await _commentOperator.GetCommentByIdAsync(id,
                 includeAuthor.Value, includePost.Value, requesterUser);
             return comment;
         }
 
-        public async Task<Comment> ReplyToPostAsync(User requesterUser, long postId,
+        public async Task<Comment> ReplyToPostAsync(User requesterUser, string encodedPostId,
             string content)
         {
             await _commentValidator.ValidateReplyToPostInputParametersAsync(
-                requesterUser, postId, content);
+                requesterUser, encodedPostId, content);
+            var postId = encodedPostId.Decode();
             return await _commentOperator.ReplyToPostAsync(requesterUser,
                 postId, content);
         }
 
         public async Task<Comment> ReplyToCommentAsync(User requesterUser,
-            long commentId, string content)
+            string encodedCommentId, string content)
         {
             await _commentValidator.ValidateReplyToCommentInputParametersAsync(
-                requesterUser, commentId, content);
+                requesterUser, encodedCommentId, content);
+            var commentId = encodedCommentId.Decode();
             return await _commentOperator.ReplyToCommentAsync(requesterUser,
                 commentId, content);
         }
 
         public async Task<Comment> VoteCommentAsync(User requesterUser,
-            long id, bool? isUpvote)
+            string encodedId, bool? isUpvote)
         {
             await _commentValidator.ValidateVoteCommentInputParametersAsync(
-                requesterUser, id, isUpvote);
+                requesterUser, encodedId, isUpvote);
+            var id = encodedId.Decode();
             var comment = await _commentOperator.VoteCommentAsync(
                 requesterUser, id, isUpvote.Value);
             return comment;
         }
 
         public async Task<Comment> ToggleVoteForCommentAsync(User requesterUser,
-            long id)
+            string encodedId)
         {
             await _commentValidator.ValidateToggleVoteForCommentInputParametersAsync(
-                requesterUser, id);
+                requesterUser, encodedId);
+            var id = encodedId.Decode();
             var comment = await _commentOperator.ToggleVoteForCommentAsync(
                 requesterUser, id);
             return comment;
         }
 
         public async Task<Comment> DeleteVoteForCommentAsync(User requesterUser,
-            long id)
+            string encodedId)
         {
             await _commentValidator.ValidateDeleteVoteForCommentInputParametersAsync(
-                requesterUser, id);
+                requesterUser, encodedId);
+            var id = encodedId.Decode();
             var comment = await _commentOperator.DeleteVoteForCommentAsync(
                 requesterUser, id);
             return comment;
         }
 
         public async Task<Comment> PatchCommentByIdAsync(User requesterUser,
-            long id, string content)
+            string encodedId, string content)
         {
             await _commentValidator
                 .ValidatePatchCommentByIdInputParametersAsync(requesterUser,
-                    id, content);
+                    encodedId, content);
+            var id = encodedId.Decode();
             var comment = await _commentOperator.PatchCommentByIdAsync(
                 requesterUser, id, content, null);
             return comment;
         }
 
-        public async Task DeleteCommentByIdAsync(User requesterUser, long id)
+        public async Task DeleteCommentByIdAsync(User requesterUser, string encodedId)
         {
             await _commentValidator
-                .ValidateDeleteCommentByIdInputParametersAsync(requesterUser, id);
-            await _commentOperator
-                .DeleteCommentByIdAsync(id);
+                .ValidateDeleteCommentByIdInputParametersAsync(requesterUser, encodedId);
+            var id = encodedId.Decode();
+            await _commentOperator.DeleteCommentByIdAsync(id);
         }
     }
 }

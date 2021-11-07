@@ -4,8 +4,7 @@ namespace FireplaceApi.Core.Models
 {
     public class GoogleUser : BaseModel
     {
-        public long Id { get; set; }
-        public long UserId { get; set; }
+        public ulong UserId { get; set; }
         public string Code { get; set; }
         public string AccessToken { get; set; }
         public string TokenType { get; set; }
@@ -28,7 +27,7 @@ namespace FireplaceApi.Core.Models
         public string RedirectToUserUrl { get; set; }
         public User User { get; set; }
 
-        public GoogleUser(long id, long userId, string code,
+        public GoogleUser(ulong id, ulong userId, string code,
             string accessToken, string tokenType,
             long accessTokenExpiresInSeconds, string refreshToken,
             string scope, string idToken, DateTime accessTokenIssuedTime,
@@ -36,9 +35,8 @@ namespace FireplaceApi.Core.Models
             string fullName, string firstName, string lastName, string locale,
             string pictureUrl, string state, string authUser, string prompt,
             string redirectToUserUrl, DateTime creationDate, DateTime? modifiedDate = null,
-            User user = null) : base(creationDate, modifiedDate)
+            User user = null) : base(id, creationDate, modifiedDate)
         {
-            Id = id;
             UserId = userId;
             Code = code ?? throw new ArgumentNullException(nameof(code));
             AccessToken = accessToken ?? throw new ArgumentNullException(nameof(accessToken));

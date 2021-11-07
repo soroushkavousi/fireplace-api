@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Api.Tools;
-using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Tools;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -12,7 +12,7 @@ namespace FireplaceApi.Api.Controllers
     public class FileDto
     {
         [Required]
-        public long Id { get; set; }
+        public string Id { get; set; }
         [Required]
         public string Url { get; set; }
         [Required]
@@ -20,7 +20,7 @@ namespace FireplaceApi.Api.Controllers
 
         public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(10001),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id todo"),
             [nameof(Url).ToSnakeCase()] = new OpenApiString("https://files.social-media.bitiano.com/xww03krwo1e3.jpg"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
         };
@@ -43,7 +43,7 @@ namespace FireplaceApi.Api.Controllers
 
         }
 
-        public FileDto(long id, string url, DateTime creationDate)
+        public FileDto(string id, string url, DateTime creationDate)
         {
             Id = id;
             Url = url;

@@ -60,7 +60,7 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Requested post</returns>
         /// <response code="200">The post was successfully retrieved.</response>
         [AllowAnonymous]
-        [HttpGet("{id:long}")]
+        [HttpGet("{id:ulong}")]
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> GetPostByIdAsync(
             [BindNever][FromHeader] User requesterUser,
@@ -98,14 +98,13 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Voted post</returns>
         /// <response code="200">Returns the Voted post</response>
-        [HttpPost("{id:long}/votes")]
+        [HttpPost("{id:ulong}/votes")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> VotePostAsync(
             [BindNever][FromHeader] User requesterUser,
             [FromRoute] ControllerVotePostInputRouteParameters inputRouteParameters,
             [FromBody] ControllerVotePostInputBodyParameters inputBodyParameters)
-
         {
             var post = await _postService.VotePostAsync(
                 requesterUser, inputRouteParameters.Id, inputBodyParameters.IsUpvote);
@@ -118,7 +117,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>The post</returns>
         /// <response code="200">Returns the post</response>
-        [HttpPatch("{id:long}/votes/me")]
+        [HttpPatch("{id:ulong}/votes/me")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> ToggleVoteForPostAsync(
@@ -136,7 +135,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>The post</returns>
         /// <response code="200">Returns the post</response>
-        [HttpDelete("{id:long}/votes/me")]
+        [HttpDelete("{id:ulong}/votes/me")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> DeleteVoteForPostAsync(
@@ -154,7 +153,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Updated post</returns>
         /// <response code="200">The post was successfully updated.</response>
-        [HttpPatch("{id:long}")]
+        [HttpPatch("{id:ulong}")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> PatchPostByIdAsync(
@@ -173,7 +172,7 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>No content</returns>
         /// <response code="200">The post was successfully deleted.</response>
-        [HttpDelete("{id:long}")]
+        [HttpDelete("{id:ulong}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeletePostByIdAsync(
             [BindNever][FromHeader] User requesterUser,

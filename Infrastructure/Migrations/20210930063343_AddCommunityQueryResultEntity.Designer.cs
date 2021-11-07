@@ -486,7 +486,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<string>("Pointer")
                         .HasColumnType("text");
 
-                    b.Property<List<long>>("ReferenceEntityIds")
+                    b.Property<List<ulong>>("ReferenceEntityIds")
                         .HasColumnType("bigint[]");
 
                     b.HasKey("Id");

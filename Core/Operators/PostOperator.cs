@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -39,7 +40,7 @@ namespace FireplaceApi.Core.Operators
 
         public async Task<Page<Post>> ListPostsAsync(User requesterUser,
             PaginationInputParameters paginationInputParameters, bool? self,
-            bool? joined, long? communityId, string communityName,
+            bool? joined, ulong? communityId, string communityName,
             string search, SortType? sort)
         {
             Page<Post> resultPage = default;
@@ -61,7 +62,7 @@ namespace FireplaceApi.Core.Operators
             return resultPage;
         }
 
-        public async Task<Post> GetPostByIdAsync(long id,
+        public async Task<Post> GetPostByIdAsync(ulong id,
             bool includeAuthor, bool includeCommunity, User requesterUser)
         {
             var post = await _postRepository.GetPostByIdAsync(
@@ -86,19 +87,22 @@ namespace FireplaceApi.Core.Operators
                         .GetIdByNameAsync(communityIdentifier.Name);
                     break;
             }
+            var id = await IdGenerator.GenerateNewIdAsync(DoesPostIdExistAsync);
             var post = await _postRepository
-                .CreatePostAsync(requesterUser.Id, requesterUser.Username,
+                .CreatePostAsync(id, requesterUser.Id, requesterUser.Username,
                     communityIdentifier.Id.Value, communityIdentifier.Name,
                     content);
             return post;
         }
 
         public async Task<Post> VotePostAsync(User requesterUser,
-            long id, bool isUp)
+            ulong id, bool isUp)
         {
-            var postVote = await _postVoteRepository
-                .CreatePostVoteAsync(requesterUser.Id, requesterUser.Username,
-                    id, isUp);
+            var postVoteId = await IdGenerator.GenerateNewIdAsync(
+                DoesPostVoteIdExistAsync);
+            var postVote = await _postVoteRepository.CreatePostVoteAsync(
+                postVoteId, requesterUser.Id, requesterUser.Username,
+                id, isUp);
             var voteChange = postVote.IsUp ? +1 : -1;
             var post = await PatchPostByIdAsync(requesterUser,
                 id, null, voteChange: voteChange);
@@ -106,7 +110,7 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<Post> ToggleVoteForPostAsync(User requesterUser,
-            long id)
+            ulong id)
         {
             var postVote = await _postVoteRepository.GetPostVoteAsync(
                 requesterUser.Id, id, includePost: true);
@@ -121,7 +125,7 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<Post> DeleteVoteForPostAsync(User requesterUser,
-            long id)
+            ulong id)
         {
             var postVote = await _postVoteRepository.GetPostVoteAsync(
                 requesterUser.Id, id, includePost: true);
@@ -134,7 +138,7 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<Post> PatchPostByIdAsync(User requesterUser,
-            long id, string content, int? voteChange)
+            ulong id, string content, int? voteChange)
         {
             var post = await _postRepository
                 .GetPostByIdAsync(id);
@@ -145,16 +149,23 @@ namespace FireplaceApi.Core.Operators
             return post;
         }
 
-        public async Task DeletePostByIdAsync(long id)
+        public async Task DeletePostByIdAsync(ulong id)
         {
             await _postRepository.DeletePostByIdAsync(id);
         }
 
-        public async Task<bool> DoesPostIdExistAsync(long id)
+        public async Task<bool> DoesPostIdExistAsync(ulong id)
         {
             var postIdExists = await _postRepository
                 .DoesPostIdExistAsync(id);
             return postIdExists;
+        }
+
+        public async Task<bool> DoesPostVoteIdExistAsync(ulong id)
+        {
+            var postVoteIdExists = await _postVoteRepository
+                .DoesPostVoteIdExistAsync(id);
+            return postVoteIdExists;
         }
 
         public async Task<Post> ApplyPostChangesAsync(

@@ -8,17 +8,14 @@ namespace FireplaceApi.Infrastructure.Entities
 {
     public class GlobalEntity : BaseEntity
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int Id { get; set; }
         [Column("Values", TypeName = "jsonb")]
         public GlobalValues Values { get; set; }
 
         private GlobalEntity() : base() { }
 
-        public GlobalEntity(int id, GlobalValues values, DateTime? creationDate = null,
-            DateTime? modifiedDate = null) : base(creationDate, modifiedDate)
+        public GlobalEntity(ulong id, GlobalValues values, DateTime? creationDate = null,
+            DateTime? modifiedDate = null) : base(id, creationDate, modifiedDate)
         {
-            Id = id;
             Values = values ?? throw new ArgumentNullException(nameof(values));
         }
 

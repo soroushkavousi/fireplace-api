@@ -5,10 +5,10 @@ namespace FireplaceApi.Core.ValueObjects
 {
     public class Identifier
     {
-        private long? _id;
+        private ulong? _id;
         private string _name;
 
-        public long? Id
+        public ulong? Id
         {
             get { return _id; }
             set
@@ -32,7 +32,7 @@ namespace FireplaceApi.Core.ValueObjects
         }
         public IdentifierState State { get; private set; }
 
-        public Identifier(long id)
+        public Identifier(ulong id)
         {
             Id = id;
             State = IdentifierState.HasId;
@@ -46,7 +46,7 @@ namespace FireplaceApi.Core.ValueObjects
             State = IdentifierState.HasName;
         }
 
-        public Identifier(long? id, string name)
+        public Identifier(ulong? id, string name)
         {
             var nameHasValue = !string.IsNullOrWhiteSpace(name);
             if (id.HasValue && nameHasValue)

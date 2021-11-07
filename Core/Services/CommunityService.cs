@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Validators;
 using FireplaceApi.Core.ValueObjects;
@@ -31,16 +32,21 @@ namespace FireplaceApi.Core.Services
             return page;
         }
 
-        public async Task<Community> GetCommunityByIdAsync(User requesterUser, long? id, bool? includeCreator)
+        public async Task<Community> GetCommunityByIdAsync(User requesterUser, string encodedId,
+            bool? includeCreator)
         {
-            await _communityValidator.ValidateGetCommunityByIdInputParametersAsync(requesterUser, id, includeCreator);
-            var community = await _communityOperator.GetCommunityByIdAsync(id.Value, includeCreator.Value);
+            await _communityValidator.ValidateGetCommunityByIdInputParametersAsync(requesterUser,
+                encodedId, includeCreator);
+            var id = encodedId.Decode();
+            var community = await _communityOperator.GetCommunityByIdAsync(id, includeCreator.Value);
             return community;
         }
 
-        public async Task<Community> GetCommunityByNameAsync(User requesterUser, string name, bool? includeCreator)
+        public async Task<Community> GetCommunityByNameAsync(User requesterUser, string name,
+            bool? includeCreator)
         {
-            await _communityValidator.ValidateGetCommunityByNameInputParametersAsync(requesterUser, name, includeCreator);
+            await _communityValidator.ValidateGetCommunityByNameInputParametersAsync(requesterUser,
+                name, includeCreator);
             var community = await _communityOperator.GetCommunityByNameAsync(name, includeCreator.Value);
             return community;
         }
@@ -48,16 +54,17 @@ namespace FireplaceApi.Core.Services
         public async Task<Community> CreateCommunityAsync(User requesterUser, string name)
         {
             await _communityValidator
-                .ValidateCreateCommunityInputParametersAsync(name, requesterUser.Id);
+                .ValidateCreateCommunityInputParametersAsync(requesterUser, name);
             return await _communityOperator
-                .CreateCommunityAsync(name, requesterUser.Id);
+                .CreateCommunityAsync(requesterUser.Id, name);
         }
 
         public async Task<Community> PatchCommunityByIdAsync(User requesterUser,
-            long id, string newName)
+            string encodedId, string newName)
         {
             await _communityValidator.ValidatePatchCommunityByIdInputParametersAsync(
-                requesterUser, id, newName);
+                requesterUser, encodedId, newName);
+            var id = encodedId.Decode();
             var community = await _communityOperator.PatchCommunityByIdAsync(id, newName);
             return community;
         }
@@ -71,9 +78,11 @@ namespace FireplaceApi.Core.Services
             return community;
         }
 
-        public async Task DeleteCommunityByIdAsync(User requesterUser, long id)
+        public async Task DeleteCommunityByIdAsync(User requesterUser, string encodedId)
         {
-            await _communityValidator.ValidateDeleteCommunityByIdInputParametersAsync(requesterUser, id);
+            await _communityValidator.ValidateDeleteCommunityByIdInputParametersAsync(requesterUser,
+                encodedId);
+            var id = encodedId.Decode();
             await _communityOperator.DeleteCommunityByIdAsync(id);
         }
 

@@ -10,7 +10,7 @@ namespace FireplaceApi.Api.Controllers
     {
         [Required]
         [FromRoute(Name = "communityId")]
-        public long CommunityId { get; set; }
+        public string CommunityId { get; set; }
     }
 
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]

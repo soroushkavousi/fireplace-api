@@ -35,7 +35,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _postConverter = postConverter;
         }
 
-        public async Task<List<Post>> ListPostsAsync(List<long> Ids,
+        public async Task<List<Post>> ListPostsAsync(List<ulong> Ids,
             User requesterUser = null)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new
@@ -45,7 +45,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             var sw = Stopwatch.StartNew();
             var postEntities = await _postEntities
                 .AsNoTracking()
-                .Where(e => Ids.Contains(e.Id.Value))
+                .Where(e => Ids.Contains(e.Id))
                 .Include(
                     authorEntity: false,
                     communityEntity: false,
@@ -53,8 +53,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
-            Dictionary<long, PostEntity> postEntityDictionary = new Dictionary<long, PostEntity>();
-            postEntities.ForEach(e => postEntityDictionary[e.Id.Value] = e);
+            Dictionary<ulong, PostEntity> postEntityDictionary = new Dictionary<ulong, PostEntity>();
+            postEntities.ForEach(e => postEntityDictionary[e.Id] = e);
             postEntities = new List<PostEntity>();
             Ids.ForEach(id => postEntities.Add(postEntityDictionary[id]));
 
@@ -62,8 +62,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             return postEntities.Select(e => _postConverter.ConvertToModel(e)).ToList();
         }
 
-        public async Task<List<Post>> ListPostsAsync(long? authorId,
-            bool? self, bool? joined, long? communityId,
+        public async Task<List<Post>> ListPostsAsync(ulong? authorId,
+            bool? self, bool? joined, ulong? communityId,
             string communityName, string search, SortType? sort,
             User requesterUser)
         {
@@ -96,8 +96,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             return postEntities.Select(e => _postConverter.ConvertToModel(e)).ToList();
         }
 
-        public async Task<List<long>> ListPostIdsAsync(long? authorId,
-            bool? self, bool? joined, long? communityId,
+        public async Task<List<ulong>> ListPostIdsAsync(ulong? authorId,
+            bool? self, bool? joined, ulong? communityId,
             string communityName, string search, SortType? sort)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new
@@ -118,14 +118,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                     sort: sort
                 )
                 .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
-                .Select(e => e.Id.Value)
+                .Select(e => e.Id)
                 .ToListAsync();
 
             _logger.LogIOInformation(sw, "Database | Output", new { postEntityIds });
             return postEntityIds;
         }
 
-        public async Task<Post> GetPostByIdAsync(long id,
+        public async Task<Post> GetPostByIdAsync(ulong id,
             bool includeAuthor = false, bool includeCommunity = false,
             User requesterUser = null)
         {
@@ -149,17 +149,17 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _postConverter.ConvertToModel(postEntity);
         }
 
-        public async Task<Post> CreatePostAsync(long authorUserId,
-            string authorUsername, long communityId, string communityName,
+        public async Task<Post> CreatePostAsync(ulong id, ulong authorUserId,
+            string authorUsername, ulong communityId, string communityName,
             string content)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new
             {
-                authorUserId, authorUsername, communityId,
+                id, authorUserId, authorUsername, communityId,
                 communityName, content
             });
             var sw = Stopwatch.StartNew();
-            var postEntity = new PostEntity(authorUserId, authorUsername,
+            var postEntity = new PostEntity(id, authorUserId, authorUsername,
                 communityId, communityName, content);
             _postEntities.Add(postEntity);
             await _fireplaceApiContext.SaveChangesAsync();
@@ -191,7 +191,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _postConverter.ConvertToModel(postEntity);
         }
 
-        public async Task DeletePostByIdAsync(long id)
+        public async Task DeletePostByIdAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
@@ -206,7 +206,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _logger.LogIOInformation(sw, "Database | Output", new { postEntity });
         }
 
-        public async Task<bool> DoesPostIdExistAsync(long id)
+        public async Task<bool> DoesPostIdExistAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
@@ -246,7 +246,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public static IQueryable<PostEntity> Search(
             [NotNull] this IQueryable<PostEntity> q, bool? self,
-            bool? joined, long? authorId, long? communityId,
+            bool? joined, ulong? authorId, ulong? communityId,
             string communityName, string search, SortType? sort)
         {
             if (self.HasValue)

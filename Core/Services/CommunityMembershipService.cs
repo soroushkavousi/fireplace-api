@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Validators;
 using FireplaceApi.Core.ValueObjects;
@@ -22,11 +23,12 @@ namespace FireplaceApi.Core.Services
         }
 
         public async Task<CommunityMembership> CreateCommunityMembershipAsync(
-            User requesterUser, long? communityId, string communityName)
+            User requesterUser, string encodedCommunityId, string communityName)
         {
             await _communityMembershipValidator
                 .ValidateCreateCommunityMembershipInputParametersAsync(
-                requesterUser, communityId, communityName);
+                requesterUser, encodedCommunityId, communityName);
+            var communityId = encodedCommunityId.DecodeIdOrDefault();
             var communityIdentifier = new Identifier(communityId, communityName);
             return await _communityMembershipOperator
                 .CreateCommunityMembershipAsync(requesterUser,
@@ -34,11 +36,12 @@ namespace FireplaceApi.Core.Services
         }
 
         public async Task DeleteCommunityMembershipAsync(User requesterUser,
-            long? communityId, string communityName)
+            string encodedCommunityId, string communityName)
         {
             await _communityMembershipValidator
                 .ValidateDeleteCommunityMembershipByIdInputParametersAsync(
-                    requesterUser, communityId, communityName);
+                    requesterUser, encodedCommunityId, communityName);
+            var communityId = encodedCommunityId.DecodeIdOrDefault();
             var communityIdentifier = new Identifier(communityId, communityName);
             await _communityMembershipOperator
                 .DeleteCommunityMembershipByIdAsync(requesterUser.Id, communityIdentifier);

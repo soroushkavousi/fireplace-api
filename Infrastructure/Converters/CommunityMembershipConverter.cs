@@ -39,10 +39,11 @@ namespace FireplaceApi.Infrastructure.Converters
                 communityEntity = _communityConverter
                     .ConvertToEntity(communityMembership.Community.PureCopy());
 
-            var communityMembershipEntity = new CommunityMembershipEntity(communityMembership.UserId,
+            var communityMembershipEntity = new CommunityMembershipEntity(
+                communityMembership.Id, communityMembership.UserId,
                 communityMembership.Username, communityMembership.CommunityId,
                 communityMembership.CommunityName, communityMembership.CreationDate,
-                communityMembership.ModifiedDate, communityMembership.Id, userEntity, communityEntity);
+                communityMembership.ModifiedDate, userEntity, communityEntity);
 
             return communityMembershipEntity;
         }
@@ -61,7 +62,7 @@ namespace FireplaceApi.Infrastructure.Converters
                 community = _communityConverter
                     .ConvertToModel(communityMembershipEntity.CommunityEntity.PureCopy());
 
-            var communityMembership = new CommunityMembership(communityMembershipEntity.Id.Value,
+            var communityMembership = new CommunityMembership(communityMembershipEntity.Id,
                 communityMembershipEntity.UserEntityId, communityMembershipEntity.UserEntityName,
                 communityMembershipEntity.CommunityEntityId, communityMembershipEntity.CommunityEntityName,
                 communityMembershipEntity.CreationDate, communityMembershipEntity.ModifiedDate, user,

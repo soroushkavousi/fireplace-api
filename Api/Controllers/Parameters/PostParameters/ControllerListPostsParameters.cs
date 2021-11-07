@@ -12,7 +12,7 @@ namespace FireplaceApi.Api.Controllers
         public bool? Joined { get; set; }
 
         [FromQuery(Name = "community_id")]
-        public long? CommunityId { get; set; }
+        public string CommunityId { get; set; }
 
         [FromQuery(Name = "community_name")]
         public string CommunityName { get; set; }

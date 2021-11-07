@@ -8,10 +8,10 @@ namespace FireplaceApi.Core.Interfaces
     public interface IGoogleUserRepository
     {
         public Task<List<GoogleUser>> ListGoogleUsersAsync(bool includeUser = false);
-        public Task<GoogleUser> GetGoogleUserByIdAsync(long id, bool includeUser = false);
+        public Task<GoogleUser> GetGoogleUserByIdAsync(ulong id, bool includeUser = false);
         public Task<GoogleUser> GetGoogleUserByGmailAddressAsync(string gmailAddress,
             bool includeUser = false);
-        public Task<GoogleUser> CreateGoogleUserAsync(long userId, string code,
+        public Task<GoogleUser> CreateGoogleUserAsync(ulong id, ulong userId, string code,
             string accessToken, string tokenType, long accessTokenExpiresInSeconds,
             string refreshToken, string scope, string idToken,
             DateTime accessTokenIssuedTime, string gmailAddress, bool gmailVerified,
@@ -19,8 +19,8 @@ namespace FireplaceApi.Core.Interfaces
             string lastName, string locale, string pictureUrl, string state,
             string authUser, string prompt, string redirectToUserUrl);
         public Task<GoogleUser> UpdateGoogleUserAsync(GoogleUser googleUser);
-        public Task DeleteGoogleUserAsync(long id);
-        public Task<bool> DoesGoogleUserIdExistAsync(long id);
+        public Task DeleteGoogleUserAsync(ulong id);
+        public Task<bool> DoesGoogleUserIdExistAsync(ulong id);
         public Task<bool> DoesGoogleUserGmailAddressExistAsync(string gmailAddress);
     }
 }

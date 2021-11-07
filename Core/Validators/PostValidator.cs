@@ -35,9 +35,11 @@ namespace FireplaceApi.Core.Validators
 
         public async Task ValidateListPostsInputParametersAsync(User requesterUser,
             PaginationInputParameters paginationInputParameters, bool? self,
-            bool? joined, long? communityId, string communityName,
+            bool? joined, string encodedCommunityId, string communityName,
             string search, SortType? sort, string stringOfSort)
         {
+            var communityId = ValidateEncodedIdFormatValidIfExists(encodedCommunityId, nameof(encodedCommunityId));
+
             await _queryResultValidator.ValidatePaginationInputParameters(
                 paginationInputParameters, ModelName.POST);
 
@@ -48,58 +50,65 @@ namespace FireplaceApi.Core.Validators
                     communityId, communityName);
         }
 
-        public async Task ValidateGetPostByIdInputParametersAsync(User requesterUser, long id,
+        public async Task ValidateGetPostByIdInputParametersAsync(User requesterUser, string encodedId,
             bool? includeAuthor, bool? includeCommunity)
         {
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
             var post = await ValidatePostExistsAsync(id);
         }
 
         public async Task ValidateCreatePostInputParametersAsync(User requesterUser,
-            long? communityId, string communityName, string content)
+            string encodedCommunityId, string communityName, string content)
         {
+            var communityId = ValidateEncodedIdFormatValidIfExists(encodedCommunityId, nameof(encodedCommunityId));
             ValidatePostContentFormat(content);
             var community = await _communityValidator.ValidateCommunityExistsAsync(
                 communityId, communityName);
         }
 
         public async Task ValidateVotePostInputParametersAsync(User requesterUser,
-            long id, bool? isUpvote)
+            string encodedId, bool? isUpvote)
         {
             ValidateParameterIsNotMissing(isUpvote, nameof(isUpvote), ErrorName.IS_UPVOTE_IS_MISSING);
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
             var post = await ValidatePostExistsAsync(id, requesterUser);
             ValidatePostIsNotVotedByUser(post, requesterUser);
         }
 
         public async Task ValidateToggleVoteForPostInputParametersAsync(User requesterUser,
-            long id)
+            string encodedId)
         {
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
             var post = await ValidatePostExistsAsync(id, requesterUser);
             ValidatePostVoteExists(post, requesterUser);
         }
 
         public async Task ValidateDeleteVoteForPostInputParametersAsync(User requesterUser,
-            long id)
+            string encodedId)
         {
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
             var post = await ValidatePostExistsAsync(id, requesterUser);
             ValidatePostVoteExists(post, requesterUser);
         }
 
         public async Task ValidatePatchPostByIdInputParametersAsync(User requesterUser,
-            long id, string content)
+            string encodedId, string content)
         {
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
             ValidatePostContentFormat(content);
             var post = await ValidatePostExistsAsync(id);
             ValidateRequesterUserCanAlterPost(requesterUser, post);
         }
 
         public async Task ValidateDeletePostByIdInputParametersAsync(User requesterUser,
-            long id)
+            string encodedId)
         {
+            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
             var post = await ValidatePostExistsAsync(id);
             ValidateRequesterUserCanAlterPost(requesterUser, post);
         }
 
-        public async Task<Post> ValidatePostExistsAsync(long id, User requesterUser = null)
+        public async Task<Post> ValidatePostExistsAsync(ulong id, User requesterUser = null)
         {
             var post = await _postOperator.GetPostByIdAsync(id, true, true,
                 requesterUser);

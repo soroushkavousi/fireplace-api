@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -47,7 +48,7 @@ namespace FireplaceApi.Core.Operators
             return resultPage;
         }
 
-        public async Task<Community> GetCommunityByIdAsync(long id, bool includeCreator)
+        public async Task<Community> GetCommunityByIdAsync(ulong id, bool includeCreator)
         {
             var community = await _communityRepository.GetCommunityByIdAsync(id, includeCreator);
             if (community == null)
@@ -65,25 +66,27 @@ namespace FireplaceApi.Core.Operators
             return community;
         }
 
-        public async Task<string> GetNameByIdAsync(long id)
+        public async Task<string> GetNameByIdAsync(ulong id)
         {
             var communityName = await _communityRepository.GetNameByIdAsync(id);
             return communityName;
         }
 
-        public async Task<long> GetIdByNameAsync(string name)
+        public async Task<ulong> GetIdByNameAsync(string name)
         {
             var communityId = await _communityRepository.GetIdByNameAsync(name);
             return communityId;
         }
 
-        public async Task<Community> CreateCommunityAsync(string name, long creatorId)
+        public async Task<Community> CreateCommunityAsync(ulong creatorId, string name)
         {
-            var community = await _communityRepository.CreateCommunityAsync(name, creatorId);
+            var id = await IdGenerator.GenerateNewIdAsync(DoesCommunityIdExistAsync);
+            var community = await _communityRepository.CreateCommunityAsync(
+                id, name, creatorId);
             return community;
         }
 
-        public async Task<Community> PatchCommunityByIdAsync(long id, string name = null)
+        public async Task<Community> PatchCommunityByIdAsync(ulong id, string name = null)
         {
             var community = await _communityRepository.GetCommunityByIdAsync(id);
             community = await ApplyCommunityChangesAsync(community, name);
@@ -99,7 +102,7 @@ namespace FireplaceApi.Core.Operators
             return community;
         }
 
-        public async Task DeleteCommunityByIdAsync(long id)
+        public async Task DeleteCommunityByIdAsync(ulong id)
         {
             await _communityRepository.DeleteCommunityByIdAsync(id);
         }
@@ -109,7 +112,7 @@ namespace FireplaceApi.Core.Operators
             await _communityRepository.DeleteCommunityByNameAsync(name);
         }
 
-        public async Task<bool> DoesCommunityIdExistAsync(long id)
+        public async Task<bool> DoesCommunityIdExistAsync(ulong id)
         {
             var communityIdExists = await _communityRepository.DoesCommunityIdExistAsync(id);
             return communityIdExists;

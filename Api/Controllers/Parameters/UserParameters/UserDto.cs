@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Api.Tools;
-using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Api.Extensions;
+using FireplaceApi.Api.Tools;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -12,7 +12,7 @@ namespace FireplaceApi.Api.Controllers
     public class UserDto
     {
         [Required]
-        public long Id { get; set; }
+        public string Id { get; set; }
         [Required]
         public string FirstName { get; set; }
         [Required]
@@ -108,7 +108,7 @@ namespace FireplaceApi.Api.Controllers
 
         }
 
-        public UserDto(long id, string firstName, string lastName,
+        public UserDto(string id, string firstName, string lastName,
             string username, string state, DateTime creationDate,
             string accessToken = null, EmailDto email = null,
             List<SessionDto> sessions = null)

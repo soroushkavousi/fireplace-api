@@ -24,10 +24,10 @@ namespace FireplaceApi.Infrastructure.Converters
                 return null;
 
             var queryResultEntity = new T();
-            queryResultEntity.FillParameters(queryResult.Pointer,
+            queryResultEntity.FillParameters(queryResult.Id, queryResult.Pointer,
                 queryResult.LastStart, queryResult.LastEnd, queryResult.LastLimit,
                 queryResult.LastPage, queryResult.ReferenceIds, queryResult.CreationDate,
-                queryResult.ModifiedDate, queryResult.Id);
+                queryResult.ModifiedDate);
 
             return queryResultEntity;
         }
@@ -37,7 +37,7 @@ namespace FireplaceApi.Infrastructure.Converters
             if (queryResultEntity == null)
                 return null;
 
-            var queryResult = new QueryResult(queryResultEntity.Id.Value, queryResultEntity.Pointer,
+            var queryResult = new QueryResult(queryResultEntity.Id, queryResultEntity.Pointer,
                 queryResultEntity.LastStart, queryResultEntity.LastEnd, queryResultEntity.LastLimit,
                 queryResultEntity.LastPage, queryResultEntity.ReferenceEntityIds,
                 queryResultEntity.CreationDate, queryResultEntity.ModifiedDate);

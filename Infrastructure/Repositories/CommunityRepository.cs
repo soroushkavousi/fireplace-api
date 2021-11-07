@@ -35,17 +35,17 @@ namespace FireplaceApi.Infrastructure.Repositories
             _communityConverter = communityConverter;
         }
 
-        public async Task<List<Community>> ListCommunitiesAsync(List<long> Ids)
+        public async Task<List<Community>> ListCommunitiesAsync(List<ulong> Ids)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { Ids });
             var sw = Stopwatch.StartNew();
             var communityEntities = await _communityEntities
                 .AsNoTracking()
-                .Where(e => Ids.Contains(e.Id.Value))
+                .Where(e => Ids.Contains(e.Id))
                 .ToListAsync();
 
-            Dictionary<long, CommunityEntity> communityEntityDictionary = new Dictionary<long, CommunityEntity>();
-            communityEntities.ForEach(e => communityEntityDictionary[e.Id.Value] = e);
+            Dictionary<ulong, CommunityEntity> communityEntityDictionary = new Dictionary<ulong, CommunityEntity>();
+            communityEntities.ForEach(e => communityEntityDictionary[e.Id] = e);
             communityEntities = new List<CommunityEntity>();
             Ids.ForEach(id => communityEntities.Add(communityEntityDictionary[id]));
 
@@ -70,7 +70,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return communityEntities.Select(e => _communityConverter.ConvertToModel(e)).ToList();
         }
 
-        public async Task<List<long>> ListCommunityIdsAsync(string name)
+        public async Task<List<ulong>> ListCommunityIdsAsync(string name)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { name });
             var sw = Stopwatch.StartNew();
@@ -81,14 +81,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                     sort: null
                 )
                 .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
-                .Select(e => e.Id.Value)
+                .Select(e => e.Id)
                 .ToListAsync();
 
             _logger.LogIOInformation(sw, "Database | Output", new { communityEntityIds });
             return communityEntityIds;
         }
 
-        public async Task<Community> GetCommunityByIdAsync(long id, bool includeCreator = false)
+        public async Task<Community> GetCommunityByIdAsync(ulong id, bool includeCreator = false)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id, includeCreator });
             var sw = Stopwatch.StartNew();
@@ -120,13 +120,13 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _communityConverter.ConvertToModel(communityEntity);
         }
 
-        public async Task<string> GetNameByIdAsync(long id)
+        public async Task<string> GetNameByIdAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
             var communityName = (await _communityEntities
                 .AsNoTracking()
-                .Select(e => new { Id = e.Id.Value, e.Name })
+                .Select(e => new { e.Id, e.Name })
                 .SingleAsync(e => e.Id == id))
                 .Name;
 
@@ -134,13 +134,13 @@ namespace FireplaceApi.Infrastructure.Repositories
             return communityName;
         }
 
-        public async Task<long> GetIdByNameAsync(string communityName)
+        public async Task<ulong> GetIdByNameAsync(string communityName)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { communityName });
             var sw = Stopwatch.StartNew();
             var communityId = (await _communityEntities
                 .AsNoTracking()
-                .Select(e => new { Id = e.Id.Value, e.Name })
+                .Select(e => new { e.Id, e.Name })
                 .SingleAsync(e => string.Equals(e.Name, communityName)))
                 .Id;
 
@@ -148,11 +148,12 @@ namespace FireplaceApi.Infrastructure.Repositories
             return communityId;
         }
 
-        public async Task<Community> CreateCommunityAsync(string name, long creatorId)
+        public async Task<Community> CreateCommunityAsync(ulong id, string name,
+            ulong creatorId)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { name, creatorId });
+            _logger.LogIOInformation(null, "Database | Iutput", new { id, name, creatorId });
             var sw = Stopwatch.StartNew();
-            var communityEntity = new CommunityEntity(name, creatorId);
+            var communityEntity = new CommunityEntity(id, name, creatorId);
             _communityEntities.Add(communityEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
@@ -182,7 +183,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _communityConverter.ConvertToModel(communityEntity);
         }
 
-        public async Task DeleteCommunityByIdAsync(long id)
+        public async Task DeleteCommunityByIdAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
@@ -212,7 +213,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _logger.LogIOInformation(sw, "Database | Output", new { communityEntity });
         }
 
-        public async Task<bool> DoesCommunityIdExistAsync(long id)
+        public async Task<bool> DoesCommunityIdExistAsync(ulong id)
         {
             _logger.LogIOInformation(null, "Database | Iutput", new { id });
             var sw = Stopwatch.StartNew();
