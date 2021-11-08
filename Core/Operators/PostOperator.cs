@@ -50,13 +50,13 @@ namespace FireplaceApi.Core.Operators
                     requesterUser.Id, self, joined, communityId,
                     communityName, search, sort);
                 resultPage = await _pageOperator.CreatePageWithoutPointerAsync(
-                    ModelName.COMMUNITY_MEMBERSHIP, paginationInputParameters, postIds,
+                    ModelName.POST, paginationInputParameters, postIds,
                     _postRepository.ListPostsAsync, requesterUser);
             }
             else
             {
                 resultPage = await _pageOperator.CreatePageWithPointerAsync(
-                    ModelName.COMMUNITY_MEMBERSHIP, paginationInputParameters,
+                    ModelName.POST, paginationInputParameters,
                     _postRepository.ListPostsAsync, requesterUser);
             }
             return resultPage;
