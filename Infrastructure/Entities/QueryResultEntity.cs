@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace FireplaceApi.Infrastructure.Entities
@@ -15,12 +14,12 @@ namespace FireplaceApi.Infrastructure.Entities
         public int LastLimit { get; set; }
         public int LastPage { get; set; }
         [JsonIgnore]
-        public List<ulong> ReferenceEntityIds { get; set; }
+        public ulong[] ReferenceEntityIds { get; set; }
 
         protected QueryResultEntity() : base() { }
 
         public QueryResultEntity(ulong id, string pointer, int lastStart,
-            int lastEnd, int lastLimit, int lastPage, List<ulong> referenceEntityIds,
+            int lastEnd, int lastLimit, int lastPage, ulong[] referenceEntityIds,
             DateTime? creationDate = null, DateTime? modifiedDate = null)
             : base(id, creationDate, modifiedDate)
         {
@@ -29,7 +28,7 @@ namespace FireplaceApi.Infrastructure.Entities
         }
 
         public void FillParameters(ulong id, string pointer, int lastStart,
-            int lastEnd, int lastLimit, int lastPage, List<ulong> referenceEntityIds,
+            int lastEnd, int lastLimit, int lastPage, ulong[] referenceEntityIds,
             DateTime? creationDate = null, DateTime? modifiedDate = null)
         {
             Id = id;
@@ -38,7 +37,7 @@ namespace FireplaceApi.Infrastructure.Entities
             LastEnd = lastEnd;
             LastLimit = lastLimit;
             LastPage = lastPage;
-            ReferenceEntityIds = referenceEntityIds ?? throw new ArgumentNullException(nameof(referenceEntityIds));
+            ReferenceEntityIds = referenceEntityIds;
             if (creationDate.HasValue)
                 CreationDate = creationDate.Value;
             if (modifiedDate.HasValue)

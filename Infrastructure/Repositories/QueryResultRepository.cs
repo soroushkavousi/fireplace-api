@@ -106,7 +106,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             var sw = Stopwatch.StartNew();
             var queryResultEntity = new T();
             queryResultEntity.FillParameters(id, pointer, lastStart,
-                lastEnd, lastLimit, lastPage, referenceEntityIds);
+                lastEnd, lastLimit, lastPage, referenceEntityIds.ToArray());
             entities.Add(queryResultEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();

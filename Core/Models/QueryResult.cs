@@ -24,7 +24,7 @@ namespace FireplaceApi.Core.Models
             LastEnd = lastEnd;
             LastLimit = lastLimit;
             LastPage = lastPage;
-            ReferenceIds = referenceIds ?? throw new ArgumentNullException(nameof(referenceIds)); ;
+            ReferenceIds = referenceIds ?? throw new ArgumentNullException(nameof(referenceIds));
         }
 
         public QueryResult PureCopy() => new QueryResult(Id, Pointer,
