@@ -36,7 +36,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<List<CommentVote>> ListCommentVotesAsync(List<ulong> Ids)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { Ids });
+            _logger.LogIOInformation(null, "Database | Input", new { Ids });
             var sw = Stopwatch.StartNew();
             var commentEntities = await _commentVoteEntities
                 .AsNoTracking()
@@ -55,7 +55,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<CommentVote> GetCommentVoteByIdAsync(ulong id,
             bool includeVoter = false, bool includeComment = false)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new
+            _logger.LogIOInformation(null, "Database | Input", new
             {
                 id, includeVoter, includeComment
             });
@@ -76,7 +76,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<CommentVote> GetCommentVoteAsync(ulong voterId,
             ulong commentId, bool includeVoter = false, bool includeComment = false)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new
+            _logger.LogIOInformation(null, "Database | Input", new
             {
                 voterId, commentId, includeVoter, includeComment
             });
@@ -98,7 +98,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<CommentVote> CreateCommentVoteAsync(ulong id, ulong voterUserId,
             string voterUsername, ulong commentId, bool isUp)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new
+            _logger.LogIOInformation(null, "Database | Input", new
             {
                 id, voterUserId, voterUsername, commentId, isUp
             });
@@ -116,7 +116,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<CommentVote> UpdateCommentVoteAsync(CommentVote commentvote)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { commentvote });
+            _logger.LogIOInformation(null, "Database | Input", new { commentvote });
             var sw = Stopwatch.StartNew();
             var commentEntity = _commentVoteConverter.ConvertToEntity(commentvote);
             _commentVoteEntities.Update(commentEntity);
@@ -137,7 +137,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task DeleteCommentVoteByIdAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var commentEntity = await _commentVoteEntities
                 .Where(e => e.Id == id)
@@ -152,7 +152,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<bool> DoesCommentVoteIdExistAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await _commentVoteEntities
                 .AsNoTracking()
@@ -165,7 +165,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<bool> DoesCommentVoteIdExistAsync(ulong voterId, ulong commentId)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { voterId, commentId });
+            _logger.LogIOInformation(null, "Database | Input", new { voterId, commentId });
             var sw = Stopwatch.StartNew();
             var doesExist = await _commentVoteEntities
                 .AsNoTracking()

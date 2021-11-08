@@ -36,7 +36,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<List<PostVote>> ListPostVotesAsync(List<ulong> Ids)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { Ids });
+            _logger.LogIOInformation(null, "Database | Input", new { Ids });
             var sw = Stopwatch.StartNew();
             var postEntities = await _postVoteEntities
                 .AsNoTracking()
@@ -55,7 +55,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<PostVote> GetPostVoteByIdAsync(ulong id,
             bool includeVoter = false, bool includePost = false)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new
+            _logger.LogIOInformation(null, "Database | Input", new
             {
                 id, includeVoter, includePost
             });
@@ -76,7 +76,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<PostVote> GetPostVoteAsync(ulong voterId,
             ulong postId, bool includeVoter = false, bool includePost = false)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new
+            _logger.LogIOInformation(null, "Database | Input", new
             {
                 voterId, postId, includeVoter, includePost
             });
@@ -98,7 +98,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<PostVote> CreatePostVoteAsync(ulong id, ulong voterUserId,
             string voterUsername, ulong postId, bool isUp)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new
+            _logger.LogIOInformation(null, "Database | Input", new
             {
                 id, voterUserId, voterUsername, postId, isUp
             });
@@ -116,7 +116,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<PostVote> UpdatePostVoteAsync(PostVote postvote)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { postvote });
+            _logger.LogIOInformation(null, "Database | Input", new { postvote });
             var sw = Stopwatch.StartNew();
             var postEntity = _postVoteConverter.ConvertToEntity(postvote);
             _postVoteEntities.Update(postEntity);
@@ -137,7 +137,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task DeletePostVoteByIdAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var postEntity = await _postVoteEntities
                 .Where(e => e.Id == id)
@@ -152,7 +152,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<bool> DoesPostVoteIdExistAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await _postVoteEntities
                 .AsNoTracking()
@@ -165,7 +165,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<bool> DoesPostVoteIdExistAsync(ulong voterId, ulong postId)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { voterId, postId });
+            _logger.LogIOInformation(null, "Database | Input", new { voterId, postId });
             var sw = Stopwatch.StartNew();
             var doesExist = await _postVoteEntities
                 .AsNoTracking()

@@ -37,7 +37,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<List<AccessToken>> ListAccessTokensAsync(
                     bool includeUser = false)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { includeUser });
+            _logger.LogIOInformation(null, "Database | Input", new { includeUser });
             var sw = Stopwatch.StartNew();
             var accessTokenEntities = await _accessTokenEntities
                 .AsNoTracking()
@@ -52,7 +52,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<AccessToken> GetAccessTokenByIdAsync(ulong id, bool includeUser = false)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id, includeUser });
+            _logger.LogIOInformation(null, "Database | Input", new { id, includeUser });
             var sw = Stopwatch.StartNew();
             var accessTokenEntity = await _accessTokenEntities
                 .AsNoTracking()
@@ -68,7 +68,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<AccessToken> GetAccessTokenByValueAsync(string value, bool includeUser = false)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { value, includeUser });
+            _logger.LogIOInformation(null, "Database | Input", new { value, includeUser });
             var sw = Stopwatch.StartNew();
             var accessTokenEntity = await _accessTokenEntities
                 .AsNoTracking()
@@ -84,7 +84,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<AccessToken> CreateAccessTokenAsync(ulong id, ulong userId, string value)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id, userId, value });
+            _logger.LogIOInformation(null, "Database | Input", new { id, userId, value });
             var sw = Stopwatch.StartNew();
             var accessTokenEntity = new AccessTokenEntity(id, userId, value);
             _accessTokenEntities.Add(accessTokenEntity);
@@ -97,7 +97,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<AccessToken> UpdateAccessTokenAsync(AccessToken accessToken)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { accessToken });
+            _logger.LogIOInformation(null, "Database | Input", new { accessToken });
             var sw = Stopwatch.StartNew();
             var accessTokenEntity = _accessTokenConverter.ConvertToEntity(accessToken);
             _accessTokenEntities.Update(accessTokenEntity);
@@ -118,7 +118,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task DeleteAccessTokenAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var accessTokenEntity = await _accessTokenEntities
                 .Where(e => e.Id == id)
@@ -133,7 +133,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<bool> DoesAccessTokenIdExistAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await _accessTokenEntities
                 .AsNoTracking()
@@ -146,7 +146,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<bool> DoesAccessTokenValueExistAsync(string value)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { value });
+            _logger.LogIOInformation(null, "Database | Input", new { value });
             var sw = Stopwatch.StartNew();
             var doesExist = await _accessTokenEntities
                 .AsNoTracking()

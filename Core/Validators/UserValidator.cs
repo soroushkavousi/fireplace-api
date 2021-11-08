@@ -332,9 +332,9 @@ namespace FireplaceApi.Core.Validators
 
         public void ValidateRequesterUserCanAlterUser(User requesterUser, string username)
         {
-            if (string.Equals(requesterUser.Username, username, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(requesterUser.Username, username, StringComparison.OrdinalIgnoreCase))
             {
-                var serverMessage = $"requesterUser {requesterUser.Id} can't alter to user {username}";
+                var serverMessage = $"requesterUser {requesterUser.Id} can't alter to user {requesterUser.Username} != {username}";
                 throw new ApiException(ErrorName.USERNAME_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
         }

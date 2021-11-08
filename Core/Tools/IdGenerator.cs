@@ -1,24 +1,23 @@
 ﻿using FireplaceApi.Core.Tools;
-using NLog;
+using SimpleBase;
 using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Tools
 {
     public static class IdGenerator
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private static readonly Random _random = new Random();
-        private static readonly string[] b64pad = { "", "ERROR", "==", "=" };
+        private static readonly ulong _min = (ulong)Math.Pow(2, 10);
+        private static readonly ulong _max = ulong.MaxValue - 1;
+        private static readonly Regex _encodedIdRegex = new Regex(@"(\S)\1{2}");
 
         public static async Task<ulong> GenerateNewIdAsync(Func<ulong, Task<bool>> doesIdExistAsync = null)
         {
-            var min = (ulong)Math.Pow(2, 10);
-            var max = ulong.MaxValue - 1;
             ulong id; bool idIsValid;
             do
             {
-                id = Utils.GenerateRandomUlongNumber(min, max);
+                id = Utils.GenerateRandomUlongNumber(_min, _max);
                 idIsValid = await IsIdValid(id, doesIdExistAsync);
             }
             while (!idIsValid);
@@ -27,6 +26,9 @@ namespace FireplaceApi.Core.Tools
 
         private static async Task<bool> IsIdValid(ulong id, Func<ulong, Task<bool>> doesIdExistAsync = null)
         {
+            if (id % 256 < 6)
+                return false;
+
             var encodedId = EncodeId(id);
             if (!IsEncodedIdFormatValid(encodedId))
                 return false;
@@ -39,16 +41,24 @@ namespace FireplaceApi.Core.Tools
 
         public static bool IsEncodedIdFormatValid(string encodedId)
         {
-            if (Regexes.EncodedId.IsMatch(encodedId))
+            if (_encodedIdRegex.IsMatch(encodedId))
                 return false;
 
             return true;
         }
 
+        public static string EncodeId(ulong id)
+        {
+            var bytes = BitConverter.GetBytes(id);
+            var encodedId = Base58.Bitcoin.Encode(bytes);
+            return encodedId;
+        }
+
         public static ulong DecodeId(string encodedId)
         {
-            var b64 = encodedId.Replace('-', '+').Replace('_', '/') + b64pad[encodedId.Length % 4];
-            return BitConverter.ToUInt64(Convert.FromBase64String(b64), 0);
+            ReadOnlySpan<byte> idBytes = Base58.Bitcoin.Decode(encodedId);
+            var id = BitConverter.ToUInt64(idBytes);
+            return id;
         }
 
         public static ulong? DecodeIdOrDefault(string encodedId)
@@ -56,14 +66,6 @@ namespace FireplaceApi.Core.Tools
             if (string.IsNullOrWhiteSpace(encodedId))
                 return default;
             return DecodeId(encodedId);
-        }
-
-        public static string EncodeId(ulong id)
-        {
-            var bytes = BitConverter.GetBytes(id);
-            var b64 = Convert.ToBase64String(bytes);
-            b64 = b64.Replace('+', '-').Replace('/', '_').Remove(b64.Length - 1);
-            return b64;
         }
     }
 }

@@ -359,7 +359,7 @@ namespace FireplaceApi.Core.Operators
             do
             {
                 randomNumber = Utils.GenerateRandomNumber(1000000, 9999999);
-                newUsername = $"gamer{randomNumber}";
+                newUsername = $"user{randomNumber}";
             }
             while (await DoesUsernameExistAsync(newUsername));
             return newUsername;

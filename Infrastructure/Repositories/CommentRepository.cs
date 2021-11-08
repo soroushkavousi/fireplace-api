@@ -38,7 +38,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<List<Comment>> ListCommentsAsync(List<ulong> Ids,
             User requesterUser = null)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new
+            _logger.LogIOInformation(null, "Database | Input", new
             {
                 Ids, requesterUser = requesterUser != null
             });
@@ -65,7 +65,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<List<ulong>> ListSelfCommentIdsAsync(ulong authorId,
             SortType? sort)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new
+            _logger.LogIOInformation(null, "Database | Input", new
             {
                 authorId, sort
             });
@@ -93,7 +93,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<List<ulong>> ListPostCommentIdsAsync(ulong postId,
             SortType? sort)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new
+            _logger.LogIOInformation(null, "Database | Input", new
             {
                 postId, sort
             });
@@ -121,7 +121,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<List<Comment>> ListChildCommentsAsync(ulong postId,
             List<ulong> parentCommentIds, User requesterUser = null)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new
+            _logger.LogIOInformation(null, "Database | Input", new
             {
                 postId, parentCommentIds,
                 requesterUser = requesterUser != null
@@ -153,7 +153,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<List<Comment>> ListChildCommentsAsync(ulong postId,
             ulong parentCommentId, User requesterUser = null)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new
+            _logger.LogIOInformation(null, "Database | Input", new
             {
                 postId, parentCommentId,
                 requesterUser = requesterUser != null
@@ -186,7 +186,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             bool includeAuthor = false, bool includePost = false,
             User requesterUser = null)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new
+            _logger.LogIOInformation(null, "Database | Input", new
             {
                 id, includeAuthor, includePost,
                 requesterUser = requesterUser != null
@@ -210,7 +210,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             string authorUsername, ulong postId, string content,
             List<ulong> parentCommentIds = null)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new
+            _logger.LogIOInformation(null, "Database | Input", new
             {
                 id, authorUserId, authorUsername, postId, content,
                 parentCommentIds
@@ -229,7 +229,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<Comment> UpdateCommentAsync(Comment comment)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { comment });
+            _logger.LogIOInformation(null, "Database | Input", new { comment });
             var sw = Stopwatch.StartNew();
             var commentEntity = _commentConverter.ConvertToEntity(comment);
             _commentEntities.Update(commentEntity);
@@ -250,7 +250,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task DeleteCommentByIdAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var commentEntity = await _commentEntities
                 .Where(e => e.Id == id)
@@ -265,7 +265,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<bool> DoesCommentIdExistAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await _commentEntities
                 .AsNoTracking()

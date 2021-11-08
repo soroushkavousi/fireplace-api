@@ -56,7 +56,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         private async Task<QueryResult> GetQueryResultByPointerAsync<T>(DbSet<T> entities, string pointer)
             where T : QueryResultEntity
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { pointer });
+            _logger.LogIOInformation(null, "Database | Input", new { pointer });
             var sw = Stopwatch.StartNew();
 
             var queryResultEntity = await entities
@@ -99,7 +99,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             string pointer, int lastStart, int lastEnd, int lastLimit, int lastPage,
             List<ulong> referenceEntityIds) where T : QueryResultEntity, new()
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new
+            _logger.LogIOInformation(null, "Database | Input", new
             {
                 id, pointer, lastStart, lastEnd, lastLimit, lastPage, referenceEntityIds
             });
@@ -138,7 +138,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<QueryResult> UpdateQueryResultAsync<T>(DbSet<T> entities,
             QueryResult queryResult) where T : QueryResultEntity, new()
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { queryResult });
+            _logger.LogIOInformation(null, "Database | Input", new { queryResult });
             var sw = Stopwatch.StartNew();
             var queryResultEntity = _queryResultConverter.ConvertToEntity<T>(queryResult);
             entities.Update(queryResultEntity);
@@ -185,7 +185,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task DeleteQueryResultByPointerAsync<T>(DbSet<T> entities, string pointer)
             where T : QueryResultEntity
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { pointer });
+            _logger.LogIOInformation(null, "Database | Input", new { pointer });
             var sw = Stopwatch.StartNew();
             var queryResultEntity = await entities
                 .Where(e => e.Pointer == pointer)
@@ -221,7 +221,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<bool> DoesQueryResultIdExistAsync<T>(DbSet<T> entities, ulong id)
             where T : QueryResultEntity
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await entities
                 .AsNoTracking()
@@ -255,7 +255,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<bool> DoesQueryResultPointerExistAsync<T>(DbSet<T> entities, string pointer)
             where T : QueryResultEntity
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { pointer });
+            _logger.LogIOInformation(null, "Database | Input", new { pointer });
             var sw = Stopwatch.StartNew();
             var doesExist = await entities
                 .AsNoTracking()

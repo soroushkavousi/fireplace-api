@@ -39,7 +39,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<List<GoogleUser>> ListGoogleUsersAsync(
                     bool includeUser = false)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { includeUser });
+            _logger.LogIOInformation(null, "Database | Input", new { includeUser });
             var sw = Stopwatch.StartNew();
             var googleUserEntities = await _googleUserEntities
                 .AsNoTracking()
@@ -54,7 +54,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<GoogleUser> GetGoogleUserByIdAsync(ulong id, bool includeUser = false)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id, includeUser });
+            _logger.LogIOInformation(null, "Database | Input", new { id, includeUser });
             var sw = Stopwatch.StartNew();
             var googleUserEntity = await _googleUserEntities
                 .AsNoTracking()
@@ -71,7 +71,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<GoogleUser> GetGoogleUserByGmailAddressAsync(string gmailAddress,
             bool includeUser = false)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { gmailAddress, includeUser });
+            _logger.LogIOInformation(null, "Database | Input", new { gmailAddress, includeUser });
             var sw = Stopwatch.StartNew();
             var googleUserEntity = await _googleUserEntities
                 .AsNoTracking()
@@ -93,7 +93,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             string lastName, string locale, string pictureUrl, string state,
             string authUser, string prompt, string redirectToUserUrl)
         {
-            _logger.LogIOInformation(null, "Database | Iutput",
+            _logger.LogIOInformation(null, "Database | Input",
                 new
                 {
                     id, userId, scope, accessTokenIssuedTime,
@@ -115,7 +115,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<GoogleUser> UpdateGoogleUserAsync(GoogleUser googleUser)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { googleUser });
+            _logger.LogIOInformation(null, "Database | Input", new { googleUser });
             var sw = Stopwatch.StartNew();
             var googleUserEntity = _googleUserConverter.ConvertToEntity(googleUser);
             _googleUserEntities.Update(googleUserEntity);
@@ -136,7 +136,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task DeleteGoogleUserAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var googleUserEntity = await _googleUserEntities
                 .Where(e => e.Id == id)
@@ -151,7 +151,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<bool> DoesGoogleUserIdExistAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await _googleUserEntities
                 .AsNoTracking()
@@ -164,7 +164,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<bool> DoesGoogleUserGmailAddressExistAsync(string gmailAddress)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { gmailAddress });
+            _logger.LogIOInformation(null, "Database | Input", new { gmailAddress });
             var sw = Stopwatch.StartNew();
             var doesExist = await _googleUserEntities
                 .AsNoTracking()

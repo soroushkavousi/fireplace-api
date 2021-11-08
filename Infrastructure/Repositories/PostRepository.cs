@@ -38,7 +38,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<List<Post>> ListPostsAsync(List<ulong> Ids,
             User requesterUser = null)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new
+            _logger.LogIOInformation(null, "Database | Input", new
             {
                 Ids, requesterUser = requesterUser != null
             });
@@ -67,7 +67,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             string communityName, string search, SortType? sort,
             User requesterUser)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new
+            _logger.LogIOInformation(null, "Database | Input", new
             {
                 authorId, self, joined, communityId,
                 communityName, search, sort
@@ -100,7 +100,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             bool? self, bool? joined, ulong? communityId,
             string communityName, string search, SortType? sort)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new
+            _logger.LogIOInformation(null, "Database | Input", new
             {
                 authorId, self, joined, communityId, communityName,
                 search, sort
@@ -129,7 +129,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             bool includeAuthor = false, bool includeCommunity = false,
             User requesterUser = null)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new
+            _logger.LogIOInformation(null, "Database | Input", new
             {
                 id, includeAuthor, includeCommunity,
                 requesterUser = requesterUser != null
@@ -153,7 +153,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             string authorUsername, ulong communityId, string communityName,
             string content)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new
+            _logger.LogIOInformation(null, "Database | Input", new
             {
                 id, authorUserId, authorUsername, communityId,
                 communityName, content
@@ -172,7 +172,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<Post> UpdatePostAsync(Post post)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { post });
+            _logger.LogIOInformation(null, "Database | Input", new { post });
             var sw = Stopwatch.StartNew();
             var postEntity = _postConverter.ConvertToEntity(post);
             _postEntities.Update(postEntity);
@@ -193,7 +193,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task DeletePostByIdAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var postEntity = await _postEntities
                 .Where(e => e.Id == id)
@@ -208,7 +208,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<bool> DoesPostIdExistAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await _postEntities
                 .AsNoTracking()

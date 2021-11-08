@@ -34,7 +34,7 @@ namespace FireplaceApi.Core.Tools
             {
                 byte[] buf = new byte[8];
                 _random.NextBytes(buf);
-                ulongRand = (ulong)BitConverter.ToInt64(buf, 0);
+                ulongRand = BitConverter.ToUInt64(buf, 0);
             } while (ulongRand > ulong.MaxValue - ((ulong.MaxValue % uRange) + 1) % uRange);
 
             return (ulongRand % uRange) + min;

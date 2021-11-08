@@ -38,7 +38,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<List<Global>> ListGlobalsAsync()
         {
-            _logger.LogIOInformation(null, "Database | Iutput", null);
+            _logger.LogIOInformation(null, "Database | Input", null);
             var sw = Stopwatch.StartNew();
             var globalEntites = await _globalEntities
                 .AsNoTracking()
@@ -52,7 +52,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<Global> GetGlobalByIdAsync(ulong globalId)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { globalId });
+            _logger.LogIOInformation(null, "Database | Input", new { globalId });
             var sw = Stopwatch.StartNew();
             var globalEntity = await _globalEntities
                 .AsNoTracking()
@@ -67,7 +67,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<Global> CreateGlobalAsync(ulong id, GlobalValues globalValues)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id, globalValues });
+            _logger.LogIOInformation(null, "Database | Input", new { id, globalValues });
             var sw = Stopwatch.StartNew();
             var globalEntity = new GlobalEntity(id, globalValues);
             _globalEntities.Add(globalEntity);
@@ -80,7 +80,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<Global> UpdateGlobalAsync(Global global)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { global });
+            _logger.LogIOInformation(null, "Database | Input", new { global });
             var sw = Stopwatch.StartNew();
             var globalEntity = _globalConverter.ConvertToEntity(global);
             _globalEntities.Update(globalEntity);
@@ -101,7 +101,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task DeleteGlobalAsync(ulong globalId)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { globalId });
+            _logger.LogIOInformation(null, "Database | Input", new { globalId });
             var sw = Stopwatch.StartNew();
             var globalEntity = await _globalEntities
                 .Where(e => e.Id == globalId.To<ulong>())
@@ -116,7 +116,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<bool> DoesGlobalIdExistAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await _globalEntities
                 .AsNoTracking()

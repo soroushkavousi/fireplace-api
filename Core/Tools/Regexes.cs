@@ -25,6 +25,5 @@ namespace FireplaceApi.Core.Tools
         public static Regex FirstName { get; } = new Regex(@"^(?=.*\S).*$");
         public static Regex LastName { get; } = new Regex(@"^(?=.*\S).*$");
         public static Regex ErrorClientMessage { get; } = new Regex(@"^(?=.*\S).*$");
-        public static Regex EncodedId { get; } = new Regex(@"(\S)\1{2}");
     }
 }

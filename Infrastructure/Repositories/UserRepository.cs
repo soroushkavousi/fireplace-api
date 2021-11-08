@@ -39,7 +39,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                     bool includeEmail = false, bool includeGoogleUser = false,
                     bool includeAccessTokens = false, bool includeSessions = false)
         {
-            _logger.LogIOInformation(null, "Database | Iutput",
+            _logger.LogIOInformation(null, "Database | Input",
                 new { includeEmail, includeGoogleUser, includeAccessTokens, includeSessions });
             var sw = Stopwatch.StartNew();
             var userEntities = await _userEntities
@@ -61,7 +61,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             bool includeEmail = false, bool includeGoogleUser = false,
             bool includeAccessTokens = false, bool includeSessions = false)
         {
-            _logger.LogIOInformation(null, "Database | Iutput",
+            _logger.LogIOInformation(null, "Database | Input",
                 new { id, includeEmail, includeGoogleUser, includeAccessTokens, includeSessions });
             var sw = Stopwatch.StartNew();
             var userEntity = await _userEntities
@@ -84,7 +84,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             bool includeEmail = false, bool includeGoogleUser = false,
             bool includeAccessTokens = false, bool includeSessions = false)
         {
-            _logger.LogIOInformation(null, "Database | Iutput",
+            _logger.LogIOInformation(null, "Database | Input",
                 new { username, includeEmail, includeGoogleUser, includeAccessTokens, includeSessions });
             var sw = Stopwatch.StartNew();
             var userEntity = await _userEntities
@@ -105,7 +105,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<string> GetUsernameByIdAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var username = (await _userEntities
                 .AsNoTracking()
@@ -119,7 +119,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<ulong> GetIdByUsernameAsync(string username)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { username });
+            _logger.LogIOInformation(null, "Database | Input", new { username });
             var sw = Stopwatch.StartNew();
             var userId = (await _userEntities
                 .AsNoTracking()
@@ -134,7 +134,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<User> CreateUserAsync(ulong id, string firstName, string lastName,
             string username, UserState state, Password password = null)
         {
-            _logger.LogIOInformation(null, "Database | Iutput",
+            _logger.LogIOInformation(null, "Database | Input",
                 new { id, firstName, lastName, username, state, passwordHash = password?.Hash });
             var sw = Stopwatch.StartNew();
             var userEntity = new UserEntity(id, firstName, lastName,
@@ -150,7 +150,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<User> UpdateUserAsync(User user)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { user });
+            _logger.LogIOInformation(null, "Database | Input", new { user });
             var sw = Stopwatch.StartNew();
             var userEntity = _userConverter.ConvertToEntity(user);
             _userEntities.Update(userEntity);
@@ -171,7 +171,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task DeleteUserByIdAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var userEntity = await _userEntities
                 .Where(e => e.Id == id)
@@ -186,7 +186,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task DeleteUserByUsernameAsync(string username)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { username });
+            _logger.LogIOInformation(null, "Database | Input", new { username });
             var sw = Stopwatch.StartNew();
             var userEntity = await _userEntities
                 .Where(e => e.Username == username)
@@ -201,7 +201,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<bool> DoesUserIdExistAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await _userEntities
                 .AsNoTracking()
@@ -214,7 +214,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<bool> DoesUsernameExistAsync(string username)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { username });
+            _logger.LogIOInformation(null, "Database | Input", new { username });
             var sw = Stopwatch.StartNew();
             var doesExist = await _userEntities
                 .AsNoTracking()

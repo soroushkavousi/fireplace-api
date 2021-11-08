@@ -37,7 +37,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<List<Community>> ListCommunitiesAsync(List<ulong> Ids)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { Ids });
+            _logger.LogIOInformation(null, "Database | Input", new { Ids });
             var sw = Stopwatch.StartNew();
             var communityEntities = await _communityEntities
                 .AsNoTracking()
@@ -55,7 +55,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<List<Community>> ListCommunitiesAsync(string name)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { name });
+            _logger.LogIOInformation(null, "Database | Input", new { name });
             var sw = Stopwatch.StartNew();
             var communityEntities = await _communityEntities
                 .AsNoTracking()
@@ -72,7 +72,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<List<ulong>> ListCommunityIdsAsync(string name)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { name });
+            _logger.LogIOInformation(null, "Database | Input", new { name });
             var sw = Stopwatch.StartNew();
             var communityEntityIds = await _communityEntities
                 .AsNoTracking()
@@ -90,7 +90,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<Community> GetCommunityByIdAsync(ulong id, bool includeCreator = false)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id, includeCreator });
+            _logger.LogIOInformation(null, "Database | Input", new { id, includeCreator });
             var sw = Stopwatch.StartNew();
             var communityEntity = await _communityEntities
                 .AsNoTracking()
@@ -106,7 +106,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<Community> GetCommunityByNameAsync(string name, bool includeCreator = false)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { name, includeCreator });
+            _logger.LogIOInformation(null, "Database | Input", new { name, includeCreator });
             var sw = Stopwatch.StartNew();
             var communityEntity = await _communityEntities
                 .AsNoTracking()
@@ -122,7 +122,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<string> GetNameByIdAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var communityName = (await _communityEntities
                 .AsNoTracking()
@@ -136,7 +136,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<ulong> GetIdByNameAsync(string communityName)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { communityName });
+            _logger.LogIOInformation(null, "Database | Input", new { communityName });
             var sw = Stopwatch.StartNew();
             var communityId = (await _communityEntities
                 .AsNoTracking()
@@ -151,7 +151,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<Community> CreateCommunityAsync(ulong id, string name,
             ulong creatorId)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id, name, creatorId });
+            _logger.LogIOInformation(null, "Database | Input", new { id, name, creatorId });
             var sw = Stopwatch.StartNew();
             var communityEntity = new CommunityEntity(id, name, creatorId);
             _communityEntities.Add(communityEntity);
@@ -164,7 +164,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<Community> UpdateCommunityAsync(Community community)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { community });
+            _logger.LogIOInformation(null, "Database | Input", new { community });
             var sw = Stopwatch.StartNew();
             var communityEntity = _communityConverter.ConvertToEntity(community);
             _communityEntities.Update(communityEntity);
@@ -185,7 +185,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task DeleteCommunityByIdAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var communityEntity = await _communityEntities
                 .Where(e => e.Id == id)
@@ -200,7 +200,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task DeleteCommunityByNameAsync(string name)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { name });
+            _logger.LogIOInformation(null, "Database | Input", new { name });
             var sw = Stopwatch.StartNew();
             var communityEntity = await _communityEntities
                 .Where(e => e.Name == name)
@@ -215,7 +215,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<bool> DoesCommunityIdExistAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await _communityEntities
                 .AsNoTracking()
@@ -228,7 +228,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<bool> DoesCommunityNameExistAsync(string name)
         {
-            _logger.LogIOInformation(null, "Database | Iutput", new { name });
+            _logger.LogIOInformation(null, "Database | Input", new { name });
             var sw = Stopwatch.StartNew();
             var doesExist = await _communityEntities
                 .AsNoTracking()
