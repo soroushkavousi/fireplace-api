@@ -3,18 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Api.Controllers
 {
-    public class ControllerGetCommunityByIdInputRouteParameters
+    public class ControllerGetCommunityByIdOrNameInputRouteParameters
     {
         [Required]
-        [FromRoute(Name = "id")]
-        public string Id { get; set; }
-    }
-
-    public class ControllerGetCommunityByNameInputRouteParameters
-    {
-        [Required]
-        [FromRoute(Name = "name")]
-        public string Name { get; set; }
+        [FromRoute(Name = "id-or-name")]
+        public string EncodedIdOrName { get; set; }
     }
 
     public class ControllerGetCommunityInputQueryParameters

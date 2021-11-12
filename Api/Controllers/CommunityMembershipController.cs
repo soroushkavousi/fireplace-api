@@ -37,11 +37,11 @@ namespace FireplaceApi.Api.Controllers
         [Consumes("application/json")]
         [ProducesResponseType(typeof(CommunityMembershipDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommunityMembershipDto>> CreateCommunityMembershipAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromBody] ControllerCreateCommunityMembershipInputBodyParameters inputBodyParameters)
         {
             var communityMembership = await _communityMembershipService.CreateCommunityMembershipAsync(
-                requesterUser, inputBodyParameters.CommunityId, inputBodyParameters.CommunityName);
+                requestingUser, inputBodyParameters.CommunityId, inputBodyParameters.CommunityName);
             var communityMembershipDto = _communityMembershipConverter.ConvertToDto(communityMembership);
             return communityMembershipDto;
         }
@@ -51,32 +51,14 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>No content</returns>
         /// <response code="200">The community membership was successfully deleted.</response>
-        [HttpDelete("/v{version:apiVersion}/communities/{communityId:long}/members/me")]
+        [HttpDelete("/v{version:apiVersion}/communities/{id-or-name}/members/me")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteCommunityMembershipByCommunityIdAsync(
-            [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerDeleteCommunityMembershipByCommunityIdInputRouteParameters inputRouteParameters)
-
+            [BindNever][FromHeader] User requestingUser,
+            [FromRoute] ControllerDeleteCommunityMembershipByCommunityEncodedIdOrNameInputRouteParameters inputRouteParameters)
         {
-            await _communityMembershipService.DeleteCommunityMembershipAsync(requesterUser,
-                inputRouteParameters.CommunityId, null);
-            return Ok();
-        }
-
-        /// <summary>
-        /// Exit from a community.
-        /// </summary>
-        /// <returns>No content</returns>
-        /// <response code="200">The community membership was successfully deleted.</response>
-        [HttpDelete("/v{version:apiVersion}/communities/{communityName:alpha}/members/me")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteCommunityMembershipByCommunityNameAsync(
-            [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerDeleteCommunityMembershipByCommunityNameInputRouteParameters inputRouteParameters)
-
-        {
-            await _communityMembershipService.DeleteCommunityMembershipAsync(requesterUser,
-                null, inputRouteParameters.CommunityName);
+            await _communityMembershipService.DeleteCommunityMembershipAsync(requestingUser,
+                inputRouteParameters.CommunityEncodedIdOrName);
             return Ok();
         }
     }

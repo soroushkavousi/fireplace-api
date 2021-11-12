@@ -1,5 +1,7 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.ValueObjects;
@@ -30,108 +32,129 @@ namespace FireplaceApi.Core.Validators
             _queryResultValidator = queryResultValidator;
         }
 
-        public async Task ValidateListCommunitiesInputParametersAsync(User requesterUser,
+        public async Task ValidateListCommunitiesInputParametersAsync(User requestingUser,
             PaginationInputParameters paginationInputParameters, string name)
         {
             await _queryResultValidator.ValidatePaginationInputParameters(paginationInputParameters,
                 ModelName.COMMUNITY);
         }
 
-        public async Task ValidateGetCommunityByIdInputParametersAsync(User requesterUser, string encodedId,
-            bool? includeCreator)
+        public async Task<CommunityIdentifier> ValidateGetCommunityByEncodedIdOrNameInputParametersAsync(
+            User requestingUser, string encodedIdOrName, bool? includeCreator)
         {
-            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
-            var community = await ValidateCommunityExistsAsync(id: id);
+            var communityIdentifier = await ValidateMultipleIdentifiers(encodedIdOrName, encodedIdOrName);
+            return communityIdentifier;
         }
 
-        public async Task ValidateGetCommunityByNameInputParametersAsync(User requesterUser, string name,
-            bool? includeCreator)
+        public async Task ValidateCreateCommunityInputParametersAsync(User requestingUser, string name)
         {
-            var community = await ValidateCommunityExistsAsync(name: name);
+            ValidateCommunityNameFormat(name);
+            await ValidateCommunityIdentifierDoesNotExistAsync(CommunityIdentifier.OfName(name));
         }
 
-        public async Task ValidateCreateCommunityInputParametersAsync(User requesterUser, string name)
+        public async Task<Community> ValidatePatchCommunityByEncodedIdOrNameInputParametersAsync(User requestingUser,
+            string encodedIdOrName, string newName)
         {
-            await ValidateCommunityNameDoesNotExistAsync(name);
+            var communityIdentifier = await ValidateMultipleIdentifiers(encodedIdOrName, encodedIdOrName);
+            var community = await _communityOperator.GetCommunityByIdentifierAsync(
+                communityIdentifier, false);
+            ValidateRequestingUserCanAlterCommunity(requestingUser, community);
+            ValidateCommunityNameFormat(newName);
+            await ValidateCommunityIdentifierDoesNotExistAsync(CommunityIdentifier.OfName(newName));
+            return community;
         }
 
-        public async Task ValidatePatchCommunityByIdInputParametersAsync(User requesterUser,
-            string encodedId, string newName)
+        public async Task<CommunityIdentifier> ValidateDeleteCommunityByEncodedIdOrNameInputParametersAsync(User requestingUser,
+            string encodedIdOrName)
         {
-            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
-            var community = await ValidateCommunityExistsAsync(id: id);
-            ValidateRequesterUserCanAlterCommunity(requesterUser, community);
-            await ValidateCommunityNameDoesNotExistAsync(newName);
+            var communityIdentifier = await ValidateMultipleIdentifiers(encodedIdOrName, encodedIdOrName);
+            var community = await _communityOperator.GetCommunityByIdentifierAsync(
+                communityIdentifier, false);
+            ValidateRequestingUserCanAlterCommunity(requestingUser, community);
+            return communityIdentifier;
         }
 
-        public async Task ValidatePatchCommunityByNameInputParametersAsync(User requesterUser,
-            string name, string newName)
+        public async Task<CommunityIdentifier> ValidateMultipleIdentifiers(string encodedId,
+            string name, bool throwException = true)
         {
-            var community = await ValidateCommunityExistsAsync(name: name);
-            ValidateRequesterUserCanAlterCommunity(requesterUser, community);
-            await ValidateCommunityNameDoesNotExistAsync(newName);
-        }
-
-        public async Task ValidateDeleteCommunityByIdInputParametersAsync(User requesterUser,
-            string encodedId)
-        {
-            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
-            var community = await ValidateCommunityExistsAsync(id: id);
-            ValidateRequesterUserCanAlterCommunity(requesterUser, community);
-        }
-
-        public async Task ValidateDeleteCommunityByNameInputParametersAsync(User requesterUser,
-            string name)
-        {
-            var community = await ValidateCommunityExistsAsync(name: name);
-            ValidateRequesterUserCanAlterCommunity(requesterUser, community);
-        }
-
-        public async Task<Community> ValidateCommunityExistsAsync(ulong? id = null, string name = null)
-        {
+            var id = ValidateEncodedIdFormat(encodedId, "communityName", false);
             if (id.HasValue)
             {
-                var community = await _communityOperator.GetCommunityByIdAsync(id.Value, true);
-                if (community == null)
-                {
-                    var serverMessage = $"Community id {id} doesn't exist!";
-                    throw new ApiException(ErrorName.COMMUNITY_DOES_NOT_EXIST, serverMessage);
-                }
-                return community;
+                var identifier = CommunityIdentifier.OfId(id.Value);
+                if (await ValidateCommunityIdentifierExists(identifier, false))
+                    return identifier;
             }
-            else if (!string.IsNullOrWhiteSpace(name))
+
+            if (ValidateCommunityNameFormat(name, false))
             {
-                var community = await _communityOperator.GetCommunityByNameAsync(name, true);
-                if (community == null)
-                {
-                    var serverMessage = $"Community name {name} doesn't exist!";
-                    throw new ApiException(ErrorName.COMMUNITY_DOES_NOT_EXIST, serverMessage);
-                }
-                return community;
+                var identifier = CommunityIdentifier.OfName(name);
+                if (await ValidateCommunityIdentifierExists(identifier, false))
+                    return identifier;
             }
-            else
+
+            if (throwException)
             {
-                var serverMessage = $"Community id and name are missing!";
-                throw new ApiException(ErrorName.COMMUNITY_ID_AND_NAME_ARE_MISSING, serverMessage);
+                var serverMessage = $"Community {new { encodedId, id, name }.ToJson()} deos not exist!";
+                throw new ApiException(ErrorName.COMMUNITY_DOES_NOT_EXIST, serverMessage);
             }
+            return default;
         }
 
-        public async Task ValidateCommunityNameDoesNotExistAsync(string name)
+        public bool ValidateCommunityIdentifierFormat(
+            CommunityIdentifier identifier, bool throwException = true)
         {
-            var exists = await _communityOperator.DoesCommunityNameExistAsync(name);
-            if (exists)
+            switch (identifier)
             {
-                var serverMessage = $"Community name {name} already exists!";
+                case CommunityIdIdentifier idIdentifier:
+                    break;
+                case CommunityNameIdentifier nameIdentifier:
+                    if (!ValidateCommunityNameFormat(nameIdentifier.Name, throwException))
+                        return false;
+                    break;
+            }
+            return true;
+        }
+
+        public bool ValidateCommunityNameFormat(string communityName, bool throwException = true)
+        {
+            return true;
+        }
+
+        public async Task<bool> ValidateCommunityIdentifierExists(
+            CommunityIdentifier identifier, bool throwException = true)
+        {
+            if (await _communityOperator.DoesCommunityIdentifierExistAsync(identifier))
+                return true;
+
+            if (throwException)
+            {
+                var serverMessage = $"Community identifier {identifier.ToJson()} deos not exist!";
+                throw new ApiException(ErrorName.COMMUNITY_DOES_NOT_EXIST, serverMessage);
+            }
+            return false;
+        }
+
+
+        public async Task<bool> ValidateCommunityIdentifierDoesNotExistAsync(
+            CommunityIdentifier identifier, bool throwException = true)
+        {
+            if (await _communityOperator.DoesCommunityIdentifierExistAsync(identifier) == false)
+                return true;
+
+            if (throwException)
+            {
+                var serverMessage = $"Community {identifier.ToJson()} already exists!";
                 throw new ApiException(ErrorName.COMMUNITY_ALREADY_EXISTS, serverMessage);
             }
+            return false;
         }
 
-        public void ValidateRequesterUserCanAlterCommunity(User requesterUser,
+        public void ValidateRequestingUserCanAlterCommunity(User requestingUser,
             Community community)
         {
-            if (requesterUser.Id != community.CreatorId)
+            if (requestingUser.Id != community.CreatorId)
             {
-                var serverMessage = $"requesterUser {requesterUser.Id} can't alter " +
+                var serverMessage = $"requestingUser {requestingUser.Id} can't alter " +
                     $"community {community.Id}";
                 throw new ApiException(ErrorName.USER_CAN_NOT_ALTER_COMMUNITY,
                     serverMessage);

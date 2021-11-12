@@ -1,7 +1,7 @@
 ﻿using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.Validators;
 using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
@@ -23,93 +23,89 @@ namespace FireplaceApi.Core.Services
             _postOperator = postOperator;
         }
 
-        public async Task<Page<Post>> ListPostsAsync(User requesterUser,
+        public async Task<Page<Post>> ListPostsAsync(User requestingUser,
             PaginationInputParameters paginationInputParameters, bool? self,
             bool? joined, string encodedCommunityId, string communityName,
             string search, SortType? sort, string stringOfSort)
         {
-            await _postValidator.ValidateListPostsInputParametersAsync(requesterUser,
+            var communityIdentifier = await _postValidator.ValidateListPostsInputParametersAsync(requestingUser,
                 paginationInputParameters, self, joined, encodedCommunityId, communityName,
                 search, sort, stringOfSort);
-            var communityId = encodedCommunityId.DecodeIdOrDefault();
-            var page = await _postOperator.ListPostsAsync(requesterUser,
-                paginationInputParameters, self, joined, communityId, communityName,
+            var page = await _postOperator.ListPostsAsync(requestingUser,
+                paginationInputParameters, self, joined, communityIdentifier,
                 search, sort);
             return page;
         }
 
-        public async Task<Post> GetPostByIdAsync(User requesterUser, string encodedId,
+        public async Task<Post> GetPostByIdAsync(User requestingUser, string encodedId,
             bool? includeAuthor, bool? includeCommunity)
         {
             await _postValidator.ValidateGetPostByIdInputParametersAsync(
-                requesterUser, encodedId, includeAuthor, includeCommunity);
-            var id = encodedId.Decode();
+                requestingUser, encodedId, includeAuthor, includeCommunity);
+            var id = encodedId.IdDecode();
             var post = await _postOperator.GetPostByIdAsync(id,
-                includeAuthor.Value, includeCommunity.Value, requesterUser);
+                includeAuthor.Value, includeCommunity.Value, requestingUser);
             return post;
         }
 
-        public async Task<Post> CreatePostAsync(User requesterUser, string encodedCommunityId,
+        public async Task<Post> CreatePostAsync(User requestingUser, string encodedCommunityId,
             string communityName, string content)
         {
-            await _postValidator.ValidateCreatePostInputParametersAsync(
-                    requesterUser, encodedCommunityId, communityName, content);
-            var communityId = encodedCommunityId.DecodeIdOrDefault();
-            var communityIdentifier = new Identifier(communityId, communityName);
-            return await _postOperator
-                .CreatePostAsync(requesterUser, communityIdentifier,
+            var communityIdentifier = await _postValidator.ValidateCreatePostInputParametersAsync(
+                    requestingUser, encodedCommunityId, communityName, content);
+            return await _postOperator.CreatePostAsync(requestingUser, communityIdentifier,
                     content);
         }
 
-        public async Task<Post> VotePostAsync(User requesterUser,
+        public async Task<Post> VotePostAsync(User requestingUser,
             string encodedId, bool? isUpvote)
         {
             await _postValidator.ValidateVotePostInputParametersAsync(
-                requesterUser, encodedId, isUpvote);
-            var id = encodedId.Decode();
+                requestingUser, encodedId, isUpvote);
+            var id = encodedId.IdDecode();
             var post = await _postOperator.VotePostAsync(
-                requesterUser, id, isUpvote.Value);
+                requestingUser, id, isUpvote.Value);
             return post;
         }
 
-        public async Task<Post> ToggleVoteForPostAsync(User requesterUser,
+        public async Task<Post> ToggleVoteForPostAsync(User requestingUser,
             string encodedId)
         {
             await _postValidator.ValidateToggleVoteForPostInputParametersAsync(
-                requesterUser, encodedId);
-            var id = encodedId.Decode();
+                requestingUser, encodedId);
+            var id = encodedId.IdDecode();
             var post = await _postOperator.ToggleVoteForPostAsync(
-                requesterUser, id);
+                requestingUser, id);
             return post;
         }
 
-        public async Task<Post> DeleteVoteForPostAsync(User requesterUser,
+        public async Task<Post> DeleteVoteForPostAsync(User requestingUser,
             string encodedId)
         {
             await _postValidator.ValidateDeleteVoteForPostInputParametersAsync(
-                requesterUser, encodedId);
-            var id = encodedId.Decode();
+                requestingUser, encodedId);
+            var id = encodedId.IdDecode();
             var post = await _postOperator.DeleteVoteForPostAsync(
-                requesterUser, id);
+                requestingUser, id);
             return post;
         }
 
-        public async Task<Post> PatchPostByIdAsync(User requesterUser,
+        public async Task<Post> PatchPostByIdAsync(User requestingUser,
             string encodedId, string content)
         {
             await _postValidator.ValidatePatchPostByIdInputParametersAsync(
-                requesterUser, encodedId, content);
-            var id = encodedId.Decode();
-            var post = await _postOperator.PatchPostByIdAsync(requesterUser,
+                requestingUser, encodedId, content);
+            var id = encodedId.IdDecode();
+            var post = await _postOperator.PatchPostByIdAsync(requestingUser,
                 id, content, null);
             return post;
         }
 
-        public async Task DeletePostByIdAsync(User requesterUser, string encodedId)
+        public async Task DeletePostByIdAsync(User requestingUser, string encodedId)
         {
             await _postValidator.ValidateDeletePostByIdInputParametersAsync(
-                requesterUser, encodedId);
-            var id = encodedId.Decode();
+                requestingUser, encodedId);
+            var id = encodedId.IdDecode();
             await _postOperator.DeletePostByIdAsync(id);
         }
     }

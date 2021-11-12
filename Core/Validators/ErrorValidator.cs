@@ -26,18 +26,18 @@ namespace FireplaceApi.Core.Validators
             _errorOperator = errorOperator;
         }
 
-        public async Task ValidateListErrorsInputParametersAsync(User requesterUser)
+        public async Task ValidateListErrorsInputParametersAsync(User requestingUser)
         {
             await Task.CompletedTask;
         }
 
-        public async Task ValidateGetErrorByCodeInputParametersAsync(User requesterUser, int? code)
+        public async Task ValidateGetErrorByCodeInputParametersAsync(User requestingUser, int? code)
         {
             ValidateParameterIsNotMissing(code, nameof(code), ErrorName.ERROR_CODE_IS_MISSING);
             await ValidateErrorCodeExists(code.Value);
         }
 
-        public async Task ValidatePatchErrorInputParametersAsync(User requesterUser, int? code, string clientMessage)
+        public async Task ValidatePatchErrorInputParametersAsync(User requestingUser, int? code, string clientMessage)
         {
             ValidateParameterIsNotMissing(code, nameof(code), ErrorName.ERROR_CODE_IS_MISSING);
             await ValidateErrorCodeExists(code.Value);

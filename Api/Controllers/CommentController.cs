@@ -39,11 +39,11 @@ namespace FireplaceApi.Api.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(PageDto<CommentDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<PageDto<CommentDto>>> ListSelfCommentsAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromQuery] ControllerListSelfCommentsInputQueryParameters inputQueryParameters)
         {
             var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
-            var page = await _commentService.ListSelfCommentsAsync(requesterUser,
+            var page = await _commentService.ListSelfCommentsAsync(requestingUser,
                 paginationInputParameters, inputQueryParameters.Sort,
                 inputQueryParameters.StringOfSort);
             var requestPath = HttpContext.Request.Path;
@@ -57,15 +57,15 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>List of post comments</returns>
         /// <response code="200">Post comments was successfully retrieved.</response>
         [AllowAnonymous]
-        [HttpGet("/v{version:apiVersion}/posts/{postId:long}/comments")]
+        [HttpGet("/v{version:apiVersion}/posts/{id}/comments")]
         [ProducesResponseType(typeof(PageDto<CommentDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<PageDto<CommentDto>>> ListPostCommentsAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerListPostCommentsInputRouteParameters inputRouteParameters,
             [FromQuery] ControllerListPostCommentsInputQueryParameters inputQueryParameters)
         {
             var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
-            var page = await _commentService.ListPostCommentsAsync(requesterUser,
+            var page = await _commentService.ListPostCommentsAsync(requestingUser,
                 paginationInputParameters, inputRouteParameters.PostId, inputQueryParameters.Sort,
                 inputQueryParameters.StringOfSort);
             var requestPath = HttpContext.Request.Path;
@@ -79,13 +79,13 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>List of child comments</returns>
         /// <response code="200">Child comments was successfully retrieved.</response>
         [AllowAnonymous]
-        [HttpGet("{parentId:long}/children")]
+        [HttpGet("{id}/children")]
         [ProducesResponseType(typeof(List<CommentDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<List<CommentDto>>> ListChildCommentsAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerListChildCommentsInputRouteParameters inputRouteParameters)
         {
-            var comments = await _commentService.ListChildCommentsAsync(requesterUser,
+            var comments = await _commentService.ListChildCommentsAsync(requestingUser,
                 inputRouteParameters.ParentId);
             var commentDtos = comments.Select(c => _commentConverter.ConvertToDto(c)).ToList();
             return commentDtos;
@@ -97,15 +97,15 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Requested comment</returns>
         /// <response code="200">The comment was successfully retrieved.</response>
         [AllowAnonymous]
-        [HttpGet("{id:ulong}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> GetCommentByIdAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerGetCommentByIdInputRouteParameters inputRouteParameters,
             [FromQuery] ControllerGetCommentInputQueryParameters inputQueryParameters)
         {
             var comment = await _commentService
-                .GetCommentByIdAsync(requesterUser, inputRouteParameters.Id,
+                .GetCommentByIdAsync(requestingUser, inputRouteParameters.Id,
                     inputQueryParameters.IncludeAuthor, inputQueryParameters.IncludePost);
             var commentDto = _commentConverter.ConvertToDto(comment);
             return commentDto;
@@ -116,16 +116,16 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Created comment</returns>
         /// <response code="200">Returns the newly created item</response>
-        [HttpPost("/v{version:apiVersion}/posts/{postId:long}/comments")]
+        [HttpPost("/v{version:apiVersion}/posts/{id}/comments")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> ReplyToPostAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerReplyToPostInputRouteParameters inputRouteParameters,
             [FromBody] ControllerReplyToPostInputBodyParameters inputBodyParameters)
         {
             var comment = await _commentService.ReplyToPostAsync(
-                requesterUser, inputRouteParameters.PostId,
+                requestingUser, inputRouteParameters.PostId,
                 inputBodyParameters.Content);
             var commentDto = _commentConverter.ConvertToDto(comment);
             return commentDto;
@@ -136,16 +136,16 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Created comment</returns>
         /// <response code="200">Returns the newly created item</response>
-        [HttpPost("{id:ulong}/comments")]
+        [HttpPost("{id}/comments")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> ReplyToCommentAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerReplyToCommentInputRouteParameters inputRouteParameters,
             [FromBody] ControllerReplyToCommentInputBodyParameters inputBodyParameters)
         {
             var comment = await _commentService.ReplyToCommentAsync(
-                requesterUser, inputRouteParameters.Id,
+                requestingUser, inputRouteParameters.Id,
                 inputBodyParameters.Content);
             var commentDto = _commentConverter.ConvertToDto(comment);
             return commentDto;
@@ -156,17 +156,17 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Voted comment</returns>
         /// <response code="200">Returns the Voted comment</response>
-        [HttpPost("{id:ulong}/votes")]
+        [HttpPost("{id}/votes")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> VoteCommentAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerVoteCommentInputRouteParameters inputRouteParameters,
             [FromBody] ControllerVoteCommentInputBodyParameters inputBodyParameters)
 
         {
             var comment = await _commentService.VoteCommentAsync(
-                requesterUser, inputRouteParameters.Id, inputBodyParameters.IsUpvote);
+                requestingUser, inputRouteParameters.Id, inputBodyParameters.IsUpvote);
             var commentDto = _commentConverter.ConvertToDto(comment);
             return commentDto;
         }
@@ -176,15 +176,15 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>The comment</returns>
         /// <response code="200">Returns the comment</response>
-        [HttpPatch("{id:ulong}/votes/me")]
+        [HttpPatch("{id}/votes/me")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> ToggleVoteForCommentAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerToggleVoteForCommentInputRouteParameters inputRouteParameters)
         {
             var comment = await _commentService.ToggleVoteForCommentAsync(
-                requesterUser, inputRouteParameters.Id);
+                requestingUser, inputRouteParameters.Id);
             var commentDto = _commentConverter.ConvertToDto(comment);
             return commentDto;
         }
@@ -194,15 +194,15 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>The comment</returns>
         /// <response code="200">Returns the comment</response>
-        [HttpDelete("{id:ulong}/votes/me")]
+        [HttpDelete("{id}/votes/me")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> DeleteVoteForCommentAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerDeleteVoteForCommentInputRouteParameters inputRouteParameters)
         {
             var comment = await _commentService.DeleteVoteForCommentAsync(
-                requesterUser, inputRouteParameters.Id);
+                requestingUser, inputRouteParameters.Id);
             var commentDto = _commentConverter.ConvertToDto(comment);
             return commentDto;
         }
@@ -212,15 +212,15 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Updated comment</returns>
         /// <response code="200">The comment was successfully updated.</response>
-        [HttpPatch("{id:ulong}")]
+        [HttpPatch("{id}")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> PatchCommentByIdAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerPatchCommentByIdInputRouteParameters inputRouteParameters,
             [FromBody] ControllerPatchCommentInputBodyParameters inputBodyParameters)
         {
-            var comment = await _commentService.PatchCommentByIdAsync(requesterUser,
+            var comment = await _commentService.PatchCommentByIdAsync(requestingUser,
                 inputRouteParameters.Id, inputBodyParameters.Content);
             var commentDto = _commentConverter.ConvertToDto(comment);
             return commentDto;
@@ -231,13 +231,13 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>No content</returns>
         /// <response code="200">The comment was successfully deleted.</response>
-        [HttpDelete("{id:ulong}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteCommentByIdAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerDeleteCommentByIdInputRouteParameters inputRouteParameters)
         {
-            await _commentService.DeleteCommentByIdAsync(requesterUser,
+            await _commentService.DeleteCommentByIdAsync(requestingUser,
                 inputRouteParameters.Id);
             return Ok();
         }

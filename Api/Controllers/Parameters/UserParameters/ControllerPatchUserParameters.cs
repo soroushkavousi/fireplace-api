@@ -1,26 +1,10 @@
 ﻿using FireplaceApi.Api.Extensions;
 using FireplaceApi.Api.Tools;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
-using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Api.Controllers
 {
-    public class ControllerPatchUserByIdInputRouteParameters
-    {
-        [Required]
-        [FromRoute(Name = "id")]
-        public string Id { get; set; }
-    }
-
-    public class ControllerPatchUserByUsernameInputRouteParameters
-    {
-        [Required]
-        [FromRoute(Name = "username")]
-        public string Username { get; set; }
-    }
-
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
     public class ControllerPatchUserInputBodyParameters
     {

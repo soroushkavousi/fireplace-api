@@ -21,24 +21,24 @@ namespace FireplaceApi.Core.Services
             _errorOperator = errorOperator;
         }
 
-        public async Task<List<Error>> ListErrorsAsync(User requesterUser)
+        public async Task<List<Error>> ListErrorsAsync(User requestingUser)
         {
-            await _errorValidator.ValidateListErrorsInputParametersAsync(requesterUser);
+            await _errorValidator.ValidateListErrorsInputParametersAsync(requestingUser);
             var errors = await _errorOperator.ListErrorsAsync();
             return errors;
         }
 
-        public async Task<Error> GetErrorByCodeAsync(User requesterUser, int code)
+        public async Task<Error> GetErrorByCodeAsync(User requestingUser, int code)
         {
-            await _errorValidator.ValidateGetErrorByCodeInputParametersAsync(requesterUser, code);
+            await _errorValidator.ValidateGetErrorByCodeInputParametersAsync(requestingUser, code);
             var error = await _errorOperator.GetErrorByCodeAsync(code);
             return error;
         }
 
-        public async Task<Error> PatchErrorByCodeAsync(User requesterUser, int code,
+        public async Task<Error> PatchErrorByCodeAsync(User requestingUser, int code,
             string clientMessage)
         {
-            await _errorValidator.ValidatePatchErrorInputParametersAsync(requesterUser,
+            await _errorValidator.ValidatePatchErrorInputParametersAsync(requestingUser,
                 code, clientMessage);
             var error = await _errorOperator.PatchErrorByCodeAsync(code,
                 clientMessage: clientMessage);

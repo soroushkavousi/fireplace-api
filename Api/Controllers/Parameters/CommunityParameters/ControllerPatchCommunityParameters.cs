@@ -8,18 +8,11 @@ using System.Text.Json.Serialization;
 
 namespace FireplaceApi.Api.Controllers
 {
-    public class ControllerPatchCommunityByIdInputRouteParameters
+    public class ControllerPatchCommunityByEncodedIdOrNameInputRouteParameters
     {
         [Required]
-        [FromRoute(Name = "id")]
-        public string Id { get; set; }
-    }
-
-    public class ControllerPatchCommunityByNameInputRouteParameters
-    {
-        [Required]
-        [FromRoute(Name = "name")]
-        public string Name { get; set; }
+        [FromRoute(Name = "id-or-name")]
+        public string EncodedIdOrName { get; set; }
     }
 
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]

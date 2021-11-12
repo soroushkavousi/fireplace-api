@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using Microsoft.Extensions.Configuration;
@@ -31,66 +32,71 @@ namespace FireplaceApi.Core.Validators
             _communityValidator = communityValidator;
         }
 
-        public async Task ValidateCreateCommunityMembershipInputParametersAsync(User requesterUser,
+        public async Task<CommunityIdentifier> ValidateCreateCommunityMembershipInputParametersAsync(User requestingUser,
             string encodedCommunityId, string communityName)
         {
-            var communityId = ValidateEncodedIdFormatValidIfExists(encodedCommunityId, nameof(encodedCommunityId));
-            var community = await _communityValidator.ValidateCommunityExistsAsync(communityId, communityName);
-            await ValidateCommunityMembershipDoesNotAlreadyExist(requesterUser.Id, community.Id);
+            var communityIdentifier = await _communityValidator
+                .ValidateMultipleIdentifiers(encodedCommunityId, communityName);
+            var userIdentifier = UserIdentifier.OfId(requestingUser.Id);
+            var communityMembershipIdentifier = CommunityMembershipIdentifier
+                .OfUserAndCommunity(userIdentifier, communityIdentifier);
+            await ValidateCommunityMembershipDoesNotAlreadyExist(communityMembershipIdentifier);
+
+            return communityIdentifier;
         }
 
-        public async Task ValidateDeleteCommunityMembershipByIdInputParametersAsync(User requesterUser,
-            string encodedCommunityId, string communityName)
+        public async Task<CommunityMembershipIdentifier> ValidateDeleteCommunityMembershipInputParametersAsync(User requestingUser,
+            string communityEncodedIdOrName)
         {
-            var communityId = ValidateEncodedIdFormatValidIfExists(encodedCommunityId, nameof(encodedCommunityId));
-            var community = await _communityValidator.ValidateCommunityExistsAsync(communityId, communityName);
-            await ValidateCommunityMembershipAlreadyExists(requesterUser.Id, community.Id);
+            var communityIdentifier = await _communityValidator
+                .ValidateMultipleIdentifiers(communityEncodedIdOrName, communityEncodedIdOrName);
+            var userIdentifier = UserIdentifier.OfId(requestingUser.Id);
+            var communityMembershipIdentifier = CommunityMembershipIdentifier.OfUserAndCommunity(userIdentifier, communityIdentifier);
+            await ValidateCommunityMembershipAlreadyExists(communityMembershipIdentifier);
+
+            return communityMembershipIdentifier;
         }
 
-        public async Task<CommunityMembership> ValidateCommunityMembershipExists(ulong id)
-        {
-            var communityMembership = await _communityMembershipOperator
-                .GetCommunityMembershipByIdAsync(id, true, true);
-            if (communityMembership == null)
-            {
-                var serverMessage = $"CommunityMembership id {id} doesn't exist!";
-                throw new ApiException(ErrorName.POST_DOES_NOT_EXIST, serverMessage);
-            }
-            return communityMembership;
-        }
-
-        public void ValidateRequesterUserCanAlterCommunityMembership(User requesterUser,
+        public void ValidateRequestingUserCanAlterCommunityMembership(User requestingUser,
             CommunityMembership communityMembership)
         {
-            if (requesterUser.Id != communityMembership.UserId)
+            if (requestingUser.Id != communityMembership.UserId)
             {
-                var serverMessage = $"requesterUser {requesterUser.Id} can't alter " +
+                var serverMessage = $"requestingUser {requestingUser.Id} can't alter " +
                     $"community membership {communityMembership.Id}";
                 throw new ApiException(ErrorName.USER_CAN_NOT_ALTER_COMMUNITY_MEMBERSHIP, serverMessage);
             }
         }
 
-        public async Task ValidateCommunityMembershipDoesNotAlreadyExist(ulong userId, ulong communityId)
+        public async Task<bool> ValidateCommunityMembershipDoesNotAlreadyExist(
+            CommunityMembershipIdentifier identifier, bool throwException = true)
         {
-            var exists = await _communityMembershipOperator
-                .DoesCommunityMembershipExistAsync(userId, communityId);
-            if (exists)
+            if (await _communityMembershipOperator
+                .DoesCommunityMembershipIdentifierExistAsync(identifier) == false)
+                return true;
+
+            if (throwException)
             {
-                var serverMessage = $"CommunityMembership already exists! " + new { userId, communityId }.ToJson();
+                var serverMessage = $"CommunityMembership already exists! " + identifier.ToJson();
                 throw new ApiException(ErrorName.COMMUNITY_MEMBERSHIP_ALREADY_EXISTS, serverMessage);
             }
+            return false;
         }
 
-        public async Task ValidateCommunityMembershipAlreadyExists(ulong userId, ulong communityId)
+        public async Task<bool> ValidateCommunityMembershipAlreadyExists(
+            CommunityMembershipIdentifier identifier, bool throwException = true)
         {
-            var exists = await _communityMembershipOperator
-                .DoesCommunityMembershipExistAsync(userId, communityId);
-            if (!exists)
+            if (await _communityMembershipOperator
+                .DoesCommunityMembershipIdentifierExistAsync(identifier))
+                return true;
+
+            if (throwException)
             {
                 var serverMessage = $"CommunityMembership does not already exists! "
-                    + new { userId, communityId }.ToJson();
+                    + identifier.ToJson();
                 throw new ApiException(ErrorName.COMMUNITY_MEMBERSHIP_NOT_EXIST, serverMessage);
             }
+            return false;
         }
     }
 }

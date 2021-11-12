@@ -41,28 +41,28 @@ namespace FireplaceApi.Core.Operators
             _postOperator = postOperator;
         }
 
-        public async Task<Page<Comment>> ListSelfCommentsAsync(User requesterUser,
+        public async Task<Page<Comment>> ListSelfCommentsAsync(User requestingUser,
             PaginationInputParameters paginationInputParameters, SortType? sort)
         {
             Page<Comment> resultPage = default;
             if (string.IsNullOrWhiteSpace(paginationInputParameters.Pointer))
             {
                 var commentIds = await _commentRepository.ListSelfCommentIdsAsync(
-                    requesterUser.Id, sort);
+                    requestingUser.Id, sort);
                 resultPage = await _pageOperator.CreatePageWithoutPointerAsync(
                     ModelName.COMMENT, paginationInputParameters, commentIds,
-                    _commentRepository.ListCommentsAsync, requesterUser);
+                    _commentRepository.ListCommentsAsync, requestingUser);
             }
             else
             {
                 resultPage = await _pageOperator.CreatePageWithPointerAsync(
                     ModelName.COMMENT, paginationInputParameters,
-                    _commentRepository.ListCommentsAsync, requesterUser);
+                    _commentRepository.ListCommentsAsync, requestingUser);
             }
             return resultPage;
         }
 
-        public async Task<Page<Comment>> ListPostCommentsAsync(User requesterUser,
+        public async Task<Page<Comment>> ListPostCommentsAsync(User requestingUser,
             PaginationInputParameters paginationInputParameters, ulong postId,
             SortType? sort)
         {
@@ -73,16 +73,16 @@ namespace FireplaceApi.Core.Operators
                     postId, sort);
                 resultPage = await _pageOperator.CreatePageWithoutPointerAsync(
                     ModelName.COMMENT, paginationInputParameters, commentIds,
-                    _commentRepository.ListCommentsAsync, requesterUser);
+                    _commentRepository.ListCommentsAsync, requestingUser);
             }
             else
             {
                 resultPage = await _pageOperator.CreatePageWithPointerAsync(
                     ModelName.COMMENT, paginationInputParameters,
-                    _commentRepository.ListCommentsAsync, requesterUser);
+                    _commentRepository.ListCommentsAsync, requestingUser);
             }
             var childComments = await _commentRepository.ListChildCommentsAsync(
-                    postId, resultPage.ItemIds, requesterUser);
+                    postId, resultPage.ItemIds, requestingUser);
             SetChilds(resultPage.Items, childComments);
             return resultPage;
         }
@@ -108,13 +108,13 @@ namespace FireplaceApi.Core.Operators
             }
         }
 
-        public async Task<List<Comment>> ListChildCommentsAsync(User requesterUser,
+        public async Task<List<Comment>> ListChildCommentsAsync(User requestingUser,
             ulong parentCommentId)
         {
             var postId = (await GetCommentByIdAsync(parentCommentId, false,
                 false, null)).PostId;
             var childComments = await _commentRepository.ListChildCommentsAsync(
-                    postId, parentCommentId, requesterUser);
+                    postId, parentCommentId, requestingUser);
             var rootComments = childComments.Where(cc => cc.ParentCommentIds.Last() == parentCommentId).ToList();
             rootComments.ForEach(rc => childComments.Remove(rc));
             SetChilds(rootComments, childComments);
@@ -122,28 +122,28 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<Comment> GetCommentByIdAsync(ulong id,
-            bool includeAuthor, bool includePost, User requesterUser)
+            bool includeAuthor, bool includePost, User requestingUser)
         {
             var comment = await _commentRepository.GetCommentByIdAsync(
-                id, includeAuthor, includePost, requesterUser);
+                id, includeAuthor, includePost, requestingUser);
             if (comment == null)
                 return comment;
 
             return comment;
         }
 
-        public async Task<Comment> ReplyToPostAsync(User requesterUser,
+        public async Task<Comment> ReplyToPostAsync(User requestingUser,
             ulong postId, string content)
         {
             var id = await IdGenerator.GenerateNewIdAsync(DoesCommentIdExistAsync);
             var comment = await _commentRepository
-                .CreateCommentAsync(id, requesterUser.Id,
-                    requesterUser.Username, postId, content,
+                .CreateCommentAsync(id, requestingUser.Id,
+                    requestingUser.Username, postId, content,
                     new List<ulong>());
             return comment;
         }
 
-        public async Task<Comment> ReplyToCommentAsync(User requesterUser,
+        public async Task<Comment> ReplyToCommentAsync(User requestingUser,
             ulong commentId, string content)
         {
             var parentComment = await _commentRepository
@@ -153,45 +153,45 @@ namespace FireplaceApi.Core.Operators
             parentCommentIds.Add(parentComment.Id);
             var id = await IdGenerator.GenerateNewIdAsync(DoesCommentIdExistAsync);
             var comment = await _commentRepository
-                .CreateCommentAsync(id, requesterUser.Id, requesterUser.Username,
+                .CreateCommentAsync(id, requestingUser.Id, requestingUser.Username,
                     postId, content, parentCommentIds);
             return comment;
         }
 
-        public async Task<Comment> VoteCommentAsync(User requesterUser,
+        public async Task<Comment> VoteCommentAsync(User requestingUser,
             ulong id, bool isUp)
         {
             var commentVoteId = await IdGenerator.GenerateNewIdAsync(
                 DoesCommentVoteIdExistAsync);
             var commentVote = await _commentVoteRepository
-                .CreateCommentVoteAsync(commentVoteId, requesterUser.Id,
-                    requesterUser.Username, id, isUp);
+                .CreateCommentVoteAsync(commentVoteId, requestingUser.Id,
+                    requestingUser.Username, id, isUp);
             var voteChange = commentVote.IsUp ? +1 : -1;
-            var comment = await PatchCommentByIdAsync(requesterUser,
+            var comment = await PatchCommentByIdAsync(requestingUser,
                 id, null, voteChange: voteChange);
             return comment;
         }
 
-        public async Task<Comment> ToggleVoteForCommentAsync(User requesterUser,
+        public async Task<Comment> ToggleVoteForCommentAsync(User requestingUser,
             ulong id)
         {
             var commentVote = await _commentVoteRepository.GetCommentVoteAsync(
-                requesterUser.Id, id, includeComment: true);
+                requestingUser.Id, id, includeComment: true);
             commentVote.IsUp = !commentVote.IsUp;
             await _commentVoteRepository.UpdateCommentVoteAsync(commentVote);
             var voteChange = commentVote.IsUp ? +2 : -2;
             var comment = await ApplyCommentChangesAsync(commentVote.Comment,
                 null, voteChange: voteChange);
             comment = await GetCommentByIdAsync(comment.Id,
-                false, false, requesterUser);
+                false, false, requestingUser);
             return comment;
         }
 
-        public async Task<Comment> DeleteVoteForCommentAsync(User requesterUser,
+        public async Task<Comment> DeleteVoteForCommentAsync(User requestingUser,
             ulong id)
         {
             var commentVote = await _commentVoteRepository.GetCommentVoteAsync(
-                requesterUser.Id, id, includeComment: true);
+                requestingUser.Id, id, includeComment: true);
             var voteChange = commentVote.IsUp ? -1 : +1;
             await _commentVoteRepository.DeleteCommentVoteByIdAsync(
                 commentVote.Id);
@@ -200,7 +200,7 @@ namespace FireplaceApi.Core.Operators
             return comment;
         }
 
-        public async Task<Comment> PatchCommentByIdAsync(User requesterUser,
+        public async Task<Comment> PatchCommentByIdAsync(User requestingUser,
             ulong id, string content, int? voteChange)
         {
             var comment = await _commentRepository
@@ -208,7 +208,7 @@ namespace FireplaceApi.Core.Operators
             comment = await ApplyCommentChangesAsync(comment, content,
                 voteChange);
             comment = await GetCommentByIdAsync(comment.Id,
-                false, false, requesterUser);
+                false, false, requestingUser);
             return comment;
         }
 

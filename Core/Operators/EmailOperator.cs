@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
@@ -36,7 +37,8 @@ namespace FireplaceApi.Core.Operators
             var email = await PatchEmailByIdAsync(id, activationStatus: ActivationStatus.COMPLETED);
 
             var userOperator = _serviceProvider.GetService<UserOperator>();
-            var user = await userOperator.PatchUserByIdAsync(email.UserId, state: UserState.VERIFIED);
+            var user = await userOperator.PatchUserByIdentifierAsync(
+                UserIdentifier.OfId(email.UserId), state: UserState.VERIFIED);
             email.User = user;
             return email;
         }

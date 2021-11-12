@@ -33,10 +33,10 @@ namespace FireplaceApi.Api.Controllers
         [RequestFormLimits(MultipartBodyLengthLimit = 268435456)]
         [RequestSizeLimit(268435456)] // For kestrel
         public async Task<ActionResult<FileDto>> PostFileAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromForm] ControllerPostFileInputFormParameters inputBodyParameters)
         {
-            var file = await _fileService.CreateFileAsync(requesterUser, inputBodyParameters.FormFile);
+            var file = await _fileService.CreateFileAsync(requestingUser, inputBodyParameters.FormFile);
             var fileDto = _fileConverter.ConvertToDto(file);
             return fileDto;
         }

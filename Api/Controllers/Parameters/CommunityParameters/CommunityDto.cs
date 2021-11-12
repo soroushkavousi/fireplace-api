@@ -74,13 +74,10 @@ namespace FireplaceApi.Api.Controllers
         public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
         {
             [nameof(CommunityController.ListCommunitiesAsync)] = PageExample1,
-            [nameof(CommunityController.GetCommunityByIdAsync)] = Example1,
-            [nameof(CommunityController.GetCommunityByNameAsync)] = Example1,
+            [nameof(CommunityController.GetCommunityByIdOrNameAsync)] = Example1,
             [nameof(CommunityController.CreateCommunityAsync)] = Example1,
-            [nameof(CommunityController.PatchCommunityByIdAsync)] = Example1,
-            [nameof(CommunityController.PatchCommunityByNameAsync)] = Example1,
-            [nameof(CommunityController.DeleteCommunityByIdAsync)] = new OpenApiNull(),
-            [nameof(CommunityController.DeleteCommunityByNameAsync)] = new OpenApiNull(),
+            [nameof(CommunityController.PatchCommunityByEncodedIdOrNameAsync)] = Example1,
+            [nameof(CommunityController.DeleteCommunityByIdOrNameAsync)] = new OpenApiNull(),
         };
 
         static CommunityDto()

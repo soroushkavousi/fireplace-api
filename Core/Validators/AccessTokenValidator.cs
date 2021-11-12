@@ -27,12 +27,12 @@ namespace FireplaceApi.Core.Validators
         }
 
         public async Task ValidateGetAccessTokenByValueInputParametersAsync(
-            User requesterUser, string accessTokenValue, bool? includeUser)
+            User requestingUser, string accessTokenValue, bool? includeUser)
         {
             ValidateParameterIsNotMissing(accessTokenValue, nameof(accessTokenValue),
                 ErrorName.ACCESS_TOKEN_VALUE_IS_MISSING);
             ValidateAccessTokenValueFormat(accessTokenValue);
-            await ValidateUserCanAccessToAccessTokenValue(requesterUser, accessTokenValue);
+            await ValidateUserCanAccessToAccessTokenValue(requestingUser, accessTokenValue);
         }
 
         public void ValidateAccessTokenValueFormat(string value)
@@ -56,12 +56,12 @@ namespace FireplaceApi.Core.Validators
             return accessToken;
         }
 
-        public async Task ValidateUserCanAccessToAccessTokenValue(User requesterUser, string value)
+        public async Task ValidateUserCanAccessToAccessTokenValue(User requestingUser, string value)
         {
             var accessToken = await _accessTokenOperator.GetAccessTokenByValueAsync(value);
-            if (accessToken.UserId != requesterUser.Id)
+            if (accessToken.UserId != requestingUser.Id)
             {
-                var serverMessage = $"Requester user {requesterUser.Id} wants to access to access token ({accessToken}) while user is not the owner!";
+                var serverMessage = $"Requester user {requestingUser.Id} wants to access to access token ({accessToken}) while user is not the owner!";
                 throw new ApiException(ErrorName.ACCESS_TOKEN_VALUE_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
         }

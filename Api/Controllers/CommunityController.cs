@@ -37,12 +37,12 @@ namespace FireplaceApi.Api.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(PageDto<CommunityDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<PageDto<CommunityDto>>> ListCommunitiesAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromQuery] ControllerListCommunitiesInputQueryParameters inputQueryParameters)
         {
             //var accessTokenValue = FindAccessTokenValue(inputHeaderParameters, inputCookieParameters);
             var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
-            var page = await _communityService.ListCommunitiesAsync(requesterUser,
+            var page = await _communityService.ListCommunitiesAsync(requestingUser,
                 paginationInputParameters, inputQueryParameters.Name);
             var requestPath = HttpContext.Request.Path;
             var pageDto = _communityConverter.ConvertToDto(page, requestPath);
@@ -51,40 +51,20 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
-        /// Get a single community by id.
+        /// Get a single community by id or name.
         /// </summary>
         /// <returns>Requested community</returns>
         /// <response code="200">The community was successfully retrieved.</response>
         [AllowAnonymous]
-        [HttpGet("{id:ulong}")]
+        [HttpGet("{id-or-name}")]
         [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<CommunityDto>> GetCommunityByIdAsync(
-            [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerGetCommunityByIdInputRouteParameters inputRouteParameters,
+        public async Task<ActionResult<CommunityDto>> GetCommunityByIdOrNameAsync(
+            [BindNever][FromHeader] User requestingUser,
+            [FromRoute] ControllerGetCommunityByIdOrNameInputRouteParameters inputRouteParameters,
             [FromQuery] ControllerGetCommunityInputQueryParameters inputQueryParameters)
         {
             var community = await _communityService
-                .GetCommunityByIdAsync(requesterUser, inputRouteParameters.Id,
-                inputQueryParameters.IncludeCreator);
-            var communityDto = _communityConverter.ConvertToDto(community);
-            return communityDto;
-        }
-
-        /// <summary>
-        /// Get a single community by name.
-        /// </summary>
-        /// <returns>Requested community</returns>
-        /// <response code="200">The community was successfully retrieved.</response>
-        [AllowAnonymous]
-        [HttpGet("{name}")]
-        [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<CommunityDto>> GetCommunityByNameAsync(
-            [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerGetCommunityByNameInputRouteParameters inputRouteParameters,
-            [FromQuery] ControllerGetCommunityInputQueryParameters inputQueryParameters)
-        {
-            var community = await _communityService
-                .GetCommunityByNameAsync(requesterUser, inputRouteParameters.Name,
+                .GetCommunityByEncodedIdOrNameAsync(requestingUser, inputRouteParameters.EncodedIdOrName,
                 inputQueryParameters.IncludeCreator);
             var communityDto = _communityConverter.ConvertToDto(community);
             return communityDto;
@@ -99,80 +79,46 @@ namespace FireplaceApi.Api.Controllers
         [Consumes("application/json")]
         [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommunityDto>> CreateCommunityAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromBody] ControllerCreateCommunityInputBodyParameters inputBodyParameters)
         {
-            var community = await _communityService.CreateCommunityAsync(requesterUser,
+            var community = await _communityService.CreateCommunityAsync(requestingUser,
                 inputBodyParameters.Name);
             var communityDto = _communityConverter.ConvertToDto(community);
             return communityDto;
         }
 
         /// <summary>
-        /// Update a single community by id.
+        /// Update a single community by id or name.
         /// </summary>
         /// <returns>Updated community</returns>
         /// <response code="200">The community was successfully updated.</response>
-        [HttpPatch("{id:ulong}")]
+        [HttpPatch("{id-or-name}")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<CommunityDto>> PatchCommunityByIdAsync(
-            [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerPatchCommunityByIdInputRouteParameters inputRouteParameters,
+        public async Task<ActionResult<CommunityDto>> PatchCommunityByEncodedIdOrNameAsync(
+            [BindNever][FromHeader] User requestingUser,
+            [FromRoute] ControllerPatchCommunityByEncodedIdOrNameInputRouteParameters inputRouteParameters,
             [FromBody] ControllerPatchCommunityInputBodyParameters inputBodyParameters)
         {
-            var community = await _communityService.PatchCommunityByIdAsync(requesterUser,
-                inputRouteParameters.Id, inputBodyParameters.NewName);
+            var community = await _communityService.PatchCommunityByEncodedIdOrNameAsync(requestingUser,
+                inputRouteParameters.EncodedIdOrName, inputBodyParameters.NewName);
             var communityDto = _communityConverter.ConvertToDto(community);
             return communityDto;
         }
 
         /// <summary>
-        /// Update a single community by name.
-        /// </summary>
-        /// <returns>Updated community</returns>
-        /// <response code="200">The community was successfully updated.</response>
-        [HttpPatch("{name}")]
-        [Consumes("application/json")]
-        [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<CommunityDto>> PatchCommunityByNameAsync(
-            [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerPatchCommunityByNameInputRouteParameters inputRouteParameters,
-            [FromBody] ControllerPatchCommunityInputBodyParameters inputBodyParameters)
-        {
-            var community = await _communityService.PatchCommunityByNameAsync(requesterUser,
-                inputRouteParameters.Name, inputBodyParameters.NewName);
-            var communityDto = _communityConverter.ConvertToDto(community);
-            return communityDto;
-        }
-
-        /// <summary>
-        /// Delete a single community by id.
+        /// Delete a single community by id or name.
         /// </summary>
         /// <returns>No content</returns>
         /// <response code="200">The community was successfully deleted.</response>
-        [HttpDelete("{id:ulong}")]
+        [HttpDelete("{id-or-name}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteCommunityByIdAsync(
-            [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerDeleteCommunityByIdInputRouteParameters inputRouteParameters)
+        public async Task<IActionResult> DeleteCommunityByIdOrNameAsync(
+            [BindNever][FromHeader] User requestingUser,
+            [FromRoute] ControllerDeleteCommunityByEncodedIdOrNameInputRouteParameters inputRouteParameters)
         {
-            await _communityService.DeleteCommunityByIdAsync(requesterUser, inputRouteParameters.Id);
-            return Ok();
-        }
-
-        /// <summary>
-        /// Delete a single community by name.
-        /// </summary>
-        /// <returns>No content</returns>
-        /// <response code="200">The community was successfully deleted.</response>
-        [HttpDelete("{name}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteCommunityByNameAsync(
-            [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerDeleteCommunityByNameInputRouteParameters inputRouteParameters)
-        {
-            await _communityService.DeleteCommunityByNameAsync(requesterUser, inputRouteParameters.Name);
+            await _communityService.DeleteCommunityByEncodedIdOrNameAsync(requestingUser, inputRouteParameters.EncodedIdOrName);
             return Ok();
         }
     }

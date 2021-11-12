@@ -8,18 +8,18 @@ namespace FireplaceApi.Core.Interfaces
     public interface ICommentRepository
     {
         public Task<List<Comment>> ListCommentsAsync(List<ulong> Ids,
-            User requesterUser = null);
+            User requestingUser = null);
         public Task<List<ulong>> ListSelfCommentIdsAsync(ulong authorId,
             SortType? sort);
         public Task<List<ulong>> ListPostCommentIdsAsync(ulong postId,
             SortType? sort);
         public Task<List<Comment>> ListChildCommentsAsync(ulong postId,
-            List<ulong> parentCommentIds, User requesterUser = null);
+            List<ulong> parentCommentIds, User requestingUser = null);
         public Task<List<Comment>> ListChildCommentsAsync(ulong postId,
-            ulong parentCommentId, User requesterUser = null);
+            ulong parentCommentId, User requestingUser = null);
         public Task<Comment> GetCommentByIdAsync(ulong id,
             bool includeAuthor = false, bool includePost = false,
-            User requesterUser = null);
+            User requestingUser = null);
         public Task<Comment> CreateCommentAsync(ulong id,
             ulong authorUserId, string authorUsername, ulong postId,
             string content, List<ulong> parentCommentIds = null);

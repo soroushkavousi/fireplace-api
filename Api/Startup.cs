@@ -59,7 +59,7 @@ namespace FireplaceApi.Api
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddControllers(options =>
             {
-                options.Filters.Add(typeof(RequesterUserInjectorAttribute));
+                options.Filters.Add(typeof(RequestingUserInjectorAttribute));
                 options.Filters.Add(typeof(InputHeaderParametersInjectorAttribute));
                 options.Filters.Add(typeof(InputCookieParametersInjectorAttribute));
             }).AddJsonOptions(options =>

@@ -92,7 +92,6 @@ namespace FireplaceApi.Api.Controllers
         {
             [nameof(CommunityMembershipController.CreateCommunityMembershipAsync)] = Example1,
             [nameof(CommunityMembershipController.DeleteCommunityMembershipByCommunityIdAsync)] = new OpenApiNull(),
-            [nameof(CommunityMembershipController.DeleteCommunityMembershipByCommunityNameAsync)] = new OpenApiNull(),
         };
 
         static CommunityMembershipDto()

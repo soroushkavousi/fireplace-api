@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.ValueObjects;
@@ -33,85 +34,82 @@ namespace FireplaceApi.Core.Validators
             _communityValidator = communityValidator;
         }
 
-        public async Task ValidateListPostsInputParametersAsync(User requesterUser,
+        public async Task<CommunityIdentifier> ValidateListPostsInputParametersAsync(User requestingUser,
             PaginationInputParameters paginationInputParameters, bool? self,
             bool? joined, string encodedCommunityId, string communityName,
             string search, SortType? sort, string stringOfSort)
         {
-            var communityId = ValidateEncodedIdFormatValidIfExists(encodedCommunityId, nameof(encodedCommunityId));
-
             await _queryResultValidator.ValidatePaginationInputParameters(
                 paginationInputParameters, ModelName.POST);
 
             ValidateInputEnum(sort, stringOfSort, nameof(sort), ErrorName.INPUT_SORT_IS_NOT_VALID);
-            Community community;
-            if (communityId.HasValue || !string.IsNullOrWhiteSpace(communityName))
-                community = await _communityValidator.ValidateCommunityExistsAsync(
-                    communityId, communityName);
+            var communityIdentifier = await _communityValidator
+                .ValidateMultipleIdentifiers(encodedCommunityId, communityName, false);
+            return communityIdentifier;
         }
 
-        public async Task ValidateGetPostByIdInputParametersAsync(User requesterUser, string encodedId,
+        public async Task ValidateGetPostByIdInputParametersAsync(User requestingUser, string encodedId,
             bool? includeAuthor, bool? includeCommunity)
         {
-            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
+            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
             var post = await ValidatePostExistsAsync(id);
         }
 
-        public async Task ValidateCreatePostInputParametersAsync(User requesterUser,
-            string encodedCommunityId, string communityName, string content)
+        public async Task<CommunityIdentifier> ValidateCreatePostInputParametersAsync(
+            User requestingUser, string encodedCommunityId, string communityName, string content)
         {
-            var communityId = ValidateEncodedIdFormatValidIfExists(encodedCommunityId, nameof(encodedCommunityId));
             ValidatePostContentFormat(content);
-            var community = await _communityValidator.ValidateCommunityExistsAsync(
-                communityId, communityName);
+            var communityIdentifier = await _communityValidator
+                .ValidateMultipleIdentifiers(encodedCommunityId, communityName);
+            return communityIdentifier;
         }
 
-        public async Task ValidateVotePostInputParametersAsync(User requesterUser,
+        public async Task ValidateVotePostInputParametersAsync(User requestingUser,
             string encodedId, bool? isUpvote)
         {
             ValidateParameterIsNotMissing(isUpvote, nameof(isUpvote), ErrorName.IS_UPVOTE_IS_MISSING);
-            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
-            var post = await ValidatePostExistsAsync(id, requesterUser);
-            ValidatePostIsNotVotedByUser(post, requesterUser);
+            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
+            var post = await ValidatePostExistsAsync(id, requestingUser);
+            ValidatePostIsNotVotedByUser(post, requestingUser);
         }
 
-        public async Task ValidateToggleVoteForPostInputParametersAsync(User requesterUser,
+        public async Task ValidateToggleVoteForPostInputParametersAsync(User requestingUser,
             string encodedId)
         {
-            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
-            var post = await ValidatePostExistsAsync(id, requesterUser);
-            ValidatePostVoteExists(post, requesterUser);
+            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
+            var post = await ValidatePostExistsAsync(id, requestingUser);
+            ValidatePostVoteExists(post, requestingUser);
         }
 
-        public async Task ValidateDeleteVoteForPostInputParametersAsync(User requesterUser,
+        public async Task ValidateDeleteVoteForPostInputParametersAsync(User requestingUser,
             string encodedId)
         {
-            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
-            var post = await ValidatePostExistsAsync(id, requesterUser);
-            ValidatePostVoteExists(post, requesterUser);
+            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
+            var post = await ValidatePostExistsAsync(id, requestingUser);
+            ValidatePostVoteExists(post, requestingUser);
         }
 
-        public async Task ValidatePatchPostByIdInputParametersAsync(User requesterUser,
+        public async Task ValidatePatchPostByIdInputParametersAsync(User requestingUser,
             string encodedId, string content)
         {
-            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
+            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
             ValidatePostContentFormat(content);
             var post = await ValidatePostExistsAsync(id);
-            ValidateRequesterUserCanAlterPost(requesterUser, post);
+            ValidateRequestingUserCanAlterPost(requestingUser, post);
         }
 
-        public async Task ValidateDeletePostByIdInputParametersAsync(User requesterUser,
+        public async Task ValidateDeletePostByIdInputParametersAsync(User requestingUser,
             string encodedId)
         {
-            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
+            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
             var post = await ValidatePostExistsAsync(id);
-            ValidateRequesterUserCanAlterPost(requesterUser, post);
+            ValidateRequestingUserCanAlterPost(requestingUser, post);
         }
 
-        public async Task<Post> ValidatePostExistsAsync(ulong id, User requesterUser = null)
+        public async Task<Post> ValidatePostExistsAsync(ulong id, User requestingUser = null)
         {
             var post = await _postOperator.GetPostByIdAsync(id, true, true,
-                requesterUser);
+                requestingUser);
             if (post == null)
             {
                 var serverMessage = $"Post id {id} doesn't exist!";
@@ -131,32 +129,32 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public void ValidateRequesterUserCanAlterPost(User requesterUser,
+        public void ValidateRequestingUserCanAlterPost(User requestingUser,
             Post post)
         {
-            if (requesterUser.Id != post.AuthorId)
+            if (requestingUser.Id != post.AuthorId)
             {
-                var serverMessage = $"requesterUser {requesterUser.Id} can't alter " +
+                var serverMessage = $"requestingUser {requestingUser.Id} can't alter " +
                     $"post {post.Id}";
                 throw new ApiException(ErrorName.USER_CAN_NOT_ALTER_POST,
                     serverMessage);
             }
         }
 
-        public void ValidatePostIsNotVotedByUser(Post post, User requesterUser)
+        public void ValidatePostIsNotVotedByUser(Post post, User requestingUser)
         {
-            if (post.RequesterUserVote != 0)
+            if (post.RequestingUserVote != 0)
             {
-                var serverMessage = $"Post id {post.Id} is already voted by user {requesterUser.Username}!";
+                var serverMessage = $"Post id {post.Id} is already voted by user {requestingUser.Username}!";
                 throw new ApiException(ErrorName.POST_VOTE_ALREADY_EXISTS, serverMessage);
             }
         }
 
-        public void ValidatePostVoteExists(Post post, User requesterUser)
+        public void ValidatePostVoteExists(Post post, User requestingUser)
         {
-            if (post.RequesterUserVote == 0)
+            if (post.RequestingUserVote == 0)
             {
-                var serverMessage = $"Post id {post.Id} is not voted by user {requesterUser.Username}!";
+                var serverMessage = $"Post id {post.Id} is not voted by user {requestingUser.Username}!";
                 throw new ApiException(ErrorName.POST_VOTE_DOES_NOT_EXIST, serverMessage);
             }
         }

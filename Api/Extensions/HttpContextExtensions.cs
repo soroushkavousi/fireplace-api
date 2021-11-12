@@ -21,9 +21,9 @@ namespace FireplaceApi.Api.Extensions
             return httpContext.Items[Constants.ControllerInputCookieParametersKey].To<ControllerInputCookieParameters>();
         }
 
-        public static User GetRequesterUser(this HttpContext httpContext)
+        public static User GetRequestingUser(this HttpContext httpContext)
         {
-            return httpContext.Items[Constants.RequesterUserKey].To<User>();
+            return httpContext.Items[Constants.RequestingUserKey].To<User>();
         }
 
         public static async Task<string> ReadRequestBodyAsync(this HttpRequest request)

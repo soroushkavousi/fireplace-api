@@ -32,11 +32,11 @@ namespace FireplaceApi.Api.Controllers
         [Consumes("application/json")]
         [ProducesResponseType(typeof(EmailDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<EmailDto>> ActivateEmail(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerActivateEmailInputRouteParameters inputRouteParameters,
             [FromBody] ControllerActivateEmailInputBodyParameters inputBodyParameters)
         {
-            var email = await _emailService.ActivateEmailByIdAsync(requesterUser,
+            var email = await _emailService.ActivateEmailByIdAsync(requestingUser,
                 inputRouteParameters.Id, inputBodyParameters.ActivationCode);
             var emailDto = _emailConverter.ConvertToDto(email);
             return emailDto;
@@ -50,11 +50,11 @@ namespace FireplaceApi.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(EmailDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<EmailDto>> GetEmailByIdAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerGetEmailByIdInputRouteParameters inputRouteParameters,
             [FromQuery] ControllerGetEmailByIdInputQueryParameters inputQueryParameters)
         {
-            var email = await _emailService.GetEmailByIdAsync(requesterUser, inputRouteParameters.Id,
+            var email = await _emailService.GetEmailByIdAsync(requestingUser, inputRouteParameters.Id,
                 inputQueryParameters.IncludeUser);
             var emailDto = _emailConverter.ConvertToDto(email);
             return emailDto;

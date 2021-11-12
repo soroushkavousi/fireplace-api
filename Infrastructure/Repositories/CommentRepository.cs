@@ -36,11 +36,11 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public async Task<List<Comment>> ListCommentsAsync(List<ulong> Ids,
-            User requesterUser = null)
+            User requestingUser = null)
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                Ids, requesterUser = requesterUser != null
+                Ids, requestingUser = requestingUser != null
             });
             var sw = Stopwatch.StartNew();
             var commentEntities = await _commentEntities
@@ -49,7 +49,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Include(
                     authorEntity: false,
                     postEntity: false,
-                    requesterUser: requesterUser
+                    requestingUser: requestingUser
                 )
                 .ToListAsync();
 
@@ -119,12 +119,12 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public async Task<List<Comment>> ListChildCommentsAsync(ulong postId,
-            List<ulong> parentCommentIds, User requesterUser = null)
+            List<ulong> parentCommentIds, User requestingUser = null)
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
                 postId, parentCommentIds,
-                requesterUser = requesterUser != null
+                requestingUser = requestingUser != null
             });
             var sw = Stopwatch.StartNew();
             var commentEntities = await _commentEntities
@@ -142,7 +142,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Include(
                     authorEntity: false,
                     postEntity: false,
-                    requesterUser: requesterUser
+                    requestingUser: requestingUser
                 )
                 .ToListAsync();
 
@@ -151,12 +151,12 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public async Task<List<Comment>> ListChildCommentsAsync(ulong postId,
-            ulong parentCommentId, User requesterUser = null)
+            ulong parentCommentId, User requestingUser = null)
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
                 postId, parentCommentId,
-                requesterUser = requesterUser != null
+                requestingUser = requestingUser != null
             });
             var sw = Stopwatch.StartNew();
             var commentEntities = await _commentEntities
@@ -174,7 +174,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Include(
                     authorEntity: false,
                     postEntity: false,
-                    requesterUser: requesterUser
+                    requestingUser: requestingUser
                 )
                 .ToListAsync();
 
@@ -184,12 +184,12 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<Comment> GetCommentByIdAsync(ulong id,
             bool includeAuthor = false, bool includePost = false,
-            User requesterUser = null)
+            User requestingUser = null)
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
                 id, includeAuthor, includePost,
-                requesterUser = requesterUser != null
+                requestingUser = requestingUser != null
             });
             var sw = Stopwatch.StartNew();
             var commentEntity = await _commentEntities
@@ -198,7 +198,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Include(
                     authorEntity: includeAuthor,
                     postEntity: includePost,
-                    requesterUser: requesterUser
+                    requestingUser: requestingUser
                 )
                 .SingleOrDefaultAsync();
 
@@ -281,7 +281,7 @@ namespace FireplaceApi.Infrastructure.Repositories
     {
         public static IQueryable<CommentEntity> Include(
             [NotNull] this IQueryable<CommentEntity> q,
-            bool authorEntity, bool postEntity, User requesterUser)
+            bool authorEntity, bool postEntity, User requestingUser)
         {
             if (authorEntity)
                 q = q.Include(e => e.AuthorEntity);
@@ -289,11 +289,11 @@ namespace FireplaceApi.Infrastructure.Repositories
             if (postEntity)
                 q = q.Include(e => e.PostEntity);
 
-            if (requesterUser != null)
+            if (requestingUser != null)
             {
                 q = q.Include(
                     c => c.CommentVoteEntities
-                        .Where(cv => cv.VoterEntityId == requesterUser.Id)
+                        .Where(cv => cv.VoterEntityId == requestingUser.Id)
                 );
             }
 

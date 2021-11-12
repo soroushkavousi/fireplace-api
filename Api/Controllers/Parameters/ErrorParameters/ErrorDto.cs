@@ -35,9 +35,9 @@ namespace FireplaceApi.Api.Controllers
         public static OpenApiObject Example { get; } = PureInternalServerErrorExample;
         public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
         {
-            [nameof(ErrorController.ListErrorsAsync)] = ListOfPureErrorsExample1,
+            //[nameof(ErrorController.ListErrorsAsync)] = ListOfPureErrorsExample1,
             [nameof(ErrorController.GetErrorByCodeAsync)] = PurePasswordMinimumLengthErrorExample,
-            [nameof(ErrorController.PatchErrorAsync)] = PurePasswordMinimumLengthErrorExample,
+            //[nameof(ErrorController.PatchErrorAsync)] = PurePasswordMinimumLengthErrorExample,
         };
 
         static ErrorDto()

@@ -1,8 +1,6 @@
-﻿using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Validators;
-using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
@@ -23,28 +21,24 @@ namespace FireplaceApi.Core.Services
         }
 
         public async Task<CommunityMembership> CreateCommunityMembershipAsync(
-            User requesterUser, string encodedCommunityId, string communityName)
+            User requestingUser, string encodedCommunityId, string communityName)
         {
-            await _communityMembershipValidator
+            var communityIdentifier = await _communityMembershipValidator
                 .ValidateCreateCommunityMembershipInputParametersAsync(
-                requesterUser, encodedCommunityId, communityName);
-            var communityId = encodedCommunityId.DecodeIdOrDefault();
-            var communityIdentifier = new Identifier(communityId, communityName);
+                requestingUser, encodedCommunityId, communityName);
             return await _communityMembershipOperator
-                .CreateCommunityMembershipAsync(requesterUser,
+                .CreateCommunityMembershipAsync(requestingUser,
                     communityIdentifier);
         }
 
-        public async Task DeleteCommunityMembershipAsync(User requesterUser,
-            string encodedCommunityId, string communityName)
+        public async Task DeleteCommunityMembershipAsync(User requestingUser,
+            string communityEncodedIdOrName)
         {
-            await _communityMembershipValidator
-                .ValidateDeleteCommunityMembershipByIdInputParametersAsync(
-                    requesterUser, encodedCommunityId, communityName);
-            var communityId = encodedCommunityId.DecodeIdOrDefault();
-            var communityIdentifier = new Identifier(communityId, communityName);
+            var communityMembershipIdentifier = await _communityMembershipValidator
+                .ValidateDeleteCommunityMembershipInputParametersAsync(
+                    requestingUser, communityEncodedIdOrName);
             await _communityMembershipOperator
-                .DeleteCommunityMembershipByIdAsync(requesterUser.Id, communityIdentifier);
+                .DeleteCommunityMembershipByIdentifierAsync(communityMembershipIdentifier);
         }
     }
 }

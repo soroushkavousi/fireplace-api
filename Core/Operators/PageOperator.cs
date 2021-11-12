@@ -27,10 +27,10 @@ namespace FireplaceApi.Core.Operators
 
         public async Task<Page<T>> CreatePageWithoutPointerAsync<T>(ModelName modelName,
             PaginationInputParameters paginationInputParameters, List<ulong> ItemIds,
-            Func<List<ulong>, User, Task<List<T>>> getItemsAsync, User requesterUser)
+            Func<List<ulong>, User, Task<List<T>>> getItemsAsync, User requestingUser)
         {
             return await CreatePageWithoutPointerAsync(modelName, paginationInputParameters,
-                ItemIds, null, getItemsAsync, requesterUser);
+                ItemIds, null, getItemsAsync, requestingUser);
         }
 
         public async Task<Page<T>> CreatePageWithoutPointerAsync<T>(ModelName modelName,
@@ -38,14 +38,14 @@ namespace FireplaceApi.Core.Operators
             Func<List<ulong>, Task<List<T>>> getItemsAsync)
         {
             return await CreatePageWithoutPointerAsync(modelName, paginationInputParameters,
-                ItemIds, getItemsAsync);
+                ItemIds, getItemsAsync, null, null);
         }
 
         private async Task<Page<T>> CreatePageWithoutPointerAsync<T>(ModelName modelName,
             PaginationInputParameters paginationInputParameters, List<ulong> ItemIds,
-            Func<List<ulong>, Task<List<T>>> getItemsAsync = null,
-            Func<List<ulong>, User, Task<List<T>>> getItemsIncludeRequesterUserAsync = null,
-            User requesterUser = null)
+            Func<List<ulong>, Task<List<T>>> getItemsAsync,
+            Func<List<ulong>, User, Task<List<T>>> getItemsIncludeRequestingUserAsync,
+            User requestingUser)
         {
             var limit = paginationInputParameters.Limit ?? GlobalOperator.GlobalValues.Pagination.MaximumOfPageItemsCount;
             var totalItemsCount = ItemIds.Count;
@@ -66,7 +66,7 @@ namespace FireplaceApi.Core.Operators
             if (getItemsAsync != null)
                 resultItems = await getItemsAsync(pageItemIds);
             else
-                resultItems = await getItemsIncludeRequesterUserAsync(pageItemIds, requesterUser);
+                resultItems = await getItemsIncludeRequestingUserAsync(pageItemIds, requestingUser);
 
             var resultPage = new Page<T>(pointer, page,
                 start, end, limit, totalItemsCount, totalPagesCount,
@@ -76,10 +76,10 @@ namespace FireplaceApi.Core.Operators
 
         public async Task<Page<T>> CreatePageWithPointerAsync<T>(ModelName modelName,
             PaginationInputParameters paginationInputParameters,
-            Func<List<ulong>, User, Task<List<T>>> getItemsAsync, User requesterUser)
+            Func<List<ulong>, User, Task<List<T>>> getItemsAsync, User requestingUser)
         {
             return await CreatePageWithPointerAsync(modelName, paginationInputParameters,
-                null, getItemsAsync, requesterUser);
+                null, getItemsAsync, requestingUser);
         }
 
         public async Task<Page<T>> CreatePageWithPointerAsync<T>(ModelName modelName,
@@ -87,14 +87,14 @@ namespace FireplaceApi.Core.Operators
             Func<List<ulong>, Task<List<T>>> getItemsAsync)
         {
             return await CreatePageWithPointerAsync(modelName, paginationInputParameters,
-                getItemsAsync);
+                getItemsAsync, null, null);
         }
 
         private async Task<Page<T>> CreatePageWithPointerAsync<T>(ModelName modelName,
             PaginationInputParameters paginationInputParameters,
-            Func<List<ulong>, Task<List<T>>> getItemsAsync = null,
-            Func<List<ulong>, User, Task<List<T>>> getItemsIncludeRequesterUserAsync = null,
-            User requesterUser = null)
+            Func<List<ulong>, Task<List<T>>> getItemsAsync,
+            Func<List<ulong>, User, Task<List<T>>> getItemsIncludeRequestingUserAsync,
+            User requestingUser)
         {
             var queryResult = await _queryResultOperator
                 .GetQueryResultByPointerAsync(modelName, paginationInputParameters.Pointer);
@@ -114,7 +114,7 @@ namespace FireplaceApi.Core.Operators
             if (getItemsAsync != null)
                 resultItems = await getItemsAsync(pageItemIds);
             else
-                resultItems = await getItemsIncludeRequesterUserAsync(pageItemIds, requesterUser);
+                resultItems = await getItemsIncludeRequestingUserAsync(pageItemIds, requestingUser);
 
             var resultPage = new Page<T>(queryResult.Pointer, page,
                 start, end, limit, totalItemsCount, totalPagesCount,

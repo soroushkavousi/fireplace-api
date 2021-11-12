@@ -20,7 +20,7 @@ namespace FireplaceApi.Core.Validators
             _fileOperator = fileOperator;
         }
 
-        public async Task ValidatePostFileInputParametersAsync(User requesterUser, IFormFile file)
+        public async Task ValidatePostFileInputParametersAsync(User requestingUser, IFormFile file)
         {
             await Task.CompletedTask;
         }

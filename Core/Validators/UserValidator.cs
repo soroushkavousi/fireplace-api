@@ -1,5 +1,7 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Tools;
@@ -61,7 +63,7 @@ namespace FireplaceApi.Core.Validators
             ValidateUsernameFormat(username);
             var emailValidator = _serviceProvider.GetService<EmailValidator>();
             emailValidator.ValidateEmailAddressFormat(emailAddress);
-            await ValidateUsernameDoesNotExistAsync(username);
+            await ValidateUserIdentifierDoesNotExistAsync(UserIdentifier.OfUsername(username));
             await emailValidator.ValidateEmailAddressDoesNotExistAsync(emailAddress);
         }
 
@@ -83,59 +85,22 @@ namespace FireplaceApi.Core.Validators
             await ValidateUsernameMatchWithPasswordAsync(username, password);
         }
 
-        public async Task ValidateListUsersInputParametersAsync(User requesterUser,
+        public async Task ValidateRequestingUserInputParametersAsync(User requestingUser,
             bool? includeEmail, bool? includeSessions)
         {
             await Task.CompletedTask;
         }
 
-        public async Task ValidateGetUserByIdInputParametersAsync(User requesterUser,
-            string encodedId, bool? includeEmail, bool? includeSessions)
+        public async Task<UserIdentifier> ValidateGetUserByEncodedIdOrUsernameInputParametersAsync(
+            User requestingUser, string encodedIdOrUsername)
         {
-            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
-            await ValidateUserIdExists(id);
+            var userIdentifier = await ValidateMultipleIdentifiers(encodedIdOrUsername, encodedIdOrUsername);
+            return userIdentifier;
         }
 
-        public async Task ValidateGetUserByUsernameInputParametersAsync(User requesterUser,
-            string username, bool? includeEmail, bool? includeSessions)
+        public async Task ValidateDeleteUserInputParametersAsync(User requestingUser)
         {
-            ValidateUsernameFormat(username);
-            await ValidateUsernameExists(username);
-        }
-
-        public async Task ValidateDeleteUserByIdInputParametersAsync(User requesterUser,
-            string encodedId)
-        {
-            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
-            await ValidateUserIdExists(id);
-            ValidateRequesterUserCanAlterUser(requesterUser, id);
-        }
-
-        public async Task ValidateDeleteUserByUsernameInputParametersAsync(User requesterUser,
-            string username)
-        {
-            ValidateParameterIsNotMissing(username, nameof(username), ErrorName.USERNAME_IS_MISSING);
-            await ValidateUsernameExists(username);
-            ValidateRequesterUserCanAlterUser(requesterUser, username);
-        }
-
-        public async Task ValidatePatchUserByIdInputParametersAsync(User requesterUser,
-            string encodedId, string firstName, string lastName, string username,
-            Password currentPassword, Password password, string emailAddress)
-        {
-            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
-            await ValidateUserIdExists(id);
-            ValidateRequesterUserCanAlterUser(requesterUser, id);
-        }
-
-        public async Task ValidatePatchUserByUsernameInputParametersAsync(User requesterUser,
-            string currentUsername, string firstName, string lastName, string username,
-            Password currentPassword, Password password, string emailAddress)
-        {
-            ValidateParameterIsNotMissing(currentUsername, nameof(username), ErrorName.USERNAME_IS_MISSING);
-            ValidateUsernameFormat(currentUsername);
-            await ValidateUsernameExists(currentUsername);
-            ValidateRequesterUserCanAlterUser(requesterUser, currentUsername);
+            await Task.CompletedTask;
         }
 
         public async Task ValidatePatchUserInputParametersAsync(User user, string firstName,
@@ -155,7 +120,7 @@ namespace FireplaceApi.Core.Validators
             if (username != null)
             {
                 ValidateUsernameFormat(username);
-                await ValidateUsernameDoesNotExistAsync(username);
+                await ValidateUserIdentifierDoesNotExistAsync(UserIdentifier.OfUsername(username));
             }
 
             if (emailAddress != null)
@@ -171,6 +136,32 @@ namespace FireplaceApi.Core.Validators
                 ValidatePasswordFormat(password);
                 ValidateOldPasswordIsCorrect(user, oldPassword);
             }
+        }
+
+        public async Task<UserIdentifier> ValidateMultipleIdentifiers(string encodedId,
+            string username, bool throwException = true)
+        {
+            var id = ValidateEncodedIdFormat(encodedId, "username", false);
+            if (id.HasValue)
+            {
+                var identifier = UserIdentifier.OfId(id.Value);
+                if (await ValidateUserIdentifierExists(identifier, false))
+                    return identifier;
+            }
+
+            if (ValidateUsernameFormat(username, false))
+            {
+                var identifier = UserIdentifier.OfUsername(username);
+                if (await ValidateUserIdentifierExists(identifier, false))
+                    return identifier;
+            }
+
+            if (throwException)
+            {
+                var serverMessage = $"Input encodedIdOrUsername ({new { encodedId, id, username }.ToJson()}) is not valid!";
+                throw new ApiException(ErrorName.USER_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
+            }
+            return default;
         }
 
         public void ValidateFirstNameFormat(string firstName)
@@ -201,74 +192,102 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public void ValidateOldPasswordIsCorrect(User requesterUser, Password oldPassword)
+        public void ValidateOldPasswordIsCorrect(User requestingUser, Password oldPassword)
         {
-            if (Equals(requesterUser.Password.Hash, oldPassword.Hash))
+            if (Equals(requestingUser.Password.Hash, oldPassword.Hash))
             {
                 var serverMessage = $"Old paassword ({oldPassword}) is not correct!";
                 throw new ApiException(ErrorName.OLD_PASSWORD_NOT_CORRECT, serverMessage);
             }
         }
 
-        public async Task ValidateUserIdExists(ulong id)
+        public async Task<bool> ValidateUserIdentifierExists(UserIdentifier identifier,
+            bool throwException = true)
         {
-            if (await _userOperator.DoesUserIdExistAsync(id) == false)
+            if (await _userOperator.DoesUserIdentifierExistAsync(identifier))
+                return true;
+
+            if (throwException)
             {
-                var serverMessage = $"User {id} doesn't exists!";
+                var serverMessage = $"User {identifier.ToJson()} doesn't exists!";
                 throw new ApiException(ErrorName.USER_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
+            return false;
         }
 
-        public void ValidateUsernameFormat(string username)
+        public async Task<bool> ValidateUserIdentifierDoesNotExistAsync(UserIdentifier identifier,
+            bool throwException = true)
+        {
+            if (await _userOperator.DoesUserIdentifierExistAsync(identifier) == false)
+                return true;
+
+            if (throwException)
+            {
+                switch (identifier)
+                {
+                    case UserUsernameIdentifier usernameIdentifier:
+                        var serverMessage = $"Username {usernameIdentifier.Username} already exists!";
+                        throw new ApiException(ErrorName.USERNAME_ALREADY_EXISTS, serverMessage);
+                }
+            }
+            return false;
+        }
+
+        public bool ValidateUserIdentifierFormat(
+            UserIdentifier identifier, bool throwException = true)
+        {
+            switch (identifier)
+            {
+                case UserIdIdentifier idIdentifier:
+                    break;
+                case UserUsernameIdentifier usernameIdentifier:
+                    if (!ValidateUsernameFormat(usernameIdentifier.Username, throwException))
+                        return false;
+                    break;
+            }
+            return true;
+        }
+
+        public bool ValidateUsernameFormat(string username, bool throwException = true)
         {
             if (Regexes.UsernameMinLength.IsMatch(username) == false)
             {
                 var serverMessage = $"Username ({username}) doesn't have the minimum length!";
-                throw new ApiException(ErrorName.USERNAME_MIN_LENGTH, serverMessage);
+                return throwException ?
+                    throw new ApiException(ErrorName.USERNAME_MIN_LENGTH, serverMessage) : false;
             }
             if (Regexes.UsernameMaxLength.IsMatch(username) == false)
             {
                 var serverMessage = $"Username ({username}) exceeds the maximum length!";
-                throw new ApiException(ErrorName.USERNAME_MAX_LENGTH, serverMessage);
+                return throwException ?
+                    throw new ApiException(ErrorName.USERNAME_MAX_LENGTH, serverMessage) : false;
             }
             if (Regexes.UsernameStart.IsMatch(username) == false)
             {
                 var serverMessage = $"Username ({username}) has wrong starts!";
-                throw new ApiException(ErrorName.USERNAME_WRONG_START, serverMessage);
+                return throwException ?
+                    throw new ApiException(ErrorName.USERNAME_WRONG_START, serverMessage) : false;
             }
             if (Regexes.UsernameEnd.IsMatch(username) == false)
             {
                 var serverMessage = $"Username ({username}) has wrong end!";
-                throw new ApiException(ErrorName.USERNAME_WRONG_END, serverMessage);
+                return throwException ?
+                    throw new ApiException(ErrorName.USERNAME_WRONG_END, serverMessage) : false;
             }
             if (Regexes.UsernameSafeConsecutives.IsMatch(username) == false)
             {
                 var serverMessage = $"Username ({username}) has invalid consecutive!";
-                throw new ApiException(ErrorName.USERNAME_INVALID_CONSECUTIVE, serverMessage);
+                return throwException ?
+                    throw new ApiException(ErrorName.USERNAME_INVALID_CONSECUTIVE, serverMessage) : false;
             }
             if (Regexes.UsernameValidCharacters.IsMatch(username) == false)
             {
                 var serverMessage = $"Username ({username}) has invalid characters!";
-                throw new ApiException(ErrorName.USERNAME_VALID_CHARACTERS, serverMessage);
+                return throwException ?
+                    throw new ApiException(ErrorName.USERNAME_VALID_CHARACTERS, serverMessage) : false;
             }
-        }
 
-        public async Task ValidateUsernameDoesNotExistAsync(string username)
-        {
-            if (await _userOperator.DoesUsernameExistAsync(username))
-            {
-                var serverMessage = $"Username {username} already exists!";
-                throw new ApiException(ErrorName.USERNAME_ALREADY_EXISTS, serverMessage);
-            }
-        }
-
-        public async Task ValidateUsernameExists(string username)
-        {
-            if (await _userOperator.DoesUsernameExistAsync(username) == false)
-            {
-                var serverMessage = $"Username {username} doesn't exist!";
-                throw new ApiException(ErrorName.USERNAME_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
-            }
+            return true;
         }
 
         public void ValidatePasswordFormat(Password password)
@@ -307,7 +326,7 @@ namespace FireplaceApi.Core.Validators
 
         public async Task ValidateUsernameMatchWithPasswordAsync(string username, Password password)
         {
-            var user = await _userOperator.GetUserByUsernameAsync(username);
+            var user = await _userOperator.GetUserByIdentifierAsync(UserIdentifier.OfUsername(username));
             if (user == null)
             {
                 var serverMessage = $"Username {username} doesn't exist! password: {password.Value}";
@@ -321,22 +340,24 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public void ValidateRequesterUserCanAlterUser(User requesterUser, ulong id)
+        public void ValidateRequestingUserCanAlterUser(User requestingUser, UserIdentifier requestedUserIdentifier)
         {
-            if (requesterUser.Id != id)
+            switch (requestedUserIdentifier)
             {
-                var serverMessage = $"requesterUser {requesterUser.Id} can't alter user {id}";
-                throw new ApiException(ErrorName.USER_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
+                case UserIdIdentifier idIdentifier:
+                    if (requestingUser.Id == idIdentifier.Id)
+                        return;
+                    break;
+                case UserUsernameIdentifier usernameIdentifier:
+                    if (string.Equals(requestingUser.Username, usernameIdentifier.Username,
+                        StringComparison.OrdinalIgnoreCase))
+                        return;
+                    break;
             }
-        }
+            var serverMessage = $"requestingUser {requestingUser.Id} can't alter " +
+                $"user {requestedUserIdentifier.ToJson()}";
+            throw new ApiException(ErrorName.USER_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
 
-        public void ValidateRequesterUserCanAlterUser(User requesterUser, string username)
-        {
-            if (!string.Equals(requesterUser.Username, username, StringComparison.OrdinalIgnoreCase))
-            {
-                var serverMessage = $"requesterUser {requesterUser.Id} can't alter to user {requesterUser.Username} != {username}";
-                throw new ApiException(ErrorName.USERNAME_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
-            }
         }
 
         //public async Task ValidatePassword(string username, string password)

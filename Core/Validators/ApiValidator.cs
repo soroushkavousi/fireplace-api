@@ -1,6 +1,5 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Tools;
 
 namespace FireplaceApi.Core.Validators
@@ -38,22 +37,26 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public ulong ValidateEncodedIdFormatValid(string encodedId, string parameterName)
+        public ulong? ValidateEncodedIdFormat(string encodedId, string parameterName = null,
+            bool throwException = true)
         {
-            if (!IdGenerator.IsEncodedIdFormatValid(encodedId))
+            if (IdGenerator.IsEncodedIdFormatValid(encodedId))
+                return encodedId.IdDecode();
+
+            if (throwException)
             {
                 var serverMessage = $"Id ({encodedId}) in parameter ({parameterName}) is not valid!";
                 throw new ApiException(ErrorName.ENCODED_ID_FORMAT_IS_NOT_VALID, serverMessage);
             }
-            return encodedId.Decode();
+            return default;
         }
 
-        public ulong? ValidateEncodedIdFormatValidIfExists(string encodedId, string parameterName)
-        {
-            if (string.IsNullOrWhiteSpace(encodedId))
-                return default;
-            return ValidateEncodedIdFormatValid(encodedId, parameterName);
-        }
+        //public ulong? ValidateEncodedIdFormatValidIfExists(string encodedId, string parameterName)
+        //{
+        //    if (string.IsNullOrWhiteSpace(encodedId))
+        //        return default;
+        //    return ValidateEncodedIdFormat(encodedId, parameterName);
+        //}
 
         //private void ValidateObjectParametersAreNotNull(ErrorId errorCode, object obj, params string[] exceptions)
         //{

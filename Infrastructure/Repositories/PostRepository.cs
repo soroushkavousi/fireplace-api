@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
@@ -36,11 +37,11 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public async Task<List<Post>> ListPostsAsync(List<ulong> Ids,
-            User requesterUser = null)
+            User requestingUser = null)
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                Ids, requesterUser = requesterUser != null
+                Ids, requestingUser = requestingUser != null
             });
             var sw = Stopwatch.StartNew();
             var postEntities = await _postEntities
@@ -49,7 +50,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Include(
                     authorEntity: false,
                     communityEntity: false,
-                    requesterUser: requesterUser
+                    requestingUser: requestingUser
                 )
                 .ToListAsync();
 
@@ -63,14 +64,14 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public async Task<List<Post>> ListPostsAsync(ulong? authorId,
-            bool? self, bool? joined, ulong? communityId,
-            string communityName, string search, SortType? sort,
-            User requesterUser)
+            bool? self, bool? joined, CommunityIdentifier communityIdentifier,
+            string search, SortType? sort,
+            User requestingUser)
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                authorId, self, joined, communityId,
-                communityName, search, sort
+                authorId, self, joined, communityIdentifier,
+                search, sort
             });
             var sw = Stopwatch.StartNew();
             var postEntities = await _postEntities
@@ -79,15 +80,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                     authorId: authorId,
                     self: self,
                     joined: joined,
-                    communityId: communityId,
-                    communityName: communityName,
+                    communityIdentifier: communityIdentifier,
                     search: search,
                     sort: sort
                 )
                 .Include(
                     authorEntity: false,
                     communityEntity: true,
-                    requesterUser: requesterUser
+                    requestingUser: requestingUser
                 )
                 .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
                 .ToListAsync();
@@ -97,12 +97,12 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public async Task<List<ulong>> ListPostIdsAsync(ulong? authorId,
-            bool? self, bool? joined, ulong? communityId,
-            string communityName, string search, SortType? sort)
+            bool? self, bool? joined, CommunityIdentifier communityIdentifier,
+            string search, SortType? sort)
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                authorId, self, joined, communityId, communityName,
+                authorId, self, joined, communityIdentifier,
                 search, sort
             });
             var sw = Stopwatch.StartNew();
@@ -112,8 +112,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                     authorId: authorId,
                     self: self,
                     joined: joined,
-                    communityId: communityId,
-                    communityName: communityName,
+                    communityIdentifier: communityIdentifier,
                     search: search,
                     sort: sort
                 )
@@ -127,12 +126,12 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<Post> GetPostByIdAsync(ulong id,
             bool includeAuthor = false, bool includeCommunity = false,
-            User requesterUser = null)
+            User requestingUser = null)
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
                 id, includeAuthor, includeCommunity,
-                requesterUser = requesterUser != null
+                requestingUser = requestingUser != null
             });
             var sw = Stopwatch.StartNew();
             var postEntity = await _postEntities
@@ -141,7 +140,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Include(
                     authorEntity: includeAuthor,
                     communityEntity: includeCommunity,
-                    requesterUser: requesterUser
+                    requestingUser: requestingUser
                 )
                 .SingleOrDefaultAsync();
 
@@ -225,7 +224,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public static IQueryable<PostEntity> Include(
             [NotNull] this IQueryable<PostEntity> q,
             bool authorEntity, bool communityEntity,
-            User requesterUser)
+            User requestingUser)
         {
             if (authorEntity)
                 q = q.Include(e => e.AuthorEntity);
@@ -233,11 +232,11 @@ namespace FireplaceApi.Infrastructure.Repositories
             if (communityEntity)
                 q = q.Include(e => e.CommunityEntity);
 
-            if (requesterUser != null)
+            if (requestingUser != null)
             {
                 q = q.Include(
                     c => c.PostVoteEntities
-                        .Where(cv => cv.VoterEntityId == requesterUser.Id)
+                        .Where(cv => cv.VoterEntityId == requestingUser.Id)
                 );
             }
 
@@ -246,16 +245,24 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public static IQueryable<PostEntity> Search(
             [NotNull] this IQueryable<PostEntity> q, bool? self,
-            bool? joined, ulong? authorId, ulong? communityId,
-            string communityName, string search, SortType? sort)
+            bool? joined, ulong? authorId, CommunityIdentifier communityIdentifier,
+            string search, SortType? sort)
         {
             if (self.HasValue)
                 q = q.Where(e => e.AuthorEntityId == authorId.Value);
 
-            if (communityId.HasValue)
-                q = q.Where(e => e.CommunityEntityId == communityId.Value);
-            else if (!string.IsNullOrWhiteSpace(communityName))
-                q = q.Where(e => e.CommunityEntityName == communityName);
+            if (communityIdentifier != null)
+            {
+                switch (communityIdentifier)
+                {
+                    case CommunityIdIdentifier idIdentifier:
+                        q = q.Where(e => e.CommunityEntityId == idIdentifier.Id);
+                        break;
+                    case CommunityNameIdentifier nameIdentifier:
+                        q = q.Where(e => e.CommunityEntityName == nameIdentifier.Name);
+                        break;
+                }
+            }
 
             if (!string.IsNullOrWhiteSpace(search))
                 q = q.Where(e => EF.Functions

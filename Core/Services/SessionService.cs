@@ -1,6 +1,6 @@
-﻿using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.Validators;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -21,28 +21,28 @@ namespace FireplaceApi.Core.Services
             _sessionOperator = sessionOperator;
         }
 
-        public async Task<List<Session>> ListSessionsAsync(User requesterUser)
+        public async Task<List<Session>> ListSessionsAsync(User requestingUser)
         {
-            await _sessionValidator.ValidateListSessionsInputParametersAsync(requesterUser);
-            var session = await _sessionOperator.ListSessionsAsync(requesterUser);
+            await _sessionValidator.ValidateListSessionsInputParametersAsync(requestingUser);
+            var session = await _sessionOperator.ListSessionsAsync(requestingUser);
             return session;
         }
 
-        public async Task<Session> GetSessionByIdAsync(User requesterUser, string encodedId,
+        public async Task<Session> GetSessionByIdAsync(User requestingUser, string encodedId,
             bool? includeUser)
         {
-            await _sessionValidator.ValidateGetSessionByIdInputParametersAsync(requesterUser,
+            await _sessionValidator.ValidateGetSessionByIdInputParametersAsync(requestingUser,
                 encodedId, includeUser);
-            var id = encodedId.Decode();
+            var id = encodedId.IdDecode();
             var session = await _sessionOperator.GetSessionByIdAsync(id, includeUser.Value);
             return session;
         }
 
-        public async Task RevokeSessionByIdAsync(User requesterUser, string encodedId)
+        public async Task RevokeSessionByIdAsync(User requestingUser, string encodedId)
         {
             await _sessionValidator.ValidateRevokeSessionByIdInputParametersAsync(
-                requesterUser, encodedId);
-            var id = encodedId.Decode();
+                requestingUser, encodedId);
+            var id = encodedId.IdDecode();
             await _sessionOperator.RevokeSessionByIdAsync(id);
         }
     }

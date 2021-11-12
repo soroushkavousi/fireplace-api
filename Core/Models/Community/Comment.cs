@@ -9,7 +9,7 @@ namespace FireplaceApi.Core.Models
         public string AuthorUsername { get; set; }
         public ulong PostId { get; set; }
         public int Vote { get; set; }
-        public int RequesterUserVote { get; set; }
+        public int RequestingUserVote { get; set; }
         public string Content { get; set; }
         public List<ulong> ParentCommentIds { get; set; }
         public User Author { get; set; }
@@ -17,7 +17,7 @@ namespace FireplaceApi.Core.Models
         public List<Comment> ChildComments { get; set; }
 
         public Comment(ulong id, ulong authorId, string authorUsername,
-            ulong postId, int vote, int requesterUserVote, string content,
+            ulong postId, int vote, int requestingUserVote, string content,
             DateTime creationDate, List<ulong> parentCommentIds = null,
             DateTime? modifiedDate = null, User author = null,
             Post post = null, List<Comment> childComments = null)
@@ -27,7 +27,7 @@ namespace FireplaceApi.Core.Models
             AuthorUsername = authorUsername ?? throw new ArgumentNullException(nameof(authorUsername));
             PostId = postId;
             Vote = vote;
-            RequesterUserVote = requesterUserVote;
+            RequestingUserVote = requestingUserVote;
             Content = content ?? throw new ArgumentNullException(nameof(content));
             ParentCommentIds = parentCommentIds;
             Author = author;
@@ -36,7 +36,7 @@ namespace FireplaceApi.Core.Models
         }
 
         public Comment PureCopy() => new Comment(Id, AuthorId,
-            AuthorUsername, PostId, Vote, RequesterUserVote,
+            AuthorUsername, PostId, Vote, RequestingUserVote,
             Content, CreationDate, ParentCommentIds,
             ModifiedDate, childComments: ChildComments);
     }

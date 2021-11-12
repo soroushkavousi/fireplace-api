@@ -1,10 +1,10 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
-using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -54,13 +54,17 @@ namespace FireplaceApi.Infrastructure.Repositories
             return communityMembershipEntities.Select(e => _communityMembershipConverter.ConvertToModel(e)).ToList();
         }
 
-        public async Task<List<CommunityMembership>> ListCommunityMembershipsAsync(ulong userId)
+        public async Task<List<CommunityMembership>> ListCommunityMembershipsAsync(UserIdentifier userIdentifier)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { userId });
+            _logger.LogIOInformation(null, "Database | Input", new { userIdentifier });
             var sw = Stopwatch.StartNew();
             var communityMembershipEntities = await _communityMembershipEntities
                 .AsNoTracking()
-                .Where(e => e.UserEntityId == userId)
+                .Search(
+                    identifier: null,
+                    userIdentifier: userIdentifier,
+                    communityIdentifier: null
+                )
                 .Include(
                     userEntity: false,
                     communityEntity: false
@@ -72,15 +76,15 @@ namespace FireplaceApi.Infrastructure.Repositories
             return communityMembershipEntities.Select(e => _communityMembershipConverter.ConvertToModel(e)).ToList();
         }
 
-        public async Task<List<ulong>> ListCommunityMembershipIdsAsync(ulong userId)
+        public async Task<List<ulong>> ListCommunityMembershipIdsAsync(UserIdentifier userIdentifier)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { userId });
+            _logger.LogIOInformation(null, "Database | Input", new { userIdentifier });
             var sw = Stopwatch.StartNew();
             var communityMembershipEntityIds = await _communityMembershipEntities
                 .AsNoTracking()
                 .Search(
-                    userId: userId,
-                    communityId: null,
+                    identifier: null,
+                    userIdentifier: userIdentifier,
                     communityIdentifier: null
                 )
                 .Include(
@@ -95,15 +99,20 @@ namespace FireplaceApi.Infrastructure.Repositories
             return communityMembershipEntityIds;
         }
 
-        public async Task<CommunityMembership> GetCommunityMembershipByIdAsync(ulong id,
-            bool includeUser = false, bool includeCommunity = false)
+        public async Task<CommunityMembership> GetCommunityMembershipByIdentifierAsync(
+            CommunityMembershipIdentifier identifier, bool includeUser = false,
+            bool includeCommunity = false)
         {
             _logger.LogIOInformation(null, "Database | Input",
-                new { id, includeUser, includeCommunity });
+                new { identifier, includeUser, includeCommunity });
             var sw = Stopwatch.StartNew();
             var communityMembershipEntity = await _communityMembershipEntities
                 .AsNoTracking()
-                .Where(e => e.Id == id)
+                .Search(
+                    identifier: identifier,
+                    userIdentifier: null,
+                    communityIdentifier: null
+                )
                 .Include(
                     userEntity: includeUser,
                     communityEntity: includeCommunity
@@ -153,16 +162,15 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _communityMembershipConverter.ConvertToModel(communityMembershipEntity);
         }
 
-        public async Task DeleteCommunityMembershipByIdAsync(ulong userId,
-            Identifier communityIdentifier)
+        public async Task DeleteCommunityMembershipByIdentifierAsync(CommunityMembershipIdentifier identifier)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { userId, communityIdentifier });
+            _logger.LogIOInformation(null, "Database | Input", new { identifier });
             var sw = Stopwatch.StartNew();
             var communityMembershipEntity = await _communityMembershipEntities
                 .Search(
-                    userId: userId,
-                    communityId: null,
-                    communityIdentifier: communityIdentifier
+                    identifier: identifier,
+                    userIdentifier: null,
+                    communityIdentifier: null
                 )
                 .SingleOrDefaultAsync();
 
@@ -173,43 +181,16 @@ namespace FireplaceApi.Infrastructure.Repositories
             _logger.LogIOInformation(sw, "Database | Output", new { communityMembershipEntity });
         }
 
-        public async Task DeleteCommunityMembershipByIdAsync(ulong id)
+
+        public async Task<bool> DoesCommunityMembershipIdentifierExistAsync(CommunityMembershipIdentifier identifier)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { id });
-            var sw = Stopwatch.StartNew();
-            var communityMembershipEntity = await _communityMembershipEntities
-                .Where(e => e.Id == id)
-                .SingleOrDefaultAsync();
-
-            _communityMembershipEntities.Remove(communityMembershipEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
-
-            _logger.LogIOInformation(sw, "Database | Output", new { communityMembershipEntity });
-        }
-
-        public async Task<bool> DoesCommunityMembershipIdExistAsync(ulong id)
-        {
-            _logger.LogIOInformation(null, "Database | Input", new { id });
-            var sw = Stopwatch.StartNew();
-            var doesExist = await _communityMembershipEntities
-                .AsNoTracking()
-                .Where(e => e.Id == id)
-                .AnyAsync();
-
-            _logger.LogIOInformation(sw, "Database | Output", new { doesExist });
-            return doesExist;
-        }
-
-        public async Task<bool> DoesCommunityMembershipExistAsync(ulong userId, ulong communityId)
-        {
-            _logger.LogIOInformation(null, "Database | Input", new { userId, communityId });
+            _logger.LogIOInformation(null, "Database | Input", new { identifier });
             var sw = Stopwatch.StartNew();
             var doesExist = await _communityMembershipEntities
                 .AsNoTracking()
                 .Search(
-                    userId: userId,
-                    communityId: communityId,
+                    identifier: identifier,
+                    userIdentifier: null,
                     communityIdentifier: null
                 )
                 .AnyAsync();
@@ -236,20 +217,47 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public static IQueryable<CommunityMembershipEntity> Search(
             [NotNull] this IQueryable<CommunityMembershipEntity> q,
-            ulong? userId, ulong? communityId, Identifier communityIdentifier)
+            CommunityMembershipIdentifier identifier,
+            UserIdentifier userIdentifier, CommunityIdentifier communityIdentifier)
         {
-            if (userId.HasValue)
-                q = q.Where(e => e.UserEntityId == userId.Value);
+            if (identifier != null)
+            {
+                switch (identifier)
+                {
+                    case CommunityMembershipIdIdentifier idIdentifier:
+                        q = q.Where(e => e.UserEntityId == idIdentifier.Id);
+                        break;
+                    case CommunityMembershipUserAndCommunityIdentifier userAndCommunity:
+                        userIdentifier = userAndCommunity.UserIdentifier;
+                        communityIdentifier = userAndCommunity.CommunityIdentifier;
+                        break;
+                }
+            }
 
-            if (communityId.HasValue)
-                q = q.Where(e => e.CommunityEntityId == communityId.Value);
+            if (userIdentifier != null)
+            {
+                switch (userIdentifier)
+                {
+                    case UserIdIdentifier idIdentifier:
+                        q = q.Where(e => e.UserEntityId == idIdentifier.Id);
+                        break;
+                    case UserUsernameIdentifier usernameIdentifier:
+                        q = q.Where(e => e.UserEntityName == usernameIdentifier.Username);
+                        break;
+                }
+            }
 
             if (communityIdentifier != null)
             {
-                if (communityIdentifier.State == IdentifierState.HasId)
-                    q = q.Where(e => e.CommunityEntityId == communityIdentifier.Id);
-                else if (communityIdentifier.State == IdentifierState.HasName)
-                    q = q.Where(e => e.CommunityEntityName == communityIdentifier.Name);
+                switch (communityIdentifier)
+                {
+                    case CommunityIdIdentifier idIdentifier:
+                        q = q.Where(e => e.CommunityEntityId == idIdentifier.Id);
+                        break;
+                    case CommunityNameIdentifier nameIdentifier:
+                        q = q.Where(e => e.CommunityEntityName == nameIdentifier.Name);
+                        break;
+                }
             }
 
             return q;

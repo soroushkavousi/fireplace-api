@@ -16,7 +16,7 @@ namespace FireplaceApi.Api.Controllers
     public class ControllerListPostCommentsInputRouteParameters
     {
         [Required]
-        [FromRoute(Name = "postId")]
+        [FromRoute(Name = "id")]
         public string PostId { get; set; }
     }
 
@@ -32,7 +32,7 @@ namespace FireplaceApi.Api.Controllers
     public class ControllerListChildCommentsInputRouteParameters
     {
         [Required]
-        [FromRoute(Name = "parentId")]
+        [FromRoute(Name = "id")]
         public string ParentId { get; set; }
     }
 }

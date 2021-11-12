@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Api.Controllers
@@ -66,7 +64,6 @@ namespace FireplaceApi.Api.Controllers
             SetOutputCookieParameters(outputCookieParameters);
             return userDto;
         }
-
 
         /// <summary>
         /// Log in or Sign up with google.
@@ -137,129 +134,71 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
-        /// List all users.
-        /// </summary>
-        /// <returns>List of users</returns>
-        /// <response code="200">All users was successfully retrieved.</response>
-        [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<UserDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<UserDto>>> ListUsersAsync(
-            [BindNever][FromHeader] User requesterUser,
-            [FromQuery] ControllerListUsersInputQueryParameters inputQueryParameters)
-        {
-            //var accessTokenValue = FindAccessTokenValue(inputHeaderParameters, inputCookieParameters);
-            var users = await _userService.ListUsersAsync(requesterUser,
-                inputQueryParameters.IncludeEmail, inputQueryParameters.IncludeSessions);
-            var userDtos = users.Select(user => _userConverter.ConvertToDto(user)).ToList();
-            //SetOutputHeaderParameters(userDtos.HeaderParameters);
-            return userDtos;
-        }
-
-        /// <summary>
-        /// Get a single user by id.
+        /// Get the requesting user data.
         /// </summary>
         /// <returns>Requested user</returns>
         /// <response code="200">The user was successfully retrieved.</response>
-        [HttpGet("{id:ulong}")]
+        [HttpGet("me")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<UserDto>> GetUserByIdAsync(
-            [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerGetUserByIdInputRouteParameters inputRouteParameters,
+        public async Task<ActionResult<UserDto>> GetRequestingUserAsync(
+            [BindNever][FromHeader] User requestingUser,
             [FromQuery] ControllerGetUserInputQueryParameters inputQueryParameters)
         {
-            var user = await _userService.GetUserByIdAsync(requesterUser, inputRouteParameters.Id,
+            var user = await _userService.GetRequestingUserAsync(requestingUser,
                 inputQueryParameters.IncludeEmail, inputQueryParameters.IncludeSessions);
             var userDto = _userConverter.ConvertToDto(user);
             return userDto;
         }
 
         /// <summary>
-        /// Get a single user by username.
+        /// Get a single user by id or username.
         /// </summary>
         /// <returns>Requested user</returns>
         /// <response code="200">The user was successfully retrieved.</response>
-        [HttpGet("{username}")]
+        [HttpGet("{id-or-username}")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<UserDto>> GetUserByUsernameAsync(
-            [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerGetUserByUsernameInputRouteParameters inputRouteParameters,
-            [FromQuery] ControllerGetUserInputQueryParameters inputQueryParameters)
+        public async Task<ActionResult<UserDto>> GetUserByEncodedIdOrUsernameAsync(
+            [BindNever][FromHeader] User requestingUser,
+            [FromRoute] ControllerGetUserByEncodedIdOrUsernameInputRouteParameters inputRouteParameters)
         {
-            var user = await _userService.GetUserByUsernameAsync(requesterUser, inputRouteParameters.Username,
-                inputQueryParameters.IncludeEmail, inputQueryParameters.IncludeSessions);
+            var user = await _userService.GetUserByEncodedIdOrUsernameAsync(requestingUser,
+                inputRouteParameters.EncodedIdOrUsername);
             var userDto = _userConverter.ConvertToDto(user);
             return userDto;
         }
 
         /// <summary>
-        /// Update a single user by id.
+        /// Update the requesting user account.
         /// </summary>
         /// <returns>Updated user</returns>
         /// <response code="200">The user was successfully updated.</response>
-        [HttpPatch("{id:ulong}")]
+        [HttpPatch("me")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<UserDto>> PatchUserByIdAsync(
-            [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerPatchUserByIdInputRouteParameters inputRouteParameters,
+        public async Task<ActionResult<UserDto>> PatchRequestingUserAsync(
+            [BindNever][FromHeader] User requestingUser,
             [FromBody] ControllerPatchUserInputBodyParameters inputBodyParameters)
         {
             var password = Password.OfValue(inputBodyParameters.Password);
             var oldPassword = Password.OfValue(inputBodyParameters.OldPassword);
-            var user = await _userService.PatchUserByIdAsync(requesterUser, inputRouteParameters.Id, inputBodyParameters.FirstName,
-                inputBodyParameters.LastName, inputBodyParameters.Username, oldPassword, password, inputBodyParameters.EmailAddress);
+            var user = await _userService.PatchRequestingUserAsync(requestingUser, inputBodyParameters.FirstName,
+                inputBodyParameters.LastName, inputBodyParameters.Username, oldPassword, password,
+                inputBodyParameters.EmailAddress);
             var userDto = _userConverter.ConvertToDto(user);
             return userDto;
         }
 
         /// <summary>
-        /// Update a single user by username.
-        /// </summary>
-        /// <returns>Updated user</returns>
-        /// <response code="200">The user was successfully updated.</response>
-        [HttpPatch("{username}")]
-        [Consumes("application/json")]
-        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<UserDto>> PatchUserByUsernameAsync(
-            [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerPatchUserByUsernameInputRouteParameters inputRouteParameters,
-            [FromBody] ControllerPatchUserInputBodyParameters inputBodyParameters)
-        {
-            var password = Password.OfValue(inputBodyParameters.Password);
-            var oldPassword = Password.OfValue(inputBodyParameters.OldPassword);
-            var user = await _userService.PatchUserByUsernameAsync(requesterUser, inputRouteParameters.Username, inputBodyParameters.FirstName,
-                inputBodyParameters.LastName, inputBodyParameters.Username, oldPassword, password, inputBodyParameters.EmailAddress);
-            var userDto = _userConverter.ConvertToDto(user);
-            return userDto;
-        }
-
-        /// <summary>
-        /// Delete a single user by id.
+        /// Delete the requesting user account
         /// </summary>
         /// <returns>No content</returns>
         /// <response code="200">The user was successfully deleted.</response>
-        [HttpDelete("{id:ulong}")]
+        [HttpDelete("me")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteUserByIdAsync(
-            [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerDeleteUserByIdInputRouteParameters inputRouteParameters)
+        public async Task<IActionResult> DeleteRequestingUserAsync(
+            [BindNever][FromHeader] User requestingUser)
         {
-            await _userService.DeleteUserByIdAsync(requesterUser, inputRouteParameters.Id);
-            return Ok();
-        }
-
-        /// <summary>
-        /// Delete a single user by username.
-        /// </summary>
-        /// <returns>No content</returns>
-        /// <response code="200">The user was successfully deleted.</response>
-        [HttpDelete("{username}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteUserByUsernameAsync(
-            [BindNever][FromHeader] User requesterUser,
-            [FromRoute] ControllerDeleteUserByUsernameInputRouteParameters inputRouteParameters)
-        {
-            await _userService.DeleteUserByUsernameAsync(requesterUser, inputRouteParameters.Username);
+            await _userService.DeleteRequestingUserAsync(requestingUser);
             return Ok();
         }
     }

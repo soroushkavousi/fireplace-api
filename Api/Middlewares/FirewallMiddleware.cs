@@ -37,7 +37,7 @@ namespace FireplaceApi.Api.Middlewares
             var accessTokenValue = FindAccessTokenValue(inputHeaderParameters, inputCookieParameters);
             var ipAddress = inputHeaderParameters.IpAddress;
 
-            User requesterUser = null;
+            User requestingUser = null;
             AccessToken accessToken = null;
             var isUserEndpoint = IsUserEndpoint(httpContext);
             if (!string.IsNullOrWhiteSpace(accessTokenValue))
@@ -45,16 +45,16 @@ namespace FireplaceApi.Api.Middlewares
                 accessToken = await firewall.ValidateAccessTokenAsync(accessTokenValue, isUserEndpoint);
                 if (accessToken != null)
                 {
-                    requesterUser = accessToken.User;
-                    requesterUser.AccessTokens = new List<AccessToken> { accessToken };
-                    httpContext.Items[Tools.Constants.RequesterUserKey] = requesterUser;
+                    requestingUser = accessToken.User;
+                    requestingUser.AccessTokens = new List<AccessToken> { accessToken };
+                    httpContext.Items[Tools.Constants.RequestingUserKey] = requestingUser;
                 }
             }
 
             if (isUserEndpoint)
             {
-                firewall.ValidateRequesterUserExists(requesterUser, accessTokenValue);
-                await firewall.CheckUser(requesterUser, ipAddress);
+                firewall.ValidateRequestingUserExists(requestingUser, accessTokenValue);
+                await firewall.CheckUser(requestingUser, ipAddress);
             }
             else
             {

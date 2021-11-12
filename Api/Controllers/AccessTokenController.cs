@@ -31,11 +31,11 @@ namespace FireplaceApi.Api.Controllers
         [HttpGet("{value}")]
         [ProducesResponseType(typeof(AccessTokenDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<AccessTokenDto>> GetAccessTokenByValueAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromQuery] ControllerGetAccessTokenByValueInputRouteParameters inputRouteParameters,
             [FromQuery] ControllerGetAccessTokenByValueInputQueryParameters inputQueryParameters)
         {
-            var accessToken = await _accessTokenService.GetAccessTokenByValueAsync(requesterUser,
+            var accessToken = await _accessTokenService.GetAccessTokenByValueAsync(requestingUser,
                 inputRouteParameters.Value, inputQueryParameters.IncludeUser);
             var accessTokenDto = _accessTokenConverter.ConvertToDto(accessToken);
             return accessTokenDto;

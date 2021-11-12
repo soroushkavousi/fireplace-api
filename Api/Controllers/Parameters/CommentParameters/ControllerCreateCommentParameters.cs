@@ -10,7 +10,7 @@ namespace FireplaceApi.Api.Controllers
     public class ControllerReplyToPostInputRouteParameters
     {
         [Required]
-        [FromRoute(Name = "postId")]
+        [FromRoute(Name = "id")]
         public string PostId { get; set; }
     }
 

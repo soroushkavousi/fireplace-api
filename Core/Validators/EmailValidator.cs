@@ -28,19 +28,19 @@ namespace FireplaceApi.Core.Validators
             _emailOperator = emailOperator;
         }
 
-        public async Task ValidateGetEmailByIdInputParametersAsync(User requesterUser, string encodedId, bool? includeUser)
+        public async Task ValidateGetEmailByIdInputParametersAsync(User requestingUser, string encodedId, bool? includeUser)
         {
-            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
+            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
             await ValidateEmailIdExistsAsync(id);
-            await ValidateRequesterUserCanAccessToEmailIdAsync(requesterUser, id);
+            await ValidateRequestingUserCanAccessToEmailIdAsync(requestingUser, id);
         }
 
-        public async Task ValidateActivateEmailByIdInputParametersAsync(User requesterUser, string encodedId, int? activationCode)
+        public async Task ValidateActivateEmailByIdInputParametersAsync(User requestingUser, string encodedId, int? activationCode)
         {
-            var id = ValidateEncodedIdFormatValid(encodedId, nameof(encodedId));
+            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
             ValidateParameterIsNotMissing(activationCode, nameof(activationCode), ErrorName.ACTIVATION_CODE_IS_MISSING);
             await ValidateEmailIdExistsAsync(id);
-            await ValidateRequesterUserCanAccessToEmailIdAsync(requesterUser, id);
+            await ValidateRequestingUserCanAccessToEmailIdAsync(requestingUser, id);
             await ValidateActivationCodeIsCorrectAsync(id, activationCode.Value);
         }
 
@@ -105,12 +105,12 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public async Task ValidateRequesterUserCanAccessToEmailIdAsync(User requesterUser, ulong id)
+        public async Task ValidateRequestingUserCanAccessToEmailIdAsync(User requestingUser, ulong id)
         {
             var email = await _emailOperator.GetEmailByIdAsync(id);
-            if (email.UserId != requesterUser.Id)
+            if (email.UserId != requestingUser.Id)
             {
-                var serverMessage = $"User id {requesterUser.Id} can't access to email id {id}";
+                var serverMessage = $"User id {requestingUser.Id} can't access to email id {id}";
                 throw new ApiException(ErrorName.EMAIL_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
         }

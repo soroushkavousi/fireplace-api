@@ -15,10 +15,10 @@
         public static string ApiExceptionErrorDtoClassName { get; } = "ApiExceptionErrorDto";
         public static string ResponseAccessTokenHeaderKey { get; } = "access_token";
         public static string ResponseAccessTokenCookieKey { get; } = "access_token";
-        public static string RequesterUserActionArgumentKey { get; } = "requesterUser";
+        public static string RequestingUserActionArgumentKey { get; } = "requestingUser";
         public static string InputHeaderParametersActionArgumentKey { get; } = "inputHeaderParameters";
         public static string InputCookieParametersActionArgumentKey { get; } = "inputCookieParameters";
-        public static string RequesterUserKey { get; } = "User";
+        public static string RequestingUserKey { get; } = "User";
         public static string X_FORWARDED_FOR { get; } = "X-Forwarded-For";
     }
 }

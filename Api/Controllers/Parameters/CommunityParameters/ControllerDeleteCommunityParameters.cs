@@ -3,17 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Api.Controllers
 {
-    public class ControllerDeleteCommunityByIdInputRouteParameters
+    public class ControllerDeleteCommunityByEncodedIdOrNameInputRouteParameters
     {
         [Required]
-        [FromRoute(Name = "id")]
-        public string Id { get; set; }
-    }
-
-    public class ControllerDeleteCommunityByNameInputRouteParameters
-    {
-        [Required]
-        [FromRoute(Name = "name")]
-        public string Name { get; set; }
+        [FromRoute(Name = "id-or-name")]
+        public string EncodedIdOrName { get; set; }
     }
 }

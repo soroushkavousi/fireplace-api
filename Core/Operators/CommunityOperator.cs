@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
@@ -29,7 +30,7 @@ namespace FireplaceApi.Core.Operators
             _pageOperator = pageOperator;
         }
 
-        public async Task<Page<Community>> ListCommunitiesAsync(User requesterUser,
+        public async Task<Page<Community>> ListCommunitiesAsync(User requestingUser,
             PaginationInputParameters paginationInputParameters, string name)
         {
             Page<Community> resultPage = default;
@@ -48,18 +49,11 @@ namespace FireplaceApi.Core.Operators
             return resultPage;
         }
 
-        public async Task<Community> GetCommunityByIdAsync(ulong id, bool includeCreator)
+        public async Task<Community> GetCommunityByIdentifierAsync(
+            CommunityIdentifier identifier, bool includeCreator)
         {
-            var community = await _communityRepository.GetCommunityByIdAsync(id, includeCreator);
-            if (community == null)
-                return community;
-
-            return community;
-        }
-
-        public async Task<Community> GetCommunityByNameAsync(string name, bool includeCreator)
-        {
-            var community = await _communityRepository.GetCommunityByNameAsync(name, includeCreator);
+            var community = await _communityRepository.GetCommunityByIdentifierAsync(
+                identifier, includeCreator);
             if (community == null)
                 return community;
 
@@ -80,47 +74,34 @@ namespace FireplaceApi.Core.Operators
 
         public async Task<Community> CreateCommunityAsync(ulong creatorId, string name)
         {
-            var id = await IdGenerator.GenerateNewIdAsync(DoesCommunityIdExistAsync);
+            var id = await IdGenerator.GenerateNewIdAsync(
+                id => DoesCommunityIdentifierExistAsync(CommunityIdentifier.OfId(id)));
             var community = await _communityRepository.CreateCommunityAsync(
                 id, name, creatorId);
             return community;
         }
 
-        public async Task<Community> PatchCommunityByIdAsync(ulong id, string name = null)
+        public async Task<Community> PatchCommunityByIdentifierAsync(CommunityIdentifier identifier,
+            string name = null)
         {
-            var community = await _communityRepository.GetCommunityByIdAsync(id);
+            var community = await _communityRepository
+                .GetCommunityByIdentifierAsync(identifier);
             community = await ApplyCommunityChangesAsync(community, name);
-            community = await GetCommunityByIdAsync(community.Id, false);
+            community = await GetCommunityByIdentifierAsync(
+                CommunityIdentifier.OfId(community.Id), false);
             return community;
         }
 
-        public async Task<Community> PatchCommunityByNameAsync(string existingName, string name = null)
+        public async Task DeleteCommunityByIdentifierAsync(CommunityIdentifier identifier)
         {
-            var community = await _communityRepository.GetCommunityByNameAsync(existingName);
-            community = await ApplyCommunityChangesAsync(community, name);
-            community = await GetCommunityByIdAsync(community.Id, false);
-            return community;
+            await _communityRepository.DeleteCommunityByIdentifierAsync(identifier);
         }
 
-        public async Task DeleteCommunityByIdAsync(ulong id)
+        public async Task<bool> DoesCommunityIdentifierExistAsync(CommunityIdentifier identifier)
         {
-            await _communityRepository.DeleteCommunityByIdAsync(id);
-        }
-
-        public async Task DeleteCommunityByNameAsync(string name)
-        {
-            await _communityRepository.DeleteCommunityByNameAsync(name);
-        }
-
-        public async Task<bool> DoesCommunityIdExistAsync(ulong id)
-        {
-            var communityIdExists = await _communityRepository.DoesCommunityIdExistAsync(id);
+            var communityIdExists = await _communityRepository
+                .DoesCommunityIdentifierExistAsync(identifier);
             return communityIdExists;
-        }
-
-        public async Task<bool> DoesCommunityNameExistAsync(string name)
-        {
-            return await _communityRepository.DoesCommunityNameExistAsync(name);
         }
 
         public async Task<Community> ApplyCommunityChangesAsync(Community community, string name = null)

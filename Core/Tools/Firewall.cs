@@ -28,15 +28,15 @@ namespace FireplaceApi.Core.Tools
             _accessTokenValidator = accessTokenValidator;
         }
 
-        public async Task<User> CheckUser(User requesterUser, IPAddress ipAddress)
+        public async Task<User> CheckUser(User requestingUser, IPAddress ipAddress)
         {
             var sw = Stopwatch.StartNew();
-            await ValidateSessionAsync(requesterUser.Id, ipAddress);
-            await ValidateLimitationOfUserRequestCounts(requesterUser.Id);
+            await ValidateSessionAsync(requestingUser.Id, ipAddress);
+            await ValidateLimitationOfUserRequestCounts(requestingUser.Id);
             await ValidateLimitationOfIpRequestCounts(ipAddress);
-            _logger.LogTrace(sw, $"User {requesterUser.Id} doesn't have any problem to continue. " +
-                $"{requesterUser.ToJson()}");
-            return requesterUser;
+            _logger.LogTrace(sw, $"User {requestingUser.Id} doesn't have any problem to continue. " +
+                $"{requestingUser.ToJson()}");
+            return requestingUser;
         }
 
         public async Task CheckGuest(IPAddress ipAddress)
@@ -46,9 +46,9 @@ namespace FireplaceApi.Core.Tools
             _logger.LogTrace(sw, $"Guest doesn't have any problem to continue. {ipAddress}");
         }
 
-        public void ValidateRequesterUserExists(User requesterUser, string accessTokenValue)
+        public void ValidateRequestingUserExists(User requestingUser, string accessTokenValue)
         {
-            if (requesterUser == null)
+            if (requestingUser == null)
                 throw new ApiException(ErrorName.AUTHENTICATION_FAILED,
                     $"There isn't any authorization in input header parameters! " +
                     $"accessTokenValue: {accessTokenValue}");

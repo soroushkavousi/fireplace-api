@@ -33,9 +33,9 @@ namespace FireplaceApi.Api.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<SessionDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<SessionDto>>> ListSessionsAsync(
-            [BindNever][FromHeader] User requesterUser)
+            [BindNever][FromHeader] User requestingUser)
         {
-            var sessions = await _sessionService.ListSessionsAsync(requesterUser);
+            var sessions = await _sessionService.ListSessionsAsync(requestingUser);
             var sessionDtos = sessions.Select(session => _sessionConverter.ConvertToDto(session)).ToList();
             //SetOutputHeaderParameters(sessionDtos.HeaderParameters);
             return sessionDtos;
@@ -49,11 +49,11 @@ namespace FireplaceApi.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(SessionDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<SessionDto>> GetSessionByIdAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerGetSessionByIdInputRouteParameters inputRouteParameters,
             [FromQuery] ControllerGetSessionByIdInputQueryParameters inputQueryParameters)
         {
-            var session = await _sessionService.GetSessionByIdAsync(requesterUser, inputRouteParameters.Id,
+            var session = await _sessionService.GetSessionByIdAsync(requestingUser, inputRouteParameters.Id,
                 inputQueryParameters.IncludeUser);
             var sessionDto = _sessionConverter.ConvertToDto(session);
             return sessionDto;
@@ -68,10 +68,10 @@ namespace FireplaceApi.Api.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(SessionDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> RevokeSession(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerRevokeSessionInputRouteParameters inputRouteParameters)
         {
-            await _sessionService.RevokeSessionByIdAsync(requesterUser, inputRouteParameters.Id);
+            await _sessionService.RevokeSessionByIdAsync(requestingUser, inputRouteParameters.Id);
             return Ok();
         }
     }

@@ -94,13 +94,10 @@ namespace FireplaceApi.Api.Controllers
             [nameof(UserController.SignUpWithEmailAsync)] = Example1,
             [nameof(UserController.LogInWithEmailAsync)] = Example1,
             [nameof(UserController.LogInWithUsernameAsync)] = Example1,
-            [nameof(UserController.ListUsersAsync)] = ListExample1,
-            [nameof(UserController.GetUserByIdAsync)] = Example1,
-            [nameof(UserController.GetUserByUsernameAsync)] = Example1,
-            [nameof(UserController.PatchUserByIdAsync)] = Example1,
-            [nameof(UserController.PatchUserByUsernameAsync)] = Example1,
-            [nameof(UserController.DeleteUserByIdAsync)] = new OpenApiNull(),
-            [nameof(UserController.DeleteUserByUsernameAsync)] = new OpenApiNull(),
+            [nameof(UserController.GetRequestingUserAsync)] = Example1,
+            [nameof(UserController.GetUserByEncodedIdOrUsernameAsync)] = Example1,
+            [nameof(UserController.PatchRequestingUserAsync)] = Example1,
+            [nameof(UserController.DeleteRequestingUserAsync)] = new OpenApiNull(),
         };
 
         static UserDto()

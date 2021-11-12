@@ -20,9 +20,9 @@ namespace FireplaceApi.Core.Services
             _fileOperator = fileOperator;
         }
 
-        public async Task<File> CreateFileAsync(User requesterUser, IFormFile formFile)
+        public async Task<File> CreateFileAsync(User requestingUser, IFormFile formFile)
         {
-            await _fileValidator.ValidatePostFileInputParametersAsync(requesterUser, formFile);
+            await _fileValidator.ValidatePostFileInputParametersAsync(requestingUser, formFile);
             var file = await _fileOperator.CreateFileAsync(formFile);
             return file;
         }

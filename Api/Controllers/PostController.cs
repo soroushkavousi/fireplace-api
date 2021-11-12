@@ -38,12 +38,12 @@ namespace FireplaceApi.Api.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(PageDto<PostDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<PageDto<PostDto>>> ListPostsAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromQuery] ControllerListPostsInputQueryParameters inputQueryParameters)
         {
             //var accessTokenValue = FindAccessTokenValue(inputHeaderParameters, inputCookieParameters);
             var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
-            var page = await _postService.ListPostsAsync(requesterUser,
+            var page = await _postService.ListPostsAsync(requestingUser,
                 paginationInputParameters, inputQueryParameters.Self,
                 inputQueryParameters.Joined, inputQueryParameters.CommunityId,
                 inputQueryParameters.CommunityName, inputQueryParameters.Search,
@@ -60,15 +60,15 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Requested post</returns>
         /// <response code="200">The post was successfully retrieved.</response>
         [AllowAnonymous]
-        [HttpGet("{id:ulong}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> GetPostByIdAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerGetPostByIdInputRouteParameters inputRouteParameters,
             [FromQuery] ControllerGetPostInputQueryParameters inputQueryParameters)
         {
             var post = await _postService
-                .GetPostByIdAsync(requesterUser, inputRouteParameters.Id,
+                .GetPostByIdAsync(requestingUser, inputRouteParameters.Id,
                 inputQueryParameters.IncludeAuthor, inputQueryParameters.IncludeCommunity);
             var postDto = _postConverter.ConvertToDto(post);
             return postDto;
@@ -83,11 +83,11 @@ namespace FireplaceApi.Api.Controllers
         [Consumes("application/json")]
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> CreatePostAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromBody] ControllerCreatePostInputBodyParameters inputBodyParameters)
         {
             var post = await _postService.CreatePostAsync(
-                requesterUser, inputBodyParameters.CommunityId,
+                requestingUser, inputBodyParameters.CommunityId,
                 inputBodyParameters.CommunityName, inputBodyParameters.Content);
             var postDto = _postConverter.ConvertToDto(post);
             return postDto;
@@ -98,16 +98,16 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Voted post</returns>
         /// <response code="200">Returns the Voted post</response>
-        [HttpPost("{id:ulong}/votes")]
+        [HttpPost("{id}/votes")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> VotePostAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerVotePostInputRouteParameters inputRouteParameters,
             [FromBody] ControllerVotePostInputBodyParameters inputBodyParameters)
         {
             var post = await _postService.VotePostAsync(
-                requesterUser, inputRouteParameters.Id, inputBodyParameters.IsUpvote);
+                requestingUser, inputRouteParameters.Id, inputBodyParameters.IsUpvote);
             var postDto = _postConverter.ConvertToDto(post);
             return postDto;
         }
@@ -117,15 +117,15 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>The post</returns>
         /// <response code="200">Returns the post</response>
-        [HttpPatch("{id:ulong}/votes/me")]
+        [HttpPatch("{id}/votes/me")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> ToggleVoteForPostAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerToggleVoteForPostInputRouteParameters inputRouteParameters)
         {
             var post = await _postService.ToggleVoteForPostAsync(
-                requesterUser, inputRouteParameters.Id);
+                requestingUser, inputRouteParameters.Id);
             var postDto = _postConverter.ConvertToDto(post);
             return postDto;
         }
@@ -135,15 +135,15 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>The post</returns>
         /// <response code="200">Returns the post</response>
-        [HttpDelete("{id:ulong}/votes/me")]
+        [HttpDelete("{id}/votes/me")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> DeleteVoteForPostAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerDeleteVoteForPostInputRouteParameters inputRouteParameters)
         {
             var post = await _postService.DeleteVoteForPostAsync(
-                requesterUser, inputRouteParameters.Id);
+                requestingUser, inputRouteParameters.Id);
             var postDto = _postConverter.ConvertToDto(post);
             return postDto;
         }
@@ -153,15 +153,15 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Updated post</returns>
         /// <response code="200">The post was successfully updated.</response>
-        [HttpPatch("{id:ulong}")]
+        [HttpPatch("{id}")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> PatchPostByIdAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerPatchPostByIdInputRouteParameters inputRouteParameters,
             [FromBody] ControllerPatchPostInputBodyParameters inputBodyParameters)
         {
-            var post = await _postService.PatchPostByIdAsync(requesterUser,
+            var post = await _postService.PatchPostByIdAsync(requestingUser,
                 inputRouteParameters.Id, inputBodyParameters.Content);
             var postDto = _postConverter.ConvertToDto(post);
             return postDto;
@@ -172,13 +172,13 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>No content</returns>
         /// <response code="200">The post was successfully deleted.</response>
-        [HttpDelete("{id:ulong}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeletePostByIdAsync(
-            [BindNever][FromHeader] User requesterUser,
+            [BindNever][FromHeader] User requestingUser,
             [FromRoute] ControllerDeletePostByIdInputRouteParameters inputRouteParameters)
         {
-            await _postService.DeletePostByIdAsync(requesterUser,
+            await _postService.DeletePostByIdAsync(requestingUser,
                 inputRouteParameters.Id);
             return Ok();
         }

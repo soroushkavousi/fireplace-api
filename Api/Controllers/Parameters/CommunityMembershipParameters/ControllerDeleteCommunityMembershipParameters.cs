@@ -6,18 +6,10 @@ using System.ComponentModel.DataAnnotations;
 namespace FireplaceApi.Api.Controllers
 {
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
-    public class ControllerDeleteCommunityMembershipByCommunityIdInputRouteParameters
+    public class ControllerDeleteCommunityMembershipByCommunityEncodedIdOrNameInputRouteParameters
     {
         [Required]
-        [FromRoute(Name = "communityId")]
-        public string CommunityId { get; set; }
-    }
-
-    [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
-    public class ControllerDeleteCommunityMembershipByCommunityNameInputRouteParameters
-    {
-        [Required]
-        [FromRoute(Name = "communityName")]
-        public string CommunityName { get; set; }
+        [FromRoute(Name = "id-or-name")]
+        public string CommunityEncodedIdOrName { get; set; }
     }
 }

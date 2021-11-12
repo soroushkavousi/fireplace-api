@@ -1,6 +1,6 @@
 ﻿using FireplaceApi.Api.Controllers;
-using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -28,8 +28,8 @@ namespace FireplaceApi.Api.Converters
                 creatorDto = _serviceProvider.GetService<UserConverter>()
                     .ConvertToDto(community.Creator.PureCopy());
 
-            var communityDto = new CommunityDto(community.Id.Encode(), community.Name,
-                community.CreatorId.Encode(), community.CreationDate, creatorDto);
+            var communityDto = new CommunityDto(community.Id.IdEncode(), community.Name,
+                community.CreatorId.IdEncode(), community.CreationDate, creatorDto);
 
             return communityDto;
         }

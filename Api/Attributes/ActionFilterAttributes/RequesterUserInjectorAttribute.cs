@@ -5,16 +5,16 @@ using System.Linq;
 
 namespace FireplaceApi.Api.Attributes
 {
-    public class RequesterUserInjectorAttribute : ActionFilterAttribute
+    public class RequestingUserInjectorAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var doesActionHaveRequesterUser = context.ActionDescriptor.Parameters
-                .Any(parameterDescriptor => parameterDescriptor.Name == Constants.RequesterUserActionArgumentKey);
-            if (doesActionHaveRequesterUser == false)
+            var doesActionHaveRequestingUser = context.ActionDescriptor.Parameters
+                .Any(parameterDescriptor => parameterDescriptor.Name == Constants.RequestingUserActionArgumentKey);
+            if (doesActionHaveRequestingUser == false)
                 return;
-            context.ActionArguments[Constants.RequesterUserActionArgumentKey] =
-                context.HttpContext.Items.GetValue(Constants.RequesterUserKey);
+            context.ActionArguments[Constants.RequestingUserActionArgumentKey] =
+                context.HttpContext.Items.GetValue(Constants.RequestingUserKey);
         }
     }
 }

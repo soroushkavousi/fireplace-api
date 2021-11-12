@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Validators;
@@ -22,74 +22,52 @@ namespace FireplaceApi.Core.Services
             _communityOperator = communityOperator;
         }
 
-        public async Task<Page<Community>> ListCommunitiesAsync(User requesterUser,
+        public async Task<Page<Community>> ListCommunitiesAsync(User requestingUser,
             PaginationInputParameters paginationInputParameters, string name)
         {
-            await _communityValidator.ValidateListCommunitiesInputParametersAsync(requesterUser,
+            await _communityValidator.ValidateListCommunitiesInputParametersAsync(requestingUser,
                 paginationInputParameters, name);
-            var page = await _communityOperator.ListCommunitiesAsync(requesterUser,
+            var page = await _communityOperator.ListCommunitiesAsync(requestingUser,
                 paginationInputParameters, name);
             return page;
         }
 
-        public async Task<Community> GetCommunityByIdAsync(User requesterUser, string encodedId,
-            bool? includeCreator)
+        public async Task<Community> GetCommunityByEncodedIdOrNameAsync(User requestingUser,
+            string encodedIdOrName, bool? includeCreator)
         {
-            await _communityValidator.ValidateGetCommunityByIdInputParametersAsync(requesterUser,
-                encodedId, includeCreator);
-            var id = encodedId.Decode();
-            var community = await _communityOperator.GetCommunityByIdAsync(id, includeCreator.Value);
+            var communityIdentifier = await _communityValidator.ValidateGetCommunityByEncodedIdOrNameInputParametersAsync(
+                requestingUser, encodedIdOrName, includeCreator);
+            var community = await _communityOperator.GetCommunityByIdentifierAsync(
+                    communityIdentifier, includeCreator.Value);
             return community;
         }
 
-        public async Task<Community> GetCommunityByNameAsync(User requesterUser, string name,
-            bool? includeCreator)
-        {
-            await _communityValidator.ValidateGetCommunityByNameInputParametersAsync(requesterUser,
-                name, includeCreator);
-            var community = await _communityOperator.GetCommunityByNameAsync(name, includeCreator.Value);
-            return community;
-        }
-
-        public async Task<Community> CreateCommunityAsync(User requesterUser, string name)
+        public async Task<Community> CreateCommunityAsync(User requestingUser, string name)
         {
             await _communityValidator
-                .ValidateCreateCommunityInputParametersAsync(requesterUser, name);
+                .ValidateCreateCommunityInputParametersAsync(requestingUser, name);
             return await _communityOperator
-                .CreateCommunityAsync(requesterUser.Id, name);
+                .CreateCommunityAsync(requestingUser.Id, name);
         }
 
-        public async Task<Community> PatchCommunityByIdAsync(User requesterUser,
-            string encodedId, string newName)
+        public async Task<Community> PatchCommunityByEncodedIdOrNameAsync(User requestingUser,
+            string encodedIdOrName, string newName)
         {
-            await _communityValidator.ValidatePatchCommunityByIdInputParametersAsync(
-                requesterUser, encodedId, newName);
-            var id = encodedId.Decode();
-            var community = await _communityOperator.PatchCommunityByIdAsync(id, newName);
+            var community = await _communityValidator.ValidatePatchCommunityByEncodedIdOrNameInputParametersAsync(
+                requestingUser, encodedIdOrName, newName);
+            community = await _communityOperator.ApplyCommunityChangesAsync(
+                community, newName);
+            community = await _communityOperator.GetCommunityByIdentifierAsync(
+                CommunityIdentifier.OfId(community.Id), false);
             return community;
         }
 
-        public async Task<Community> PatchCommunityByNameAsync(User requesterUser,
-            string name, string newName)
+        public async Task DeleteCommunityByEncodedIdOrNameAsync(User requestingUser, string encodedIdOrName)
         {
-            await _communityValidator.ValidatePatchCommunityByNameInputParametersAsync(requesterUser,
-                name, newName);
-            var community = await _communityOperator.PatchCommunityByNameAsync(name, newName);
-            return community;
-        }
-
-        public async Task DeleteCommunityByIdAsync(User requesterUser, string encodedId)
-        {
-            await _communityValidator.ValidateDeleteCommunityByIdInputParametersAsync(requesterUser,
-                encodedId);
-            var id = encodedId.Decode();
-            await _communityOperator.DeleteCommunityByIdAsync(id);
-        }
-
-        public async Task DeleteCommunityByNameAsync(User requesterUser, string name)
-        {
-            await _communityValidator.ValidateDeleteCommunityByNameInputParametersAsync(requesterUser, name);
-            await _communityOperator.DeleteCommunityByNameAsync(name);
+            var communityIdentifier = await _communityValidator.ValidateDeleteCommunityByEncodedIdOrNameInputParametersAsync(
+                requestingUser, encodedIdOrName);
+            await _communityOperator.DeleteCommunityByIdentifierAsync(
+                    communityIdentifier);
         }
     }
 }

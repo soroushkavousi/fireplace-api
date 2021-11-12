@@ -1,6 +1,6 @@
 ﻿using FireplaceApi.Api.Controllers;
-using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -28,7 +28,7 @@ namespace FireplaceApi.Api.Converters
                 userDto = _serviceProvider.GetService<UserConverter>()
                     .ConvertToDto(accessToken.User.PureCopy());
 
-            var accessTokenDto = new AccessTokenDto(accessToken.UserId.Encode(),
+            var accessTokenDto = new AccessTokenDto(accessToken.UserId.IdEncode(),
                 accessToken.Value, accessToken.CreationDate, userDto);
 
             return accessTokenDto;

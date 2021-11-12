@@ -1,6 +1,6 @@
 ﻿using FireplaceApi.Api.Controllers;
-using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -38,7 +38,7 @@ namespace FireplaceApi.Api.Converters
                 sessionDtos = user.Sessions.Select(
                     session => _serviceProvider.GetService<SessionConverter>().ConvertToDto(session.PureCopy())).ToList();
 
-            var userDto = new UserDto(user.Id.Encode(), user.FirstName, user.LastName,
+            var userDto = new UserDto(user.Id.IdEncode(), user.FirstName, user.LastName,
                 user.Username, user.State.ToString(), user.CreationDate,
                 accessTokenValue, emailDto, sessionDtos);
 

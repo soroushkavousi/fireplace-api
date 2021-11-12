@@ -1,6 +1,6 @@
-﻿using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.Validators;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
@@ -20,22 +20,22 @@ namespace FireplaceApi.Core.Services
             _emailOperator = emailOperator;
         }
 
-        public async Task<Email> ActivateEmailByIdAsync(User requesterUser, string encodedId,
+        public async Task<Email> ActivateEmailByIdAsync(User requestingUser, string encodedId,
             int? activationCode)
         {
-            await _emailValidator.ValidateActivateEmailByIdInputParametersAsync(requesterUser,
+            await _emailValidator.ValidateActivateEmailByIdInputParametersAsync(requestingUser,
                 encodedId, activationCode);
-            var id = encodedId.Decode();
+            var id = encodedId.IdDecode();
             var email = await _emailOperator.ActivateEmailByIdAsync(id);
             return email;
         }
 
-        public async Task<Email> GetEmailByIdAsync(User requesterUser, string encodedId,
+        public async Task<Email> GetEmailByIdAsync(User requestingUser, string encodedId,
             bool? includeUser)
         {
-            await _emailValidator.ValidateGetEmailByIdInputParametersAsync(requesterUser,
+            await _emailValidator.ValidateGetEmailByIdInputParametersAsync(requestingUser,
                 encodedId, includeUser);
-            var id = encodedId.Decode();
+            var id = encodedId.IdDecode();
             var email = await _emailOperator.GetEmailByIdAsync(id, includeUser.Value);
             return email;
         }

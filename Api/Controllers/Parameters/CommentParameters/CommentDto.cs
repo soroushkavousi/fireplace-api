@@ -22,7 +22,7 @@ namespace FireplaceApi.Api.Controllers
         [Required]
         public int Vote { get; set; }
         [Required]
-        public int RequesterUserVote { get; set; }
+        public int RequestingUserVote { get; set; }
         [Required]
         public string Content { get; set; }
         [Required]
@@ -42,7 +42,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(AuthorUsername).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Username).ToSnakeCase()],
             [nameof(PostId).ToSnakeCase()] = PostDto.PureExample1[nameof(PostDto.Id).ToSnakeCase()],
             [nameof(Vote).ToSnakeCase()] = new OpenApiInteger(53),
-            [nameof(RequesterUserVote).ToSnakeCase()] = new OpenApiInteger(1),
+            [nameof(RequestingUserVote).ToSnakeCase()] = new OpenApiInteger(1),
             [nameof(Content).ToSnakeCase()] = new OpenApiString("It's ok."),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(ModifiedDate).ToSnakeCase()] = new OpenApiNull(),
@@ -58,7 +58,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(AuthorUsername).ToSnakeCase()] = UserDto.PureExample2[nameof(UserDto.Username).ToSnakeCase()],
             [nameof(PostId).ToSnakeCase()] = PostDto.PureExample2[nameof(PostDto.Id).ToSnakeCase()],
             [nameof(Vote).ToSnakeCase()] = new OpenApiInteger(4),
-            [nameof(RequesterUserVote).ToSnakeCase()] = new OpenApiInteger(0),
+            [nameof(RequestingUserVote).ToSnakeCase()] = new OpenApiInteger(0),
             [nameof(Content).ToSnakeCase()] = new OpenApiString("It's not good!"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(ModifiedDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetLastHourDate()),
@@ -80,7 +80,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(AuthorUsername).ToSnakeCase()] = PureExample1[nameof(AuthorUsername).ToSnakeCase()],
             [nameof(PostId).ToSnakeCase()] = PureExample1[nameof(PostId).ToSnakeCase()],
             [nameof(Vote).ToSnakeCase()] = PureExample1[nameof(Vote).ToSnakeCase()],
-            [nameof(RequesterUserVote).ToSnakeCase()] = PureExample1[nameof(RequesterUserVote).ToSnakeCase()],
+            [nameof(RequestingUserVote).ToSnakeCase()] = PureExample1[nameof(RequestingUserVote).ToSnakeCase()],
             [nameof(Content).ToSnakeCase()] = PureExample1[nameof(Content).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = PureExample1[nameof(CreationDate).ToSnakeCase()],
             [nameof(ModifiedDate).ToSnakeCase()] = PureExample1[nameof(ModifiedDate).ToSnakeCase()],
@@ -96,7 +96,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(AuthorUsername).ToSnakeCase()] = PureExample2[nameof(AuthorUsername).ToSnakeCase()],
             [nameof(PostId).ToSnakeCase()] = PureExample2[nameof(PostId).ToSnakeCase()],
             [nameof(Vote).ToSnakeCase()] = PureExample2[nameof(Vote).ToSnakeCase()],
-            [nameof(RequesterUserVote).ToSnakeCase()] = PureExample2[nameof(RequesterUserVote).ToSnakeCase()],
+            [nameof(RequestingUserVote).ToSnakeCase()] = PureExample2[nameof(RequestingUserVote).ToSnakeCase()],
             [nameof(Content).ToSnakeCase()] = PureExample2[nameof(Content).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = PureExample2[nameof(CreationDate).ToSnakeCase()],
             [nameof(ModifiedDate).ToSnakeCase()] = PureExample2[nameof(ModifiedDate).ToSnakeCase()],
@@ -138,7 +138,7 @@ namespace FireplaceApi.Api.Controllers
         }
 
         public CommentDto(string id, string authorId, string authorUsername,
-            string postId, int vote, int requesterUserVote, string content,
+            string postId, int vote, int requestingUserVote, string content,
             DateTime creationDate, DateTime? modifiedDate = null,
             List<string> parentCommentIds = null,
             UserDto author = null, PostDto post = null,
@@ -149,7 +149,7 @@ namespace FireplaceApi.Api.Controllers
             AuthorUsername = authorUsername;
             PostId = postId;
             Vote = vote;
-            RequesterUserVote = requesterUserVote;
+            RequestingUserVote = requestingUserVote;
             Content = content;
             CreationDate = creationDate;
             ModifiedDate = modifiedDate;

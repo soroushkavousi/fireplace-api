@@ -1,7 +1,6 @@
 ﻿using FireplaceApi.Api.Controllers;
-using FireplaceApi.Api.Tools;
-using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Tools;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -22,8 +21,8 @@ namespace FireplaceApi.Api.Converters
             _logger = logger;
             _serviceProvider = serviceProvider;
             _configuration = configuration;
-            _baseUri = new Uri(_configuration.GetValue<string>(Constants.FilesBaseUrlPathKey));
-            _basePhysicalPath = _configuration.GetValue<string>(Constants.FilesBasePhysicalPathKey);
+            _baseUri = new Uri(_configuration.GetValue<string>(Tools.Constants.FilesBaseUrlPathKey));
+            _basePhysicalPath = _configuration.GetValue<string>(Tools.Constants.FilesBasePhysicalPathKey);
         }
 
         public override FileDto ConvertToDto(File file)
@@ -31,7 +30,7 @@ namespace FireplaceApi.Api.Converters
             if (file == null)
                 return null;
 
-            var fileDto = new FileDto(file.Id.Encode(), file.Uri.AbsoluteUri, file.CreationDate);
+            var fileDto = new FileDto(file.Id.IdEncode(), file.Uri.AbsoluteUri, file.CreationDate);
 
             return fileDto;
         }

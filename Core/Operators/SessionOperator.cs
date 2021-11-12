@@ -27,9 +27,9 @@ namespace FireplaceApi.Core.Operators
             _sessionRepository = sessionRepository;
         }
 
-        public async Task<List<Session>> ListSessionsAsync(User requesterUser)
+        public async Task<List<Session>> ListSessionsAsync(User requestingUser)
         {
-            var session = await _sessionRepository.ListSessionsAsync(requesterUser.Id, SessionState.OPENED, false);
+            var session = await _sessionRepository.ListSessionsAsync(requestingUser.Id, SessionState.OPENED, false);
             return session;
         }
 

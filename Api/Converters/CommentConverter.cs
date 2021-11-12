@@ -1,6 +1,6 @@
 ﻿using FireplaceApi.Api.Controllers;
-using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -49,11 +49,11 @@ namespace FireplaceApi.Api.Converters
             }
 
             var encodedParentCommentIds = comment.ParentCommentIds
-                .Select(pcid => pcid.Encode()).ToList();
+                .Select(pcid => pcid.IdEncode()).ToList();
 
-            var commentDto = new CommentDto(comment.Id.Encode(),
-                comment.AuthorId.Encode(), comment.AuthorUsername,
-                comment.PostId.Encode(), comment.Vote, comment.RequesterUserVote,
+            var commentDto = new CommentDto(comment.Id.IdEncode(),
+                comment.AuthorId.IdEncode(), comment.AuthorUsername,
+                comment.PostId.IdEncode(), comment.Vote, comment.RequestingUserVote,
                 comment.Content, comment.CreationDate,
                 comment.ModifiedDate, encodedParentCommentIds,
                 authorDto, postDto, childComments: childCommentDtos);

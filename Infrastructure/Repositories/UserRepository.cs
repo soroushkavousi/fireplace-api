@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.ValueObjects;
@@ -57,39 +58,22 @@ namespace FireplaceApi.Infrastructure.Repositories
             return userEntities.Select(e => _userConverter.ConvertToModel(e)).ToList();
         }
 
-        public async Task<User> GetUserByIdAsync(ulong id,
+        public async Task<User> GetUserByIdentifierAsync(UserIdentifier identifier,
             bool includeEmail = false, bool includeGoogleUser = false,
             bool includeAccessTokens = false, bool includeSessions = false)
         {
             _logger.LogIOInformation(null, "Database | Input",
-                new { id, includeEmail, includeGoogleUser, includeAccessTokens, includeSessions });
+                new
+                {
+                    identifier, includeEmail, includeGoogleUser,
+                    includeAccessTokens, includeSessions
+                });
             var sw = Stopwatch.StartNew();
             var userEntity = await _userEntities
                 .AsNoTracking()
-                .Where(e => e.Id == id)
-                .Include(
-                    emailEntity: includeEmail,
-                    googleUserEntity: includeGoogleUser,
-                    accessTokenEntities: includeAccessTokens,
-                    sessionEntities: includeSessions
+                .Search(
+                    identifier: identifier
                 )
-                .SingleOrDefaultAsync();
-
-            _logger.LogIOInformation(sw, "Database | Output",
-                new { userEntity });
-            return _userConverter.ConvertToModel(userEntity);
-        }
-
-        public async Task<User> GetUserByUsernameAsync(string username,
-            bool includeEmail = false, bool includeGoogleUser = false,
-            bool includeAccessTokens = false, bool includeSessions = false)
-        {
-            _logger.LogIOInformation(null, "Database | Input",
-                new { username, includeEmail, includeGoogleUser, includeAccessTokens, includeSessions });
-            var sw = Stopwatch.StartNew();
-            var userEntity = await _userEntities
-                .AsNoTracking()
-                .Where(e => e.Username == username)
                 .Include(
                     emailEntity: includeEmail,
                     googleUserEntity: includeGoogleUser,
@@ -169,12 +153,14 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _userConverter.ConvertToModel(userEntity);
         }
 
-        public async Task DeleteUserByIdAsync(ulong id)
+        public async Task DeleteUserByIdentifierAsync(UserIdentifier identifier)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { identifier });
             var sw = Stopwatch.StartNew();
             var userEntity = await _userEntities
-                .Where(e => e.Id == id)
+                .Search(
+                    identifier: identifier
+                )
                 .SingleOrDefaultAsync();
 
             _userEntities.Remove(userEntity);
@@ -184,41 +170,15 @@ namespace FireplaceApi.Infrastructure.Repositories
             _logger.LogIOInformation(sw, "Database | Output", new { userEntity });
         }
 
-        public async Task DeleteUserByUsernameAsync(string username)
+        public async Task<bool> DoesUserIdentifierExistAsync(UserIdentifier identifier)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { username });
-            var sw = Stopwatch.StartNew();
-            var userEntity = await _userEntities
-                .Where(e => e.Username == username)
-                .SingleOrDefaultAsync();
-
-            _userEntities.Remove(userEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
-
-            _logger.LogIOInformation(sw, "Database | Output", new { userEntity });
-        }
-
-        public async Task<bool> DoesUserIdExistAsync(ulong id)
-        {
-            _logger.LogIOInformation(null, "Database | Input", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { identifier });
             var sw = Stopwatch.StartNew();
             var doesExist = await _userEntities
                 .AsNoTracking()
-                .Where(e => e.Id == id)
-                .AnyAsync();
-
-            _logger.LogIOInformation(sw, "Database | Output", new { doesExist });
-            return doesExist;
-        }
-
-        public async Task<bool> DoesUsernameExistAsync(string username)
-        {
-            _logger.LogIOInformation(null, "Database | Input", new { username });
-            var sw = Stopwatch.StartNew();
-            var doesExist = await _userEntities
-                .AsNoTracking()
-                .Where(e => e.Username == username)
+                .Search(
+                    identifier: identifier
+                )
                 .AnyAsync();
 
             _logger.LogIOInformation(sw, "Database | Output", new { doesExist });
@@ -246,6 +206,25 @@ namespace FireplaceApi.Infrastructure.Repositories
                 userEntitiesQuery = userEntitiesQuery.Include(e => e.SessionEntities);
 
             return userEntitiesQuery;
+        }
+
+        public static IQueryable<UserEntity> Search(
+            [NotNull] this IQueryable<UserEntity> q, UserIdentifier identifier)
+        {
+            if (identifier != null)
+            {
+                switch (identifier)
+                {
+                    case UserIdIdentifier idIdentifier:
+                        q = q.Where(e => e.Id == idIdentifier.Id);
+                        break;
+                    case UserUsernameIdentifier usernameIdentifier:
+                        q = q.Where(e => e.Username == usernameIdentifier.Username);
+                        break;
+                }
+            }
+
+            return q;
         }
     }
 }

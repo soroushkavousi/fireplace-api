@@ -20,11 +20,11 @@ namespace FireplaceApi.Core.Services
             _accessTokenOperator = accessTokenOperator;
         }
 
-        public async Task<AccessToken> GetAccessTokenByValueAsync(User requesterUser,
+        public async Task<AccessToken> GetAccessTokenByValueAsync(User requestingUser,
             string accessTokenValue, bool? includeUser)
         {
             await _accessTokenValidator.ValidateGetAccessTokenByValueInputParametersAsync(
-                requesterUser, accessTokenValue, includeUser);
+                requestingUser, accessTokenValue, includeUser);
             var accessToken = await _accessTokenOperator.GetAccessTokenByValueAsync(
                 accessTokenValue, includeUser.Value);
             return accessToken;

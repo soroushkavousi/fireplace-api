@@ -63,21 +63,21 @@ namespace FireplaceApi.Infrastructure.Converters
                 post = _postConverter
                     .ConvertToModel(commentEntity.PostEntity.PureCopy());
 
-            int requesterUserVote = 0;
+            int requestingUserVote = 0;
             if (commentEntity.CommentVoteEntities != null
                 && commentEntity.CommentVoteEntities.Count == 1)
             {
                 var voteEntity = commentEntity.CommentVoteEntities[0];
                 if (voteEntity.IsUp)
-                    requesterUserVote = 1;
+                    requestingUserVote = 1;
                 else
-                    requesterUserVote = -1;
+                    requestingUserVote = -1;
             }
 
             var comment = new Comment(commentEntity.Id,
                 commentEntity.AuthorEntityId, commentEntity.AuthorEntityUsername,
                 commentEntity.PostEntityId, commentEntity.Vote,
-                requesterUserVote, commentEntity.Content,
+                requestingUserVote, commentEntity.Content,
                 commentEntity.CreationDate, commentEntity.ParentCommentEntityIds,
                 commentEntity.ModifiedDate, author, post);
 
