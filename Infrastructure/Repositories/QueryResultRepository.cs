@@ -5,6 +5,7 @@ using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
+using FireplaceApi.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -106,7 +107,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             var sw = Stopwatch.StartNew();
             var queryResultEntity = new T();
             queryResultEntity.FillParameters(id, pointer, lastStart,
-                lastEnd, lastLimit, lastPage, referenceEntityIds.ToArray());
+                lastEnd, lastLimit, lastPage, referenceEntityIds.ToDecimals());
             entities.Add(queryResultEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();

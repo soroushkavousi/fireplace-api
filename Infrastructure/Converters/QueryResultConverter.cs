@@ -1,8 +1,8 @@
 ﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Infrastructure.Entities;
+using FireplaceApi.Infrastructure.Extensions;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Linq;
 
 namespace FireplaceApi.Infrastructure.Converters
 {
@@ -27,7 +27,7 @@ namespace FireplaceApi.Infrastructure.Converters
             var queryResultEntity = new T();
             queryResultEntity.FillParameters(queryResult.Id, queryResult.Pointer,
                 queryResult.LastStart, queryResult.LastEnd, queryResult.LastLimit,
-                queryResult.LastPage, queryResult.ReferenceIds.ToArray(), queryResult.CreationDate,
+                queryResult.LastPage, queryResult.ReferenceIds.ToDecimals(), queryResult.CreationDate,
                 queryResult.ModifiedDate);
 
             return queryResultEntity;
@@ -40,7 +40,7 @@ namespace FireplaceApi.Infrastructure.Converters
 
             var queryResult = new QueryResult(queryResultEntity.Id, queryResultEntity.Pointer,
                 queryResultEntity.LastStart, queryResultEntity.LastEnd, queryResultEntity.LastLimit,
-                queryResultEntity.LastPage, queryResultEntity.ReferenceEntityIds.ToList(),
+                queryResultEntity.LastPage, queryResultEntity.ReferenceEntityIds.ToUlongs(),
                 queryResultEntity.CreationDate, queryResultEntity.ModifiedDate);
 
             return queryResult;

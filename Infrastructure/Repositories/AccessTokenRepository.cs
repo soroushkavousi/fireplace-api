@@ -161,9 +161,8 @@ namespace FireplaceApi.Infrastructure.Repositories
     public static class AccessTokenRepositoryExtensions
     {
         public static IQueryable<AccessTokenEntity> Include(
-                    [NotNull] this IQueryable<AccessTokenEntity> accessTokenEntitiesQuery,
-                    bool userEntity
-                    )
+            [NotNull] this IQueryable<AccessTokenEntity> accessTokenEntitiesQuery,
+            bool userEntity)
         {
             if (userEntity)
                 accessTokenEntitiesQuery = accessTokenEntitiesQuery.Include(e => e.UserEntity);

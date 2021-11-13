@@ -7,6 +7,7 @@ using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
+using FireplaceApi.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -40,12 +41,13 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new { Ids });
             var sw = Stopwatch.StartNew();
+            var ulongIds = Ids.ToDecimals();
             var communityMembershipEntities = await _communityMembershipEntities
                 .AsNoTracking()
-                .Where(e => Ids.Contains(e.Id))
+                .Where(e => ulongIds.Contains(e.Id))
                 .ToListAsync();
 
-            Dictionary<ulong, CommunityMembershipEntity> communityMembershipEntityDictionary = new Dictionary<ulong, CommunityMembershipEntity>();
+            var communityMembershipEntityDictionary = new Dictionary<ulong, CommunityMembershipEntity>();
             communityMembershipEntities.ForEach(e => communityMembershipEntityDictionary[e.Id] = e);
             communityMembershipEntities = new List<CommunityMembershipEntity>();
             Ids.ForEach(id => communityMembershipEntities.Add(communityMembershipEntityDictionary[id]));

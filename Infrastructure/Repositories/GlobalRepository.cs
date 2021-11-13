@@ -56,7 +56,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             var sw = Stopwatch.StartNew();
             var globalEntity = await _globalEntities
                 .AsNoTracking()
-                .Where(e => e.Id == globalId.To<ulong>())
+                .Where(e => e.Id == globalId)
                 .Include(
                 )
                 .SingleOrDefaultAsync();
@@ -104,7 +104,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _logger.LogIOInformation(null, "Database | Input", new { globalId });
             var sw = Stopwatch.StartNew();
             var globalEntity = await _globalEntities
-                .Where(e => e.Id == globalId.To<ulong>())
+                .Where(e => e.Id == globalId)
                 .SingleOrDefaultAsync();
 
             _globalEntities.Remove(globalEntity);

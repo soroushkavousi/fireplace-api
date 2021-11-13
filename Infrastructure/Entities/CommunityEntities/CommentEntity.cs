@@ -15,7 +15,7 @@ namespace FireplaceApi.Infrastructure.Entities
         public ulong PostEntityId { get; set; }
         public int Vote { get; set; }
         public string Content { get; set; }
-        public List<ulong> ParentCommentEntityIds { get; set; }
+        public List<decimal> ParentCommentEntityIds { get; set; }
         public UserEntity AuthorEntity { get; set; }
         public PostEntity PostEntity { get; set; }
         public List<CommentVoteEntity> CommentVoteEntities { get; set; }
@@ -23,7 +23,7 @@ namespace FireplaceApi.Infrastructure.Entities
         private CommentEntity() : base() { }
 
         public CommentEntity(ulong id, ulong authorEntityId, string authorEntityUsername,
-            ulong postEntityId, string content, List<ulong> parentCommentEntityIds = null,
+            ulong postEntityId, string content, List<decimal> parentCommentEntityIds = null,
             DateTime? creationDate = null, DateTime? modifiedDate = null,
             int vote = 0, UserEntity authorEntity = null,
             PostEntity postEntity = null, List<CommentVoteEntity> commentVoteEntities = null)

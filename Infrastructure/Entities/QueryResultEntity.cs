@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace FireplaceApi.Infrastructure.Entities
@@ -14,12 +15,12 @@ namespace FireplaceApi.Infrastructure.Entities
         public int LastLimit { get; set; }
         public int LastPage { get; set; }
         [JsonIgnore]
-        public ulong[] ReferenceEntityIds { get; set; }
+        public List<decimal> ReferenceEntityIds { get; set; }
 
         protected QueryResultEntity() : base() { }
 
         public QueryResultEntity(ulong id, string pointer, int lastStart,
-            int lastEnd, int lastLimit, int lastPage, ulong[] referenceEntityIds,
+            int lastEnd, int lastLimit, int lastPage, List<decimal> referenceEntityIds,
             DateTime? creationDate = null, DateTime? modifiedDate = null)
             : base(id, creationDate, modifiedDate)
         {
@@ -28,7 +29,7 @@ namespace FireplaceApi.Infrastructure.Entities
         }
 
         public void FillParameters(ulong id, string pointer, int lastStart,
-            int lastEnd, int lastLimit, int lastPage, ulong[] referenceEntityIds,
+            int lastEnd, int lastLimit, int lastPage, List<decimal> referenceEntityIds,
             DateTime? creationDate = null, DateTime? modifiedDate = null)
         {
             Id = id;

@@ -6,6 +6,7 @@ using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
+using FireplaceApi.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -43,9 +44,10 @@ namespace FireplaceApi.Infrastructure.Repositories
                 Ids, requestingUser = requestingUser != null
             });
             var sw = Stopwatch.StartNew();
+            var ulongIds = Ids.ToDecimals();
             var commentEntities = await _commentEntities
                 .AsNoTracking()
-                .Where(e => Ids.Contains(e.Id))
+                .Where(e => ulongIds.Contains(e.Id))
                 .Include(
                     authorEntity: false,
                     postEntity: false,
@@ -53,7 +55,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
-            Dictionary<ulong, CommentEntity> commentEntityDictionary = new Dictionary<ulong, CommentEntity>();
+            var commentEntityDictionary = new Dictionary<ulong, CommentEntity>();
             commentEntities.ForEach(e => commentEntityDictionary[e.Id] = e);
             commentEntities = new List<CommentEntity>();
             Ids.ForEach(id => commentEntities.Add(commentEntityDictionary[id]));
@@ -217,7 +219,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             });
             var sw = Stopwatch.StartNew();
             var commentEntity = new CommentEntity(id, authorUserId,
-                authorUsername, postId, content, parentCommentIds);
+                authorUsername, postId, content, parentCommentIds.ToDecimals());
             _commentEntities.Add(commentEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
@@ -317,8 +319,9 @@ namespace FireplaceApi.Infrastructure.Repositories
 
             if (parentCommentIds != null && parentCommentIds.Count != 0)
             {
+                var parentCommentDecimalIds = parentCommentIds.ToDecimals();
                 q = q.Where(e =>
-                    e.ParentCommentEntityIds.Any(eParentId => parentCommentIds.Contains(eParentId)));
+                    e.ParentCommentEntityIds.Any(eParentId => parentCommentDecimalIds.Contains(eParentId)));
             }
 
             if (parentCommentId.HasValue)

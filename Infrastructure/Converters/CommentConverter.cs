@@ -1,5 +1,6 @@
 ﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Infrastructure.Entities;
+using FireplaceApi.Infrastructure.Extensions;
 using Microsoft.Extensions.Logging;
 using System;
 
@@ -42,7 +43,7 @@ namespace FireplaceApi.Infrastructure.Converters
             var commentEntity = new CommentEntity(
                 comment.Id, comment.AuthorId,
                 comment.AuthorUsername, comment.PostId,
-                comment.Content, comment.ParentCommentIds,
+                comment.Content, comment.ParentCommentIds.ToDecimals(),
                 comment.CreationDate, comment.ModifiedDate,
                 comment.Vote, authorEntity, postEntity);
 
@@ -78,7 +79,7 @@ namespace FireplaceApi.Infrastructure.Converters
                 commentEntity.AuthorEntityId, commentEntity.AuthorEntityUsername,
                 commentEntity.PostEntityId, commentEntity.Vote,
                 requestingUserVote, commentEntity.Content,
-                commentEntity.CreationDate, commentEntity.ParentCommentEntityIds,
+                commentEntity.CreationDate, commentEntity.ParentCommentEntityIds.ToUlongs(),
                 commentEntity.ModifiedDate, author, post);
 
             return comment;
