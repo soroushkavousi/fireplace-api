@@ -12,7 +12,7 @@ namespace FireplaceApi.Api.Attributes
                 .Any(parameterDescriptor => parameterDescriptor.Name == Constants.InputCookieParametersActionArgumentKey);
             if (doesActionHaveInputCookieParameters == false)
                 return;
-            context.ActionArguments[Constants.InputCookieParametersActionArgumentKey] = context.HttpContext.Items[Constants.ControllerInputCookieParametersKey];
+            context.ActionArguments[Constants.InputCookieParametersActionArgumentKey] = context.HttpContext.Items[Constants.InputCookieParametersKey];
         }
     }
 }

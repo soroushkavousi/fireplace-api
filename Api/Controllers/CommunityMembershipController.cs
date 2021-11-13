@@ -38,7 +38,7 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(CommunityMembershipDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommunityMembershipDto>> CreateCommunityMembershipAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromBody] ControllerCreateCommunityMembershipInputBodyParameters inputBodyParameters)
+            [FromBody] CreateCommunityMembershipInputBodyParameters inputBodyParameters)
         {
             var communityMembership = await _communityMembershipService.CreateCommunityMembershipAsync(
                 requestingUser, inputBodyParameters.CommunityId, inputBodyParameters.CommunityName);
@@ -55,7 +55,7 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteCommunityMembershipByCommunityIdAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerDeleteCommunityMembershipByCommunityEncodedIdOrNameInputRouteParameters inputRouteParameters)
+            [FromRoute] DeleteCommunityMembershipByCommunityEncodedIdOrNameInputRouteParameters inputRouteParameters)
         {
             await _communityMembershipService.DeleteCommunityMembershipAsync(requestingUser,
                 inputRouteParameters.CommunityEncodedIdOrName);

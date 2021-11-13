@@ -33,8 +33,8 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(EmailDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<EmailDto>> ActivateEmail(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerActivateEmailInputRouteParameters inputRouteParameters,
-            [FromBody] ControllerActivateEmailInputBodyParameters inputBodyParameters)
+            [FromRoute] ActivateEmailInputRouteParameters inputRouteParameters,
+            [FromBody] ActivateEmailInputBodyParameters inputBodyParameters)
         {
             var email = await _emailService.ActivateEmailByIdAsync(requestingUser,
                 inputRouteParameters.Id, inputBodyParameters.ActivationCode);
@@ -51,8 +51,8 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(EmailDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<EmailDto>> GetEmailByIdAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerGetEmailByIdInputRouteParameters inputRouteParameters,
-            [FromQuery] ControllerGetEmailByIdInputQueryParameters inputQueryParameters)
+            [FromRoute] GetEmailByIdInputRouteParameters inputRouteParameters,
+            [FromQuery] GetEmailByIdInputQueryParameters inputQueryParameters)
         {
             var email = await _emailService.GetEmailByIdAsync(requestingUser, inputRouteParameters.Id,
                 inputQueryParameters.IncludeUser);

@@ -39,7 +39,7 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(PageDto<PostDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<PageDto<PostDto>>> ListPostsAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromQuery] ControllerListPostsInputQueryParameters inputQueryParameters)
+            [FromQuery] ListPostsInputQueryParameters inputQueryParameters)
         {
             //var accessTokenValue = FindAccessTokenValue(inputHeaderParameters, inputCookieParameters);
             var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
@@ -64,8 +64,8 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> GetPostByIdAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerGetPostByIdInputRouteParameters inputRouteParameters,
-            [FromQuery] ControllerGetPostInputQueryParameters inputQueryParameters)
+            [FromRoute] GetPostByIdInputRouteParameters inputRouteParameters,
+            [FromQuery] GetPostInputQueryParameters inputQueryParameters)
         {
             var post = await _postService
                 .GetPostByIdAsync(requestingUser, inputRouteParameters.Id,
@@ -84,7 +84,7 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> CreatePostAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromBody] ControllerCreatePostInputBodyParameters inputBodyParameters)
+            [FromBody] CreatePostInputBodyParameters inputBodyParameters)
         {
             var post = await _postService.CreatePostAsync(
                 requestingUser, inputBodyParameters.CommunityId,
@@ -103,8 +103,8 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> VotePostAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerVotePostInputRouteParameters inputRouteParameters,
-            [FromBody] ControllerVotePostInputBodyParameters inputBodyParameters)
+            [FromRoute] VotePostInputRouteParameters inputRouteParameters,
+            [FromBody] VotePostInputBodyParameters inputBodyParameters)
         {
             var post = await _postService.VotePostAsync(
                 requestingUser, inputRouteParameters.Id, inputBodyParameters.IsUpvote);
@@ -122,7 +122,7 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> ToggleVoteForPostAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerToggleVoteForPostInputRouteParameters inputRouteParameters)
+            [FromRoute] ToggleVoteForPostInputRouteParameters inputRouteParameters)
         {
             var post = await _postService.ToggleVoteForPostAsync(
                 requestingUser, inputRouteParameters.Id);
@@ -140,7 +140,7 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> DeleteVoteForPostAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerDeleteVoteForPostInputRouteParameters inputRouteParameters)
+            [FromRoute] DeleteVoteForPostInputRouteParameters inputRouteParameters)
         {
             var post = await _postService.DeleteVoteForPostAsync(
                 requestingUser, inputRouteParameters.Id);
@@ -158,8 +158,8 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> PatchPostByIdAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerPatchPostByIdInputRouteParameters inputRouteParameters,
-            [FromBody] ControllerPatchPostInputBodyParameters inputBodyParameters)
+            [FromRoute] PatchPostByIdInputRouteParameters inputRouteParameters,
+            [FromBody] PatchPostInputBodyParameters inputBodyParameters)
         {
             var post = await _postService.PatchPostByIdAsync(requestingUser,
                 inputRouteParameters.Id, inputBodyParameters.Content);
@@ -176,7 +176,7 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeletePostByIdAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerDeletePostByIdInputRouteParameters inputRouteParameters)
+            [FromRoute] DeletePostByIdInputRouteParameters inputRouteParameters)
         {
             await _postService.DeletePostByIdAsync(requestingUser,
                 inputRouteParameters.Id);

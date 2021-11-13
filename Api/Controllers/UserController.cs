@@ -37,7 +37,7 @@ namespace FireplaceApi.Api.Controllers
         [HttpGet("open-google-log-in-page")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> OpenGoogleLogInPage(
-            [BindNever][FromHeader] ControllerInputHeaderParameters inputHeaderParameters)
+            [BindNever][FromHeader] InputHeaderParameters inputHeaderParameters)
         {
             var googleLogInPageUrl = await _userService.GetGoogleAuthUrlAsync(inputHeaderParameters.IpAddress);
             return Redirect(googleLogInPageUrl);
@@ -53,14 +53,14 @@ namespace FireplaceApi.Api.Controllers
         [Consumes("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> SignUpWithEmailAsync(
-            [BindNever][FromHeader] ControllerInputHeaderParameters inputHeaderParameters,
-            [FromBody] ControllerSignUpWithEmailInputBodyParameters inputBodyParameters)
+            [BindNever][FromHeader] InputHeaderParameters inputHeaderParameters,
+            [FromBody] SignUpWithEmailInputBodyParameters inputBodyParameters)
         {
             var password = Password.OfValue(inputBodyParameters.Password);
             var user = await _userService.SignUpWithEmailAsync(inputHeaderParameters.IpAddress, inputBodyParameters.FirstName,
                 inputBodyParameters.LastName, inputBodyParameters.Username, password, inputBodyParameters.EmailAddress);
             var userDto = _userConverter.ConvertToDto(user);
-            var outputCookieParameters = new ControllerSignUpWithEmailOutputCookieParameters(userDto.AccessToken);
+            var outputCookieParameters = new SignUpWithEmailOutputCookieParameters(userDto.AccessToken);
             SetOutputCookieParameters(outputCookieParameters);
             return userDto;
         }
@@ -74,14 +74,14 @@ namespace FireplaceApi.Api.Controllers
         [HttpGet("log-in-with-google")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> LogInWithGoogleAsync(
-            [BindNever][FromHeader] ControllerInputHeaderParameters inputHeaderParameters,
-            [FromQuery] ControllerLogInWithGoogleInputQueryParameters inputQueryParameters)
+            [BindNever][FromHeader] InputHeaderParameters inputHeaderParameters,
+            [FromQuery] LogInWithGoogleInputQueryParameters inputQueryParameters)
         {
             var user = await _userService.LogInWithGoogleAsync(inputHeaderParameters.IpAddress,
                 inputQueryParameters.State, inputQueryParameters.Code, inputQueryParameters.Scope,
                 inputQueryParameters.AuthUser, inputQueryParameters.Prompt, inputQueryParameters.Error);
             var userDto = _userConverter.ConvertToDto(user);
-            var outputCookieParameters = new ControllerSignUpWithEmailOutputCookieParameters(userDto?.AccessToken);
+            var outputCookieParameters = new SignUpWithEmailOutputCookieParameters(userDto?.AccessToken);
             SetOutputCookieParameters(outputCookieParameters);
             if (string.IsNullOrWhiteSpace(user.GoogleUser.RedirectToUserUrl))
                 return userDto;
@@ -99,14 +99,14 @@ namespace FireplaceApi.Api.Controllers
         [Consumes("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> LogInWithEmailAsync(
-            [BindNever][FromHeader] ControllerInputHeaderParameters inputHeaderParameters,
-            [FromBody] ControllerLogInWithEmailInputBodyParameters inputBodyParameters)
+            [BindNever][FromHeader] InputHeaderParameters inputHeaderParameters,
+            [FromBody] LogInWithEmailInputBodyParameters inputBodyParameters)
         {
             var password = Password.OfValue(inputBodyParameters.Password);
             var user = await _userService.LogInWithEmailAsync(inputHeaderParameters.IpAddress,
                 inputBodyParameters.EmailAddress, password);
             var userDto = _userConverter.ConvertToDto(user);
-            var outputCookieParameters = new ControllerSignUpWithEmailOutputCookieParameters(userDto.AccessToken);
+            var outputCookieParameters = new SignUpWithEmailOutputCookieParameters(userDto.AccessToken);
             SetOutputCookieParameters(outputCookieParameters);
             return userDto;
         }
@@ -121,14 +121,14 @@ namespace FireplaceApi.Api.Controllers
         [Consumes("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> LogInWithUsernameAsync(
-            [BindNever][FromHeader] ControllerInputHeaderParameters inputHeaderParameters,
-            [FromBody] ControllerLogInWithUsernameInputBodyParameters inputBodyParameters)
+            [BindNever][FromHeader] InputHeaderParameters inputHeaderParameters,
+            [FromBody] LogInWithUsernameInputBodyParameters inputBodyParameters)
         {
             var password = Password.OfValue(inputBodyParameters.Password);
             var user = await _userService.LogInWithUsernameAsync(inputHeaderParameters.IpAddress,
                 inputBodyParameters.Username, password);
             var userDto = _userConverter.ConvertToDto(user);
-            var outputCookieParameters = new ControllerSignUpWithEmailOutputCookieParameters(userDto.AccessToken);
+            var outputCookieParameters = new SignUpWithEmailOutputCookieParameters(userDto.AccessToken);
             SetOutputCookieParameters(outputCookieParameters);
             return userDto;
         }
@@ -142,7 +142,7 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> GetRequestingUserAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromQuery] ControllerGetUserInputQueryParameters inputQueryParameters)
+            [FromQuery] GetUserInputQueryParameters inputQueryParameters)
         {
             var user = await _userService.GetRequestingUserAsync(requestingUser,
                 inputQueryParameters.IncludeEmail, inputQueryParameters.IncludeSessions);
@@ -159,7 +159,7 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> GetUserByEncodedIdOrUsernameAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerGetUserByEncodedIdOrUsernameInputRouteParameters inputRouteParameters)
+            [FromRoute] GetUserByEncodedIdOrUsernameInputRouteParameters inputRouteParameters)
         {
             var user = await _userService.GetUserByEncodedIdOrUsernameAsync(requestingUser,
                 inputRouteParameters.EncodedIdOrUsername);
@@ -177,7 +177,7 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> PatchRequestingUserAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromBody] ControllerPatchUserInputBodyParameters inputBodyParameters)
+            [FromBody] PatchUserInputBodyParameters inputBodyParameters)
         {
             var password = Password.OfValue(inputBodyParameters.Password);
             var oldPassword = Password.OfValue(inputBodyParameters.OldPassword);

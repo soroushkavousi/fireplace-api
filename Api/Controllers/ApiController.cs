@@ -6,14 +6,14 @@ namespace FireplaceApi.Api.Controllers
 {
     public class ApiController : ControllerBase
     {
-        protected void SetOutputHeaderParameters(IControllerOutputHeaderParameters outputHeaderParameters)
+        protected void SetOutputHeaderParameters(IOutputHeaderParameters outputHeaderParameters)
         {
-            HttpContext.Items[Constants.ControllerOutputHeaderParametersKey] = outputHeaderParameters;
+            HttpContext.Items[Constants.OutputHeaderParametersKey] = outputHeaderParameters;
         }
 
-        protected void SetOutputCookieParameters(IControllerOutputCookieParameters outputCookieParameters)
+        protected void SetOutputCookieParameters(IOutputCookieParameters outputCookieParameters)
         {
-            HttpContext.Items[Constants.ControllerOutputCookieParametersKey] = outputCookieParameters;
+            HttpContext.Items[Constants.OutputCookieParametersKey] = outputCookieParameters;
         }
     }
 }

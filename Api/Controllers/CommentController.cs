@@ -40,7 +40,7 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(PageDto<CommentDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<PageDto<CommentDto>>> ListSelfCommentsAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromQuery] ControllerListSelfCommentsInputQueryParameters inputQueryParameters)
+            [FromQuery] ListSelfCommentsInputQueryParameters inputQueryParameters)
         {
             var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
             var page = await _commentService.ListSelfCommentsAsync(requestingUser,
@@ -61,8 +61,8 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(PageDto<CommentDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<PageDto<CommentDto>>> ListPostCommentsAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerListPostCommentsInputRouteParameters inputRouteParameters,
-            [FromQuery] ControllerListPostCommentsInputQueryParameters inputQueryParameters)
+            [FromRoute] ListPostCommentsInputRouteParameters inputRouteParameters,
+            [FromQuery] ListPostCommentsInputQueryParameters inputQueryParameters)
         {
             var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
             var page = await _commentService.ListPostCommentsAsync(requestingUser,
@@ -83,7 +83,7 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(List<CommentDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<List<CommentDto>>> ListChildCommentsAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerListChildCommentsInputRouteParameters inputRouteParameters)
+            [FromRoute] ListChildCommentsInputRouteParameters inputRouteParameters)
         {
             var comments = await _commentService.ListChildCommentsAsync(requestingUser,
                 inputRouteParameters.ParentId);
@@ -101,8 +101,8 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> GetCommentByIdAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerGetCommentByIdInputRouteParameters inputRouteParameters,
-            [FromQuery] ControllerGetCommentInputQueryParameters inputQueryParameters)
+            [FromRoute] GetCommentByIdInputRouteParameters inputRouteParameters,
+            [FromQuery] GetCommentInputQueryParameters inputQueryParameters)
         {
             var comment = await _commentService
                 .GetCommentByIdAsync(requestingUser, inputRouteParameters.Id,
@@ -121,8 +121,8 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> ReplyToPostAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerReplyToPostInputRouteParameters inputRouteParameters,
-            [FromBody] ControllerReplyToPostInputBodyParameters inputBodyParameters)
+            [FromRoute] ReplyToPostInputRouteParameters inputRouteParameters,
+            [FromBody] ReplyToPostInputBodyParameters inputBodyParameters)
         {
             var comment = await _commentService.ReplyToPostAsync(
                 requestingUser, inputRouteParameters.PostId,
@@ -141,8 +141,8 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> ReplyToCommentAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerReplyToCommentInputRouteParameters inputRouteParameters,
-            [FromBody] ControllerReplyToCommentInputBodyParameters inputBodyParameters)
+            [FromRoute] ReplyToCommentInputRouteParameters inputRouteParameters,
+            [FromBody] ReplyToCommentInputBodyParameters inputBodyParameters)
         {
             var comment = await _commentService.ReplyToCommentAsync(
                 requestingUser, inputRouteParameters.Id,
@@ -161,8 +161,8 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> VoteCommentAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerVoteCommentInputRouteParameters inputRouteParameters,
-            [FromBody] ControllerVoteCommentInputBodyParameters inputBodyParameters)
+            [FromRoute] VoteCommentInputRouteParameters inputRouteParameters,
+            [FromBody] VoteCommentInputBodyParameters inputBodyParameters)
 
         {
             var comment = await _commentService.VoteCommentAsync(
@@ -181,7 +181,7 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> ToggleVoteForCommentAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerToggleVoteForCommentInputRouteParameters inputRouteParameters)
+            [FromRoute] ToggleVoteForCommentInputRouteParameters inputRouteParameters)
         {
             var comment = await _commentService.ToggleVoteForCommentAsync(
                 requestingUser, inputRouteParameters.Id);
@@ -199,7 +199,7 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> DeleteVoteForCommentAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerDeleteVoteForCommentInputRouteParameters inputRouteParameters)
+            [FromRoute] DeleteVoteForCommentInputRouteParameters inputRouteParameters)
         {
             var comment = await _commentService.DeleteVoteForCommentAsync(
                 requestingUser, inputRouteParameters.Id);
@@ -217,8 +217,8 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommentDto>> PatchCommentByIdAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerPatchCommentByIdInputRouteParameters inputRouteParameters,
-            [FromBody] ControllerPatchCommentInputBodyParameters inputBodyParameters)
+            [FromRoute] PatchCommentByIdInputRouteParameters inputRouteParameters,
+            [FromBody] PatchCommentInputBodyParameters inputBodyParameters)
         {
             var comment = await _commentService.PatchCommentByIdAsync(requestingUser,
                 inputRouteParameters.Id, inputBodyParameters.Content);
@@ -235,7 +235,7 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteCommentByIdAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerDeleteCommentByIdInputRouteParameters inputRouteParameters)
+            [FromRoute] DeleteCommentByIdInputRouteParameters inputRouteParameters)
         {
             await _commentService.DeleteCommentByIdAsync(requestingUser,
                 inputRouteParameters.Id);

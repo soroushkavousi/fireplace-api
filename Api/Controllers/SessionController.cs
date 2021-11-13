@@ -50,8 +50,8 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(SessionDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<SessionDto>> GetSessionByIdAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerGetSessionByIdInputRouteParameters inputRouteParameters,
-            [FromQuery] ControllerGetSessionByIdInputQueryParameters inputQueryParameters)
+            [FromRoute] GetSessionByIdInputRouteParameters inputRouteParameters,
+            [FromQuery] GetSessionByIdInputQueryParameters inputQueryParameters)
         {
             var session = await _sessionService.GetSessionByIdAsync(requestingUser, inputRouteParameters.Id,
                 inputQueryParameters.IncludeUser);
@@ -69,7 +69,7 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(SessionDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> RevokeSession(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerRevokeSessionInputRouteParameters inputRouteParameters)
+            [FromRoute] RevokeSessionInputRouteParameters inputRouteParameters)
         {
             await _sessionService.RevokeSessionByIdAsync(requestingUser, inputRouteParameters.Id);
             return Ok();

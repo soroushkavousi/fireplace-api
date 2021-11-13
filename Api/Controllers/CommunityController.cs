@@ -38,7 +38,7 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(PageDto<CommunityDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<PageDto<CommunityDto>>> ListCommunitiesAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromQuery] ControllerListCommunitiesInputQueryParameters inputQueryParameters)
+            [FromQuery] ListCommunitiesInputQueryParameters inputQueryParameters)
         {
             //var accessTokenValue = FindAccessTokenValue(inputHeaderParameters, inputCookieParameters);
             var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
@@ -60,8 +60,8 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommunityDto>> GetCommunityByIdOrNameAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerGetCommunityByIdOrNameInputRouteParameters inputRouteParameters,
-            [FromQuery] ControllerGetCommunityInputQueryParameters inputQueryParameters)
+            [FromRoute] GetCommunityByIdOrNameInputRouteParameters inputRouteParameters,
+            [FromQuery] GetCommunityInputQueryParameters inputQueryParameters)
         {
             var community = await _communityService
                 .GetCommunityByEncodedIdOrNameAsync(requestingUser, inputRouteParameters.EncodedIdOrName,
@@ -80,7 +80,7 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommunityDto>> CreateCommunityAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromBody] ControllerCreateCommunityInputBodyParameters inputBodyParameters)
+            [FromBody] CreateCommunityInputBodyParameters inputBodyParameters)
         {
             var community = await _communityService.CreateCommunityAsync(requestingUser,
                 inputBodyParameters.Name);
@@ -98,8 +98,8 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommunityDto>> PatchCommunityByEncodedIdOrNameAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerPatchCommunityByEncodedIdOrNameInputRouteParameters inputRouteParameters,
-            [FromBody] ControllerPatchCommunityInputBodyParameters inputBodyParameters)
+            [FromRoute] PatchCommunityByEncodedIdOrNameInputRouteParameters inputRouteParameters,
+            [FromBody] PatchCommunityInputBodyParameters inputBodyParameters)
         {
             var community = await _communityService.PatchCommunityByEncodedIdOrNameAsync(requestingUser,
                 inputRouteParameters.EncodedIdOrName, inputBodyParameters.NewName);
@@ -116,7 +116,7 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteCommunityByIdOrNameAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerDeleteCommunityByEncodedIdOrNameInputRouteParameters inputRouteParameters)
+            [FromRoute] DeleteCommunityByEncodedIdOrNameInputRouteParameters inputRouteParameters)
         {
             await _communityService.DeleteCommunityByEncodedIdOrNameAsync(requestingUser, inputRouteParameters.EncodedIdOrName);
             return Ok();

@@ -95,8 +95,8 @@ namespace FireplaceApi.Api.Middlewares
             return false;
         }
 
-        protected string FindAccessTokenValue(ControllerInputHeaderParameters inputHeaderParameters,
-            ControllerInputCookieParameters inputCookieParameters)
+        protected string FindAccessTokenValue(InputHeaderParameters inputHeaderParameters,
+            InputCookieParameters inputCookieParameters)
         {
             var accessTokenValue = inputHeaderParameters.AccessTokenValue;
             if (string.IsNullOrWhiteSpace(accessTokenValue))

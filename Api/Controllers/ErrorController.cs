@@ -34,7 +34,7 @@ namespace FireplaceApi.Api.Controllers
         //[ProducesResponseType(typeof(IEnumerable<ErrorDto>), StatusCodes.Status200OK)]
         //public async Task<ActionResult<IEnumerable<ErrorDto>>> ListErrorsAsync(
         //    [BindNever][FromHeader] User requestingUser,
-        //    [BindNever][FromQuery] ControllerListErrorsInputQueryParameters inputQueryParameters)
+        //    [BindNever][FromQuery] ListErrorsInputQueryParameters inputQueryParameters)
         //{
         //    var errors = await _errorService.ListErrorsAsync(requestingUser);
         //    var errorDtos = errors.Select(error => _errorConverter.ConvertToDto(error)).ToList();
@@ -52,8 +52,8 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<ErrorDto>> GetErrorByCodeAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ControllerGetErrorByCodeInputRouteParameters inputRouteParameters,
-            [BindNever][FromQuery] ControllerGetErrorByCodeInputQueryParameters inputQueryParameters)
+            [FromRoute] GetErrorByCodeInputRouteParameters inputRouteParameters,
+            [BindNever][FromQuery] GetErrorByCodeInputQueryParameters inputQueryParameters)
         {
             var error = await _errorService.GetErrorByCodeAsync(requestingUser, inputRouteParameters.Code);
             var errorDto = _errorConverter.ConvertToDto(error);
@@ -72,8 +72,8 @@ namespace FireplaceApi.Api.Controllers
         //[ProducesResponseType(typeof(ErrorDto), StatusCodes.Status200OK)]
         //public async Task<ActionResult<ErrorDto>> PatchErrorAsync(
         //    [BindNever][FromHeader] User requestingUser,
-        //    [FromRoute] ControllerPatchErrorInputRouteParameters inputRouteParameters,
-        //    [FromBody] ControllerPatchErrorInputBodyParameters inputBodyParameters)
+        //    [FromRoute] PatchErrorInputRouteParameters inputRouteParameters,
+        //    [FromBody] PatchErrorInputBodyParameters inputBodyParameters)
         //{
         //    var error = await _errorService.PatchErrorByCodeAsync(requestingUser, inputRouteParameters.Code, inputBodyParameters.Message);
         //    var errorDto = _errorConverter.ConvertToDto(error);

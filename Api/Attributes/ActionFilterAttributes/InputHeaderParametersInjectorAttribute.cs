@@ -12,7 +12,7 @@ namespace FireplaceApi.Api.Attributes
                 .Any(parameterDescriptor => parameterDescriptor.Name == Constants.InputHeaderParametersActionArgumentKey);
             if (doesActionHaveInputHeaderParameters == false)
                 return;
-            context.ActionArguments[Constants.InputHeaderParametersActionArgumentKey] = context.HttpContext.Items[Constants.ControllerInputHeaderParametersKey];
+            context.ActionArguments[Constants.InputHeaderParametersActionArgumentKey] = context.HttpContext.Items[Constants.InputHeaderParametersKey];
         }
     }
 }

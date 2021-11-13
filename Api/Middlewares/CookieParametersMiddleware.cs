@@ -34,17 +34,17 @@ namespace FireplaceApi.Api.Middlewares
 
         private static void GetInputCookies(HttpContext httpContext)
         {
-            var inputCookieParameters = new ControllerInputCookieParameters(
+            var inputCookieParameters = new InputCookieParameters(
                 httpContext);
-            httpContext.Items[Constants.ControllerInputCookieParametersKey] =
+            httpContext.Items[Constants.InputCookieParametersKey] =
                 inputCookieParameters;
         }
 
         private void SetOutputCookies(HttpContext httpContext)
         {
             var outputCookieParameters = httpContext.Items
-                .GetValue(Constants.ControllerOutputCookieParametersKey, null)?
-                .To<IControllerOutputCookieParameters>();
+                .GetValue(Constants.OutputCookieParametersKey, null)?
+                .To<IOutputCookieParameters>();
             if (outputCookieParameters == null)
                 return;
             var cookieCollection = outputCookieParameters.GetCookieCollection();

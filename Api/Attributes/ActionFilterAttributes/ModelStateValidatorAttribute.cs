@@ -8,7 +8,7 @@
 //using FireplaceApi.Api.Extensions;
 //using Microsoft.AspNetCore.Mvc.Controllers;
 //using System.Diagnostics;
-//using FireplaceApi.Api.Controllers.Parameters.UserParameters;
+//using FireplaceApi.Api.s.Parameters.UserParameters;
 //using Microsoft.Extensions.Logging;
 //using FireplaceApi.Api.Enums;
 

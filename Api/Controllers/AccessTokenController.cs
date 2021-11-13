@@ -32,8 +32,8 @@ namespace FireplaceApi.Api.Controllers
         [ProducesResponseType(typeof(AccessTokenDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<AccessTokenDto>> GetAccessTokenByValueAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromQuery] ControllerGetAccessTokenByValueInputRouteParameters inputRouteParameters,
-            [FromQuery] ControllerGetAccessTokenByValueInputQueryParameters inputQueryParameters)
+            [FromQuery] GetAccessTokenByValueInputRouteParameters inputRouteParameters,
+            [FromQuery] GetAccessTokenByValueInputQueryParameters inputQueryParameters)
         {
             var accessToken = await _accessTokenService.GetAccessTokenByValueAsync(requestingUser,
                 inputRouteParameters.Value, inputQueryParameters.IncludeUser);

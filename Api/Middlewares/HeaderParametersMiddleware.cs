@@ -32,13 +32,13 @@ namespace FireplaceApi.Api.Middlewares
 
         private static void GetInputHeaders(HttpContext httpContext)
         {
-            var inputHeaderParameters = new ControllerInputHeaderParameters(httpContext);
-            httpContext.Items[Constants.ControllerInputHeaderParametersKey] = inputHeaderParameters;
+            var inputHeaderParameters = new InputHeaderParameters(httpContext);
+            httpContext.Items[Constants.InputHeaderParametersKey] = inputHeaderParameters;
         }
 
         private void SetOutputHeaders(HttpContext httpContext)
         {
-            var outputHeaderParameters = httpContext.Items.GetValue(Constants.ControllerOutputHeaderParametersKey, null)?.To<IControllerOutputHeaderParameters>();
+            var outputHeaderParameters = httpContext.Items.GetValue(Constants.OutputHeaderParametersKey, null)?.To<IOutputHeaderParameters>();
             if (outputHeaderParameters == null)
                 return;
             var headerDictionary = outputHeaderParameters.GetHeaderDictionary();

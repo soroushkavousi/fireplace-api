@@ -3,10 +3,10 @@
     public static class Constants
     {
         public static string AuthorizationHeaderKey { get; } = "Authorization";
-        public static string ControllerInputHeaderParametersKey { get; } = "ControllerInputHeaderParameters";
-        public static string ControllerOutputHeaderParametersKey { get; } = "ControllerOutputHeaderParameters";
-        public static string ControllerInputCookieParametersKey { get; } = "ControllerInputCookieParameters";
-        public static string ControllerOutputCookieParametersKey { get; } = "ControllerOutputCookieParameters";
+        public static string InputHeaderParametersKey { get; } = "InputHeaderParameters";
+        public static string OutputHeaderParametersKey { get; } = "OutputHeaderParameters";
+        public static string InputCookieParametersKey { get; } = "InputCookieParameters";
+        public static string OutputCookieParametersKey { get; } = "OutputCookieParameters";
         public static string ExamplePropertyName { get; } = "Example";
         public static string ActionExamplesPropertyName { get; } = "ActionExamples";
         public static string FilesBaseUrlPathKey { get; } = "Files:BaseUrlPath";

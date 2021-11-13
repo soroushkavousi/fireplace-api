@@ -61,7 +61,7 @@ namespace FireplaceApi.Core.Validators
             var accessToken = await _accessTokenOperator.GetAccessTokenByValueAsync(value);
             if (accessToken.UserId != requestingUser.Id)
             {
-                var serverMessage = $"Requester user {requestingUser.Id} wants to access to access token ({accessToken}) while user is not the owner!";
+                var serverMessage = $"Requesting user {requestingUser.Id} wants to access to access token ({accessToken}) while user is not the owner!";
                 throw new ApiException(ErrorName.ACCESS_TOKEN_VALUE_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
         }
