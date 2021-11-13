@@ -9,7 +9,8 @@ namespace FireplaceApi.Core.Tools
     {
         private static readonly ulong _min = (ulong)Math.Pow(2, 10);
         private static readonly ulong _max = ulong.MaxValue - 1;
-        private static readonly Regex _encodedIdRegex = new Regex(@"(\S)\1{2}");
+        private static readonly Regex _encodedIdWrongRepetitionRegex = new Regex(@"(\S)\1{2}");
+        private static readonly Regex _encodedIdWrongCharactersRegex = new Regex(@"([0OLI])");
 
         public static async Task<ulong> GenerateNewIdAsync(Func<ulong, Task<bool>> doesIdExistAsync = null)
         {
@@ -59,7 +60,10 @@ namespace FireplaceApi.Core.Tools
             if (encodedId.Length != 11)
                 return false;
 
-            if (_encodedIdRegex.IsMatch(encodedId))
+            if (_encodedIdWrongRepetitionRegex.IsMatch(encodedId))
+                return false;
+
+            if (_encodedIdWrongCharactersRegex.IsMatch(encodedId))
                 return false;
 
             return true;
