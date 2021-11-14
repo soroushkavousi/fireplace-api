@@ -22,7 +22,7 @@ namespace FireplaceApi.Api.Controllers
 
         public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id todo"),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("TebvzX5eHJN"),
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(Address).ToSnakeCase()] = new OpenApiString("tedmosby@gmail.com"),
             [nameof(ActivationStatus).ToSnakeCase()] = new OpenApiString(Core.Enums.ActivationStatus.COMPLETED.ToString()),
@@ -30,7 +30,7 @@ namespace FireplaceApi.Api.Controllers
         };
         public static OpenApiObject PureExample2 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id 2 todo"),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("SFhCNah9niG"),
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(Address).ToSnakeCase()] = new OpenApiString("barneystinson@gmail.com"),
             [nameof(ActivationStatus).ToSnakeCase()] = new OpenApiString(Core.Enums.ActivationStatus.SENT.ToString()),

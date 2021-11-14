@@ -28,7 +28,7 @@ namespace FireplaceApi.Api.Controllers
 
         public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id todo"),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("CKox49N2J5v"),
             [nameof(UserId).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Id).ToSnakeCase()],
             [nameof(Username).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Username).ToSnakeCase()],
             [nameof(CommunityId).ToSnakeCase()] = CommunityDto.PureExample1[nameof(CommunityDto.Id).ToSnakeCase()],
@@ -39,7 +39,7 @@ namespace FireplaceApi.Api.Controllers
         };
         public static OpenApiObject PureExample2 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id 2 todo"),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("hAzZUu5exKE"),
             [nameof(UserId).ToSnakeCase()] = UserDto.PureExample2[nameof(UserDto.Id).ToSnakeCase()],
             [nameof(Username).ToSnakeCase()] = UserDto.PureExample2[nameof(UserDto.Username).ToSnakeCase()],
             [nameof(CommunityId).ToSnakeCase()] = CommunityDto.PureExample2[nameof(CommunityDto.Id).ToSnakeCase()],

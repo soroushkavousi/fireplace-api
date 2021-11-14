@@ -20,7 +20,7 @@ namespace FireplaceApi.Api.Controllers
 
         public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id todo"),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("DzqWK7MRS1H"),
             [nameof(Url).ToSnakeCase()] = new OpenApiString("https://files.social-media.bitiano.com/xww03krwo1e3.jpg"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
         };

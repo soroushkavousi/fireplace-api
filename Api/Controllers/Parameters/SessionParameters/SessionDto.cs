@@ -23,7 +23,7 @@ namespace FireplaceApi.Api.Controllers
 
         public static OpenApiObject PureExample11 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id 11 todo"),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("3RdDopKZEJi"),
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(IpAddress).ToSnakeCase()] = new OpenApiString("111.111.111.111"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
@@ -31,7 +31,7 @@ namespace FireplaceApi.Api.Controllers
         };
         public static OpenApiObject PureExample12 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id 12 todo"),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("QWEZdTom6HG"),
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(IpAddress).ToSnakeCase()] = new OpenApiString("111.111.111.112"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
@@ -39,7 +39,7 @@ namespace FireplaceApi.Api.Controllers
         };
         public static OpenApiObject PureExample21 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id 21 todo"),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("YFc5Sm15pjS"),
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(IpAddress).ToSnakeCase()] = new OpenApiString("222.222.222.222"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
@@ -47,7 +47,7 @@ namespace FireplaceApi.Api.Controllers
         };
         public static OpenApiObject PureExample22 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiString("sample id 22 todo"),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("cV3MXa8yVp8"),
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(IpAddress).ToSnakeCase()] = new OpenApiString("222.222.222.223"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),

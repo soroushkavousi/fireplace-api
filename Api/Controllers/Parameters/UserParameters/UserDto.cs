@@ -29,7 +29,7 @@ namespace FireplaceApi.Api.Controllers
 
         public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(10000),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("5FhKGzw165x"),
             [nameof(FirstName).ToSnakeCase()] = new OpenApiString("Ted"),
             [nameof(LastName).ToSnakeCase()] = new OpenApiString("Mosby"),
             [nameof(Username).ToSnakeCase()] = new OpenApiString("tedmosby"),
@@ -41,7 +41,7 @@ namespace FireplaceApi.Api.Controllers
         };
         public static OpenApiObject PureExample2 { get; } = new OpenApiObject
         {
-            [nameof(Id).ToSnakeCase()] = new OpenApiInteger(20000),
+            [nameof(Id).ToSnakeCase()] = new OpenApiString("fNnXz8tyV1b"),
             [nameof(FirstName).ToSnakeCase()] = new OpenApiString("Barney"),
             [nameof(LastName).ToSnakeCase()] = new OpenApiString("Stinson"),
             [nameof(Username).ToSnakeCase()] = new OpenApiString("barneystinson"),
