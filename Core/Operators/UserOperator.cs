@@ -292,32 +292,39 @@ namespace FireplaceApi.Core.Operators
             string lastName = null, string username = null, Password password = null,
             UserState? state = null, string emailAddress = null)
         {
+            var foundAnyChange = false;
             if (firstName != null)
             {
                 user.FirstName = firstName;
+                foundAnyChange = true;
             }
 
             if (lastName != null)
             {
                 user.LastName = lastName;
+                foundAnyChange = true;
             }
 
             if (username != null)
             {
                 user.Username = username;
+                await _userRepository.UpdateUsernameAsync(user.Id, username);
             }
 
             if (password != null)
             {
                 user.Password = password;
+                foundAnyChange = true;
             }
 
             if (state != null)
             {
                 user.State = state.Value;
+                foundAnyChange = true;
             }
 
-            user = await _userRepository.UpdateUserAsync(user);
+            if (foundAnyChange)
+                user = await _userRepository.UpdateUserAsync(user);
 
             if (emailAddress != null)
             {

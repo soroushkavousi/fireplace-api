@@ -53,6 +53,7 @@ namespace FireplaceApi.Infrastructure.Entities
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            //EnableDeepLogging(optionsBuilder);
             //optionsBuilder.EnableSensitiveDataLogging();
             //optionsBuilder.EnableDetailedErrors();
             //optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
@@ -121,6 +122,12 @@ namespace FireplaceApi.Infrastructure.Entities
             var optionsBuilder = new DbContextOptionsBuilder<FireplaceApiContext>();
             optionsBuilder.UseNpgsql(connectionString);
             return optionsBuilder.Options;
+        }
+
+        private void EnableDeepLogging(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (_logger != null)
+                optionsBuilder.LogTo((log) => _logger.LogInformation(log));
         }
     }
 }

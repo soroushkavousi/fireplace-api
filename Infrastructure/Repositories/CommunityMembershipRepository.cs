@@ -244,7 +244,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                         q = q.Where(e => e.UserEntityId == idIdentifier.Id);
                         break;
                     case UserUsernameIdentifier usernameIdentifier:
-                        q = q.Where(e => e.UserEntityName == usernameIdentifier.Username);
+                        q = q.Where(e => e.UserEntityUsername == usernameIdentifier.Username);
                         break;
                 }
             }

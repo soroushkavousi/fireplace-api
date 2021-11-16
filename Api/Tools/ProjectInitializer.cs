@@ -29,7 +29,7 @@ namespace FireplaceApi.Api.Tools
         {
             var globalId = ulong.Parse(ReadFromConfig("GlobalId"));
             var connectionString = _config.GetConnectionString("MainDatabase");
-            var fireplaceApiContext = new FireplaceApiContext(connectionString);
+            using var fireplaceApiContext = new FireplaceApiContext(connectionString);
             GlobalOperator.GlobalValues = fireplaceApiContext.GlobalEntities
                 .AsNoTracking().Where(e => e.Id == globalId).Single().Values;
         }

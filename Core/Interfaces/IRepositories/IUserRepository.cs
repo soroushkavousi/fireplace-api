@@ -21,6 +21,7 @@ namespace FireplaceApi.Core.Interfaces
             string lastName, string username, UserState state,
             Password password = null);
         public Task<User> UpdateUserAsync(User user);
+        public Task UpdateUsernameAsync(ulong id, string newUsername);
         public Task DeleteUserByIdentifierAsync(UserIdentifier identifier);
         public Task<bool> DoesUserIdentifierExistAsync(UserIdentifier identifier);
     }

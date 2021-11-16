@@ -63,7 +63,7 @@ namespace FireplaceApi.Infrastructure.Converters
                     .ConvertToModel(communityMembershipEntity.CommunityEntity.PureCopy());
 
             var communityMembership = new CommunityMembership(communityMembershipEntity.Id,
-                communityMembershipEntity.UserEntityId, communityMembershipEntity.UserEntityName,
+                communityMembershipEntity.UserEntityId, communityMembershipEntity.UserEntityUsername,
                 communityMembershipEntity.CommunityEntityId, communityMembershipEntity.CommunityEntityName,
                 communityMembershipEntity.CreationDate, communityMembershipEntity.ModifiedDate, user,
                 community);

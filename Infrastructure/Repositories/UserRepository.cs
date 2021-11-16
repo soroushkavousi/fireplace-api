@@ -153,6 +153,28 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _userConverter.ConvertToModel(userEntity);
         }
 
+        public async Task UpdateUsernameAsync(ulong id, string username)
+        {
+            _logger.LogIOInformation(null, "Database | Input", new { id, username });
+            var sw = Stopwatch.StartNew();
+            var sqlCommand = $"CALL public.\"UpdateUsername\"({id}, '{username}');";
+            int rowAffectedCount = 0;
+            try
+            {
+                rowAffectedCount = await _fireplaceApiContext.Database.ExecuteSqlInterpolatedAsync(
+                    $"CALL public.\"UpdateUsername\"({id}, {username});");
+                _fireplaceApiContext.DetachAllEntries();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                var serverMessage = $"Can't update the userEntity DbUpdateConcurrencyException. " +
+                    $"{new { id, username, rowAffectedCount }.ToJson()}";
+                throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
+            }
+
+            _logger.LogIOInformation(sw, "Database | Output", new { rowAffectedCount });
+        }
+
         public async Task DeleteUserByIdentifierAsync(UserIdentifier identifier)
         {
             _logger.LogIOInformation(null, "Database | Input", new { identifier });

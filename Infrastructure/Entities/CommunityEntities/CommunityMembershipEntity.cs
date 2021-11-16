@@ -5,13 +5,13 @@ using System;
 namespace FireplaceApi.Infrastructure.Entities
 {
     [Index(nameof(UserEntityId), IsUnique = false)]
-    [Index(nameof(UserEntityName), IsUnique = false)]
+    [Index(nameof(UserEntityUsername), IsUnique = false)]
     [Index(nameof(CommunityEntityId), IsUnique = false)]
     [Index(nameof(CommunityEntityName), IsUnique = false)]
     public class CommunityMembershipEntity : BaseEntity
     {
         public ulong UserEntityId { get; set; }
-        public string UserEntityName { get; set; }
+        public string UserEntityUsername { get; set; }
         public ulong CommunityEntityId { get; set; }
         public string CommunityEntityName { get; set; }
         public UserEntity UserEntity { get; set; }
@@ -19,14 +19,14 @@ namespace FireplaceApi.Infrastructure.Entities
 
         private CommunityMembershipEntity() : base() { }
 
-        public CommunityMembershipEntity(ulong id, ulong userEntityId, string userEntityName,
+        public CommunityMembershipEntity(ulong id, ulong userEntityId, string userEntityUsername,
             ulong communityEntityId, string communityEntityName,
             DateTime? creationDate = null, DateTime? modifiedDate = null,
             UserEntity userEntity = null, CommunityEntity communityEntity = null)
             : base(id, creationDate, modifiedDate)
         {
             UserEntityId = userEntityId;
-            UserEntityName = userEntityName;
+            UserEntityUsername = userEntityUsername;
             CommunityEntityId = communityEntityId;
             CommunityEntityName = communityEntityName;
             UserEntity = userEntity;
@@ -34,7 +34,7 @@ namespace FireplaceApi.Infrastructure.Entities
         }
 
         public CommunityMembershipEntity PureCopy() => new CommunityMembershipEntity(Id, UserEntityId,
-            UserEntityName, CommunityEntityId, CommunityEntityName, CreationDate, ModifiedDate);
+            UserEntityUsername, CommunityEntityId, CommunityEntityName, CreationDate, ModifiedDate);
     }
 
     public class CommunityMembershipEntityConfiguration : IEntityTypeConfiguration<CommunityMembershipEntity>
@@ -48,7 +48,7 @@ namespace FireplaceApi.Infrastructure.Entities
             modelBuilder
                 .HasOne(d => d.UserEntity)
                 .WithMany(p => p.JoinedCommunities)
-                .HasForeignKey(d => new { d.UserEntityId, d.UserEntityName })
+                .HasForeignKey(d => new { d.UserEntityId, d.UserEntityUsername })
                 .HasPrincipalKey(p => new { p.Id, p.Username })
                 .IsRequired();
 

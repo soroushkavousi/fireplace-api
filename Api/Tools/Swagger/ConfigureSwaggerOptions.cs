@@ -47,7 +47,7 @@ namespace FireplaceApi.Api.Tools
 
             description_html += @"
                 <div>
-                    <h5><strong>Welcome</strong>! Fireplace is a place where you can communicate with others wisely.</h5>
+                    <h5><strong>Welcome</strong>! Fireplace is a place where you can communicate with others.</h5>
                 </div>";
 
             description_html += $@"
