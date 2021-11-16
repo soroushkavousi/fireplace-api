@@ -17,6 +17,7 @@ namespace FireplaceApi.Core.Interfaces
         public Task<Community> CreateCommunityAsync(ulong id, string name,
             ulong creatorId, string creatorUsername);
         public Task<Community> UpdateCommunityAsync(Community community);
+        public Task UpdateCommunityNameAsync(ulong id, string newCommunityName);
         public Task DeleteCommunityByIdentifierAsync(CommunityIdentifier identifier);
         public Task<bool> DoesCommunityIdentifierExistAsync(CommunityIdentifier identifier);
 

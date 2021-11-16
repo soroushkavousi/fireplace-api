@@ -178,6 +178,27 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _communityConverter.ConvertToModel(communityEntity);
         }
 
+        public async Task UpdateCommunityNameAsync(ulong id, string newCommunityName)
+        {
+            _logger.LogIOInformation(null, "Database | Input", new { id, newCommunityName });
+            var sw = Stopwatch.StartNew();
+            int rowAffectedCount = 0;
+            try
+            {
+                rowAffectedCount = await _fireplaceApiContext.Database.ExecuteSqlInterpolatedAsync(
+                    $"CALL public.\"UpdateCommunityName\"({id}, {newCommunityName});");
+                _fireplaceApiContext.DetachAllEntries();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                var serverMessage = $"Can't update the userEntity DbUpdateConcurrencyException. " +
+                    $"{new { id, newCommunityName, rowAffectedCount }.ToJson()}";
+                throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
+            }
+
+            _logger.LogIOInformation(sw, "Database | Output", new { rowAffectedCount });
+        }
+
         public async Task DeleteCommunityByIdentifierAsync(CommunityIdentifier identifier)
         {
             _logger.LogIOInformation(null, "Database | Input", new { identifier });

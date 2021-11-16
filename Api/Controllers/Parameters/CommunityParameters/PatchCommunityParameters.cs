@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Api.Extensions;
-using FireplaceApi.Api.Tools;
+﻿using FireplaceApi.Api.Tools;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
@@ -23,7 +22,7 @@ namespace FireplaceApi.Api.Controllers
 
         public static IOpenApiAny Example { get; } = new OpenApiObject
         {
-            [nameof(NewName).ToSnakeCase()] = new OpenApiString("new-name"),
+            ["name"] = new OpenApiString("new-name"),
         };
     }
 }

@@ -106,12 +106,15 @@ namespace FireplaceApi.Core.Operators
 
         public async Task<Community> ApplyCommunityChangesAsync(Community community, string name = null)
         {
+            var foundAnyChange = false;
             if (name != null)
             {
                 community.Name = name;
+                await _communityRepository.UpdateCommunityNameAsync(community.Id, name);
             }
 
-            community = await _communityRepository.UpdateCommunityAsync(community);
+            if (foundAnyChange)
+                community = await _communityRepository.UpdateCommunityAsync(community);
             return community;
         }
     }
