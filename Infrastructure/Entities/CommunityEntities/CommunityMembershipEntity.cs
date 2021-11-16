@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -11,8 +12,10 @@ namespace FireplaceApi.Infrastructure.Entities
     public class CommunityMembershipEntity : BaseEntity
     {
         public ulong UserEntityId { get; set; }
+        [Required]
         public string UserEntityUsername { get; set; }
         public ulong CommunityEntityId { get; set; }
+        [Required]
         public string CommunityEntityName { get; set; }
         public UserEntity UserEntity { get; set; }
         public CommunityEntity CommunityEntity { get; set; }

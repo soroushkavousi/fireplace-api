@@ -2,15 +2,19 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
     [Index(nameof(Username), IsUnique = true)]
     public class UserEntity : BaseEntity
     {
+        [Required]
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        [Required]
         public string Username { get; set; }
+        [Required]
         public string State { get; set; }
         public string PasswordHash { get; set; }
         public EmailEntity EmailEntity { get; set; }

@@ -143,11 +143,12 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public async Task<Community> CreateCommunityAsync(ulong id, string name,
-            ulong creatorId)
+            ulong creatorId, string creatorUsername)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { id, name, creatorId });
+            _logger.LogIOInformation(null, "Database | Input",
+                new { id, name, creatorId, creatorUsername });
             var sw = Stopwatch.StartNew();
-            var communityEntity = new CommunityEntity(id, name, creatorId);
+            var communityEntity = new CommunityEntity(id, name, creatorId, creatorUsername);
             _communityEntities.Add(communityEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();

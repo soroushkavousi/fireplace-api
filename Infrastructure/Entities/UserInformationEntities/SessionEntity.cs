@@ -1,13 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
     public class SessionEntity : BaseEntity
     {
         public ulong UserEntityId { get; set; }
+        [Required]
         public string IpAddress { get; set; }
+        [Required]
         public string State { get; set; }
         public UserEntity UserEntity { get; set; }
 

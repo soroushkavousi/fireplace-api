@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -9,8 +10,10 @@ namespace FireplaceApi.Infrastructure.Entities
     [Index(nameof(Code), IsUnique = true)]
     public class ErrorEntity : BaseEntity
     {
+        [Required]
         public string Name { get; set; }
         public int Code { get; set; }
+        [Required]
         public string ClientMessage { get; set; }
         public int HttpStatusCode { get; set; }
 

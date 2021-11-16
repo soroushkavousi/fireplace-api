@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -8,7 +9,9 @@ namespace FireplaceApi.Infrastructure.Entities
     public class EmailEntity : BaseEntity
     {
         public ulong UserEntityId { get; set; }
+        [Required]
         public string Address { get; set; }
+        [Required]
         public string ActivationStatus { get; set; }
         public int? ActivationCode { get; set; }
         public UserEntity UserEntity { get; set; }

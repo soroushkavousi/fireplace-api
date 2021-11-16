@@ -47,7 +47,7 @@ namespace FireplaceApi.Core.Services
             await _communityValidator
                 .ValidateCreateCommunityInputParametersAsync(requestingUser, name);
             return await _communityOperator
-                .CreateCommunityAsync(requestingUser.Id, name);
+                .CreateCommunityAsync(requestingUser, name);
         }
 
         public async Task<Community> PatchCommunityByEncodedIdOrNameAsync(User requestingUser,

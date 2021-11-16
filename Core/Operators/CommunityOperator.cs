@@ -72,12 +72,12 @@ namespace FireplaceApi.Core.Operators
             return communityId;
         }
 
-        public async Task<Community> CreateCommunityAsync(ulong creatorId, string name)
+        public async Task<Community> CreateCommunityAsync(User requestingUser, string name)
         {
             var id = await IdGenerator.GenerateNewIdAsync(
                 id => DoesCommunityIdentifierExistAsync(CommunityIdentifier.OfId(id)));
             var community = await _communityRepository.CreateCommunityAsync(
-                id, name, creatorId);
+                id, name, requestingUser.Id, requestingUser.Username);
             return community;
         }
 

@@ -18,6 +18,8 @@ namespace FireplaceApi.Api.Controllers
         [Required]
         public string CreatorId { get; set; }
         [Required]
+        public string CreatorUsername { get; set; }
+        [Required]
         public DateTime CreationDate { get; set; }
         public UserDto Creator { get; set; }
 
@@ -25,7 +27,8 @@ namespace FireplaceApi.Api.Controllers
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiString("jNQCWv7kQZc"),
             [nameof(Name).ToSnakeCase()] = new OpenApiString("backend-developers"),
-            [nameof(CreatorId).ToSnakeCase()] = UserDto.PureExample1[nameof(Id).ToSnakeCase()],
+            [nameof(CreatorId).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Id).ToSnakeCase()],
+            [nameof(CreatorUsername).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Username).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(Creator).ToSnakeCase()] = new OpenApiNull(),
         };
@@ -34,6 +37,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(Id).ToSnakeCase()] = new OpenApiString("TF8xV2pM5k5"),
             [nameof(Name).ToSnakeCase()] = new OpenApiString("android-developers"),
             [nameof(CreatorId).ToSnakeCase()] = UserDto.PureExample2[nameof(Id).ToSnakeCase()],
+            [nameof(CreatorUsername).ToSnakeCase()] = UserDto.PureExample2[nameof(UserDto.Username).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(Creator).ToSnakeCase()] = new OpenApiNull(),
         };
@@ -48,6 +52,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(Id).ToSnakeCase()] = PureExample1[nameof(Id).ToSnakeCase()],
             [nameof(Name).ToSnakeCase()] = PureExample1[nameof(Name).ToSnakeCase()],
             [nameof(CreatorId).ToSnakeCase()] = PureExample1[nameof(CreatorId).ToSnakeCase()],
+            [nameof(CreatorUsername).ToSnakeCase()] = PureExample1[nameof(CreatorUsername).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = PureExample1[nameof(CreationDate).ToSnakeCase()],
             [nameof(Creator).ToSnakeCase()] = PureExample1[nameof(Creator).ToSnakeCase()],
         };
@@ -56,6 +61,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(Id).ToSnakeCase()] = PureExample2[nameof(Id).ToSnakeCase()],
             [nameof(Name).ToSnakeCase()] = PureExample2[nameof(Name).ToSnakeCase()],
             [nameof(CreatorId).ToSnakeCase()] = PureExample2[nameof(CreatorId).ToSnakeCase()],
+            [nameof(CreatorUsername).ToSnakeCase()] = PureExample2[nameof(CreatorUsername).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = PureExample2[nameof(CreationDate).ToSnakeCase()],
             [nameof(Creator).ToSnakeCase()] = PureExample2[nameof(Creator).ToSnakeCase()],
         };
@@ -86,11 +92,12 @@ namespace FireplaceApi.Api.Controllers
         }
 
         public CommunityDto(string id, string name, string creatorId,
-            DateTime creationDate, UserDto creator = null)
+            string creatorUsername, DateTime creationDate, UserDto creator = null)
         {
             Id = id;
             Name = name;
             CreatorId = creatorId;
+            CreatorUsername = creatorUsername;
             CreationDate = creationDate;
             Creator = creator;
         }

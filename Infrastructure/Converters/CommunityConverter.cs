@@ -30,8 +30,8 @@ namespace FireplaceApi.Infrastructure.Converters
                     .ConvertToEntity(community.Creator.PureCopy());
 
             var communityEntity = new CommunityEntity(community.Id, community.Name,
-                community.CreatorId, community.CreationDate, community.ModifiedDate,
-                creatorEntity);
+                community.CreatorId, community.CreatorUsername, community.CreationDate,
+                community.ModifiedDate, creatorEntity);
 
             return communityEntity;
         }
@@ -46,8 +46,8 @@ namespace FireplaceApi.Infrastructure.Converters
                 creator = _serviceProvider.GetService<UserConverter>().ConvertToModel(communityEntity.CreatorEntity.PureCopy());
 
             var community = new Community(communityEntity.Id, communityEntity.Name,
-                communityEntity.CreatorEntityId, communityEntity.CreationDate,
-                communityEntity.ModifiedDate, creator);
+                communityEntity.CreatorEntityId, communityEntity.CreatorEntityUsername,
+                communityEntity.CreationDate, communityEntity.ModifiedDate, creator);
 
             return community;
         }

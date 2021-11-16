@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace FireplaceApi.Infrastructure.Entities
@@ -9,6 +10,7 @@ namespace FireplaceApi.Infrastructure.Entities
     [Index(nameof(Pointer), IsUnique = true)]
     public class QueryResultEntity : BaseEntity
     {
+        [Required]
         public string Pointer { get; set; }
         public int LastStart { get; set; }
         public int LastEnd { get; set; }

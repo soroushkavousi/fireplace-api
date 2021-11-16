@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -10,6 +11,7 @@ namespace FireplaceApi.Infrastructure.Entities
     public class CommentVoteEntity : BaseEntity
     {
         public ulong VoterEntityId { get; set; }
+        [Required]
         public string VoterEntityUsername { get; set; }
         public ulong CommentEntityId { get; set; }
         public bool IsUp { get; set; }

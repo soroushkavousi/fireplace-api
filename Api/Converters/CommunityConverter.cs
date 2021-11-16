@@ -29,7 +29,8 @@ namespace FireplaceApi.Api.Converters
                     .ConvertToDto(community.Creator.PureCopy());
 
             var communityDto = new CommunityDto(community.Id.IdEncode(), community.Name,
-                community.CreatorId.IdEncode(), community.CreationDate, creatorDto);
+                community.CreatorId.IdEncode(), community.CreatorUsername,
+                community.CreationDate, creatorDto);
 
             return communityDto;
         }

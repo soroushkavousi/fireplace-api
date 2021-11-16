@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
     public class FileEntity : BaseEntity
     {
+        [Required]
         public string Name { get; set; }
         public string RealName { get; set; }
         public string RelativeUri { get; set; }

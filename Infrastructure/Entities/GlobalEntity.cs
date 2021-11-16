@@ -2,12 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
     public class GlobalEntity : BaseEntity
     {
+        [Required]
         [Column("Values", TypeName = "jsonb")]
         public GlobalValues Values { get; set; }
 
