@@ -45,8 +45,8 @@ namespace FireplaceApi.Infrastructure.Converters
                 sessionEntities = user.Sessions.Select(
                     session => _serviceProvider.GetService<SessionConverter>().ConvertToEntity(session.PureCopy())).ToList();
 
-            var userEntity = new UserEntity(user.Id, user.FirstName, user.LastName,
-                user.Username, user.State.ToString(), user.CreationDate,
+            var userEntity = new UserEntity(user.Id, user.Username, user.State.ToString(),
+                user.CreationDate, user.DisplayName, user.About, user.AvatarUrl, user.BannerUrl,
                 user.ModifiedDate, user.Password?.Hash, emailEntity, googleUserEntity,
                 accessTokenEntities, sessionEntities);
 
@@ -76,9 +76,9 @@ namespace FireplaceApi.Infrastructure.Converters
                 sessions = userEntity.SessionEntities.Select(
                     sessionEntity => _serviceProvider.GetService<SessionConverter>().ConvertToModel(sessionEntity.PureCopy())).ToList();
 
-            var user = new User(userEntity.Id, userEntity.FirstName, userEntity.LastName,
-                userEntity.Username, userEntity.State.ToEnum<UserState>(), userEntity.CreationDate,
-                userEntity.ModifiedDate, Password.OfHash(userEntity.PasswordHash), email,
+            var user = new User(userEntity.Id, userEntity.Username, userEntity.State.ToEnum<UserState>(),
+                userEntity.CreationDate, userEntity.DisplayName, userEntity.About, userEntity.AvatarUrl,
+                userEntity.BannerUrl, userEntity.ModifiedDate, Password.OfHash(userEntity.PasswordHash), email,
                 googleUser, accessTokens, sessions);
 
             return user;

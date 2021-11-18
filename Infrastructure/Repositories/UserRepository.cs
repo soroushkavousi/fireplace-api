@@ -115,14 +115,19 @@ namespace FireplaceApi.Infrastructure.Repositories
             return userId;
         }
 
-        public async Task<User> CreateUserAsync(ulong id, string firstName, string lastName,
-            string username, UserState state, Password password = null)
+        public async Task<User> CreateUserAsync(ulong id, string username,
+            UserState state, Password password = null, string displayName = null,
+            string about = null, string avatarUrl = null, string bannerUrl = null)
         {
-            _logger.LogIOInformation(null, "Database | Input",
-                new { id, firstName, lastName, username, state, passwordHash = password?.Hash });
+            _logger.LogIOInformation(null, "Database | Input", new
+            {
+                id, username, state, passwordHash = password?.Hash,
+                displayName, about, avatarUrl, bannerUrl
+            });
             var sw = Stopwatch.StartNew();
-            var userEntity = new UserEntity(id, firstName, lastName,
-                username, state.ToString(), passwordHash: password?.Hash);
+            var userEntity = new UserEntity(id, username, state.ToString(),
+                displayName: displayName, about: about, avatarUrl: avatarUrl,
+                bannerUrl: bannerUrl, passwordHash: password?.Hash);
             _userEntities.Add(userEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();

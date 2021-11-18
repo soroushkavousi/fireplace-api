@@ -49,22 +49,17 @@ namespace FireplaceApi.Core.Validators
         }
 
         public async Task ValidateSignUpWithEmailInputParametersAsync(IPAddress ipAddress,
-            string firstName, string lastName, string username, Password password,
-            string emailAddress)
+            string emailAddress, string username, Password password)
         {
-            ValidateParameterIsNotMissing(firstName, nameof(firstName), ErrorName.FIRST_NAME_IS_MISSING);
-            ValidateParameterIsNotMissing(lastName, nameof(lastName), ErrorName.LAST_NAME_IS_MISSING);
+            ValidateParameterIsNotMissing(emailAddress, nameof(emailAddress), ErrorName.EMAIL_ADDRESS_IS_MISSING);
             ValidateParameterIsNotMissing(username, nameof(username), ErrorName.USERNAME_IS_MISSING);
             ValidateParameterIsNotMissing(password, nameof(password), ErrorName.PASSWORD_IS_MISSING);
-            ValidateParameterIsNotMissing(emailAddress, nameof(emailAddress), ErrorName.EMAIL_ADDRESS_IS_MISSING);
-            ValidateFirstNameFormat(firstName);
-            ValidateLastNameFormat(lastName);
-            ValidatePasswordFormat(password);
             ValidateUsernameFormat(username);
+            ValidatePasswordFormat(password);
             var emailValidator = _serviceProvider.GetService<EmailValidator>();
             emailValidator.ValidateEmailAddressFormat(emailAddress);
             await ValidateUserIdentifierDoesNotExistAsync(UserIdentifier.OfUsername(username));
-            await emailValidator.ValidateEmailAddressDoesNotExistAsync(emailAddress);
+            await emailValidator.ValidateEmailIdentifierDoesNotExistAsync(EmailIdentifier.OfAddress(emailAddress));
         }
 
         public async Task ValidateLogInWithEmailInputParametersAsync(IPAddress ipAddress,
@@ -103,19 +98,21 @@ namespace FireplaceApi.Core.Validators
             await Task.CompletedTask;
         }
 
-        public async Task ValidatePatchUserInputParametersAsync(User user, string firstName,
-            string lastName, string username, Password oldPassword, Password password,
-            string emailAddress)
+        public async Task ValidatePatchUserInputParametersAsync(User user, string displayName,
+            string about, string avatarUrl, string bannerUrl, string username,
+            Password oldPassword, Password password, string emailAddress)
         {
-            if (firstName != null)
-            {
-                ValidateFirstNameFormat(firstName);
-            }
+            if (displayName != null)
+                ValidateDisplayNameFormat(displayName);
 
-            if (lastName != null)
-            {
-                ValidateLastNameFormat(lastName);
-            }
+            if (about != null)
+                ValidateAboutFormat(about);
+
+            if (avatarUrl != null)
+                ValidateUrlStringFormat(avatarUrl);
+
+            if (bannerUrl != null)
+                ValidateUrlStringFormat(bannerUrl);
 
             if (username != null)
             {
@@ -127,7 +124,7 @@ namespace FireplaceApi.Core.Validators
             {
                 var emailValidator = _serviceProvider.GetService<EmailValidator>();
                 emailValidator.ValidateEmailAddressFormat(emailAddress);
-                await emailValidator.ValidateEmailAddressDoesNotExistAsync(emailAddress);
+                await emailValidator.ValidateEmailIdentifierDoesNotExistAsync(EmailIdentifier.OfAddress(emailAddress));
             }
 
             ValidateBothOldPasswordAndPasswordAreNotNullIfRequested(oldPassword, password);
@@ -164,21 +161,21 @@ namespace FireplaceApi.Core.Validators
             return default;
         }
 
-        public void ValidateFirstNameFormat(string firstName)
+        public void ValidateDisplayNameFormat(string displayName)
         {
-            if (Regexes.FirstName.IsMatch(firstName) == false)
+            if (displayName.Length > 80)
             {
-                var serverMessage = $"First name ({firstName}) doesn't have correct format!";
-                throw new ApiException(ErrorName.FIRST_NAME_NOT_VALID, serverMessage);
+                var serverMessage = $"Invalid displayName format! ({displayName})!";
+                throw new ApiException(ErrorName.DISPLAY_NAME_FORMAT_IS_NOT_VALID, serverMessage);
             }
         }
 
-        public void ValidateLastNameFormat(string lastName)
+        public void ValidateAboutFormat(string about)
         {
-            if (Regexes.LastName.IsMatch(lastName) == false)
+            if (about.Length > 2000)
             {
-                var serverMessage = $"Last name ({lastName}) doesn't have correct format!";
-                throw new ApiException(ErrorName.LAST_NAME_NOT_VALID, serverMessage);
+                var serverMessage = $"Invalid about format! ({about})!";
+                throw new ApiException(ErrorName.ABOUT_FORMAT_IS_NOT_VALID, serverMessage);
             }
         }
 

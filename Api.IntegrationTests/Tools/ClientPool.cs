@@ -58,8 +58,9 @@ namespace FireplaceApi.Api.IntegrationTests
         private async Task<HttpClient> CreateTheHulkClientAsync()
         {
             var id = await IdGenerator.GenerateNewIdAsync();
-            var user = await _userRepository.CreateUserAsync(id, "Bruce", "Banner",
-                "TheHulk", Core.Enums.UserState.NOT_VERIFIED, Password.OfValue("TheHulkP0"));
+            var user = await _userRepository.CreateUserAsync(id, "TheHulk",
+                Core.Enums.UserState.NOT_VERIFIED, Password.OfValue("TheHulkP0"),
+                displayName: "Bruce Banner");
             var emailActivation = new Activation(Core.Enums.ActivationStatus.SENT, 12345, "Code: 12345");
             id = await IdGenerator.GenerateNewIdAsync();
             var email = await _emailRepository.CreateEmailAsync(id, user.Id, "TheHulk", emailActivation);

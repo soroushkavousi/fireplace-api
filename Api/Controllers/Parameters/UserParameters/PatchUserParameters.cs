@@ -8,8 +8,10 @@ namespace FireplaceApi.Api.Controllers
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
     public class PatchUserInputBodyParameters
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string DisplayName { get; set; }
+        public string About { get; set; }
+        public string AvatarUrl { get; set; }
+        public string BannerUrl { get; set; }
         public string Username { get; set; }
         public string OldPassword { get; set; }
         public string Password { get; set; }
@@ -17,8 +19,10 @@ namespace FireplaceApi.Api.Controllers
 
         public static IOpenApiAny Example { get; } = new OpenApiObject
         {
-            [nameof(FirstName).ToSnakeCase()] = new OpenApiString("NewFirstName"),
-            [nameof(LastName).ToSnakeCase()] = new OpenApiString("NewLastName"),
+            [nameof(DisplayName).ToSnakeCase()] = new OpenApiString("NewDisplayName"),
+            [nameof(About).ToSnakeCase()] = new OpenApiString("NewAbout"),
+            [nameof(AvatarUrl).ToSnakeCase()] = new OpenApiString("NewAvatarUrl"),
+            [nameof(BannerUrl).ToSnakeCase()] = new OpenApiString("NewBannerUrl"),
             [nameof(Username).ToSnakeCase()] = new OpenApiString("NewUsername"),
             [nameof(OldPassword).ToSnakeCase()] = new OpenApiString("OldPassword"),
             [nameof(Password).ToSnakeCase()] = new OpenApiString("NewPassword"),

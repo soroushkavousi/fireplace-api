@@ -61,8 +61,8 @@ namespace FireplaceApi.Api.Controllers
         public static OpenApiObject Example { get; } = Example1;
         public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
         {
-            [nameof(EmailController.ActivateEmail)] = Example1,
-            [nameof(EmailController.GetEmailByIdAsync)] = Example1
+            [nameof(EmailController.ActivateRequestingUserEmail)] = Example1,
+            [nameof(EmailController.GetRequestingUserEmailAsync)] = Example1
         };
 
         static EmailDto()

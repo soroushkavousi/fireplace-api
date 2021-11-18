@@ -1,5 +1,6 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Tools;
 
 namespace FireplaceApi.Core.Validators
@@ -49,6 +50,15 @@ namespace FireplaceApi.Core.Validators
                 throw new ApiException(ErrorName.ENCODED_ID_FORMAT_IS_NOT_VALID, serverMessage);
             }
             return default;
+        }
+
+        public void ValidateUrlStringFormat(string urlString)
+        {
+            if (!urlString.IsUrlStringValid())
+            {
+                var serverMessage = $"Invalid url format! ({urlString})!";
+                throw new ApiException(ErrorName.URL_FORMAT_IS_NOT_VALID, serverMessage);
+            }
         }
 
         //public ulong? ValidateEncodedIdFormatValidIfExists(string encodedId, string parameterName)

@@ -31,13 +31,13 @@ namespace FireplaceApi.Core.Services
                 scope, authUser, prompt);
         }
 
-        public async Task<User> SignUpWithEmailAsync(IPAddress ipAddress, string firstName,
-            string lastName, string username, Password password, string emailAddress)
+        public async Task<User> SignUpWithEmailAsync(IPAddress ipAddress, string emailAddress,
+            string username, Password password)
         {
             await _userValidator.ValidateSignUpWithEmailInputParametersAsync(ipAddress,
-                firstName, lastName, username, password, emailAddress);
-            return await _userOperator.SignUpWithEmailAsync(ipAddress, firstName, lastName,
-                username, password, emailAddress);
+                emailAddress, username, password);
+            return await _userOperator.SignUpWithEmailAsync(ipAddress,
+                emailAddress, username, password);
         }
 
         public async Task<string> GetGoogleAuthUrlAsync(IPAddress ipAddress)
@@ -80,14 +80,15 @@ namespace FireplaceApi.Core.Services
             return user;
         }
 
-        public async Task<User> PatchRequestingUserAsync(User requestingUser, string firstName,
-            string lastName, string username, Password oldPassword, Password password, string emailAddress)
+        public async Task<User> PatchRequestingUserAsync(User requestingUser, string displayName,
+            string about, string avatarUrl, string bannerUrl, string username,
+            Password oldPassword, Password password, string emailAddress)
         {
-            await _userValidator.ValidatePatchUserInputParametersAsync(requestingUser, firstName,
-                lastName, username, oldPassword, password, emailAddress);
-            var user = await _userOperator.PatchUserByIdentifierAsync(UserIdentifier.OfId(requestingUser.Id),
-                firstName: firstName, lastName: lastName, username: username,
-                password: password, emailAddress: emailAddress);
+            await _userValidator.ValidatePatchUserInputParametersAsync(requestingUser, displayName,
+                about, avatarUrl, bannerUrl, username, oldPassword, password, emailAddress);
+            var user = await _userOperator.PatchUserByIdentifierAsync(
+                UserIdentifier.OfId(requestingUser.Id), displayName, about, avatarUrl, bannerUrl,
+                username, password, emailAddress);
             return user;
         }
 

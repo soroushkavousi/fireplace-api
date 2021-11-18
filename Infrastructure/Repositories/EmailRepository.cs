@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.ValueObjects;
@@ -52,29 +53,15 @@ namespace FireplaceApi.Infrastructure.Repositories
             return emailEntities.Select(e => _emailConverter.ConvertToModel(e)).ToList();
         }
 
-        public async Task<Email> GetEmailByIdAsync(ulong id, bool includeUser = false)
+        public async Task<Email> GetEmailByIdentifierAsync(EmailIdentifier identifier, bool includeUser = false)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { id, includeUser });
+            _logger.LogIOInformation(null, "Database | Input", new { identifier, includeUser });
             var sw = Stopwatch.StartNew();
             var emailEntity = await _emailEntities
                 .AsNoTracking()
-                .Where(e => e.Id == id)
-                .Include(
-                    userEntity: includeUser
+                .Search(
+                    identifier: identifier
                 )
-                .SingleOrDefaultAsync();
-
-            _logger.LogIOInformation(sw, "Database | Output", new { emailEntity });
-            return _emailConverter.ConvertToModel(emailEntity);
-        }
-
-        public async Task<Email> GetEmailByAddressAsync(string address, bool includeUser = false)
-        {
-            _logger.LogIOInformation(null, "Database | Input", new { address, includeUser });
-            var sw = Stopwatch.StartNew();
-            var emailEntity = await _emailEntities
-                .AsNoTracking()
-                .Where(e => e.Address == address)
                 .Include(
                     userEntity: includeUser
                 )
@@ -121,12 +108,14 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _emailConverter.ConvertToModel(emailEntity);
         }
 
-        public async Task DeleteEmailAsync(ulong id)
+        public async Task DeleteEmailAsync(EmailIdentifier identifier)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { identifier });
             var sw = Stopwatch.StartNew();
             var emailEntity = await _emailEntities
-                .Where(e => e.Id == id)
+                .Search(
+                    identifier: identifier
+                )
                 .SingleOrDefaultAsync();
 
             _emailEntities.Remove(emailEntity);
@@ -136,26 +125,15 @@ namespace FireplaceApi.Infrastructure.Repositories
             _logger.LogIOInformation(sw, "Database | Output", new { emailEntity });
         }
 
-        public async Task<bool> DoesEmailIdExistAsync(ulong id)
+        public async Task<bool> DoesEmailIdentifierExistAsync(EmailIdentifier identifier)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { id });
+            _logger.LogIOInformation(null, "Database | Input", new { identifier });
             var sw = Stopwatch.StartNew();
             var doesExist = await _emailEntities
                 .AsNoTracking()
-                .Where(e => e.Id == id)
-                .AnyAsync();
-
-            _logger.LogIOInformation(sw, "Database | Output", new { doesExist });
-            return doesExist;
-        }
-
-        public async Task<bool> DoesEmailAddressExistAsync(string emailAddress)
-        {
-            _logger.LogIOInformation(null, "Database | Input", new { emailAddress });
-            var sw = Stopwatch.StartNew();
-            var doesExist = await _emailEntities
-                .AsNoTracking()
-                .Where(e => e.Address == emailAddress)
+                .Search(
+                    identifier: identifier
+                )
                 .AnyAsync();
 
             _logger.LogIOInformation(sw, "Database | Output", new { doesExist });
@@ -173,6 +151,28 @@ namespace FireplaceApi.Infrastructure.Repositories
                 emailEntitiesQuery = emailEntitiesQuery.Include(e => e.UserEntity);
 
             return emailEntitiesQuery;
+        }
+
+        public static IQueryable<EmailEntity> Search(
+            [NotNull] this IQueryable<EmailEntity> q, EmailIdentifier identifier)
+        {
+            if (identifier != null)
+            {
+                switch (identifier)
+                {
+                    case EmailIdIdentifier idIdentifier:
+                        q = q.Where(e => e.Id == idIdentifier.Id);
+                        break;
+                    case EmailAddressIdentifier addressIdentifier:
+                        q = q.Where(e => e.Address == addressIdentifier.Address);
+                        break;
+                    case EmailUserIdIdentifier userIdIdentifier:
+                        q = q.Where(e => e.UserEntityId == userIdIdentifier.UserId);
+                        break;
+                }
+            }
+
+            return q;
         }
 
         public static EmailEntity RemoveLoopReferencing([NotNull] this EmailEntity emailEntity)

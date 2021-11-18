@@ -17,9 +17,9 @@ namespace FireplaceApi.Core.Interfaces
             bool includeAccessTokens = false, bool includeSessions = false);
         public Task<string> GetUsernameByIdAsync(ulong id);
         public Task<ulong> GetIdByUsernameAsync(string username);
-        public Task<User> CreateUserAsync(ulong id, string firstName,
-            string lastName, string username, UserState state,
-            Password password = null);
+        public Task<User> CreateUserAsync(ulong id, string username, UserState state,
+            Password password = null, string displayName = null,
+            string about = null, string avatarUrl = null, string bannerUrl = null);
         public Task<User> UpdateUserAsync(User user);
         public Task UpdateUsernameAsync(ulong id, string newUsername);
         public Task DeleteUserByIdentifierAsync(UserIdentifier identifier);

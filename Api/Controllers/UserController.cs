@@ -57,8 +57,8 @@ namespace FireplaceApi.Api.Controllers
             [FromBody] SignUpWithEmailInputBodyParameters inputBodyParameters)
         {
             var password = Password.OfValue(inputBodyParameters.Password);
-            var user = await _userService.SignUpWithEmailAsync(inputHeaderParameters.IpAddress, inputBodyParameters.FirstName,
-                inputBodyParameters.LastName, inputBodyParameters.Username, password, inputBodyParameters.EmailAddress);
+            var user = await _userService.SignUpWithEmailAsync(inputHeaderParameters.IpAddress,
+                inputBodyParameters.EmailAddress, inputBodyParameters.Username, password);
             var userDto = _userConverter.ConvertToDto(user);
             var outputCookieParameters = new SignUpWithEmailOutputCookieParameters(userDto.AccessToken);
             SetOutputCookieParameters(outputCookieParameters);
@@ -181,9 +181,9 @@ namespace FireplaceApi.Api.Controllers
         {
             var password = Password.OfValue(inputBodyParameters.Password);
             var oldPassword = Password.OfValue(inputBodyParameters.OldPassword);
-            var user = await _userService.PatchRequestingUserAsync(requestingUser, inputBodyParameters.FirstName,
-                inputBodyParameters.LastName, inputBodyParameters.Username, oldPassword, password,
-                inputBodyParameters.EmailAddress);
+            var user = await _userService.PatchRequestingUserAsync(requestingUser, inputBodyParameters.DisplayName,
+                inputBodyParameters.About, inputBodyParameters.AvatarUrl, inputBodyParameters.BannerUrl,
+                inputBodyParameters.Username, oldPassword, password, inputBodyParameters.EmailAddress);
             var userDto = _userConverter.ConvertToDto(user);
             return userDto;
         }

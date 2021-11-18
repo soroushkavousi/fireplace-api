@@ -38,8 +38,8 @@ namespace FireplaceApi.Api.Converters
                 sessionDtos = user.Sessions.Select(
                     session => _serviceProvider.GetService<SessionConverter>().ConvertToDto(session.PureCopy())).ToList();
 
-            var userDto = new UserDto(user.Id.IdEncode(), user.FirstName, user.LastName,
-                user.Username, user.State.ToString(), user.CreationDate,
+            var userDto = new UserDto(user.Id.IdEncode(), user.Username, user.State.ToString(),
+                user.CreationDate, user.DisplayName, user.About, user.AvatarUrl, user.BannerUrl,
                 accessTokenValue, emailDto, sessionDtos);
 
             return userDto;

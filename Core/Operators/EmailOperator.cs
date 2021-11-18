@@ -32,9 +32,9 @@ namespace FireplaceApi.Core.Operators
             _emailGateway = emailGateway;
         }
 
-        public async Task<Email> ActivateEmailByIdAsync(ulong id)
+        public async Task<Email> ActivateEmailByIdentifierAsync(EmailIdentifier identifier)
         {
-            var email = await PatchEmailByIdAsync(id, activationStatus: ActivationStatus.COMPLETED);
+            var email = await PatchEmailByIdentifierAsync(identifier, activationStatus: ActivationStatus.COMPLETED);
 
             var userOperator = _serviceProvider.GetService<UserOperator>();
             var user = await userOperator.PatchUserByIdentifierAsync(
@@ -49,18 +49,9 @@ namespace FireplaceApi.Core.Operators
             return email;
         }
 
-        public async Task<Email> GetEmailByIdAsync(ulong id, bool includeUser = false)
+        public async Task<Email> GetEmailByIdentifierAsync(EmailIdentifier identifier, bool includeUser = false)
         {
-            var email = await _emailRepository.GetEmailByIdAsync(id, includeUser);
-            if (email == null)
-                return email;
-
-            return email;
-        }
-
-        public async Task<Email> GetEmailByAddressAsync(string address, bool includeUser = false)
-        {
-            var email = await _emailRepository.GetEmailByAddressAsync(address, includeUser);
+            var email = await _emailRepository.GetEmailByIdentifierAsync(identifier, includeUser);
             if (email == null)
                 return email;
 
@@ -71,7 +62,8 @@ namespace FireplaceApi.Core.Operators
             ActivationStatus status = ActivationStatus.CREATED)
         {
             var activation = new Activation(status);
-            var id = await IdGenerator.GenerateNewIdAsync(DoesEmailIdExistAsync);
+            var id = await IdGenerator.GenerateNewIdAsync(
+                (id) => DoesEmailIdentifierExistAsync(EmailIdentifier.OfId(id)));
             var email = await _emailRepository.CreateEmailAsync(id, userId,
                 address, activation);
             return email;
@@ -89,38 +81,26 @@ namespace FireplaceApi.Core.Operators
             return email;
         }
 
-        public async Task<Email> PatchEmailByIdAsync(ulong id, ulong? userId = null,
+        public async Task<Email> PatchEmailByIdentifierAsync(EmailIdentifier identifier, ulong? userId = null,
             string address = null, ActivationStatus? activationStatus = null,
             int? activationCode = null, string activationSubject = null,
             string activationMessage = null)
         {
-            var email = await _emailRepository.GetEmailByIdAsync(id, true);
+            var email = await _emailRepository.GetEmailByIdentifierAsync(identifier, true);
             email = await ApplyEmailChangesAsync(email, userId, address, activationStatus,
                 activationCode, activationSubject, activationMessage);
-            email = await GetEmailByIdAsync(email.Id, true);
+            email = await GetEmailByIdentifierAsync(EmailIdentifier.OfId(email.Id), true);
             return email;
         }
 
-        public async Task<Email> PatchEmailByAddressAsync(string existingAddress, ulong? userId = null,
-            string address = null, ActivationStatus? activationStatus = null,
-            int? activationCode = null, string activationSubject = null,
-            string activationMessage = null)
+        public async Task DeleteEmailAsync(EmailIdentifier identifier)
         {
-            var email = await _emailRepository.GetEmailByAddressAsync(existingAddress, true);
-            email = await ApplyEmailChangesAsync(email, userId, address, activationStatus,
-                activationCode, activationSubject, activationMessage);
-            email = await GetEmailByIdAsync(email.Id, true);
-            return email;
+            await _emailRepository.DeleteEmailAsync(identifier);
         }
 
-        public async Task DeleteEmailAsync(ulong id)
+        public async Task<bool> DoesEmailIdentifierExistAsync(EmailIdentifier identifier)
         {
-            await _emailRepository.DeleteEmailAsync(id);
-        }
-
-        public async Task<bool> DoesEmailIdExistAsync(ulong id)
-        {
-            var emailIdExists = await _emailRepository.DoesEmailIdExistAsync(id);
+            var emailIdExists = await _emailRepository.DoesEmailIdentifierExistAsync(identifier);
             return emailIdExists;
         }
 
@@ -187,11 +167,6 @@ namespace FireplaceApi.Core.Operators
             var messageFormat = GlobalOperator.GlobalValues.Email.ActivationMessageFormat;
             var activationMessage = string.Format(messageFormat, activationCode);
             return activationMessage;
-        }
-
-        public async Task<bool> DoesEmailAddressExistAsync(string emailAddress)
-        {
-            return await _emailRepository.DoesEmailAddressExistAsync(emailAddress);
         }
     }
 }

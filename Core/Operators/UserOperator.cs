@@ -41,8 +41,11 @@ namespace FireplaceApi.Core.Operators
             var emailOperator = _serviceProvider.GetService<EmailOperator>();
             var googleUserOperator = _serviceProvider.GetService<GoogleUserOperator>();
             var username = await GenerateNewUsername();
-            var user = await CreateUserAsync(googleUserToken.FirstName,
-                googleUserToken.LastName, username, state: UserState.VERIFIED);
+            var displayName = googleUserToken.FullName;
+            if (string.IsNullOrWhiteSpace(displayName))
+                displayName = $"{googleUserToken.FirstName} {googleUserToken.LastName}";
+            var user = await CreateUserAsync(username, state: UserState.VERIFIED,
+                displayName: displayName, avatarUrl: googleUserToken.PictureUrl);
 
             await emailOperator.CreateEmailAsync(user.Id, googleUserToken.GmailAddress,
                 ActivationStatus.COMPLETED);
@@ -106,9 +109,11 @@ namespace FireplaceApi.Core.Operators
             }
             else
             {
-                if (await emailOperator.DoesEmailAddressExistAsync(googleUserToken.GmailAddress))
+                if (await emailOperator.DoesEmailIdentifierExistAsync(
+                    EmailIdentifier.OfAddress(googleUserToken.GmailAddress)))
                 {
-                    var email = await emailOperator.GetEmailByAddressAsync(gmailAddress, true);
+                    var email = await emailOperator.GetEmailByIdentifierAsync(
+                        EmailIdentifier.OfAddress(gmailAddress), true);
                     email.User.Email = email;
                     user = await AddGoogleInformationToUserAsync(email.User, ipAddress,
                         googleUserToken, state, scope, authUser, prompt);
@@ -140,10 +145,10 @@ namespace FireplaceApi.Core.Operators
             return googleAuthUrl;
         }
 
-        public async Task<User> SignUpWithEmailAsync(IPAddress ipAddress, string firstName,
-            string lastName, string username, Password password, string emailAddress)
+        public async Task<User> SignUpWithEmailAsync(IPAddress ipAddress, string emailAddress,
+            string username, Password password)
         {
-            var user = await CreateUserAsync(firstName, lastName, username, password);
+            var user = await CreateUserAsync(username, password);
 
             var emailOperator = _serviceProvider.GetService<EmailOperator>();
             var email = await emailOperator.CreateEmailAsync(user.Id, emailAddress);
@@ -163,7 +168,7 @@ namespace FireplaceApi.Core.Operators
         public async Task<User> LogInWithEmailAsync(IPAddress ipAddress, string emailAddress, Password password)
         {
             var emailOperator = _serviceProvider.GetService<EmailOperator>();
-            var email = await emailOperator.GetEmailByAddressAsync(emailAddress);
+            var email = await emailOperator.GetEmailByIdentifierAsync(EmailIdentifier.OfAddress(emailAddress));
 
             var sessionOperator = _serviceProvider.GetService<SessionOperator>();
             var session = await sessionOperator.CreateOrUpdateSessionAsync(email.UserId, ipAddress);
@@ -243,23 +248,25 @@ namespace FireplaceApi.Core.Operators
             return userId;
         }
 
-        public async Task<User> CreateUserAsync(string firstName, string lastName,
-            string username, Password password = null, UserState state = UserState.NOT_VERIFIED)
+        public async Task<User> CreateUserAsync(string username, Password password = null,
+            UserState state = UserState.NOT_VERIFIED, string displayName = null,
+            string about = null, string avatarUrl = null, string bannerUrl = null)
         {
             var id = await IdGenerator.GenerateNewIdAsync(
                 (id) => DoesUserIdentifierExistAsync(UserIdentifier.OfId(id)));
-            var user = await _userRepository.CreateUserAsync(id, firstName, lastName,
-                username, state, password);
+            var user = await _userRepository.CreateUserAsync(id, username, state,
+                password, displayName, about, avatarUrl, bannerUrl);
             return user;
         }
 
         public async Task<User> PatchUserByIdentifierAsync(UserIdentifier userIdentifier,
-            string firstName = null, string lastName = null, string username = null, Password password = null,
-            UserState? state = null, string emailAddress = null)
+            string displayName = null, string about = null, string avatarUrl = null,
+            string bannerUrl = null, string username = null, Password password = null,
+            string emailAddress = null, UserState? state = null)
         {
             var user = await _userRepository.GetUserByIdentifierAsync(userIdentifier, true);
-            user = await ApplyUserChanges(user, firstName, lastName, username, password,
-                state, emailAddress);
+            user = await ApplyUserChanges(user, displayName, about, avatarUrl, bannerUrl,
+                username, password, emailAddress, state);
             user = await GetUserByIdentifierAsync(UserIdentifier.OfId(user.Id), true, false, false, false);
             return user;
         }
@@ -288,20 +295,33 @@ namespace FireplaceApi.Core.Operators
             return newUsername;
         }
 
-        public async Task<User> ApplyUserChanges(User user, string firstName = null,
-            string lastName = null, string username = null, Password password = null,
-            UserState? state = null, string emailAddress = null)
+        public async Task<User> ApplyUserChanges(User user, string displayName = null,
+            string about = null, string avatarUrl = null, string bannerUrl = null,
+            string username = null, Password password = null, string emailAddress = null,
+            UserState? state = null)
         {
             var foundAnyChange = false;
-            if (firstName != null)
+            if (displayName != null)
             {
-                user.FirstName = firstName;
+                user.DisplayName = displayName;
                 foundAnyChange = true;
             }
 
-            if (lastName != null)
+            if (about != null)
             {
-                user.LastName = lastName;
+                user.About = about;
+                foundAnyChange = true;
+            }
+
+            if (avatarUrl != null)
+            {
+                user.AvatarUrl = avatarUrl;
+                foundAnyChange = true;
+            }
+
+            if (bannerUrl != null)
+            {
+                user.BannerUrl = bannerUrl;
                 foundAnyChange = true;
             }
 
@@ -329,7 +349,8 @@ namespace FireplaceApi.Core.Operators
             if (emailAddress != null)
             {
                 var emailOperator = _serviceProvider.GetService<EmailOperator>();
-                user.Email = await emailOperator.PatchEmailByIdAsync(user.Email.Id, address: emailAddress);
+                user.Email = await emailOperator.PatchEmailByIdentifierAsync(
+                    EmailIdentifier.OfId(user.Email.Id), address: emailAddress);
             }
 
             return user;

@@ -34,8 +34,7 @@ namespace FireplaceApi.Infrastructure.Gateways
                     + googleGlobalValues.RelativeRedirectUrl;
 
             return await GetgoogleUserToken(googleGlobalValues.ClientId,
-                googleGlobalValues.ClientSecret, redirectUrl,
-                code);
+                googleGlobalValues.ClientSecret, redirectUrl, code);
         }
 
         public async Task<GoogleUserToken> GetgoogleUserToken(string clientId,

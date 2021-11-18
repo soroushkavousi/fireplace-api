@@ -109,5 +109,16 @@ namespace FireplaceApi.Core.Extensions
             result = result.Replace("{", "{{").Replace("}", "}}");
             return result;
         }
+
+        public static bool IsUrlStringValid(this string urlString, bool allSchemes = false)
+        {
+            if (!Uri.TryCreate(urlString, UriKind.Absolute, out Uri uriResult))
+                return false;
+
+            if (!allSchemes && uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps)
+                return false;
+
+            return true;
+        }
     }
 }

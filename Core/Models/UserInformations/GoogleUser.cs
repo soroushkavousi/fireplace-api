@@ -49,15 +49,15 @@ namespace FireplaceApi.Core.Models
             GmailAddress = gmailAddress ?? throw new ArgumentNullException(nameof(gmailAddress));
             GmailVerified = gmailVerified;
             GmailIssuedTimeInSeconds = gmailIssuedTimeInSeconds;
-            FullName = fullName ?? throw new ArgumentNullException(nameof(fullName));
-            FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
-            LastName = lastName ?? throw new ArgumentNullException(nameof(lastName));
-            Locale = locale ?? throw new ArgumentNullException(nameof(locale));
-            PictureUrl = pictureUrl ?? throw new ArgumentNullException(nameof(pictureUrl));
-            State = state ?? throw new ArgumentNullException(nameof(state));
-            AuthUser = authUser ?? throw new ArgumentNullException(nameof(authUser));
-            Prompt = prompt ?? throw new ArgumentNullException(nameof(prompt));
-            RedirectToUserUrl = redirectToUserUrl ?? throw new ArgumentNullException(nameof(redirectToUserUrl));
+            FullName = fullName;
+            FirstName = firstName;
+            LastName = lastName;
+            Locale = locale;
+            PictureUrl = pictureUrl;
+            State = state;
+            AuthUser = authUser;
+            Prompt = prompt;
+            RedirectToUserUrl = redirectToUserUrl;
             User = user;
         }
 

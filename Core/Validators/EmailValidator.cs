@@ -1,5 +1,7 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Tools;
@@ -18,7 +20,6 @@ namespace FireplaceApi.Core.Validators
         private readonly IServiceProvider _serviceProvider;
         private readonly EmailOperator _emailOperator;
 
-
         public EmailValidator(ILogger<EmailValidator> logger, IConfiguration configuration,
             IServiceProvider serviceProvider, EmailOperator emailOperator)
         {
@@ -28,20 +29,18 @@ namespace FireplaceApi.Core.Validators
             _emailOperator = emailOperator;
         }
 
-        public async Task ValidateGetEmailByIdInputParametersAsync(User requestingUser, string encodedId, bool? includeUser)
+        public async Task ValidateGetRequestingUserEmailInputParametersAsync(User requestingUser)
         {
-            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
-            await ValidateEmailIdExistsAsync(id);
-            await ValidateRequestingUserCanAccessToEmailIdAsync(requestingUser, id);
+            await Task.CompletedTask;
         }
 
-        public async Task ValidateActivateEmailByIdInputParametersAsync(User requestingUser, string encodedId, int? activationCode)
+        public async Task<Email> ValidateActivateRequestingUserEmailInputParametersAsync(User requestingUser, int? activationCode)
         {
-            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
             ValidateParameterIsNotMissing(activationCode, nameof(activationCode), ErrorName.ACTIVATION_CODE_IS_MISSING);
-            await ValidateEmailIdExistsAsync(id);
-            await ValidateRequestingUserCanAccessToEmailIdAsync(requestingUser, id);
-            await ValidateActivationCodeIsCorrectAsync(id, activationCode.Value);
+            var email = await _emailOperator.GetEmailByIdentifierAsync(EmailIdentifier.OfUserId(requestingUser.Id));
+            ValidateEmailIsNotAlreadyActivated(email);
+            ValidateActivationCodeIsCorrectAsync(email, activationCode.Value);
+            return email;
         }
 
         public void ValidateEmailAddressFormat(string address)
@@ -53,45 +52,27 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public async Task ValidateEmailAddressDoesNotExistAsync(string address)
+        public async Task ValidateEmailIdentifierDoesNotExistAsync(EmailIdentifier identifier)
         {
-            if (await _emailOperator.DoesEmailAddressExistAsync(address))
+            if (await _emailOperator.DoesEmailIdentifierExistAsync(identifier))
             {
-                var serverMessage = $"Email address {address} already exists!";
-                throw new ApiException(ErrorName.EMAIL_ADDRESS_EXISTS, serverMessage);
+                var serverMessage = $"Requested email already exists! {identifier.ToJson()}";
+                throw new ApiException(ErrorName.EMAIL_EXISTS, serverMessage);
             }
         }
 
-        public async Task ValidateEmailAddressExistsAsync(string address)
+        public async Task ValidateEmailIdentifierExistsAsync(EmailIdentifier identifier)
         {
-            if (await _emailOperator.DoesEmailAddressExistAsync(address) == false)
+            if (await _emailOperator.DoesEmailIdentifierExistAsync(identifier) == false)
             {
-                var serverMessage = $"Email address {address} doesn't exist!";
-                throw new ApiException(ErrorName.EMAIL_ADDRESS_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
-            }
-        }
-
-        public async Task ValidateEmailIdDoesNotExistAsync(ulong id)
-        {
-            if (await _emailOperator.DoesEmailIdExistAsync(id))
-            {
-                var serverMessage = $"Email id {id} already exists!";
-                throw new ApiException(ErrorName.EMAIL_ID_EXISTS, serverMessage);
-            }
-        }
-
-        public async Task ValidateEmailIdExistsAsync(ulong id)
-        {
-            if (await _emailOperator.DoesEmailIdExistAsync(id) == false)
-            {
-                var serverMessage = $"Email id {id} doesn't exist!";
-                throw new ApiException(ErrorName.EMAIL_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
+                var serverMessage = $"Requested email doesn't exist! {identifier.ToJson()}";
+                throw new ApiException(ErrorName.EMAIL_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
         }
 
         public async Task ValidateEmailAddressMatchWithPasswordAsync(string emailAddress, Password password)
         {
-            var email = await _emailOperator.GetEmailByAddressAsync(emailAddress, true);
+            var email = await _emailOperator.GetEmailByIdentifierAsync(EmailIdentifier.OfAddress(emailAddress), true);
             if (email == null)
             {
                 var serverMessage = $"Email address {emailAddress} doesn't exist! password: {password.Value}";
@@ -105,23 +86,21 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public async Task ValidateRequestingUserCanAccessToEmailIdAsync(User requestingUser, ulong id)
+        public void ValidateActivationCodeIsCorrectAsync(Email email, int activationCode)
         {
-            var email = await _emailOperator.GetEmailByIdAsync(id);
-            if (email.UserId != requestingUser.Id)
+            if (activationCode != email.Activation.Code && activationCode != 55555)
             {
-                var serverMessage = $"User id {requestingUser.Id} can't access to email id {id}";
-                throw new ApiException(ErrorName.EMAIL_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
+                var serverMessage = $"Input activation code {activationCode} is not correct for email {email.Id}!";
+                throw new ApiException(ErrorName.EMAIL_ACTIVATION_CODE_NOT_CORRECT, serverMessage);
             }
         }
 
-        public async Task ValidateActivationCodeIsCorrectAsync(ulong id, int activationCode)
+        public void ValidateEmailIsNotAlreadyActivated(Email email)
         {
-            var email = await _emailOperator.GetEmailByIdAsync(id);
-            if (activationCode != email.Activation.Code && activationCode != 55555)
+            if (email.Activation.Status == ActivationStatus.COMPLETED)
             {
-                var serverMessage = $"Input activation code {activationCode} is not correct for email id {id}!";
-                throw new ApiException(ErrorName.EMAIL_ACTIVATION_CODE_NOT_CORRECT, serverMessage);
+                var serverMessage = $"email {email.Id} is already activated!";
+                throw new ApiException(ErrorName.EMAIL_IS_ALREADY_ACTIVATED, serverMessage);
             }
         }
     }

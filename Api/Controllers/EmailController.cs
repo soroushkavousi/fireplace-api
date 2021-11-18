@@ -24,38 +24,34 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
-        /// Activate email or email.
+        /// Activate requesting user email.
         /// </summary>
         /// <returns>Created basic authentication</returns>
         /// <response code="200">Returns the newly registered email.</response>
-        [HttpPost("{id}/activate")]
+        [HttpPost("me/activate")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(EmailDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<EmailDto>> ActivateEmail(
+        public async Task<ActionResult<EmailDto>> ActivateRequestingUserEmail(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ActivateEmailInputRouteParameters inputRouteParameters,
-            [FromBody] ActivateEmailInputBodyParameters inputBodyParameters)
+            [FromBody] ActivateRequestingUserEmailInputBodyParameters inputBodyParameters)
         {
-            var email = await _emailService.ActivateEmailByIdAsync(requestingUser,
-                inputRouteParameters.Id, inputBodyParameters.ActivationCode);
+            var email = await _emailService.ActivateRequestingUserEmailAsync(requestingUser,
+                inputBodyParameters.ActivationCode);
             var emailDto = _emailConverter.ConvertToDto(email);
             return emailDto;
         }
 
         /// <summary>
-        /// Get a single email.
+        /// Get requesting user email data.
         /// </summary>
         /// <returns>Requested email</returns>
         /// <response code="200">The email was successfully retrieved.</response>
-        [HttpGet("{id}")]
+        [HttpGet("me")]
         [ProducesResponseType(typeof(EmailDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<EmailDto>> GetEmailByIdAsync(
-            [BindNever][FromHeader] User requestingUser,
-            [FromRoute] GetEmailByIdInputRouteParameters inputRouteParameters,
-            [FromQuery] GetEmailByIdInputQueryParameters inputQueryParameters)
+        public async Task<ActionResult<EmailDto>> GetRequestingUserEmailAsync(
+            [BindNever][FromHeader] User requestingUser)
         {
-            var email = await _emailService.GetEmailByIdAsync(requestingUser, inputRouteParameters.Id,
-                inputQueryParameters.IncludeUser);
+            var email = await _emailService.GetRequestingUserEmailAsync(requestingUser);
             var emailDto = _emailConverter.ConvertToDto(email);
             return emailDto;
         }

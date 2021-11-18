@@ -10,12 +10,13 @@ namespace FireplaceApi.Infrastructure.Entities
     public class UserEntity : BaseEntity
     {
         [Required]
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        [Required]
         public string Username { get; set; }
         [Required]
         public string State { get; set; }
+        public string DisplayName { get; set; }
+        public string About { get; set; }
+        public string AvatarUrl { get; set; }
+        public string BannerUrl { get; set; }
         public string PasswordHash { get; set; }
         public EmailEntity EmailEntity { get; set; }
         public GoogleUserEntity GoogleUserEntity { get; set; }
@@ -30,9 +31,9 @@ namespace FireplaceApi.Infrastructure.Entities
 
         private UserEntity() : base() { }
 
-        public UserEntity(ulong id, string firstName, string lastName,
-            string username, string state, DateTime? creationDate = null,
-            DateTime? modifiedDate = null, string passwordHash = null,
+        public UserEntity(ulong id, string username, string state, DateTime? creationDate = null,
+            string displayName = null, string about = null, string avatarUrl = null,
+            string bannerUrl = null, DateTime? modifiedDate = null, string passwordHash = null,
             EmailEntity emailEntity = null, GoogleUserEntity googleUserEntity = null,
             List<AccessTokenEntity> accessTokenEntities = null,
             List<SessionEntity> sessionEntities = null,
@@ -43,10 +44,12 @@ namespace FireplaceApi.Infrastructure.Entities
             List<CommentEntity> commentEntities = null,
             List<CommentVoteEntity> commentVoteEntities = null) : base(id, creationDate, modifiedDate)
         {
-            FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
-            LastName = lastName ?? throw new ArgumentNullException(nameof(lastName));
             Username = username ?? throw new ArgumentNullException(nameof(username));
             State = state ?? throw new ArgumentNullException(nameof(state));
+            DisplayName = displayName;
+            About = about;
+            AvatarUrl = avatarUrl;
+            BannerUrl = bannerUrl;
             PasswordHash = passwordHash;
             EmailEntity = emailEntity;
             GoogleUserEntity = googleUserEntity;
@@ -60,8 +63,8 @@ namespace FireplaceApi.Infrastructure.Entities
             CommentVoteEntities = commentVoteEntities;
         }
 
-        public UserEntity PureCopy() => new UserEntity(Id, FirstName, LastName,
-            Username, State, CreationDate, ModifiedDate, PasswordHash);
+        public UserEntity PureCopy() => new UserEntity(Id, Username, State, CreationDate,
+            DisplayName, About, AvatarUrl, BannerUrl, ModifiedDate, PasswordHash);
 
         //public void RemoveLoopReferencing()
         //{

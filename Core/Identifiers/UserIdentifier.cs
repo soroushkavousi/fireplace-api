@@ -5,14 +5,10 @@ namespace FireplaceApi.Core.Identifiers
     public abstract class UserIdentifier
     {
         public static UserIdIdentifier OfId(ulong id)
-        {
-            return new UserIdIdentifier(id);
-        }
+            => new UserIdIdentifier(id);
 
         public static UserUsernameIdentifier OfUsername(string username)
-        {
-            return new UserUsernameIdentifier(username);
-        }
+            => new UserUsernameIdentifier(username);
     }
 
     public class UserIdIdentifier : UserIdentifier, IIdIdentifier

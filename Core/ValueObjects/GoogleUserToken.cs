@@ -40,11 +40,11 @@ namespace FireplaceApi.Core.ValueObjects
             GmailAddress = gmailAddress ?? throw new ArgumentNullException(nameof(gmailAddress));
             GmailVerified = gmailVerified;
             GmailIssuedTimeInSeconds = gmailIssuedTimeInSeconds;
-            FullName = fullName ?? throw new ArgumentNullException(nameof(fullName));
-            FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
-            LastName = lastName ?? throw new ArgumentNullException(nameof(lastName));
-            Locale = locale ?? throw new ArgumentNullException(nameof(locale));
-            PictureUrl = pictureUrl ?? throw new ArgumentNullException(nameof(pictureUrl));
+            FullName = fullName;
+            FirstName = firstName;
+            LastName = lastName;
+            Locale = locale;
+            PictureUrl = pictureUrl;
         }
     }
 }

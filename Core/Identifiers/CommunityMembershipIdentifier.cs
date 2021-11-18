@@ -5,16 +5,12 @@ namespace FireplaceApi.Core.Identifiers
     public abstract class CommunityMembershipIdentifier
     {
         public static CommunityMembershipIdIdentifier OfId(ulong id)
-        {
-            return new CommunityMembershipIdIdentifier(id);
-        }
+            => new CommunityMembershipIdIdentifier(id);
 
         public static CommunityMembershipUserAndCommunityIdentifier OfUserAndCommunity(
             UserIdentifier userIdentifier, CommunityIdentifier communityIdentifier)
-        {
-            return new CommunityMembershipUserAndCommunityIdentifier(
+            => new CommunityMembershipUserAndCommunityIdentifier(
                 userIdentifier, communityIdentifier);
-        }
     }
 
     public class CommunityMembershipIdIdentifier : CommunityMembershipIdentifier, IIdIdentifier
