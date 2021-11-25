@@ -73,8 +73,8 @@ namespace FireplaceApi.Api.IntegrationTests
         private void InitTestDatabase()
         {
             //var optionsBuilder = new DbContextOptionsBuilder<FireplaceApiContext>();
-            //optionsBuilder.UseNpgsql(_configuration.GetConnectionString("MainDatabase"));
-            var mainFireplaceApiContext = new FireplaceApiContext(_configuration.GetConnectionString("MainDatabase"));
+            //optionsBuilder.UseNpgsql(_configuration.GetConnectionString(Constants.MainDatabaseKey));
+            var mainFireplaceApiContext = new FireplaceApiContext(_configuration.GetConnectionString(Constants.MainDatabaseKey));
 
             var errorEntities = mainFireplaceApiContext.ErrorEntities.AsNoTracking().ToList();
             var globalEntities = mainFireplaceApiContext.GlobalEntities.AsNoTracking().ToList();
@@ -100,7 +100,7 @@ namespace FireplaceApi.Api.IntegrationTests
             var sp = services.BuildServiceProvider();
             var configuration = sp.GetRequiredService<IConfiguration>();
             services.AddDbContext<FireplaceApiContext>(
-                optionsBuilder => optionsBuilder.UseNpgsql(configuration.GetConnectionString("TestDatabase"))
+                optionsBuilder => optionsBuilder.UseNpgsql(configuration.GetConnectionString(Tools.Constants.TestDatabaseKey))
             );
         }
 

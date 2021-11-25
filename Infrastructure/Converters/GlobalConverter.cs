@@ -1,4 +1,6 @@
-﻿using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Models;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.Extensions.Logging;
 using System;
@@ -21,7 +23,8 @@ namespace FireplaceApi.Infrastructure.Converters
             if (global == null)
                 return null;
 
-            var globalEntity = new GlobalEntity(global.Id, global.Values,
+            var globalEntity = new GlobalEntity(global.Id,
+                global.EnvironmentName.ToString(), global.Values,
                 global.CreationDate, global.ModifiedDate);
 
             return globalEntity;
@@ -32,7 +35,8 @@ namespace FireplaceApi.Infrastructure.Converters
             if (globalEntity == null)
                 return null;
 
-            var global = new Global(globalEntity.Id, globalEntity.Values,
+            var global = new Global(globalEntity.Id,
+                globalEntity.EnvironmentName.ToEnum<EnvironmentName>(), globalEntity.Values,
                 globalEntity.CreationDate, globalEntity.ModifiedDate);
 
             return global;

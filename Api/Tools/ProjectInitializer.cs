@@ -1,4 +1,6 @@
-﻿using FireplaceApi.Core.Operators;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Operators;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,30 +13,41 @@ namespace FireplaceApi.Api.Tools
 {
     public static class ProjectInitializer
     {
+        private static bool _initialized = false;
+        private static string _environmentName;
         private static IConfigurationRoot _config;
 
         public static Logger Logger { get; private set; }
 
-        public static void Start()
+        private static void Initialize()
         {
+            _initialized = true;
+            _environmentName = Environment.GetEnvironmentVariable(Constants.EnvironmentNameKey);
             _config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{_environmentName}.json", optional: false, reloadOnChange: true)
                 .Build();
+        }
+
+        public static void Start()
+        {
+            if (!_initialized)
+                Initialize();
 
             SetupGlobalValues();
             SetupLogger();
         }
 
-        public static void SetupGlobalValues()
+        private static void SetupGlobalValues()
         {
-            var globalId = ulong.Parse(ReadFromConfig("GlobalId"));
-            var connectionString = _config.GetConnectionString("MainDatabase");
+            var connectionString = _config.GetConnectionString(Constants.MainDatabaseKey);
             using var fireplaceApiContext = new FireplaceApiContext(connectionString);
+            var environmentName = _environmentName.ToEnum<EnvironmentName>();
             GlobalOperator.GlobalValues = fireplaceApiContext.GlobalEntities
-                .AsNoTracking().Where(e => e.Id == globalId).Single().Values;
+                .AsNoTracking().Where(e => e.EnvironmentName == environmentName.ToString()).Single().Values;
         }
 
-        public static void SetupLogger()
+        private static void SetupLogger()
         {
             try
             {

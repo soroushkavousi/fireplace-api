@@ -41,10 +41,11 @@ namespace FireplaceApi.Api
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IObjectModelValidator, NullObjectModelValidator>();
+            var infrastructureAssemblyName = $"{nameof(FireplaceApi)}.{nameof(Infrastructure)}";
             services.AddDbContext<FireplaceApiContext>(
                 optionsBuilder => optionsBuilder.UseNpgsql(
-                    Configuration.GetConnectionString("MainDatabase"),
-                    optionsBuilder => optionsBuilder.MigrationsAssembly("FireplaceApi.Infrastructure"))
+                    Configuration.GetConnectionString(Constants.MainDatabaseKey),
+                    optionsBuilder => optionsBuilder.MigrationsAssembly(infrastructureAssemblyName))
             );
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddInfrastructurConverters();

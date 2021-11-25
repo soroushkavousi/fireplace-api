@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Web;
 using System;
-using System.Security.Authentication;
 
 namespace FireplaceApi.Api
 {
@@ -41,14 +40,6 @@ namespace FireplaceApi.Api
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseKestrel((context, serverOptions) =>
-                    {
-                        serverOptions.Configure(context.Configuration.GetSection("Kestrel"))
-                            .Endpoint("Https", listenOptions =>
-                            {
-                                listenOptions.HttpsOptions.SslProtocols = SslProtocols.Tls12;
-                            });
-                    });
                     webBuilder.UseStartup<Startup>();
                 })
                 .ConfigureLogging(logging =>

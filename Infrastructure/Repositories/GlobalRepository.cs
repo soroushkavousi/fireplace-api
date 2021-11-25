@@ -65,11 +65,12 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _globalConverter.ConvertToModel(globalEntity);
         }
 
-        public async Task<Global> CreateGlobalAsync(ulong id, GlobalValues globalValues)
+        public async Task<Global> CreateGlobalAsync(ulong id, EnvironmentName environmentName,
+            GlobalValues globalValues)
         {
             _logger.LogIOInformation(null, "Database | Input", new { id, globalValues });
             var sw = Stopwatch.StartNew();
-            var globalEntity = new GlobalEntity(id, globalValues);
+            var globalEntity = new GlobalEntity(id, environmentName.ToString(), globalValues);
             _globalEntities.Add(globalEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
