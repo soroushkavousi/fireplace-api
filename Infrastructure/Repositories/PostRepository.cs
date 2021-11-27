@@ -7,7 +7,6 @@ using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
-using FireplaceApi.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -42,13 +41,13 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                Ids, requestingUser = requestingUser != null
+                Ids,
+                requestingUser = requestingUser != null
             });
             var sw = Stopwatch.StartNew();
-            var ulongIds = Ids.ToDecimals();
             var postEntities = await _postEntities
                 .AsNoTracking()
-                .Where(e => ulongIds.Contains(e.Id))
+                .Where(e => Ids.Contains(e.Id))
                 .Include(
                     authorEntity: false,
                     communityEntity: false,
@@ -72,8 +71,12 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                authorId, self, joined, communityIdentifier,
-                search, sort
+                authorId,
+                self,
+                joined,
+                communityIdentifier,
+                search,
+                sort
             });
             var sw = Stopwatch.StartNew();
             var postEntities = await _postEntities
@@ -104,8 +107,12 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                authorId, self, joined, communityIdentifier,
-                search, sort
+                authorId,
+                self,
+                joined,
+                communityIdentifier,
+                search,
+                sort
             });
             var sw = Stopwatch.StartNew();
             var postEntityIds = await _postEntities
@@ -132,7 +139,9 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                id, includeAuthor, includeCommunity,
+                id,
+                includeAuthor,
+                includeCommunity,
                 requestingUser = requestingUser != null
             });
             var sw = Stopwatch.StartNew();
@@ -156,8 +165,12 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                id, authorUserId, authorUsername, communityId,
-                communityName, content
+                id,
+                authorUserId,
+                authorUsername,
+                communityId,
+                communityName,
+                content
             });
             var sw = Stopwatch.StartNew();
             var postEntity = new PostEntity(id, authorUserId, authorUsername,

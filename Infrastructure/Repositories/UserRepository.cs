@@ -65,8 +65,11 @@ namespace FireplaceApi.Infrastructure.Repositories
             _logger.LogIOInformation(null, "Database | Input",
                 new
                 {
-                    identifier, includeEmail, includeGoogleUser,
-                    includeAccessTokens, includeSessions
+                    identifier,
+                    includeEmail,
+                    includeGoogleUser,
+                    includeAccessTokens,
+                    includeSessions
                 });
             var sw = Stopwatch.StartNew();
             var userEntity = await _userEntities
@@ -121,8 +124,14 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                id, username, state, passwordHash = password?.Hash,
-                displayName, about, avatarUrl, bannerUrl
+                id,
+                username,
+                state,
+                passwordHash = password?.Hash,
+                displayName,
+                about,
+                avatarUrl,
+                bannerUrl
             });
             var sw = Stopwatch.StartNew();
             var userEntity = new UserEntity(id, username, state.ToString(),

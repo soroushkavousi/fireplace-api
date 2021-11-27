@@ -25,7 +25,7 @@ namespace FireplaceApi.Api.IntegrationTests
         private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly ErrorOperator _errorOperator;
 
-        public WebApplicationFactory<Startup> ApiFactory;
+        public WebApplicationFactory<Program> ApiFactory;
         public IServiceProvider ServiceProvider { get; }
         public ClientPool ClientPool { get; }
         public TestUtils TestUtils { get; }
@@ -34,7 +34,7 @@ namespace FireplaceApi.Api.IntegrationTests
         {
             ProjectInitializer.Start();
             var logger = ProjectInitializer.Logger;
-            ApiFactory = new WebApplicationFactory<Startup>()
+            ApiFactory = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
                 {
                     builder.ConfigureAppConfiguration((hostingContext, config) =>

@@ -15,7 +15,7 @@ namespace FireplaceApi.Api.IntegrationTests
     public class ClientPool
     {
         private readonly ILogger<ClientPool> _logger;
-        private readonly WebApplicationFactory<Startup> _apiFactory;
+        private readonly WebApplicationFactory<Program> _apiFactory;
         private readonly WebApplicationFactoryClientOptions _clientOptions;
         private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly IUserRepository _userRepository;

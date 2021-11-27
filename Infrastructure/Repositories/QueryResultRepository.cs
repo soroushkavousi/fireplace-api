@@ -102,7 +102,13 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                id, pointer, lastStart, lastEnd, lastLimit, lastPage, referenceEntityIds
+                id,
+                pointer,
+                lastStart,
+                lastEnd,
+                lastLimit,
+                lastPage,
+                referenceEntityIds
             });
             var sw = Stopwatch.StartNew();
             var queryResultEntity = new T();

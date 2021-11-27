@@ -5,7 +5,6 @@ using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
-using FireplaceApi.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -39,10 +38,9 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new { Ids });
             var sw = Stopwatch.StartNew();
-            var ulongIds = Ids.ToDecimals();
             var commentEntities = await _commentVoteEntities
                 .AsNoTracking()
-                .Where(e => ulongIds.Contains(e.Id))
+                .Where(e => Ids.Contains(e.Id))
                 .ToListAsync();
 
             var commentEntityDictionary = new Dictionary<ulong, CommentVoteEntity>();
@@ -59,7 +57,9 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                id, includeVoter, includeComment
+                id,
+                includeVoter,
+                includeComment
             });
             var sw = Stopwatch.StartNew();
             var commentEntity = await _commentVoteEntities
@@ -80,7 +80,10 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                voterId, commentId, includeVoter, includeComment
+                voterId,
+                commentId,
+                includeVoter,
+                includeComment
             });
             var sw = Stopwatch.StartNew();
             var commentEntity = await _commentVoteEntities
@@ -102,7 +105,11 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                id, voterUserId, voterUsername, commentId, isUp
+                id,
+                voterUserId,
+                voterUsername,
+                commentId,
+                isUp
             });
             var sw = Stopwatch.StartNew();
             var commentEntity = new CommentVoteEntity(id, voterUserId,

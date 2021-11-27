@@ -96,8 +96,14 @@ namespace FireplaceApi.Infrastructure.Repositories
             _logger.LogIOInformation(null, "Database | Input",
                 new
                 {
-                    id, userId, scope, accessTokenIssuedTime,
-                    gmailAddress, fullName, firstName, lastName
+                    id,
+                    userId,
+                    scope,
+                    accessTokenIssuedTime,
+                    gmailAddress,
+                    fullName,
+                    firstName,
+                    lastName
                 });
             var sw = Stopwatch.StartNew();
             var googleUserEntity = new GoogleUserEntity(id, userId, code, accessToken,

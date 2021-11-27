@@ -41,13 +41,13 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                Ids, requestingUser = requestingUser != null
+                Ids,
+                requestingUser = requestingUser != null
             });
             var sw = Stopwatch.StartNew();
-            var ulongIds = Ids.ToDecimals();
             var commentEntities = await _commentEntities
                 .AsNoTracking()
-                .Where(e => ulongIds.Contains(e.Id))
+                .Where(e => Ids.Contains(e.Id))
                 .Include(
                     authorEntity: false,
                     postEntity: false,
@@ -69,7 +69,8 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                authorId, sort
+                authorId,
+                sort
             });
             var sw = Stopwatch.StartNew();
             var commentEntityIds = await _commentEntities
@@ -97,7 +98,8 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                postId, sort
+                postId,
+                sort
             });
             var sw = Stopwatch.StartNew();
             var commentEntityIds = await _commentEntities
@@ -125,7 +127,8 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                postId, parentCommentIds,
+                postId,
+                parentCommentIds,
                 requestingUser = requestingUser != null
             });
             var sw = Stopwatch.StartNew();
@@ -157,7 +160,8 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                postId, parentCommentId,
+                postId,
+                parentCommentId,
                 requestingUser = requestingUser != null
             });
             var sw = Stopwatch.StartNew();
@@ -190,7 +194,9 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                id, includeAuthor, includePost,
+                id,
+                includeAuthor,
+                includePost,
                 requestingUser = requestingUser != null
             });
             var sw = Stopwatch.StartNew();
@@ -214,7 +220,11 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                id, authorUserId, authorUsername, postId, content,
+                id,
+                authorUserId,
+                authorUsername,
+                postId,
+                content,
                 parentCommentIds
             });
             var sw = Stopwatch.StartNew();

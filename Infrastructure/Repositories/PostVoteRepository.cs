@@ -5,7 +5,6 @@ using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
-using FireplaceApi.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -39,10 +38,9 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new { Ids });
             var sw = Stopwatch.StartNew();
-            var ulongIds = Ids.ToDecimals();
             var postEntities = await _postVoteEntities
                 .AsNoTracking()
-                .Where(e => ulongIds.Contains(e.Id))
+                .Where(e => Ids.Contains(e.Id))
                 .ToListAsync();
 
             var postEntityDictionary = new Dictionary<ulong, PostVoteEntity>();
@@ -59,7 +57,9 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                id, includeVoter, includePost
+                id,
+                includeVoter,
+                includePost
             });
             var sw = Stopwatch.StartNew();
             var postEntity = await _postVoteEntities
@@ -80,7 +80,10 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                voterId, postId, includeVoter, includePost
+                voterId,
+                postId,
+                includeVoter,
+                includePost
             });
             var sw = Stopwatch.StartNew();
             var postEntity = await _postVoteEntities
@@ -102,7 +105,11 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogIOInformation(null, "Database | Input", new
             {
-                id, voterUserId, voterUsername, postId, isUp
+                id,
+                voterUserId,
+                voterUsername,
+                postId,
+                isUp
             });
             var sw = Stopwatch.StartNew();
             var postEntity = new PostVoteEntity(id, voterUserId,
