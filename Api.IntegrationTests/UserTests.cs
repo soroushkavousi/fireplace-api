@@ -73,8 +73,8 @@ namespace FireplaceApi.Api.IntegrationTests
         //            Tags = "[\"32GB\",\"USB Powered\"]",
         //            SearchDetails = "USB anime flash drive - Vegeta",
         //            LastEditedBy = 1,
-        //            ValidFrom = DateTime.Now,
-        //            ValidTo = DateTime.Now.AddYears(5)
+        //            ValidFrom = DateTime.UtcNow,
+        //            ValidTo = DateTime.UtcNow.AddYears(5)
         //        }
         //    };
 
@@ -134,8 +134,8 @@ namespace FireplaceApi.Api.IntegrationTests
         //            Tags = "[\"Sample\"]",
         //            SearchDetails = "Product to delete",
         //            LastEditedBy = 1,
-        //            ValidFrom = DateTime.Now,
-        //            ValidTo = DateTime.Now.AddYears(5)
+        //            ValidFrom = DateTime.UtcNow,
+        //            ValidTo = DateTime.UtcNow.AddYears(5)
         //        }
         //    };
 
