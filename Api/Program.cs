@@ -199,15 +199,13 @@ namespace FireplaceApi.Api
 
             if (app.Environment.IsDevelopment())
             {
-                app.UseHsts();
+                app.UseDeveloperExceptionPage();
             }
             else
             {
-                app.UseDeveloperExceptionPage();
-                app.UseMigrationsEndPoint();
+                app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseRewriter(new RewriteOptions()
                 // Saving for time that api wants redirecting.
                 //.AddRedirect(@"api/(?!v\d)(.*)", "api/v0.2/$1", (int)HttpStatusCode.Redirect)); 

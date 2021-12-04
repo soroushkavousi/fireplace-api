@@ -33,7 +33,7 @@ namespace FireplaceApi.Api.IntegrationTests
             _clientOptions = new WebApplicationFactoryClientOptions
             {
                 AllowAutoRedirect = true,
-                BaseAddress = new Uri("https://localhost:5021"),
+                BaseAddress = new Uri("http://localhost:5020"),
                 HandleCookies = true,
                 MaxAutomaticRedirections = 7
             };
