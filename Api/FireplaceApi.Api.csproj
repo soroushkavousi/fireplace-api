@@ -17,8 +17,12 @@
     <EmbeddedResource Include="Tools\Swagger\api-swagger.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\swagger-ui\custom-swagger-ui.js" />
-    <EmbeddedResource Include="wwwroot\swagger-ui\custom-swagger-ui.css" />
+    <EmbeddedResource Include="wwwroot\swagger-ui\custom-swagger-ui.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\swagger-ui\custom-swagger-ui.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
