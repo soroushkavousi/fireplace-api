@@ -24,7 +24,7 @@ namespace FireplaceApi.Api.Controllers
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiString("TebvzX5eHJN"),
             [nameof(UserId).ToSnakeCase()] = null,
-            [nameof(Address).ToSnakeCase()] = new OpenApiString("tedmosby@gmail.com"),
+            [nameof(Address).ToSnakeCase()] = new OpenApiString("erenyeager@gmail.com"),
             [nameof(ActivationStatus).ToSnakeCase()] = new OpenApiString(Core.Enums.ActivationStatus.COMPLETED.ToString()),
             [nameof(User).ToSnakeCase()] = new OpenApiNull(),
         };
@@ -32,7 +32,7 @@ namespace FireplaceApi.Api.Controllers
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiString("SFhCNah9niG"),
             [nameof(UserId).ToSnakeCase()] = null,
-            [nameof(Address).ToSnakeCase()] = new OpenApiString("barneystinson@gmail.com"),
+            [nameof(Address).ToSnakeCase()] = new OpenApiString("lelouchlamperouge@gmail.com"),
             [nameof(ActivationStatus).ToSnakeCase()] = new OpenApiString(Core.Enums.ActivationStatus.SENT.ToString()),
             [nameof(User).ToSnakeCase()] = new OpenApiNull(),
         };

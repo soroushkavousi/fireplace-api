@@ -127,7 +127,6 @@ namespace FireplaceApi.Api.Extensions
 
         public static IServiceCollection AddApiConverters(this IServiceCollection services)
         {
-            services.AddScoped<AccessTokenConverter>();
             services.AddScoped<CommentConverter>();
             services.AddScoped<CommunityConverter>();
             services.AddScoped<CommunityMembershipConverter>();
@@ -140,29 +139,6 @@ namespace FireplaceApi.Api.Extensions
             services.AddScoped<UserConverter>();
             return services;
         }
-
-        //public static Session ExtractSession(this HttpContext context)
-        //{
-        //    var ipAddress = context.Connection.RemoteIpAddress;
-        //    var session = new Session
-        //    {
-        //        IpAddress = ipAddress
-        //    };
-        //    return session;
-        //}
-
-        //public static string ExtractAccessTokenValue(this IHeaderDictionary headerDictionary)
-        //{
-        //    string accessTokenValue = null;
-
-        //    var authorizationHeaderValue = headerDictionary.GetValue(Constants.AuthorizationHeaderKey, string.Empty).To<string>();
-        //    var match = Regexes.AuthorizationHeader.Match(authorizationHeaderValue);
-        //    if(match.Success)
-        //    {
-        //        accessTokenValue = match.Groups[1].Value;
-        //    }
-        //    return accessTokenValue;
-        //}
 
         public static Expression<TDelegate> AndAlso<TDelegate>(this Expression<TDelegate> left, Expression<TDelegate> right)
         {

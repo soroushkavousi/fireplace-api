@@ -30,10 +30,10 @@ namespace FireplaceApi.Api.Controllers
         public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiString("5FhKGzw165x"),
-            [nameof(Username).ToSnakeCase()] = new OpenApiString("tedmosby"),
+            [nameof(Username).ToSnakeCase()] = new OpenApiString("erenyeager"),
             [nameof(State).ToSnakeCase()] = new OpenApiString(Core.Enums.UserState.VERIFIED.ToString()),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
-            [nameof(DisplayName).ToSnakeCase()] = new OpenApiString("Ted Mosby"),
+            [nameof(DisplayName).ToSnakeCase()] = new OpenApiString("Eren Yeager"),
             [nameof(About).ToSnakeCase()] = new OpenApiString("ABOUT ME!"),
             [nameof(AvatarUrl).ToSnakeCase()] = new OpenApiString("https://.../avatar.png"),
             [nameof(BannerUrl).ToSnakeCase()] = new OpenApiString("https://.../banner.png"),
@@ -44,10 +44,10 @@ namespace FireplaceApi.Api.Controllers
         public static OpenApiObject PureExample2 { get; } = new OpenApiObject
         {
             [nameof(Id).ToSnakeCase()] = new OpenApiString("fNnXz8tyV1b"),
-            [nameof(Username).ToSnakeCase()] = new OpenApiString("barneystinson"),
+            [nameof(Username).ToSnakeCase()] = new OpenApiString("lelouchlamperouge"),
             [nameof(State).ToSnakeCase()] = new OpenApiString(Core.Enums.UserState.NOT_VERIFIED.ToString()),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
-            [nameof(DisplayName).ToSnakeCase()] = new OpenApiString("Barney Stinson"),
+            [nameof(DisplayName).ToSnakeCase()] = new OpenApiString("Lelouch Lamperouge"),
             [nameof(About).ToSnakeCase()] = new OpenApiString("ABOUT ME!"),
             [nameof(AvatarUrl).ToSnakeCase()] = new OpenApiString("https://.../avatar.png"),
             [nameof(BannerUrl).ToSnakeCase()] = new OpenApiString("https://.../banner.png"),
@@ -71,7 +71,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(About).ToSnakeCase()] = PureExample1[nameof(About).ToSnakeCase()],
             [nameof(AvatarUrl).ToSnakeCase()] = PureExample1[nameof(AvatarUrl).ToSnakeCase()],
             [nameof(BannerUrl).ToSnakeCase()] = PureExample1[nameof(BannerUrl).ToSnakeCase()],
-            [nameof(AccessToken).ToSnakeCase()] = AccessTokenDto.PureExample1[nameof(AccessTokenDto.Value).ToSnakeCase()],
+            [nameof(AccessToken).ToSnakeCase()] = new OpenApiString("e207d1b29e9146a2b143cb1a6e3aaa26"),
             [nameof(Email).ToSnakeCase()] = EmailDto.PureExample1,
             [nameof(Sessions).ToSnakeCase()] = SessionDto.PureListExample1,
         };
@@ -85,7 +85,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(About).ToSnakeCase()] = PureExample2[nameof(About).ToSnakeCase()],
             [nameof(AvatarUrl).ToSnakeCase()] = PureExample2[nameof(AvatarUrl).ToSnakeCase()],
             [nameof(BannerUrl).ToSnakeCase()] = PureExample2[nameof(BannerUrl).ToSnakeCase()],
-            [nameof(AccessToken).ToSnakeCase()] = AccessTokenDto.PureExample2[nameof(AccessTokenDto.Value).ToSnakeCase()],
+            [nameof(AccessToken).ToSnakeCase()] = new OpenApiString("957b25e5ef5c4de68a135eafab380918"),
             [nameof(Email).ToSnakeCase()] = EmailDto.PureExample2,
             [nameof(Sessions).ToSnakeCase()] = SessionDto.PureListExample2,
         };

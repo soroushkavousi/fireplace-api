@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
 
 namespace FireplaceApi.Api.Tools
 {
@@ -78,11 +77,11 @@ namespace FireplaceApi.Api.Tools
                     Name = "Soroush Kavousi",
                     Email = "soroushkavousi.me@gmail.com",
                 },
-                License = new OpenApiLicense
-                {
-                    Name = "Use under LICX",
-                    Url = new Uri("https://example.com/license")
-                },
+                //License = new OpenApiLicense
+                //{
+                //    Name = "Use under LICX",
+                //    Url = new Uri("https://example.com/license")
+                //},
             };
 
             if (description.IsDeprecated)

@@ -140,19 +140,10 @@ namespace FireplaceApi.Api
                         In = ParameterLocation.Header,
                     });
 
-                //options.DocInclusionPredicate((docName, apiDesc) =>
-                //{
-                //    if (!apiDesc.TryGetMethodInfo(out MethodInfo methodInfo)) return false;
+                options.DocumentFilter<OrderDocumentFilter>();
 
-                //    var versions = methodInfo.DeclaringType
-                //        .GetCustomAttributes(true)
-                //        .OfType<ApiVersionAttribute>()
-                //        .SelectMany(attr => attr.Versions);
 
-                //    return versions.Any(v => $"v{v.ToString()}" == docName);
-                //});
-
-                //options.DescribeAllEnumsAsStrings();
+               
             });
 
             builder.Services.AddHsts(options =>
@@ -163,25 +154,17 @@ namespace FireplaceApi.Api
                 //options.ExcludedHosts.Add("example.com");
             });
 
-            builder.Services.AddHttpsRedirection(options =>
-            {
-                options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-                options.HttpsPort = 5021;
-            });
+            //builder.Services.AddHttpsRedirection(options =>
+            //{
+            //    options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+            //    options.HttpsPort = 5021;
+            //});
 
             builder.Services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
                 options.SuppressMapClientErrors = true;
             });
-
-            //var fireplaceApiContext = builder.Services.BuildServiceProvider()
-            //           .GetService<FireplaceApiContext>();
-
-            //builder.Services.AddAuthenticationCore().AddGoogle();
-
-            //builder.Services.AddAuthentication("ApiAuthentication")
-            //    .AddScheme<AuthenticationSchemeOptions, ApiAuthenticationHandler>("ApiAuthentication", null);
 
         }
 
@@ -227,6 +210,7 @@ namespace FireplaceApi.Api
             });
             app.UseSwaggerUI(options =>
             {
+                options.DocumentTitle = "Fireplace Api Docs";
                 options.EnableDeepLinking();
                 //options.EnableFilter();
                 options.RoutePrefix = "docs";
@@ -238,8 +222,6 @@ namespace FireplaceApi.Api
                 //    options.SwaggerEndpoint($"/docs/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
                 //}
                 options.DocExpansion(DocExpansion.List);
-                //Console.WriteLine($"System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceNames();: \n{String.Join("\n", typeof(Startup).Assembly.GetManifestResourceNames())}");
-                //options.InjectStylesheet(@"D:\Projects\Fireplace\FireplaceApi\Codes\Api\Tools\Swagger\custom-swagger-ui.css");
                 options.DisplayRequestDuration();
                 options.InjectStylesheet("https://fonts.googleapis.com/css?family=Roboto");
                 options.InjectStylesheet("/swagger-ui/custom-swagger-ui.css");
