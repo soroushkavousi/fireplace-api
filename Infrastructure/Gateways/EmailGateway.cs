@@ -48,23 +48,26 @@ namespace FireplaceApi.Infrastructure.Gateways
                         EnableSsl = true,
                         DeliveryMethod = SmtpDeliveryMethod.Network,
                         UseDefaultCredentials = false,
-                        Credentials = new NetworkCredential(from.Address, fromEmailPassword),
                         Timeout = 30000,
                     };
+                    smtp.Credentials = new NetworkCredential(from.Address, fromEmailPassword);
                     using var message = new MailMessage(from, to)
                     {
                         Subject = subject,
-                        Body = body
+                        Body = body,
+                        IsBodyHtml = true
                     };
                     smtp.Send(message);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"Can't send email from {fromEmailAddress} to {fromEmailPassword}! body: {body.Substring(0, 20)}...");
+                    string message = $"Can't send email from {fromEmailAddress} to {toEmailAddress}! body: {body[..20]}...";
+                    _logger.LogError(ex, message);
                 }
             });
 
-            _logger.LogInformation($"Sending mail from {fromEmailAddress} to {fromEmailPassword} successfully completed. body: {body.Substring(0, 20)}...");
+            string message = $"Sending mail from {fromEmailAddress} to {toEmailAddress} successfully completed. body: {body[..20]}...";
+            _logger.LogInformation(message);
         }
     }
 }
