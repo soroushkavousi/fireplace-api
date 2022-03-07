@@ -143,7 +143,7 @@ namespace FireplaceApi.Api
                 options.DocumentFilter<OrderDocumentFilter>();
 
 
-               
+
             });
 
             builder.Services.AddHsts(options =>

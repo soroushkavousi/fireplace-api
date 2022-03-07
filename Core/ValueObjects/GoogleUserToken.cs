@@ -1,15 +1,19 @@
-﻿using System;
+﻿using FireplaceApi.Core.Attributes;
+using System;
 
 namespace FireplaceApi.Core.ValueObjects
 {
     public class GoogleUserToken
     {
         public string Code { get; set; }
+        [Sensitive]
         public string AccessToken { get; set; }
         public string TokenType { get; set; }
         public long AccessTokenExpiresInSeconds { get; set; }
+        [Sensitive]
         public string RefreshToken { get; set; }
         public string Scope { get; set; }
+        [Sensitive]
         public string IdToken { get; set; }
         public DateTime AccessTokenIssuedTime { get; set; }
         public string GmailAddress { get; set; }
@@ -33,8 +37,8 @@ namespace FireplaceApi.Core.ValueObjects
             AccessToken = accessToken ?? throw new ArgumentNullException(nameof(accessToken));
             TokenType = tokenType ?? throw new ArgumentNullException(nameof(tokenType));
             AccessTokenExpiresInSeconds = accessTokenExpiresInSeconds;
-            RefreshToken = refreshToken ?? throw new ArgumentNullException(nameof(refreshToken));
-            Scope = scope ?? throw new ArgumentNullException(nameof(scope));
+            RefreshToken = refreshToken;
+            Scope = scope;
             IdToken = idToken ?? throw new ArgumentNullException(nameof(idToken));
             AccessTokenIssuedTime = accessTokenIssuedTime;
             GmailAddress = gmailAddress ?? throw new ArgumentNullException(nameof(gmailAddress));

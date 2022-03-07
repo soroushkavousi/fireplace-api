@@ -42,7 +42,7 @@ namespace FireplaceApi.Core.Models
             AccessToken = accessToken ?? throw new ArgumentNullException(nameof(accessToken));
             TokenType = tokenType ?? throw new ArgumentNullException(nameof(tokenType));
             AccessTokenExpiresInSeconds = accessTokenExpiresInSeconds;
-            RefreshToken = refreshToken ?? throw new ArgumentNullException(nameof(refreshToken));
+            RefreshToken = refreshToken;
             Scope = scope ?? throw new ArgumentNullException(nameof(scope));
             IdToken = idToken ?? throw new ArgumentNullException(nameof(idToken));
             AccessTokenIssuedTime = accessTokenIssuedTime;

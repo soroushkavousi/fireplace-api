@@ -57,7 +57,7 @@ namespace FireplaceApi.Api.Tools
                 </div>";
 
             description_html += $@"
-                <a id=""google-btn"" href=""{GlobalOperator.GlobalValues.Api.BaseUrlPath}/v0.1/users/open-google-log-in-page"">
+                <a id=""google-btn"" target=""_blank"" href=""{GlobalOperator.GlobalValues.Api.BaseUrlPath}/v0.1/users/open-google-log-in-page"">
                     <div id=""google-icon-wrapper"">
                         <img id=""google-icon"" src=""https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg""/>
                     </div>

@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.ValueObjects;
@@ -67,7 +68,8 @@ namespace FireplaceApi.Infrastructure.Gateways
                 // TODO
                 //var validPayload = await GoogleJsonWebSignature.ValidateAsync(tokenResponse.IdToken, new ValidateSettings);
 
-                var idTokenPayload = new Jwt(tokenResponse.IdToken).ExtractPayload<Payload>();
+                var jwt = new Jwt(tokenResponse.IdToken);
+                var idTokenPayload = jwt.ExtractPayload<Payload>();
                 var googleUser = new GoogleUserToken(code, tokenResponse.AccessToken,
                     tokenResponse.TokenType, tokenResponse.ExpiresInSeconds.Value,
                     tokenResponse.RefreshToken, tokenResponse.Scope, tokenResponse.IdToken,
@@ -75,6 +77,7 @@ namespace FireplaceApi.Infrastructure.Gateways
                     idTokenPayload.IssuedAtTimeSeconds.Value, idTokenPayload.Name,
                     idTokenPayload.GivenName, idTokenPayload.FamilyName,
                     idTokenPayload.Locale, idTokenPayload.Picture);
+                _logger.LogInformation($"googleUser: {googleUser.ToJson()}");
 
                 return googleUser;
             }
