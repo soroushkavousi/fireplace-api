@@ -28,12 +28,12 @@ namespace FireplaceApi.Core.Tools
             if (member.GetCustomAttribute<System.Text.Json.Serialization.JsonIgnoreAttribute>() != null)
                 jsonProperty.Ignored = true;
 
-            PropertyInfo propertyInfo = member as PropertyInfo;
+            //PropertyInfo propertyInfo = member as PropertyInfo;
 
-            if (propertyInfo.PropertyType == typeof(string) && IsPropertySensitive(jsonProperty, member))
-            {
-                jsonProperty.ValueProvider = new SensitiveValueProvider(propertyInfo);
-            }
+            //if (propertyInfo.PropertyType == typeof(string) && IsPropertySensitive(jsonProperty, member))
+            //{
+            //    jsonProperty.ValueProvider = new SensitiveValueProvider(propertyInfo);
+            //}
 
             return jsonProperty;
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using FireplaceApi.Core.Tools;
+using Microsoft.Extensions.Logging;
 using NLog;
 using System;
 using System.Diagnostics;
@@ -129,6 +130,7 @@ namespace FireplaceApi.Core.Extensions
             else
                 message = message.EscapeCurlyBrackets();
 
+            message = Regexes.SensitiveInformation.Replace(message, "$1$2$3$4$5$7***$8");
             var logMessage = $"{{executionTime}}ms | {message}".Trim();
             return logMessage;
         }

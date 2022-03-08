@@ -85,7 +85,7 @@ namespace FireplaceApi.Infrastructure.Gateways
             }
             catch (Exception ex)
             {
-                _logger.LogError(sw, ex, $"Problem");
+                _logger.LogAppError(sw, ex, $"Problem");
                 var errorServerMessage = $"Can't exchange user code for access token! User code: {code}";
                 throw new ApiException(Core.Enums.ErrorName.INTERNAL_SERVER, errorServerMessage);
             }
