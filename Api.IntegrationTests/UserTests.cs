@@ -24,7 +24,7 @@ namespace FireplaceApi.Api.IntegrationTests
         [Fact]
         public async Task TestGetUserWithIdReturnDoesNotExistsErrorAsync()
         {
-            _logger.LogInformation($"{nameof(TestGetUserWithIdReturnDoesNotExistsErrorAsync)} | Start | ()");
+            _logger.LogAppInformation($"{nameof(TestGetUserWithIdReturnDoesNotExistsErrorAsync)} | Start | ()");
 
             var id = 999;
             var requestUri = $"/v0.1/users/{id}";
@@ -33,7 +33,7 @@ namespace FireplaceApi.Api.IntegrationTests
             await _testUtils.AssertResponseContainsErrorAsync(ErrorName.USER_DOES_NOT_EXIST_OR_ACCESS_DENIED,
                 response, nameof(TestGetUserWithIdReturnDoesNotExistsErrorAsync));
 
-            _logger.LogInformation($"{nameof(TestGetUserWithIdReturnDoesNotExistsErrorAsync)} | End");
+            _logger.LogAppInformation($"{nameof(TestGetUserWithIdReturnDoesNotExistsErrorAsync)} | End");
         }
 
         //[Fact]

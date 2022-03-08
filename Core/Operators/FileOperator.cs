@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Operators
@@ -51,6 +52,7 @@ namespace FireplaceApi.Core.Operators
 
         public async Task<File> CreateFileAsync(IFormFile formFile)
         {
+            var sw = Stopwatch.StartNew();
             var realName = formFile.FileName;
             var extension = System.IO.Path.GetExtension(realName);
             var name = await GenerateUniqueFileNameAsync(extension);
@@ -61,7 +63,7 @@ namespace FireplaceApi.Core.Operators
             var file = await _fileRepository.CreateFileAsync(id, name, realName,
                 uri, physicalPath);
             await _fileGateway.CreateFileAsync(formFile, physicalPath);
-            _logger.LogInformation($"New uploaded file: {file.ToJson()}");
+            _logger.LogAppInformation(sw, $"New uploaded file: {file.ToJson()}");
 
             file = await GetFileByIdAsync(file.Id);
             return file;

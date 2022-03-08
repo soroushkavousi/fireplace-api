@@ -1,8 +1,10 @@
-﻿using FireplaceApi.Core.Interfaces;
+﻿using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Operators;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
@@ -36,6 +38,7 @@ namespace FireplaceApi.Infrastructure.Gateways
         {
             await Task.Run(() =>
             {
+                var sw = Stopwatch.StartNew();
                 try
                 {
                     var from = new MailAddress(fromEmailAddress, "Fireplace");
@@ -58,16 +61,14 @@ namespace FireplaceApi.Infrastructure.Gateways
                         IsBodyHtml = true
                     };
                     smtp.Send(message);
+                    _logger.LogAppInformation(sw, $"Email has been sent from {fromEmailAddress} to {toEmailAddress}! body: {body[..10]}...");
                 }
                 catch (Exception ex)
                 {
-                    string message = $"Can't send email from {fromEmailAddress} to {toEmailAddress}! body: {body[..20]}...";
-                    _logger.LogError(ex, message);
+                    string message = $"Can't send email from {fromEmailAddress} to {toEmailAddress}! body: {body[..10]}...";
+                    _logger.LogAppError(sw, ex, message);
                 }
             });
-
-            string message = $"Sending mail from {fromEmailAddress} to {toEmailAddress} successfully completed. body: {body[..20]}...";
-            _logger.LogInformation(message);
         }
     }
 }

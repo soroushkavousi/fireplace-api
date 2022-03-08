@@ -38,7 +38,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<List<CommunityMembership>> ListCommunityMembershipsAsync(List<ulong> Ids)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { Ids });
+            _logger.LogAppIOInformation("Database | Input", new { Ids });
             var sw = Stopwatch.StartNew();
             var communityMembershipEntities = await _communityMembershipEntities
                 .AsNoTracking()
@@ -50,13 +50,13 @@ namespace FireplaceApi.Infrastructure.Repositories
             communityMembershipEntities = new List<CommunityMembershipEntity>();
             Ids.ForEach(id => communityMembershipEntities.Add(communityMembershipEntityDictionary[id]));
 
-            _logger.LogIOInformation(sw, "Database | Output", new { communityMembershipEntities });
+            _logger.LogAppIOInformation(sw, "Database | Output", new { communityMembershipEntities });
             return communityMembershipEntities.Select(e => _communityMembershipConverter.ConvertToModel(e)).ToList();
         }
 
         public async Task<List<CommunityMembership>> ListCommunityMembershipsAsync(UserIdentifier userIdentifier)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { userIdentifier });
+            _logger.LogAppIOInformation("Database | Input", new { userIdentifier });
             var sw = Stopwatch.StartNew();
             var communityMembershipEntities = await _communityMembershipEntities
                 .AsNoTracking()
@@ -72,13 +72,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
                 .ToListAsync();
 
-            _logger.LogIOInformation(sw, "Database | Output", new { communityMembershipEntities });
+            _logger.LogAppIOInformation(sw, "Database | Output", new { communityMembershipEntities });
             return communityMembershipEntities.Select(e => _communityMembershipConverter.ConvertToModel(e)).ToList();
         }
 
         public async Task<List<ulong>> ListCommunityMembershipIdsAsync(UserIdentifier userIdentifier)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { userIdentifier });
+            _logger.LogAppIOInformation("Database | Input", new { userIdentifier });
             var sw = Stopwatch.StartNew();
             var communityMembershipEntityIds = await _communityMembershipEntities
                 .AsNoTracking()
@@ -95,7 +95,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Select(e => e.Id)
                 .ToListAsync();
 
-            _logger.LogIOInformation(sw, "Database | Output", new { communityMembershipEntityIds });
+            _logger.LogAppIOInformation(sw, "Database | Output", new { communityMembershipEntityIds });
             return communityMembershipEntityIds;
         }
 
@@ -103,7 +103,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             CommunityMembershipIdentifier identifier, bool includeUser = false,
             bool includeCommunity = false)
         {
-            _logger.LogIOInformation(null, "Database | Input",
+            _logger.LogAppIOInformation("Database | Input",
                 new { identifier, includeUser, includeCommunity });
             var sw = Stopwatch.StartNew();
             var communityMembershipEntity = await _communityMembershipEntities
@@ -119,7 +119,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogIOInformation(sw, "Database | Output",
+            _logger.LogAppIOInformation(sw, "Database | Output",
                 new { communityMembershipEntity });
             return _communityMembershipConverter.ConvertToModel(communityMembershipEntity);
         }
@@ -127,7 +127,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<CommunityMembership> CreateCommunityMembershipAsync(ulong id,
             ulong userId, string username, ulong communityId, string communityName)
         {
-            _logger.LogIOInformation(null, "Database | Input",
+            _logger.LogAppIOInformation("Database | Input",
                 new { id, userId, username, communityId, communityName });
             var sw = Stopwatch.StartNew();
             var communityMembershipEntity = new CommunityMembershipEntity(id, userId,
@@ -136,14 +136,14 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogIOInformation(sw, "Database | Output", new { communityMembershipEntity });
+            _logger.LogAppIOInformation(sw, "Database | Output", new { communityMembershipEntity });
             return _communityMembershipConverter.ConvertToModel(communityMembershipEntity);
         }
 
         public async Task<CommunityMembership> UpdateCommunityMembershipAsync(
             CommunityMembership communityMembership)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { communityMembership });
+            _logger.LogAppIOInformation("Database | Input", new { communityMembership });
             var sw = Stopwatch.StartNew();
             var communityMembershipEntity = _communityMembershipConverter.ConvertToEntity(communityMembership);
             _communityMembershipEntities.Update(communityMembershipEntity);
@@ -158,13 +158,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
 
-            _logger.LogIOInformation(sw, "Database | Output", new { communityMembershipEntity });
+            _logger.LogAppIOInformation(sw, "Database | Output", new { communityMembershipEntity });
             return _communityMembershipConverter.ConvertToModel(communityMembershipEntity);
         }
 
         public async Task DeleteCommunityMembershipByIdentifierAsync(CommunityMembershipIdentifier identifier)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { identifier });
+            _logger.LogAppIOInformation("Database | Input", new { identifier });
             var sw = Stopwatch.StartNew();
             var communityMembershipEntity = await _communityMembershipEntities
                 .Search(
@@ -178,13 +178,13 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogIOInformation(sw, "Database | Output", new { communityMembershipEntity });
+            _logger.LogAppIOInformation(sw, "Database | Output", new { communityMembershipEntity });
         }
 
 
         public async Task<bool> DoesCommunityMembershipIdentifierExistAsync(CommunityMembershipIdentifier identifier)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { identifier });
+            _logger.LogAppIOInformation("Database | Input", new { identifier });
             var sw = Stopwatch.StartNew();
             var doesExist = await _communityMembershipEntities
                 .AsNoTracking()
@@ -195,7 +195,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .AnyAsync();
 
-            _logger.LogIOInformation(sw, "Database | Output", new { doesExist });
+            _logger.LogAppIOInformation(sw, "Database | Output", new { doesExist });
             return doesExist;
         }
     }

@@ -2,6 +2,7 @@
 using FireplaceApi.Core.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -45,7 +46,8 @@ namespace FireplaceApi.Api.IntegrationTests
         public async Task TestFirewallCheckContentType(
             string httpMethodName, string requestUri)
         {
-            _logger.LogInformation($"{nameof(TestFirewallCheckContentType)} | Start | ({httpMethodName}, {requestUri})");
+            var sw = Stopwatch.StartNew();
+            _logger.LogAppInformation($"{nameof(TestFirewallCheckContentType)} | Start | ({httpMethodName}, {requestUri})");
 
             var httpMethod = new HttpMethod(httpMethodName);
             var request = new HttpRequestMessage(httpMethod, requestUri);
@@ -69,7 +71,7 @@ namespace FireplaceApi.Api.IntegrationTests
                 await _testUtils.AssertResponseDoesNotContainErrorAsync(ErrorName.REQUEST_CONTENT_TYPE_IS_NOT_VALID, response, nameof(TestFirewallCheckContentType));
             }
 
-            _logger.LogInformation($"{nameof(TestFirewallCheckContentType)} | End");
+            _logger.LogAppInformation(sw, $"{nameof(TestFirewallCheckContentType)} | End");
         }
 
         [InlineData("GET", "/v0.1/access-tokens/some-token")]
@@ -95,7 +97,8 @@ namespace FireplaceApi.Api.IntegrationTests
         public async Task TestGuestCantAccessToPrivateMethods(
             string httpMethodName, string requestUri)
         {
-            _logger.LogInformation($"{nameof(TestGuestCantAccessToPrivateMethods)} | Start | ({httpMethodName}, {requestUri})");
+            var sw = Stopwatch.StartNew();
+            _logger.LogAppInformation($"{nameof(TestGuestCantAccessToPrivateMethods)} | Start | ({httpMethodName}, {requestUri})");
             var httpMethod = new HttpMethod(httpMethodName);
             var request = new HttpRequestMessage(httpMethod, requestUri)
             {
@@ -104,7 +107,7 @@ namespace FireplaceApi.Api.IntegrationTests
 
             var response = await _clientPool.GuestClient.SendAsync(request);
             await _testUtils.AssertResponseContainsErrorAsync(ErrorName.AUTHENTICATION_FAILED, response, nameof(TestGuestCantAccessToPrivateMethods));
-            _logger.LogInformation($"{nameof(TestGuestCantAccessToPrivateMethods)} | End");
+            _logger.LogAppInformation(sw, $"{nameof(TestGuestCantAccessToPrivateMethods)} | End");
         }
 
         [InlineData("POST", "/v0.1/users/sign-up-with-email")]
@@ -114,7 +117,8 @@ namespace FireplaceApi.Api.IntegrationTests
         public async Task TestGuestCanAccessToPublicMethods(
             string httpMethodName, string requestUri)
         {
-            _logger.LogInformation($"{nameof(TestGuestCanAccessToPublicMethods)} | Start | ({httpMethodName}, {requestUri})");
+            var sw = Stopwatch.StartNew();
+            _logger.LogAppInformation($"{nameof(TestGuestCanAccessToPublicMethods)} | Start | ({httpMethodName}, {requestUri})");
             var httpMethod = new HttpMethod(httpMethodName);
             var request = new HttpRequestMessage(httpMethod, requestUri)
             {
@@ -123,7 +127,7 @@ namespace FireplaceApi.Api.IntegrationTests
 
             var response = await _clientPool.GuestClient.SendAsync(request);
             await _testUtils.AssertResponseDoesNotContainErrorAsync(ErrorName.AUTHENTICATION_FAILED, response, nameof(TestGuestCantAccessToPrivateMethods));
-            _logger.LogInformation($"{nameof(TestGuestCanAccessToPublicMethods)} | End");
+            _logger.LogAppInformation(sw, $"{nameof(TestGuestCanAccessToPublicMethods)} | End");
         }
 
         [InlineData("GET", "/v0.1/access-tokens/some-token")]
@@ -149,7 +153,8 @@ namespace FireplaceApi.Api.IntegrationTests
         public async Task TestTheHulkCanAccessWithAuthentication(
             string httpMethodName, string requestUri)
         {
-            _logger.LogInformation($"{nameof(TestTheHulkCanAccessWithAuthentication)} | Start | ({httpMethodName}, {requestUri})");
+            var sw = Stopwatch.StartNew();
+            _logger.LogAppInformation($"{nameof(TestTheHulkCanAccessWithAuthentication)} | Start | ({httpMethodName}, {requestUri})");
             var httpMethod = new HttpMethod(httpMethodName);
             var request = new HttpRequestMessage(httpMethod, requestUri)
             {
@@ -158,7 +163,7 @@ namespace FireplaceApi.Api.IntegrationTests
 
             var response = await _clientPool.TheHulkClient.SendAsync(request);
             await _testUtils.AssertResponseDoesNotContainErrorAsync(ErrorName.AUTHENTICATION_FAILED, response, nameof(TestTheHulkCanAccessWithAuthentication));
-            _logger.LogInformation($"{nameof(TestTheHulkCanAccessWithAuthentication)} | End");
+            _logger.LogAppInformation(sw, $"{nameof(TestTheHulkCanAccessWithAuthentication)} | End");
         }
     }
 }

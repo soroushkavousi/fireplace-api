@@ -25,7 +25,7 @@ namespace FireplaceApi.Api.Middlewares
         {
             var sw = Stopwatch.StartNew();
             await _next(context);
-            _logger.LogInformation(sw, "#RequestDuration");
+            _logger.LogAppInformation(sw, "#RequestDuration");
         }
     }
 

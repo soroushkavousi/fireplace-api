@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
@@ -41,6 +42,7 @@ namespace FireplaceApi.Infrastructure.Gateways
         public async Task<GoogleUserToken> GetgoogleUserToken(string clientId,
             string clientSecret, string redirectUrl, string code)
         {
+            var sw = Stopwatch.StartNew();
             try
             {
                 var clientSecrets = new ClientSecrets
@@ -77,13 +79,13 @@ namespace FireplaceApi.Infrastructure.Gateways
                     idTokenPayload.IssuedAtTimeSeconds.Value, idTokenPayload.Name,
                     idTokenPayload.GivenName, idTokenPayload.FamilyName,
                     idTokenPayload.Locale, idTokenPayload.Picture);
-                _logger.LogInformation($"googleUser: {googleUser.ToJson()}");
+                _logger.LogAppInformation(sw, $"googleUser: {googleUser.ToJson()}");
 
                 return googleUser;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Problem");
+                _logger.LogError(sw, ex, $"Problem");
                 var errorServerMessage = $"Can't exchange user code for access token! User code: {code}";
                 throw new ApiException(Core.Enums.ErrorName.INTERNAL_SERVER, errorServerMessage);
             }
@@ -146,7 +148,7 @@ namespace FireplaceApi.Infrastructure.Gateways
 
             return GetAuthUrl(googleGlobalValues.BaseAuthUrl,
                 googleGlobalValues.ClientId, redirectUrl, "code",
-                "openid profile email", "offline", "docs", "true", "page");
+                "openid profile email", "online", "docs", "true", "page");
         }
 
         public string GetAuthUrl(string baseAuthUrl,

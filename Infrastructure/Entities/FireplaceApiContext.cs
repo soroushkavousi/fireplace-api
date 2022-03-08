@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Infrastructure.Tools;
+﻿using FireplaceApi.Core.Extensions;
+using FireplaceApi.Infrastructure.Tools;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -127,7 +128,7 @@ namespace FireplaceApi.Infrastructure.Entities
         private void EnableDeepLogging(DbContextOptionsBuilder optionsBuilder)
         {
             if (_logger != null)
-                optionsBuilder.LogTo((log) => _logger.LogInformation(log));
+                optionsBuilder.LogTo((log) => _logger.LogAppInformation(log));
         }
     }
 }

@@ -37,7 +37,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<List<Error>> ListErrorsAsync()
         {
-            _logger.LogIOInformation(null, "Database | Input", null);
+            _logger.LogAppIOInformation("Database | Input", null);
             var sw = Stopwatch.StartNew();
             var errorEntites = await _errorEntities
                 .AsNoTracking()
@@ -46,13 +46,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .OrderBy(e => e.Code)
                 .ToListAsync();
 
-            _logger.LogIOInformation(sw, "Database | Output", new { errorEntites });
+            _logger.LogAppIOInformation(sw, "Database | Output", new { errorEntites });
             return errorEntites.Select(e => _errorConverter.ConvertToModel(e)).ToList();
         }
 
         public async Task<Error> GetErrorByNameAsync(ErrorName name)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { name });
+            _logger.LogAppIOInformation("Database | Input", new { name });
             var sw = Stopwatch.StartNew();
             var errorEntity = await _errorEntities
                 .AsNoTracking()
@@ -61,13 +61,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogIOInformation(sw, "Database | Output", new { errorEntity });
+            _logger.LogAppIOInformation(sw, "Database | Output", new { errorEntity });
             return _errorConverter.ConvertToModel(errorEntity);
         }
 
         public async Task<Error> GetErrorByCodeAsync(int code)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { code });
+            _logger.LogAppIOInformation("Database | Input", new { code });
             var sw = Stopwatch.StartNew();
             var errorEntity = await _errorEntities
                 .AsNoTracking()
@@ -76,14 +76,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogIOInformation(sw, "Database | Output", new { errorEntity });
+            _logger.LogAppIOInformation(sw, "Database | Output", new { errorEntity });
             return _errorConverter.ConvertToModel(errorEntity);
         }
 
         public async Task<Error> CreateErrorAsync(ulong id, ErrorName name,
             int code, string clientMessage, int httpStatusCode)
         {
-            _logger.LogIOInformation(null, "Database | Input",
+            _logger.LogAppIOInformation("Database | Input",
                 new { id, name, code, clientMessage, httpStatusCode });
             var sw = Stopwatch.StartNew();
             var errorEntity = new ErrorEntity(id, name.ToString(), code, clientMessage, httpStatusCode);
@@ -91,13 +91,13 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogIOInformation(sw, "Database | Output", new { errorEntity });
+            _logger.LogAppIOInformation(sw, "Database | Output", new { errorEntity });
             return _errorConverter.ConvertToModel(errorEntity);
         }
 
         public async Task<Error> UpdateErrorAsync(Error error)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { error });
+            _logger.LogAppIOInformation("Database | Input", new { error });
             var sw = Stopwatch.StartNew();
             var errorEntity = _errorConverter.ConvertToEntity(error);
             _errorEntities.Update(errorEntity);
@@ -112,13 +112,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
 
-            _logger.LogIOInformation(sw, "Database | Output", new { errorEntity });
+            _logger.LogAppIOInformation(sw, "Database | Output", new { errorEntity });
             return _errorConverter.ConvertToModel(errorEntity);
         }
 
         public async Task DeleteErrorAsync(int code)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { code });
+            _logger.LogAppIOInformation("Database | Input", new { code });
             var sw = Stopwatch.StartNew();
             var errorEntity = await _errorEntities
                 .Where(e => e.Code == code)
@@ -128,45 +128,45 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogIOInformation(sw, "Database | Output", new { errorEntity });
+            _logger.LogAppIOInformation(sw, "Database | Output", new { errorEntity });
         }
 
         public async Task<bool> DoesErrorNameExistAsync(ErrorName name)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { name });
+            _logger.LogAppIOInformation("Database | Input", new { name });
             var sw = Stopwatch.StartNew();
             var doesExist = await _errorEntities
                 .AsNoTracking()
                 .Where(e => e.Name == name.ToString())
                 .AnyAsync();
 
-            _logger.LogIOInformation(sw, "Database | Output", new { doesExist });
+            _logger.LogAppIOInformation(sw, "Database | Output", new { doesExist });
             return doesExist;
         }
 
         public async Task<bool> DoesErrorCodeExistAsync(int code)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { code });
+            _logger.LogAppIOInformation("Database | Input", new { code });
             var sw = Stopwatch.StartNew();
             var doesExist = await _errorEntities
                 .AsNoTracking()
                 .Where(e => e.Code == code)
                 .AnyAsync();
 
-            _logger.LogIOInformation(sw, "Database | Output", new { doesExist });
+            _logger.LogAppIOInformation(sw, "Database | Output", new { doesExist });
             return doesExist;
         }
 
         public async Task<bool> DoesErrorIdExistAsync(ulong id)
         {
-            _logger.LogIOInformation(null, "Database | Input", new { id });
+            _logger.LogAppIOInformation("Database | Input", new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await _errorEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .AnyAsync();
 
-            _logger.LogIOInformation(sw, "Database | Output", new { doesExist });
+            _logger.LogAppIOInformation(sw, "Database | Output", new { doesExist });
             return doesExist;
         }
     }

@@ -141,7 +141,7 @@ namespace FireplaceApi.Core.Operators
         {
             await Task.CompletedTask;
             var googleAuthUrl = _googleGateway.GetAuthUrl();
-            _logger.LogInformation($"googleLogInPageUrl: {googleAuthUrl}");
+            _logger.LogAppInformation($"googleLogInPageUrl: {googleAuthUrl}");
             return googleAuthUrl;
         }
 

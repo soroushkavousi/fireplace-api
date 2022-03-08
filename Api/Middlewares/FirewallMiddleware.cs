@@ -61,7 +61,7 @@ namespace FireplaceApi.Api.Middlewares
                 await firewall.CheckGuest(ipAddress);
             }
 
-            _logger.LogInformation(sw, "Execution time for inner of the firewall only");
+            _logger.LogAppInformation(sw, "Execution time for inner of the firewall only");
             await _next(httpContext);
         }
 

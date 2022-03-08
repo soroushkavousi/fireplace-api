@@ -27,7 +27,7 @@ namespace FireplaceApi.Api.Middlewares
             GetInputHeaders(httpContext);
             await _next(httpContext);
             SetOutputHeaders(httpContext);
-            _logger.LogTrace(sw);
+            _logger.LogAppTrace(sw);
         }
 
         private static void GetInputHeaders(HttpContext httpContext)

@@ -42,11 +42,12 @@ namespace FireplaceApi.Api.Middlewares
                 var error = await CreateErrorAsync(apiException, errorOperator);
                 await ReportError(error, errorConverter, httpContext);
             }
-            _logger.LogTrace(sw);
+            _logger.LogAppTrace(sw);
         }
 
         private async Task<Error> CreateErrorAsync(ApiException apiException, ErrorOperator errorOperator)
         {
+            var sw = Stopwatch.StartNew();
             Error error;
             if (await errorOperator.DoesErrorNameExistAsync(apiException.ErrorName))
             {
@@ -55,7 +56,7 @@ namespace FireplaceApi.Api.Middlewares
             else
             {
                 error = Error.InternalServerError;
-                _logger.LogError($"Can't fill error details from database | {apiException.ToJson()}");
+                _logger.LogAppError(sw, $"Can't fill error details from database | {apiException.ToJson()}");
             }
             error.ServerMessage = apiException.ErrorServerMessage;
             error.Exception = apiException.Exception;
@@ -75,11 +76,11 @@ namespace FireplaceApi.Api.Middlewares
             {
                 if (error.Exception.GetType().IsSubclassOf(typeof(Exception)))
                 {
-                    _logger.LogError(error.Exception, $"#ServerError | {error.ServerMessage} | {error.ToJson()}");
+                    _logger.LogAppError(error.Exception, $"#ServerError | {error.ServerMessage} | {error.ToJson()}");
                 }
                 else
                 {
-                    _logger.LogCritical(error.Exception, $"#Exception | {error.ServerMessage} | {error.ToJson()}");
+                    _logger.LogAppCritical(error.Exception, $"#Exception | {error.ServerMessage} | {error.ToJson()}");
                 }
             }
 

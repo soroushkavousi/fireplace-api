@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FireplaceApi.Core.Extensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -20,7 +21,7 @@ namespace FireplaceApi.Api.Tools
             var pathBase = httpContextAccessor?.HttpContext?.Request?.PathBase;
             _swaggerDocHost = $"{scheme}://{host}{pathBase}";
             _httpContextAccessor = httpContextAccessor;
-            logger.LogInformation($"_swaggerDocHost : {_swaggerDocHost}");
+            logger.LogAppInformation($"_swaggerDocHost : {_swaggerDocHost}");
         }
 
         public void Apply(OpenApiDocument openapiDoc, DocumentFilterContext context)

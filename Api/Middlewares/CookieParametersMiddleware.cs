@@ -29,7 +29,7 @@ namespace FireplaceApi.Api.Middlewares
             GetInputCookies(httpContext);
             await _next(httpContext);
             SetOutputCookies(httpContext);
-            _logger.LogTrace(sw);
+            _logger.LogAppTrace(sw);
         }
 
         private static void GetInputCookies(HttpContext httpContext)

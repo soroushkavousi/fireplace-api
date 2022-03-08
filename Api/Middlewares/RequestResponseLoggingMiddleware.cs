@@ -76,7 +76,7 @@ namespace FireplaceApi.Api.Middlewares
                 requestQueryString = request.QueryString.Value;
 
             var requestLogMessage = $"#Request | {requestQueryString} | {requestBodyText}";
-            _logger.LogInformation(sw, requestLogMessage);
+            _logger.LogAppInformation(sw, requestLogMessage);
         }
 
         private async Task LogResponse(HttpResponse response, Stopwatch sw)
@@ -95,7 +95,7 @@ namespace FireplaceApi.Api.Middlewares
 
             //Return the string for the response, including the status code (e.g. 200, 404, 401, etc.)
             var responseLogMessage = $"#Response #ControllerDuration | {response.StatusCode} | {responseBodyText}";
-            _logger.LogInformation(sw, responseLogMessage);
+            _logger.LogAppInformation(sw, responseLogMessage);
         }
     }
 

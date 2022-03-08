@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Core.Interfaces;
+﻿using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -48,15 +50,17 @@ namespace FireplaceApi.Api.IntegrationTests
 
         private HttpClient CreateGuestClient()
         {
+            var sw = Stopwatch.StartNew();
             var guestClient = _apiFactory.CreateClient(_clientOptions);
             var defaultRequestHeaders = guestClient.DefaultRequestHeaders;
             defaultRequestHeaders.Add(Api.Tools.Constants.X_FORWARDED_FOR, @"::1");
-            _logger.LogInformation($"Guest client initialized successfully.");
+            _logger.LogAppInformation(sw, $"Guest client initialized successfully.");
             return guestClient;
         }
 
         private async Task<HttpClient> CreateTheHulkClientAsync()
         {
+            var sw = Stopwatch.StartNew();
             var id = await IdGenerator.GenerateNewIdAsync();
             var user = await _userRepository.CreateUserAsync(id, "TheHulk",
                 Core.Enums.UserState.NOT_VERIFIED, Password.OfValue("TheHulkP0"),
@@ -72,7 +76,7 @@ namespace FireplaceApi.Api.IntegrationTests
             var defaultRequestHeaders = theHulkClient.DefaultRequestHeaders;
             defaultRequestHeaders.Add(Api.Tools.Constants.AuthorizationHeaderKey, $"Bearer {newAccessTokenValue}");
             defaultRequestHeaders.Add(Api.Tools.Constants.X_FORWARDED_FOR, @"::1");
-            _logger.LogInformation($"The Hulk client initialized successfully.");
+            _logger.LogAppInformation(sw, $"The Hulk client initialized successfully.");
             return theHulkClient;
         }
     }

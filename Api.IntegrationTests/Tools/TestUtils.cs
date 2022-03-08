@@ -5,11 +5,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+
+//
+// LogApp$1(
 
 namespace FireplaceApi.Api.IntegrationTests
 {
@@ -29,21 +33,22 @@ namespace FireplaceApi.Api.IntegrationTests
 
         public async Task AssertResponseContainsErrorAsync(ErrorName expectedErrorName, HttpResponseMessage response, string testName)
         {
-            _logger.LogInformation($"{testName} | Checking response status code is bad request. ({response.StatusCode})");
+            var sw = Stopwatch.StartNew();
+            _logger.LogAppInformation($"{testName} | Checking response status code is bad request. ({response.StatusCode})");
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
             var responseBodyJObject = await ReadResponseBodyAsJObject(response, testName);
             var responseBodyJson = responseBodyJObject.ToString(Formatting.None);
 
-            _logger.LogInformation($"{testName} | Checking response body contains code. ({responseBodyJson})");
+            _logger.LogAppInformation($"{testName} | Checking response body contains code. ({responseBodyJson})");
             Assert.Contains("code", responseBodyJObject);
 
-            _logger.LogInformation($"{testName} | Checking response body contains message. ({responseBodyJson})");
+            _logger.LogAppInformation($"{testName} | Checking response body contains message. ({responseBodyJson})");
             Assert.Contains("message", responseBodyJObject);
 
             var responseError = await _errorOperator.GetErrorByCodeAsync(responseBodyJObject.Value<int>("code"));
 
-            _logger.LogInformation($"{testName} | Checking response is {expectedErrorName.ToString()}. ({responseError.Name.ToString()})");
+            _logger.LogAppInformation(sw, $"{testName} | Checking response is {expectedErrorName.ToString()}. ({responseError.Name.ToString()})");
             Assert.Equal(expectedErrorName, responseError.Name);
         }
 
@@ -56,14 +61,14 @@ namespace FireplaceApi.Api.IntegrationTests
             var responseBodyJObject = responseBodyJToken.To<JObject>();
 
             var responseBodyJson = responseBodyJObject.ToString(Formatting.None);
-            _logger.LogInformation($"{testName} | responseBodyJson: {responseBodyJson}");
+            _logger.LogAppInformation($"{testName} | responseBodyJson: {responseBodyJson}");
 
             var responseErrorCode = responseBodyJObject.Value<int?>("code");
             if (responseErrorCode.HasValue)
             {
                 var responseError = await _errorOperator.GetErrorByCodeAsync(responseErrorCode.Value);
 
-                _logger.LogInformation($"{testName} | Checking response is not {notExpectedErrorName.ToString()}. ({responseError.Name.ToString()})");
+                _logger.LogAppInformation($"{testName} | Checking response is not {notExpectedErrorName.ToString()}. ({responseError.Name.ToString()})");
                 Assert.NotEqual(notExpectedErrorName, responseError.Name);
             }
         }
@@ -82,7 +87,7 @@ namespace FireplaceApi.Api.IntegrationTests
         {
             var responseBodyString = await response.Content.ReadAsStringAsync();
 
-            _logger.LogInformation($"{testName} | Checking response body is not null or empty. ({responseBodyString})");
+            _logger.LogAppInformation($"{testName} | Checking response body is not null or empty. ({responseBodyString})");
             Assert.False(responseBodyString.IsNullOrEmpty(), $"responseBody.IsNullOrEmpty(), responseBody: ({responseBodyString})");
 
             return responseBodyString;
@@ -99,7 +104,7 @@ namespace FireplaceApi.Api.IntegrationTests
         {
             var responseBodyJToken = await ReadResponseBodyAsJToken(response, testName);
 
-            _logger.LogInformation($"{testName} | Checking response body is json object. ({responseBodyJToken.ToString(Formatting.None)})");
+            _logger.LogAppInformation($"{testName} | Checking response body is json object. ({responseBodyJToken.ToString(Formatting.None)})");
             Assert.Equal(JTokenType.Object, responseBodyJToken.Type);
 
             var responseBodyJObject = responseBodyJToken.To<JObject>();

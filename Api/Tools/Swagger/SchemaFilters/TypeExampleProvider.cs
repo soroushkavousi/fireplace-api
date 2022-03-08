@@ -25,8 +25,8 @@ namespace FireplaceApi.Api.Tools
             _serviceProvider = serviceProvider;
         }
 
-        public static async Task<OpenApiObject> FillErrorExampleFromName(OpenApiObject errorExample,
-            IServiceProvider serviceProvider, ILogger logger)
+        public static async Task<OpenApiObject> FillErrorExampleFromName<T>(OpenApiObject errorExample,
+            IServiceProvider serviceProvider, ILogger<T> logger)
         {
             //var errorService = _serviceProvider.GetService<ErrorService>();
             var name = errorExample["name"].To<OpenApiString>().Value.ToEnum<ErrorName>();
@@ -40,13 +40,13 @@ namespace FireplaceApi.Api.Tools
                 }
                 catch (Exception ex)
                 {
-                    logger.LogInformation($"Exception occurred when trying to get error {name} details for examples => {ex.Message}");
+                    logger.LogAppInformation($"Exception occurred when trying to get error {name} details for examples => {ex.Message}");
                 }
                 finally
                 {
                     if (error == null)
                     {
-                        logger.LogInformation($"Error {name} seems does not exists yet or an exception occurred.");
+                        logger.LogAppInformation($"Error {name} seems does not exists yet or an exception occurred.");
                         error = Error.InternalServerError;
                     }
                 }

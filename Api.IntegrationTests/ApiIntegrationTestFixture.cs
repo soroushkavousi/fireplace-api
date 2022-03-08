@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using Xunit;
 
@@ -32,6 +33,7 @@ namespace FireplaceApi.Api.IntegrationTests
 
         public ApiIntegrationTestFixture()
         {
+            var sw = Stopwatch.StartNew();
             ProjectInitializer.Start();
             var logger = ProjectInitializer.Logger;
             ApiFactory = new WebApplicationFactory<Program>()
@@ -67,7 +69,7 @@ namespace FireplaceApi.Api.IntegrationTests
             ClientPool = new ClientPool(this);
             TestUtils = new TestUtils(this);
 
-            _logger.LogInformation($"ApiIntegrationTestFixture initialized successfully.");
+            _logger.LogAppInformation(sw, $"ApiIntegrationTestFixture initialized successfully.");
         }
 
         private void InitTestDatabase()
