@@ -8,7 +8,9 @@ This project, ***Fireplace API***, provides an API for Fireplace, and it aims to
 
 # Architecture
 
-![The Architecture Image](./Static/Images/TheArchitecture.png)
+<div align="center">
+  <img src="./Static/Images/TheArchitecture.png" />
+</div>
 
 ### Layers:
 
