@@ -7,12 +7,15 @@
 
 This project, ***Fireplace API***, provides an API for Fireplace, and it aims to be a real-world example of web API concepts with the ***`ASP.NET Core`*** framework. I needed to record the knowledge and experience that I have learned in my coding history. As a result, I have created this project for myself and everyone who considers it valuable.
 
-
+ <br/>
+ 
 # Highlights
 
 1. [Architecture](#architecture)
 2. [Id Generation and Encoding](#id-generation-and-encoding)
 
+ <br/> <br/>
+ 
 # Architecture
 
 <div align="center">
@@ -99,14 +102,14 @@ Just like a bitcoin address:
 </div>
 Note: the non-alphanumeric characters in base-64 is "+" and "/"
 
- <br/>
+ <br/> <br/>
  
 4. **I also added some filters**
 
 ```csharp
 // To filter 10-length encoded ids
- if (id % 256 < 6)
-     return false;
+if (id % 256 < 6)
+	return false;
 
 // To filter encoded ids which has three same characters in a row
 Regex _encodedIdWrongRepetitionRegex = new(@"(\S)\1{2}");
