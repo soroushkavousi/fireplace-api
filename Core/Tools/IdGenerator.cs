@@ -9,8 +9,8 @@ namespace FireplaceApi.Core.Tools
     {
         private static readonly ulong _min = (ulong)Math.Pow(2, 10);
         private static readonly ulong _max = ulong.MaxValue - 1;
-        private static readonly Regex _encodedIdWrongRepetitionRegex = new Regex(@"(\S)\1{2}");
-        private static readonly Regex _encodedIdWrongCharactersRegex = new Regex(@"([0OLI])");
+        private static readonly Regex _encodedIdWrongRepetitionRegex = new(@"(\S)\1{2}");
+        private static readonly Regex _encodedIdWrongCharactersRegex = new(@"([0OlI])");
 
         public static async Task<ulong> GenerateNewIdAsync(Func<ulong, Task<bool>> doesIdExistAsync = null)
         {
@@ -22,51 +22,6 @@ namespace FireplaceApi.Core.Tools
             }
             while (!idIsValid);
             return id;
-        }
-
-        //public static async Task<ulong> GenerateNewIdAsync(Func<ulong, Task<bool>> doesIdExistAsync = null)
-        //{
-        //    ulong id; bool idIsValid;
-        //    do
-        //    {
-        //        id = Utils.GenerateRandomUlongNumber(_min, _max);
-        //        idIsValid = await id.IsIdValid(doesIdExistAsync);
-        //    }
-        //    while (!idIsValid);
-        //    return id;
-        //}
-
-        private static async Task<bool> IsIdValid(this ulong id,
-            Func<ulong, Task<bool>> doesIdExistAsync = null)
-        {
-            if (id % 256 < 6)
-                return false;
-
-            var encodedId = IdEncode(id);
-            if (!IsEncodedIdFormatValid(encodedId))
-                return false;
-
-            if (doesIdExistAsync != null && await doesIdExistAsync(id))
-                return false;
-
-            return true;
-        }
-
-        public static bool IsEncodedIdFormatValid(this string encodedId)
-        {
-            if (string.IsNullOrWhiteSpace(encodedId))
-                return false;
-
-            if (encodedId.Length != 11)
-                return false;
-
-            if (_encodedIdWrongRepetitionRegex.IsMatch(encodedId))
-                return false;
-
-            if (_encodedIdWrongCharactersRegex.IsMatch(encodedId))
-                return false;
-
-            return true;
         }
 
         public static string IdEncode(this ulong id)
@@ -89,6 +44,41 @@ namespace FireplaceApi.Core.Tools
                 return default;
 
             return IdDecode(encodedId);
+        }
+
+        private static async Task<bool> IsIdValid(this ulong id,
+            Func<ulong, Task<bool>> doesIdExistAsync = null)
+        {
+            // To filter 10-length encoded IDs
+            if (id % 256 < 6)
+                return false;
+
+            var encodedId = IdEncode(id);
+            if (!IsEncodedIdFormatValid(encodedId))
+                return false;
+
+            if (doesIdExistAsync != null && await doesIdExistAsync(id))
+                return false;
+
+            return true;
+        }
+
+        public static bool IsEncodedIdFormatValid(this string encodedId)
+        {
+            if (string.IsNullOrWhiteSpace(encodedId))
+                return false;
+
+            if (encodedId.Length != 11)
+                return false;
+
+            // To filter encoded IDs which has three same characters in a row
+            if (_encodedIdWrongRepetitionRegex.IsMatch(encodedId))
+                return false;
+
+            if (_encodedIdWrongCharactersRegex.IsMatch(encodedId))
+                return false;
+
+            return true;
         }
     }
 }
