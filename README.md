@@ -57,13 +57,13 @@ With the swagger UI, you can easily interact with the API and learn it. It shows
  <br/>
  
 <div align="center">
-  <img src="./Static/Images/swagger-top.png" />
+  <img src="./Static/Images/swagger-top.png" style="max-width: 85%;"/>
 </div>
 
  <br/>
  
 <div align="center">
-  <img src="./Static/Images/swagger-sample-execution.png" />
+  <img src="./Static/Images/swagger-sample-execution.png" style="max-width: 85%;" />
   <p>a sample of an execution</p>
 </div>
 
@@ -79,7 +79,7 @@ I did customize the swagger UI to have an log-in-with-google button.
 
 
 <div align="center">
-  <img src="./Static/Images/swagger-log-in-with-google.png" />
+  <img src="./Static/Images/swagger-log-in-with-google.png" style="width: 15vw;" />
 </div>
 
  <br/>
@@ -113,13 +113,13 @@ description_html += $@"
  <br/>
  
 <div align="center">
-  <img src="./Static/Images/response-list-communities.png" />
+  <img src="./Static/Images/response-list-communities.png" style="max-width: 85%;" />
 </div>
 
  <br/>
  
 <div align="center">
-  <img src="./Static/Images/response-bad-request.png" />
+  <img src="./Static/Images/response-bad-request.png" style="max-width: 60%;" />
 </div>
 
  <br/> <br/>
