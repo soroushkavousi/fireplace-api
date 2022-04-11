@@ -50,7 +50,7 @@ This project, ***Fireplace API***, provides an API for Fireplace, and it aims to
 
 # Swagger
 
-With the swagger UI, you can easily interact with the API and learn it. It shows all routes, inputs, outputs, models, and errors. It also generates a _[swagger.json](https://api.fireplace.bitiano.com/docs/v0.1/swagger.json)_ which describes the schema of the API that can be imported into your app.
+With the ***swagger UI***, you can easily interact with the API and learn it. It shows all routes, inputs, outputs, models, and errors. It also generates a _[swagger.json](https://api.fireplace.bitiano.com/docs/v0.1/swagger.json)_ which describes the schema of the API that can be imported into your app.
 
 [Check the **Swagger UI** website now](https://api.fireplace.bitiano.com/docs/index.html)
 
@@ -64,7 +64,7 @@ With the swagger UI, you can easily interact with the API and learn it. It shows
  
 <div align="center">
   <img src="./Static/Images/swagger-sample-execution.png" width="85%" />
-  <p>a sample of an execution</p>
+  <p><i>a sample of an execution</i></p>
 </div>
 
  <br/>  <br/>
@@ -74,17 +74,17 @@ With the swagger UI, you can easily interact with the API and learn it. It shows
 
 1. #### Log in With google
 
-I did customize the swagger UI to have an log-in-with-google button. 
+I did customize the swagger UI to have a `log-in-with-google` button. 
 
 
 
 <div align="center">
-  <img src="./Static/Images/swagger-log-in-with-google.png" width="15vw" />
+  <img src="./Static/Images/swagger-log-in-with-google.png" width="30%" />
 </div>
 
  <br/>
  
- This was possible by injecting a css file to Swagger UI:
+ This was possible by ***injecting a CSS file*** to Swagger UI:
 ```csharp
 app.UseSwaggerUI(options =>
 {
@@ -93,7 +93,7 @@ app.UseSwaggerUI(options =>
 ```
 [See the **custom-swagger-ui.css** file](Api/wwwroot/swagger-ui/custom-swagger-ui.css)
 
-and the html which added to swagger description section:
+and the HTML which is added to the ***swagger description*** section:
 
 ```csharp
 description_html += $@"
