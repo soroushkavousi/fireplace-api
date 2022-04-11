@@ -5,16 +5,17 @@
 
 ***Fireplace*** is a discussion application with communities, posts, and comments, just like Reddit.
 
-This project, ***Fireplace API***, provides an API for Fireplace, and it aims to be a real-world example of web API concepts with the ***`ASP.NET Core`*** framework. I needed to record the knowledge and experience that I have learned in my coding history. As a result, I have created this project for myself and everyone who considers it valuable.
+This project, ***Fireplace API***, provides an API for Fireplace, and it aims to be a real-world example of web API concepts with the ***`ASP.NET Core`*** framework. As I needed to record the knowledge and experience I have learned in my coding history, I created this project for myself and everyone who considers it valuable.
 
  <br/>
  
 # Highlights
 
 1. [Architecture](#architecture)
-2. [Id Generation and Encoding](#id-generation-and-encoding)
+2. [Swagger](#swagger)
+3. [Id Generation and Encoding](#id-generation-and-encoding)
 
- <br/> <br/>
+ <br/> <br/>  <br/>
  
 # Architecture
 
@@ -44,6 +45,85 @@ This project, ***Fireplace API***, provides an API for Fireplace, and it aims to
 	- Defines how the data is persisted in databases or other persistent storage
 	- Responsible for connecting to external systems and services
 	- It does not contain business rules or knowledge
+
+ <br/> <br/>
+
+# Swagger
+
+With the swagger UI, you can easily interact with the API and learn it. It shows all routes, inputs, outputs, models, and errors. It also generates a _[swagger.json](https://api.fireplace.bitiano.com/docs/v0.1/swagger.json)_ which describes the schema of the API that can be imported into your app.
+
+[Check the **Swagger UI** website now](https://api.fireplace.bitiano.com/docs/index.html)
+
+ <br/>
+ 
+<div align="center">
+  <img src="./Static/Images/swagger-top.png" />
+</div>
+
+ <br/>
+ 
+<div align="center">
+  <img src="./Static/Images/swagger-sample-execution.png" />
+  <p>a sample of an execution</p>
+</div>
+
+ <br/>  <br/>
+ 
+ 
+### *Features*:
+
+1. #### Log in With google
+
+I did customize the swagger UI to have an log-in-with-google button. 
+
+
+
+<div align="center">
+  <img src="./Static/Images/swagger-log-in-with-google.png" />
+</div>
+
+ <br/>
+ 
+ This was possible by injecting a css file to Swagger UI:
+```csharp
+app.UseSwaggerUI(options =>
+{
+	options.InjectStylesheet("/swagger-ui/custom-swagger-ui.css");
+});
+```
+[See the **custom-swagger-ui.css** file](Api/wwwroot/swagger-ui/custom-swagger-ui.css)
+
+and the html which added to swagger description section:
+
+```csharp
+description_html += $@"
+ <a id=""google-btn"" target=""_blank"" href=""{GlobalOperator.GlobalValues.Api.BaseUrlPath}/v0.1/users/open-google-log-in-page"">
+     <div id=""google-icon-wrapper"">
+         <img id=""google-icon"" src=""https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg""/>
+     </div>
+     <p id=""btn-text""><b>Log in with Google</b></p>
+ </a>
+                ";
+```
+
+ <br/> <br/>
+  
+2. #### Full examples of all possible responses
+
+ <br/>
+ 
+<div align="center">
+  <img src="./Static/Images/response-list-communities.png" />
+</div>
+
+ <br/>
+ 
+<div align="center">
+  <img src="./Static/Images/response-bad-request.png" />
+</div>
+
+ <br/> <br/>
+ 
 
 # Id Generation and Encoding
 
