@@ -237,7 +237,9 @@ if (_encodedIdWrongRepetitionRegex.IsMatch(encodedId))
 If you are interested in the Google OAuth 2.0 implementation, you can check these links:
 
 [Check the **GoogleGateway** class](Infrastructure/Gateways/GoogleGateway.cs)
+
 [Check the **LogInWithGoogleInputQueryParameters** class](Api/Controllers/Parameters/UserParameters/LogInWithGoogleParameters.cs)
+
 [Check the **LogInWithGoogleAsync** method in **UserOperator** Class](Core/Operators/UserOperator.cs#L91)
 
 <br/>
