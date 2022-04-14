@@ -13,8 +13,15 @@ This project, ***Fireplace API***, provides an API for Fireplace, and it aims to
 
 1. [Architecture](#architecture)
 2. [Swagger](#swagger)
-3. [Id Generation and Encoding](#id-generation-and-encoding)
-4. [Various sign up and log in methods](#various-sign-up-and-log-in-methods)
+3. Connected to a [PostgreSQL](https://www.postgresql.org/) database
+4. Has advanced logging system with [NLog](https://nlog-project.org/)
+5. Supports pagination
+6. Supports nested comments
+7. Support user sessions
+8. [Id Generation and Encoding](#id-generation-and-encoding)
+9. [Various sign up and log in methods](#various-sign-up-and-log-in-methods)
+10. Hosted with [Docker](https://www.docker.com/)
+
 
  <br/> <br/>  <br/>
  
@@ -227,12 +234,24 @@ if (_encodedIdWrongRepetitionRegex.IsMatch(encodedId))
 	- Username
 
 <br/>
+
+### Access Token:
+
+Scheme: ***Bearer***
+
+The access token can be placed at ***cookies*** or ***headers***.
+
+<br/>
+
+### Routes:
+
+<br/>
   
 <div align="center">
   <img src="./Static/Images/various-log-in-sign-up.png" width="85%" />
 </div>
 
-<br/>
+<br/><br/>
 
 If you are interested in the Google OAuth 2.0 implementation, you can check these links:
 
