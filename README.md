@@ -1,6 +1,4 @@
 
- <br/>
- 
 # Introduction
 
 ***Fireplace*** is a discussion application with communities, posts, and comments, just like Reddit.
