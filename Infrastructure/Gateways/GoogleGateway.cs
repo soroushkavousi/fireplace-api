@@ -29,17 +29,17 @@ namespace FireplaceApi.Infrastructure.Gateways
             _configuration = configuration;
         }
 
-        public async Task<GoogleUserToken> GetgoogleUserToken(string code)
+        public async Task<GoogleUserToken> GetGoogleUserToken(string code)
         {
             var googleGlobalValues = GlobalOperator.GlobalValues.Google;
             var redirectUrl = GlobalOperator.GlobalValues.Api.BaseUrlPath
                     + googleGlobalValues.RelativeRedirectUrl;
 
-            return await GetgoogleUserToken(googleGlobalValues.ClientId,
+            return await GetGoogleUserToken(googleGlobalValues.ClientId,
                 googleGlobalValues.ClientSecret, redirectUrl, code);
         }
 
-        public async Task<GoogleUserToken> GetgoogleUserToken(string clientId,
+        public async Task<GoogleUserToken> GetGoogleUserToken(string clientId,
             string clientSecret, string redirectUrl, string code)
         {
             var sw = Stopwatch.StartNew();
@@ -59,16 +59,10 @@ namespace FireplaceApi.Infrastructure.Gateways
                 });
 
                 var authorizationCodeRequest = flow.CreateAuthorizationCodeRequest(redirectUrl);
-
                 authorizationCodeRequest.State = "docs";
-                var urlTest = authorizationCodeRequest.Build();
-                var url = urlTest.AbsoluteUri;
 
                 var tokenResponse = await flow.ExchangeCodeForTokenAsync("", code,
                    redirectUrl, CancellationToken.None);
-
-                // TODO
-                //var validPayload = await GoogleJsonWebSignature.ValidateAsync(tokenResponse.IdToken, new ValidateSettings);
 
                 var jwt = new Jwt(tokenResponse.IdToken);
                 var idTokenPayload = jwt.ExtractPayload<Payload>();
@@ -82,6 +76,11 @@ namespace FireplaceApi.Infrastructure.Gateways
                 _logger.LogAppInformation(sw, $"googleUser: {googleUser.ToJson()}");
 
                 return googleUser;
+
+                // TODO
+                //var urlTest = authorizationCodeRequest.Build();
+                //var url = urlTest.AbsoluteUri;
+                //var validPayload = await GoogleJsonWebSignature.ValidateAsync(tokenResponse.IdToken, new ValidateSettings);
             }
             catch (Exception ex)
             {

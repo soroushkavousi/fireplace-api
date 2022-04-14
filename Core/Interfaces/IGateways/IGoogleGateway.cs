@@ -5,8 +5,8 @@ namespace FireplaceApi.Core.Interfaces
 {
     public interface IGoogleGateway
     {
-        public Task<GoogleUserToken> GetgoogleUserToken(string userCode);
-        public Task<GoogleUserToken> GetgoogleUserToken(string clientId,
+        public Task<GoogleUserToken> GetGoogleUserToken(string userCode);
+        public Task<GoogleUserToken> GetGoogleUserToken(string clientId,
             string clientSecret, string redirectUrl, string userCode);
         public string GetTokenUrl(string code);
         public string GetTokenUrl(string baseTokenUrl,

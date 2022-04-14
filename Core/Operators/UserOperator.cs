@@ -91,11 +91,11 @@ namespace FireplaceApi.Core.Operators
         public async Task<User> LogInWithGoogleAsync(IPAddress ipAddress, string state,
             string code, string scope, string authUser, string prompt)
         {
-            var googleUserOperator = _serviceProvider.GetService<GoogleUserOperator>(); // TODO too many GetService call
+            var googleUserOperator = _serviceProvider.GetService<GoogleUserOperator>();
             var emailOperator = _serviceProvider.GetService<EmailOperator>();
             User user;
             ulong userId;
-            var googleUserToken = await _googleGateway.GetgoogleUserToken(code);
+            var googleUserToken = await _googleGateway.GetGoogleUserToken(code);
             var gmailAddress = googleUserToken.GmailAddress;
 
             if (await googleUserOperator.DoesGoogleUserGmailAddressExistAsync(gmailAddress))

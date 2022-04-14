@@ -208,8 +208,9 @@ if (_encodedIdWrongRepetitionRegex.IsMatch(encodedId))
 ```
  <br/>
 
-[See the **IdGenerator** class](Core/Tools/IdGenerator.cs)
+[Check the **IdGenerator** class](Core/Tools/IdGenerator.cs)
 
+ <br/> <br/>
 
 # Various sign up and log in methods
 
@@ -230,5 +231,13 @@ if (_encodedIdWrongRepetitionRegex.IsMatch(encodedId))
 <div align="center">
   <img src="./Static/Images/various-log-in-sign-up.png" width="85%" />
 </div>
+
+<br/>
+
+If you are interested in the Google OAuth 2.0 implementation, you can check these links:
+
+[Check the **GoogleGateway** class](Infrastructure/Gateways/GoogleGateway.cs)
+[Check the **LogInWithGoogleInputQueryParameters** class](Api/Controllers/Parameters/UserParameters/LogInWithGoogleParameters.cs)
+[Check the **LogInWithGoogleAsync** method in **UserOperator** Class](Core/Operators/UserOperator.cs#L91)
 
 <br/>
