@@ -15,13 +15,14 @@ This project, ***Fireplace API***, provides an API for Fireplace, and it aims to
 4. Has advanced logging system with [NLog](https://nlog-project.org/)
 5. Supports pagination
 6. Supports nested comments
-7. Support user sessions
-8. [Id Generation and Encoding](#id-generation-and-encoding)
-9. [Various sign up and log in methods](#various-sign-up-and-log-in-methods)
-10. Hosted with [Docker](https://www.docker.com/)
+7. Supports user sessions
+8. Supports error codes
+9. [Id Generation and Encoding](#id-generation-and-encoding)
+10. [Various sign up and log in methods](#various-sign-up-and-log-in-methods)
+11. Hosted with [Docker](https://www.docker.com/)
 
 
- <br/> <br/>  <br/>
+ <br/> <br/> <br/>
  
 # Architecture
 
