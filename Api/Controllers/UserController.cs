@@ -29,14 +29,17 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
-        /// Sign up with google.
+        /// Redirect to the google-log-in page.
         /// </summary>
-        /// <returns>Created user</returns>
-        /// <response code="200">Returns the newly created item</response>
+        /// <returns></returns>
+        /// <response code="308">It redirects you to the google log in page.
+        /// 
+        /// However, in the swagger UI, the execute button will open a new tab before the redirection.
+        /// </response>
         [AllowAnonymous]
         [HttpGet("open-google-log-in-page")]
-        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<UserDto>> OpenGoogleLogInPage(
+        [ProducesResponseType(StatusCodes.Status308PermanentRedirect)]
+        public async Task<ActionResult> OpenGoogleLogInPage(
             [BindNever][FromHeader] InputHeaderParameters inputHeaderParameters)
         {
             var googleLogInPageUrl = await _userService.GetGoogleAuthUrlAsync(inputHeaderParameters.IpAddress);
@@ -66,7 +69,7 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
-        /// Log in or Sign up with google.
+        /// Log in or sign up with google.
         /// </summary>
         /// <returns>Created user</returns>
         /// <response code="200">Returns the newly created item</response>

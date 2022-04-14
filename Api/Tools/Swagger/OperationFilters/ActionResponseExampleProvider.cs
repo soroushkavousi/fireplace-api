@@ -52,6 +52,8 @@ namespace FireplaceApi.Api.Tools
                         break;
                 }
             }
+            if (!operation.Responses.ContainsKey("200"))
+                return;
             var successResponse = operation.Responses["200"];
             successResponse.Content["application/json"].Example = example;
         }

@@ -106,6 +106,21 @@ namespace FireplaceApi.Infrastructure.Gateways
             string clientId, string clientSecret, string code,
             string grantType, string redirectUrl)
         {
+            var queryParameters = new Dictionary<string, string>()
+            {
+                { "client_id", clientId },
+                { "client_secret", clientSecret },
+                { "code", code },
+                { "grant_type", grantType },
+                { "redirect_uri", redirectUrl },
+            };
+
+            var TokenUrl = QueryHelpers.AddQueryString(baseTokenUrl,
+                queryParameters);
+
+            return TokenUrl;
+
+            // With using the libraries
             //var clientSecrets = new ClientSecrets
             //{
             //    ClientId = clientId,
@@ -124,20 +139,6 @@ namespace FireplaceApi.Infrastructure.Gateways
             //authorizationCodeRequest.State = "docs";
             //var urlTest = authorizationCodeRequest.Build();
             //var url = urlTest.AbsoluteUri;
-
-            var queryParameters = new Dictionary<string, string>()
-            {
-                { "client_id", clientId },
-                { "client_secret", clientSecret },
-                { "code", code },
-                { "grant_type", grantType },
-                { "redirect_uri", redirectUrl },
-            };
-
-            var TokenUrl = QueryHelpers.AddQueryString(baseTokenUrl,
-                queryParameters);
-
-            return TokenUrl;
         }
 
         public string GetAuthUrl()

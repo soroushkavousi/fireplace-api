@@ -97,7 +97,7 @@ namespace FireplaceApi.Api.Controllers
         public static IOpenApiAny Example { get; } = Example1;
         public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
         {
-            [nameof(UserController.OpenGoogleLogInPage)] = Example1,
+            [nameof(UserController.OpenGoogleLogInPage)] = new OpenApiNull(),
             [nameof(UserController.LogInWithGoogleAsync)] = Example1,
             [nameof(UserController.SignUpWithEmailAsync)] = Example1,
             [nameof(UserController.LogInWithEmailAsync)] = Example1,
