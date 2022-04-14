@@ -14,6 +14,7 @@ This project, ***Fireplace API***, provides an API for Fireplace, and it aims to
 1. [Architecture](#architecture)
 2. [Swagger](#swagger)
 3. [Id Generation and Encoding](#id-generation-and-encoding)
+4. [Various sign up and log in methods](#various-sign-up-and-log-in-methods)
 
  <br/> <br/>  <br/>
  
@@ -70,7 +71,7 @@ With the ***swagger UI***, you can easily interact with the API and learn it. It
  <br/>  <br/>
  
  
-### *Features*:
+### *Special Features*:
 
 1. #### Log in With google
 
@@ -103,12 +104,12 @@ description_html += $@"
      </div>
      <p id=""btn-text""><b>Log in with Google</b></p>
  </a>
-                ";
+ ";
 ```
 
  <br/> <br/>
   
-2. #### Full examples of all possible responses
+2. #### Full examples of possible responses
 
  <br/>
  
@@ -129,7 +130,16 @@ description_html += $@"
 
 How to generate and encode an id into a fixed 11-length string of characters:
 
- <br/>
+ <br/> 
+ 
+- ***Example:***
+
+|Id| Encoded Id  |
+|--|--|
+| 1034467521726252594 | 9NJCx7XUMmo |
+
+
+  <br/>   <br/>
 
 1.  **Generate a random unsigned long number**
 	- between min and max
@@ -194,9 +204,31 @@ if (id % 256 < 6)
 // To filter encoded ids which has three same characters in a row
 Regex _encodedIdWrongRepetitionRegex = new(@"(\S)\1{2}");
 if (_encodedIdWrongRepetitionRegex.IsMatch(encodedId))
-    return false;
+	return false;
 ```
  <br/>
 
 [See the **IdGenerator** class](Core/Tools/IdGenerator.cs)
 
+
+# Various sign up and log in methods
+
+
+
+### Current State:
+
+- #### Sign up 
+	- Google OAuth 2.0 (server-side)
+	- Email
+- #### Log in
+	- Google OAuth 2.0 (server-side)
+	- Email
+	- Username
+
+<br/>
+  
+<div align="center">
+  <img src="./Static/Images/various-log-in-sign-up.png" width="85%" />
+</div>
+
+<br/>
