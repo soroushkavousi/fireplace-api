@@ -9,8 +9,8 @@ This project, ***Fireplace API***, provides an API for Fireplace, and it aims to
  
 # Highlights
 
-1. [Architecture](#architecture)
-2. [Swagger](#swagger)
+1. [The Architecture](#the-architecture)
+2. [The Swagger](#the-swagger)
 3. Connected to a [PostgreSQL](https://www.postgresql.org/) database
 4. Has advanced logging system with [NLog](https://nlog-project.org/)
 5. Supports pagination
@@ -22,9 +22,18 @@ This project, ***Fireplace API***, provides an API for Fireplace, and it aims to
 11. Hosted with [Docker](https://www.docker.com/)
 
 
- <br/> <br/> <br/>
+ <br/> <br/>
+
+
+# To-do list
+
+1. Add [Elasticsearch](https://www.elastic.co/) for finding relevant communities, posts, and comments
+	- It may need better server requirements
+
+ <br/> <br/>
+
  
-# Architecture
+# The Architecture
 
 <div align="center">
   <img src="./Static/Images/TheArchitecture.png" />
@@ -55,7 +64,7 @@ This project, ***Fireplace API***, provides an API for Fireplace, and it aims to
 
  <br/> <br/>
 
-# Swagger
+# The Swagger
 
 With the ***swagger UI***, you can easily interact with the API and learn it. It shows all routes, inputs, outputs, models, and errors. It also generates a _[swagger.json](https://api.fireplace.bitiano.com/docs/v0.1/swagger.json)_ which describes the schema of the API that can be imported into your app.
 
