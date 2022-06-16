@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Api.Tools;
+﻿using FireplaceApi.Api.Extensions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Linq;
 
@@ -6,13 +6,15 @@ namespace FireplaceApi.Api.Attributes
 {
     public class InputHeaderParametersInjectorAttribute : ActionFilterAttribute
     {
+        private readonly string _key = "inputHeaderParameters";
+
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             var doesActionHaveInputHeaderParameters = context.ActionDescriptor.Parameters
-                .Any(parameterDescriptor => parameterDescriptor.Name == Constants.InputHeaderParametersActionArgumentKey);
+                .Any(parameterDescriptor => parameterDescriptor.Name == _key);
             if (doesActionHaveInputHeaderParameters == false)
                 return;
-            context.ActionArguments[Constants.InputHeaderParametersActionArgumentKey] = context.HttpContext.Items[Constants.InputHeaderParametersKey];
+            context.ActionArguments[_key] = context.HttpContext.GetInputHeaderParameters();
         }
     }
 }

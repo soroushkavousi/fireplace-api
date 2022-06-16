@@ -11,14 +11,27 @@ namespace FireplaceApi.Api.Extensions
 {
     public static class HttpContextExtensions
     {
+        private static readonly string _inputHeaderParametersKey = "InputHeaderParameters";
+        private static readonly string _inputCookieParametersKey = "InputCookieParameters";
+
         public static InputHeaderParameters GetInputHeaderParameters(this HttpContext httpContext)
         {
-            return httpContext.Items[Constants.InputHeaderParametersKey].To<InputHeaderParameters>();
+            if (httpContext.Items.ContainsKey(_inputHeaderParametersKey))
+                return httpContext.Items[_inputHeaderParametersKey].To<InputHeaderParameters>();
+
+            var inputHeaderParameters = new InputHeaderParameters(httpContext);
+            httpContext.Items[_inputHeaderParametersKey] = inputHeaderParameters;
+            return inputHeaderParameters;
         }
 
         public static InputCookieParameters GetInputCookieParameters(this HttpContext httpContext)
         {
-            return httpContext.Items[Constants.InputCookieParametersKey].To<InputCookieParameters>();
+            if (httpContext.Items.ContainsKey(_inputCookieParametersKey))
+                return httpContext.Items[_inputCookieParametersKey].To<InputCookieParameters>();
+
+            var inputCookieParameters = new InputCookieParameters(httpContext);
+            httpContext.Items[_inputCookieParametersKey] = inputCookieParameters;
+            return inputCookieParameters;
         }
 
         public static User GetRequestingUser(this HttpContext httpContext)
