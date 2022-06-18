@@ -26,28 +26,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Apis.Auth" Version="1.56.0" />
-    <PackageReference Include="Google.Apis.Core" Version="1.56.0" />
-    <PackageReference Include="Google.Apis.Oauth2.v2" Version="1.56.0.1869" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.2" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.57.0" />
+    <PackageReference Include="Google.Apis.Core" Version="1.57.0" />
+    <PackageReference Include="Google.Apis.Oauth2.v2" Version="1.57.0.1869" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.2">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.6">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.2" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="4.14.0" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.6" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.4" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.3.1" />
   </ItemGroup>
 
   <ItemGroup>
