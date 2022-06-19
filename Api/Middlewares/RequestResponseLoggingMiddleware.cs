@@ -70,13 +70,15 @@ namespace FireplaceApi.Api.Middlewares
             {
                 requestBodyText = await request.ReadRequestBodyAsync();
             }
+            if (string.IsNullOrWhiteSpace(requestBodyText))
+                requestBodyText = "Empty body";
 
             var requestQueryString = "NoQueryString";
             if (request.QueryString.HasValue)
                 requestQueryString = request.QueryString.Value;
 
-            var requestLogMessage = $"#Request | {requestQueryString} | {requestBodyText}";
-            _logger.LogAppInformation(sw, requestLogMessage);
+            var requestLogMessage = $"{requestQueryString} | {requestBodyText}";
+            _logger.LogAppInformation(requestLogMessage, sw, "REQUEST");
         }
 
         private async Task LogResponse(HttpResponse response, Stopwatch sw)
@@ -94,8 +96,8 @@ namespace FireplaceApi.Api.Middlewares
             response.Body.Seek(0, SeekOrigin.Begin);
 
             //Return the string for the response, including the status code (e.g. 200, 404, 401, etc.)
-            var responseLogMessage = $"#Response #ControllerDuration | {response.StatusCode} | {responseBodyText}";
-            _logger.LogAppInformation(sw, responseLogMessage);
+            var responseLogMessage = $"#ControllerDuration | {response.StatusCode} | {responseBodyText}";
+            _logger.LogAppInformation(responseLogMessage, sw, "RESPONSE");
         }
     }
 

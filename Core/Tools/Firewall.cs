@@ -34,8 +34,8 @@ namespace FireplaceApi.Core.Tools
             await ValidateSessionAsync(requestingUser.Id, ipAddress);
             await ValidateLimitationOfUserRequestCounts(requestingUser.Id);
             await ValidateLimitationOfIpRequestCounts(ipAddress);
-            _logger.LogAppTrace(sw, $"User {requestingUser.Id} doesn't have any problem to continue. " +
-                $"{requestingUser.ToJson()}");
+            _logger.LogAppTrace($"User {requestingUser.Id} doesn't have any problem to continue. ",
+                sw: sw, parameters: requestingUser.ToJson());
             return requestingUser;
         }
 
@@ -43,7 +43,7 @@ namespace FireplaceApi.Core.Tools
         {
             var sw = Stopwatch.StartNew();
             await ValidateLimitationOfIpRequestCounts(ipAddress);
-            _logger.LogAppTrace(sw, $"Guest doesn't have any problem to continue. {ipAddress}");
+            _logger.LogAppTrace($"Guest doesn't have any problem to continue. {ipAddress}", sw);
         }
 
         public void ValidateRequestingUserExists(User requestingUser, string accessTokenValue)

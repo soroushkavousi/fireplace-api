@@ -71,7 +71,7 @@ namespace FireplaceApi.Api.IntegrationTests
                 await _testUtils.AssertResponseDoesNotContainErrorAsync(ErrorName.REQUEST_CONTENT_TYPE_IS_NOT_VALID, response, nameof(TestFirewallCheckContentType));
             }
 
-            _logger.LogAppInformation(sw, $"{nameof(TestFirewallCheckContentType)} | End");
+            _logger.LogAppInformation($"{nameof(TestFirewallCheckContentType)} | End", sw);
         }
 
         [InlineData("GET", "/v0.1/access-tokens/some-token")]
@@ -107,7 +107,7 @@ namespace FireplaceApi.Api.IntegrationTests
 
             var response = await _clientPool.GuestClient.SendAsync(request);
             await _testUtils.AssertResponseContainsErrorAsync(ErrorName.AUTHENTICATION_FAILED, response, nameof(TestGuestCantAccessToPrivateMethods));
-            _logger.LogAppInformation(sw, $"{nameof(TestGuestCantAccessToPrivateMethods)} | End");
+            _logger.LogAppInformation($"{nameof(TestGuestCantAccessToPrivateMethods)} | End", sw);
         }
 
         [InlineData("POST", "/v0.1/users/sign-up-with-email")]
@@ -127,7 +127,7 @@ namespace FireplaceApi.Api.IntegrationTests
 
             var response = await _clientPool.GuestClient.SendAsync(request);
             await _testUtils.AssertResponseDoesNotContainErrorAsync(ErrorName.AUTHENTICATION_FAILED, response, nameof(TestGuestCantAccessToPrivateMethods));
-            _logger.LogAppInformation(sw, $"{nameof(TestGuestCanAccessToPublicMethods)} | End");
+            _logger.LogAppInformation($"{nameof(TestGuestCanAccessToPublicMethods)} | End", sw);
         }
 
         [InlineData("GET", "/v0.1/access-tokens/some-token")]
@@ -163,7 +163,7 @@ namespace FireplaceApi.Api.IntegrationTests
 
             var response = await _clientPool.TheHulkClient.SendAsync(request);
             await _testUtils.AssertResponseDoesNotContainErrorAsync(ErrorName.AUTHENTICATION_FAILED, response, nameof(TestTheHulkCanAccessWithAuthentication));
-            _logger.LogAppInformation(sw, $"{nameof(TestTheHulkCanAccessWithAuthentication)} | End");
+            _logger.LogAppInformation($"{nameof(TestTheHulkCanAccessWithAuthentication)} | End", sw);
         }
     }
 }

@@ -63,7 +63,7 @@ namespace FireplaceApi.Core.Operators
             var file = await _fileRepository.CreateFileAsync(id, name, realName,
                 uri, physicalPath);
             await _fileGateway.CreateFileAsync(formFile, physicalPath);
-            _logger.LogAppInformation(sw, $"New uploaded file: {file.ToJson()}");
+            _logger.LogAppInformation($"New uploaded file: {file.ToJson()}", sw);
 
             file = await GetFileByIdAsync(file.Id);
             return file;

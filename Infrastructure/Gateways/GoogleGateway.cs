@@ -73,7 +73,7 @@ namespace FireplaceApi.Infrastructure.Gateways
                     idTokenPayload.IssuedAtTimeSeconds.Value, idTokenPayload.Name,
                     idTokenPayload.GivenName, idTokenPayload.FamilyName,
                     idTokenPayload.Locale, idTokenPayload.Picture);
-                _logger.LogAppInformation(sw, $"googleUser: {googleUser.ToJson()}");
+                _logger.LogAppInformation(sw: sw, parameters: new { googleUser });
 
                 return googleUser;
 
@@ -84,7 +84,7 @@ namespace FireplaceApi.Infrastructure.Gateways
             }
             catch (Exception ex)
             {
-                _logger.LogAppError(sw, ex, $"Problem");
+                _logger.LogAppError($"Problem", ex, sw);
                 var errorServerMessage = $"Can't exchange user code for access token! User code: {code}";
                 throw new ApiException(Core.Enums.ErrorName.INTERNAL_SERVER, errorServerMessage);
             }

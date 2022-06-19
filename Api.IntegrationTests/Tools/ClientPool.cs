@@ -54,7 +54,7 @@ namespace FireplaceApi.Api.IntegrationTests
             var guestClient = _apiFactory.CreateClient(_clientOptions);
             var defaultRequestHeaders = guestClient.DefaultRequestHeaders;
             defaultRequestHeaders.Add(Api.Tools.Constants.X_FORWARDED_FOR, @"::1");
-            _logger.LogAppInformation(sw, $"Guest client initialized successfully.");
+            _logger.LogAppInformation($"Guest client initialized successfully.", sw);
             return guestClient;
         }
 
@@ -76,7 +76,7 @@ namespace FireplaceApi.Api.IntegrationTests
             var defaultRequestHeaders = theHulkClient.DefaultRequestHeaders;
             defaultRequestHeaders.Add(Api.Tools.Constants.AuthorizationHeaderKey, $"Bearer {newAccessTokenValue}");
             defaultRequestHeaders.Add(Api.Tools.Constants.X_FORWARDED_FOR, @"::1");
-            _logger.LogAppInformation(sw, $"The Hulk client initialized successfully.");
+            _logger.LogAppInformation($"The Hulk client initialized successfully.", sw);
             return theHulkClient;
         }
     }

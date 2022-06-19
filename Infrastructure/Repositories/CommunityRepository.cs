@@ -38,7 +38,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<List<Community>> ListCommunitiesAsync(List<ulong> Ids)
         {
-            _logger.LogAppIOInformation("Database | Input", new { Ids });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { Ids });
             var sw = Stopwatch.StartNew();
             var communityEntities = await _communityEntities
                 .AsNoTracking()
@@ -50,13 +50,13 @@ namespace FireplaceApi.Infrastructure.Repositories
             communityEntities = new List<CommunityEntity>();
             Ids.ForEach(id => communityEntities.Add(communityEntityDictionary[id]));
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { communityEntities });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntities });
             return communityEntities.Select(e => _communityConverter.ConvertToModel(e)).ToList();
         }
 
         public async Task<List<Community>> ListCommunitiesAsync(string name)
         {
-            _logger.LogAppIOInformation("Database | Input", new { name });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { name });
             var sw = Stopwatch.StartNew();
             var communityEntities = await _communityEntities
                 .AsNoTracking()
@@ -68,13 +68,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
                 .ToListAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { communityEntities });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntities });
             return communityEntities.Select(e => _communityConverter.ConvertToModel(e)).ToList();
         }
 
         public async Task<List<ulong>> ListCommunityIdsAsync(string name)
         {
-            _logger.LogAppIOInformation("Database | Input", new { name });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { name });
             var sw = Stopwatch.StartNew();
             var communityEntityIds = await _communityEntities
                 .AsNoTracking()
@@ -87,14 +87,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Select(e => e.Id)
                 .ToListAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { communityEntityIds });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntityIds });
             return communityEntityIds;
         }
 
         public async Task<Community> GetCommunityByIdentifierAsync(CommunityIdentifier identifier,
             bool includeCreator = false)
         {
-            _logger.LogAppIOInformation("Database | Input", new { identifier, includeCreator });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier, includeCreator });
             var sw = Stopwatch.StartNew();
             var communityEntity = await _communityEntities
                 .AsNoTracking()
@@ -108,13 +108,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { communityEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntity });
             return _communityConverter.ConvertToModel(communityEntity);
         }
 
         public async Task<string> GetNameByIdAsync(ulong id)
         {
-            _logger.LogAppIOInformation("Database | Input", new { id });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
             var sw = Stopwatch.StartNew();
             var communityName = (await _communityEntities
                 .AsNoTracking()
@@ -122,13 +122,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleAsync(e => e.Id == id))
                 .Name;
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { communityName });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityName });
             return communityName;
         }
 
         public async Task<ulong> GetIdByNameAsync(string communityName)
         {
-            _logger.LogAppIOInformation("Database | Input", new { communityName });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { communityName });
             var sw = Stopwatch.StartNew();
             var communityId = (await _communityEntities
                 .AsNoTracking()
@@ -136,28 +136,28 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleAsync(e => string.Equals(e.Name, communityName)))
                 .Id;
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { communityId });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityId });
             return communityId;
         }
 
         public async Task<Community> CreateCommunityAsync(ulong id, string name,
             ulong creatorId, string creatorUsername)
         {
-            _logger.LogAppIOInformation("Database | Input",
-                new { id, name, creatorId, creatorUsername });
+            _logger.LogAppInformation(title: "DATABASE_INPUT",
+                parameters: new { id, name, creatorId, creatorUsername });
             var sw = Stopwatch.StartNew();
             var communityEntity = new CommunityEntity(id, name, creatorId, creatorUsername);
             _communityEntities.Add(communityEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { communityEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntity });
             return _communityConverter.ConvertToModel(communityEntity);
         }
 
         public async Task<Community> UpdateCommunityAsync(Community community)
         {
-            _logger.LogAppIOInformation("Database | Input", new { community });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { community });
             var sw = Stopwatch.StartNew();
             var communityEntity = _communityConverter.ConvertToEntity(community);
             _communityEntities.Update(communityEntity);
@@ -172,13 +172,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { communityEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntity });
             return _communityConverter.ConvertToModel(communityEntity);
         }
 
         public async Task UpdateCommunityNameAsync(ulong id, string newCommunityName)
         {
-            _logger.LogAppIOInformation("Database | Input", new { id, newCommunityName });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id, newCommunityName });
             var sw = Stopwatch.StartNew();
             int rowAffectedCount = 0;
             try
@@ -194,12 +194,12 @@ namespace FireplaceApi.Infrastructure.Repositories
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { rowAffectedCount });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { rowAffectedCount });
         }
 
         public async Task DeleteCommunityByIdentifierAsync(CommunityIdentifier identifier)
         {
-            _logger.LogAppIOInformation("Database | Input", new { identifier });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
             var sw = Stopwatch.StartNew();
             var communityEntity = await _communityEntities
                 .Search(
@@ -213,12 +213,12 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { communityEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntity });
         }
 
         public async Task<bool> DoesCommunityIdentifierExistAsync(CommunityIdentifier identifier)
         {
-            _logger.LogAppIOInformation("Database | Input", new { identifier });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
             var sw = Stopwatch.StartNew();
             var doesExist = await _communityEntities
                 .AsNoTracking()
@@ -229,20 +229,20 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .AnyAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { doesExist });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
             return doesExist;
         }
 
         public async Task<bool> DoesCommunityNameExistAsync(string name)
         {
-            _logger.LogAppIOInformation("Database | Input", new { name });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { name });
             var sw = Stopwatch.StartNew();
             var doesExist = await _communityEntities
                 .AsNoTracking()
                 .Where(e => e.Name == name)
                 .AnyAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { doesExist });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
             return doesExist;
         }
     }

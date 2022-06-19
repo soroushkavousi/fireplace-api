@@ -39,11 +39,12 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<List<Comment>> ListCommentsAsync(List<ulong> Ids,
             User requestingUser = null)
         {
-            _logger.LogAppIOInformation("Database | Input", new
-            {
-                Ids,
-                requestingUser = requestingUser != null
-            });
+            _logger.LogAppInformation(title: "DATABASE_INPUT",
+                parameters: new
+                {
+                    Ids,
+                    requestingUser = requestingUser != null
+                });
             var sw = Stopwatch.StartNew();
             var commentEntities = await _commentEntities
                 .AsNoTracking()
@@ -60,14 +61,14 @@ namespace FireplaceApi.Infrastructure.Repositories
             commentEntities = new List<CommentEntity>();
             Ids.ForEach(id => commentEntities.Add(commentEntityDictionary[id]));
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { commentEntities });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntities });
             return commentEntities.Select(e => _commentConverter.ConvertToModel(e)).ToList();
         }
 
         public async Task<List<ulong>> ListSelfCommentIdsAsync(ulong authorId,
             SortType? sort)
         {
-            _logger.LogAppIOInformation("Database | Input", new
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
                 authorId,
                 sort
@@ -89,14 +90,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Select(e => e.Id)
                 .ToListAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { commentEntityIds });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntityIds });
             return commentEntityIds;
         }
 
         public async Task<List<ulong>> ListPostCommentIdsAsync(ulong postId,
             SortType? sort)
         {
-            _logger.LogAppIOInformation("Database | Input", new
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
                 postId,
                 sort
@@ -118,14 +119,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Select(e => e.Id)
                 .ToListAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { commentEntityIds });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntityIds });
             return commentEntityIds;
         }
 
         public async Task<List<Comment>> ListChildCommentsAsync(ulong postId,
             List<ulong> parentCommentIds, User requestingUser = null)
         {
-            _logger.LogAppIOInformation("Database | Input", new
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
                 postId,
                 parentCommentIds,
@@ -151,14 +152,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { commentEntities });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntities });
             return commentEntities.Select(e => _commentConverter.ConvertToModel(e)).ToList();
         }
 
         public async Task<List<Comment>> ListChildCommentsAsync(ulong postId,
             ulong parentCommentId, User requestingUser = null)
         {
-            _logger.LogAppIOInformation("Database | Input", new
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
                 postId,
                 parentCommentId,
@@ -184,7 +185,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { commentEntities });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntities });
             return commentEntities.Select(e => _commentConverter.ConvertToModel(e)).ToList();
         }
 
@@ -192,7 +193,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             bool includeAuthor = false, bool includePost = false,
             User requestingUser = null)
         {
-            _logger.LogAppIOInformation("Database | Input", new
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
                 id,
                 includeAuthor,
@@ -210,7 +211,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { commentEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntity });
             return _commentConverter.ConvertToModel(commentEntity);
         }
 
@@ -218,7 +219,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             string authorUsername, ulong postId, string content,
             List<ulong> parentCommentIds = null)
         {
-            _logger.LogAppIOInformation("Database | Input", new
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
                 id,
                 authorUserId,
@@ -234,14 +235,14 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogAppIOInformation(sw, "Database | Output",
-                new { commentEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { commentEntity });
             return _commentConverter.ConvertToModel(commentEntity);
         }
 
         public async Task<Comment> UpdateCommentAsync(Comment comment)
         {
-            _logger.LogAppIOInformation("Database | Input", new { comment });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { comment });
             var sw = Stopwatch.StartNew();
             var commentEntity = _commentConverter.ConvertToEntity(comment);
             _commentEntities.Update(commentEntity);
@@ -256,13 +257,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { commentEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntity });
             return _commentConverter.ConvertToModel(commentEntity);
         }
 
         public async Task DeleteCommentByIdAsync(ulong id)
         {
-            _logger.LogAppIOInformation("Database | Input", new { id });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
             var sw = Stopwatch.StartNew();
             var commentEntity = await _commentEntities
                 .Where(e => e.Id == id)
@@ -272,19 +273,19 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { commentEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntity });
         }
 
         public async Task<bool> DoesCommentIdExistAsync(ulong id)
         {
-            _logger.LogAppIOInformation("Database | Input", new { id });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await _commentEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .AnyAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { doesExist });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
             return doesExist;
         }
     }

@@ -61,12 +61,12 @@ namespace FireplaceApi.Infrastructure.Gateways
                         IsBodyHtml = true
                     };
                     smtp.Send(message);
-                    _logger.LogAppInformation(sw, $"Email has been sent from {fromEmailAddress} to {toEmailAddress}! body: {body[..10]}...");
+                    _logger.LogAppInformation($"Email has been sent from {fromEmailAddress} to {toEmailAddress}! body: {body[..10]}...", sw);
                 }
                 catch (Exception ex)
                 {
                     string message = $"Can't send email from {fromEmailAddress} to {toEmailAddress}! body: {body[..10]}...";
-                    _logger.LogAppError(sw, ex, message);
+                    _logger.LogAppError(message, ex, sw);
                 }
             });
         }

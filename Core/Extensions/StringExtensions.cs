@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Core.Tools;
 using Newtonsoft.Json;
 using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -119,6 +120,11 @@ namespace FireplaceApi.Core.Extensions
                 return false;
 
             return true;
+        }
+
+        public static string ExtractFileNameWithoutExtension(this string path)
+        {
+            return Path.GetFileNameWithoutExtension(path);
         }
     }
 }

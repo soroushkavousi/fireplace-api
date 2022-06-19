@@ -59,7 +59,7 @@ namespace FireplaceApi.Core.Tools
 
         public class SensitiveValueProvider : IValueProvider
         {
-            private PropertyInfo _targetProperty;
+            private readonly PropertyInfo _targetProperty;
 
             public SensitiveValueProvider(PropertyInfo targetProperty)
             {

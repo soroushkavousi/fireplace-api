@@ -38,7 +38,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<List<Global>> ListGlobalsAsync()
         {
-            _logger.LogAppIOInformation("Database | Input", null);
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: null);
             var sw = Stopwatch.StartNew();
             var globalEntites = await _globalEntities
                 .AsNoTracking()
@@ -46,13 +46,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { globalEntites });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { globalEntites });
             return globalEntites.Select(e => _globalConverter.ConvertToModel(e)).ToList();
         }
 
         public async Task<Global> GetGlobalByIdAsync(ulong globalId)
         {
-            _logger.LogAppIOInformation("Database | Input", new { globalId });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { globalId });
             var sw = Stopwatch.StartNew();
             var globalEntity = await _globalEntities
                 .AsNoTracking()
@@ -61,27 +61,27 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { globalEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { globalEntity });
             return _globalConverter.ConvertToModel(globalEntity);
         }
 
         public async Task<Global> CreateGlobalAsync(ulong id, EnvironmentName environmentName,
             GlobalValues globalValues)
         {
-            _logger.LogAppIOInformation("Database | Input", new { id, globalValues });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id, globalValues });
             var sw = Stopwatch.StartNew();
             var globalEntity = new GlobalEntity(id, environmentName.ToString(), globalValues);
             _globalEntities.Add(globalEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { globalEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { globalEntity });
             return _globalConverter.ConvertToModel(globalEntity);
         }
 
         public async Task<Global> UpdateGlobalAsync(Global global)
         {
-            _logger.LogAppIOInformation("Database | Input", new { global });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { global });
             var sw = Stopwatch.StartNew();
             var globalEntity = _globalConverter.ConvertToEntity(global);
             _globalEntities.Update(globalEntity);
@@ -96,13 +96,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { globalEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { globalEntity });
             return _globalConverter.ConvertToModel(globalEntity);
         }
 
         public async Task DeleteGlobalAsync(ulong globalId)
         {
-            _logger.LogAppIOInformation("Database | Input", new { globalId });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { globalId });
             var sw = Stopwatch.StartNew();
             var globalEntity = await _globalEntities
                 .Where(e => e.Id == globalId)
@@ -112,19 +112,19 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { globalEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { globalEntity });
         }
 
         public async Task<bool> DoesGlobalIdExistAsync(ulong id)
         {
-            _logger.LogAppIOInformation("Database | Input", new { id });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await _globalEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .AnyAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { doesExist });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
             return doesExist;
         }
     }

@@ -37,7 +37,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<List<AccessToken>> ListAccessTokensAsync(
                     bool includeUser = false)
         {
-            _logger.LogAppIOInformation("Database | Input", new { includeUser });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { includeUser });
             var sw = Stopwatch.StartNew();
             var accessTokenEntities = await _accessTokenEntities
                 .AsNoTracking()
@@ -46,13 +46,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { accessTokenEntities });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { accessTokenEntities });
             return accessTokenEntities.Select(e => _accessTokenConverter.ConvertToModel(e)).ToList();
         }
 
         public async Task<AccessToken> GetAccessTokenByIdAsync(ulong id, bool includeUser = false)
         {
-            _logger.LogAppIOInformation("Database | Input", new { id, includeUser });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id, includeUser });
             var sw = Stopwatch.StartNew();
             var accessTokenEntity = await _accessTokenEntities
                 .AsNoTracking()
@@ -62,13 +62,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { accessTokenEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { accessTokenEntity });
             return _accessTokenConverter.ConvertToModel(accessTokenEntity);
         }
 
         public async Task<AccessToken> GetAccessTokenByValueAsync(string value, bool includeUser = false)
         {
-            _logger.LogAppIOInformation("Database | Input", new { value, includeUser });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { value, includeUser });
             var sw = Stopwatch.StartNew();
             var accessTokenEntity = await _accessTokenEntities
                 .AsNoTracking()
@@ -78,26 +78,26 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { accessTokenEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { accessTokenEntity });
             return _accessTokenConverter.ConvertToModel(accessTokenEntity);
         }
 
         public async Task<AccessToken> CreateAccessTokenAsync(ulong id, ulong userId, string value)
         {
-            _logger.LogAppIOInformation("Database | Input", new { id, userId, value });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id, userId, value });
             var sw = Stopwatch.StartNew();
             var accessTokenEntity = new AccessTokenEntity(id, userId, value);
             _accessTokenEntities.Add(accessTokenEntity);
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { accessTokenEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { accessTokenEntity });
             return _accessTokenConverter.ConvertToModel(accessTokenEntity);
         }
 
         public async Task<AccessToken> UpdateAccessTokenAsync(AccessToken accessToken)
         {
-            _logger.LogAppIOInformation("Database | Input", new { accessToken });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { accessToken });
             var sw = Stopwatch.StartNew();
             var accessTokenEntity = _accessTokenConverter.ConvertToEntity(accessToken);
             _accessTokenEntities.Update(accessTokenEntity);
@@ -112,13 +112,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { accessTokenEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { accessTokenEntity });
             return _accessTokenConverter.ConvertToModel(accessTokenEntity);
         }
 
         public async Task DeleteAccessTokenAsync(ulong id)
         {
-            _logger.LogAppIOInformation("Database | Input", new { id });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
             var sw = Stopwatch.StartNew();
             var accessTokenEntity = await _accessTokenEntities
                 .Where(e => e.Id == id)
@@ -128,32 +128,32 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { accessTokenEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { accessTokenEntity });
         }
 
         public async Task<bool> DoesAccessTokenIdExistAsync(ulong id)
         {
-            _logger.LogAppIOInformation("Database | Input", new { id });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await _accessTokenEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .AnyAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { doesExist });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
             return doesExist;
         }
 
         public async Task<bool> DoesAccessTokenValueExistAsync(string value)
         {
-            _logger.LogAppIOInformation("Database | Input", new { value });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { value });
             var sw = Stopwatch.StartNew();
             var doesExist = await _accessTokenEntities
                 .AsNoTracking()
                 .Where(e => e.Value == value)
                 .AnyAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { doesExist });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
             return doesExist;
         }
     }

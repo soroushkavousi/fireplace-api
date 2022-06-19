@@ -48,7 +48,7 @@ namespace FireplaceApi.Api.IntegrationTests
 
             var responseError = await _errorOperator.GetErrorByCodeAsync(responseBodyJObject.Value<int>("code"));
 
-            _logger.LogAppInformation(sw, $"{testName} | Checking response is {expectedErrorName.ToString()}. ({responseError.Name.ToString()})");
+            _logger.LogAppInformation($"{testName} | Checking response is {expectedErrorName.ToString()}. ({responseError.Name.ToString()})", sw);
             Assert.Equal(expectedErrorName, responseError.Name);
         }
 

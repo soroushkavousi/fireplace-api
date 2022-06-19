@@ -69,7 +69,7 @@ namespace FireplaceApi.Api.IntegrationTests
             ClientPool = new ClientPool(this);
             TestUtils = new TestUtils(this);
 
-            _logger.LogAppInformation(sw, $"ApiIntegrationTestFixture initialized successfully.");
+            _logger.LogAppInformation($"ApiIntegrationTestFixture initialized successfully.", sw);
         }
 
         private void InitTestDatabase()

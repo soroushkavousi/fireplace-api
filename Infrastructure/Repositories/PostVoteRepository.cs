@@ -36,7 +36,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<List<PostVote>> ListPostVotesAsync(List<ulong> Ids)
         {
-            _logger.LogAppIOInformation("Database | Input", new { Ids });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { Ids });
             var sw = Stopwatch.StartNew();
             var postEntities = await _postVoteEntities
                 .AsNoTracking()
@@ -48,14 +48,14 @@ namespace FireplaceApi.Infrastructure.Repositories
             postEntities = new List<PostVoteEntity>();
             Ids.ForEach(id => postEntities.Add(postEntityDictionary[id]));
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { postEntities });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntities });
             return postEntities.Select(e => _postVoteConverter.ConvertToModel(e)).ToList();
         }
 
         public async Task<PostVote> GetPostVoteByIdAsync(ulong id,
             bool includeVoter = false, bool includePost = false)
         {
-            _logger.LogAppIOInformation("Database | Input", new
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
                 id,
                 includeVoter,
@@ -71,14 +71,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { postEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
             return _postVoteConverter.ConvertToModel(postEntity);
         }
 
         public async Task<PostVote> GetPostVoteAsync(ulong voterId,
             ulong postId, bool includeVoter = false, bool includePost = false)
         {
-            _logger.LogAppIOInformation("Database | Input", new
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
                 voterId,
                 postId,
@@ -96,14 +96,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { postEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
             return _postVoteConverter.ConvertToModel(postEntity);
         }
 
         public async Task<PostVote> CreatePostVoteAsync(ulong id, ulong voterUserId,
             string voterUsername, ulong postId, bool isUp)
         {
-            _logger.LogAppIOInformation("Database | Input", new
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
                 id,
                 voterUserId,
@@ -118,14 +118,14 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogAppIOInformation(sw, "Database | Output",
-                new { postEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { postEntity });
             return _postVoteConverter.ConvertToModel(postEntity);
         }
 
         public async Task<PostVote> UpdatePostVoteAsync(PostVote postvote)
         {
-            _logger.LogAppIOInformation("Database | Input", new { postvote });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { postvote });
             var sw = Stopwatch.StartNew();
             var postEntity = _postVoteConverter.ConvertToEntity(postvote);
             _postVoteEntities.Update(postEntity);
@@ -140,13 +140,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { postEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
             return _postVoteConverter.ConvertToModel(postEntity);
         }
 
         public async Task DeletePostVoteByIdAsync(ulong id)
         {
-            _logger.LogAppIOInformation("Database | Input", new { id });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
             var sw = Stopwatch.StartNew();
             var postEntity = await _postVoteEntities
                 .Where(e => e.Id == id)
@@ -156,25 +156,25 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { postEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
         }
 
         public async Task<bool> DoesPostVoteIdExistAsync(ulong id)
         {
-            _logger.LogAppIOInformation("Database | Input", new { id });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await _postVoteEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .AnyAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { doesExist });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
             return doesExist;
         }
 
         public async Task<bool> DoesPostVoteIdExistAsync(ulong voterId, ulong postId)
         {
-            _logger.LogAppIOInformation("Database | Input", new { voterId, postId });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { voterId, postId });
             var sw = Stopwatch.StartNew();
             var doesExist = await _postVoteEntities
                 .AsNoTracking()
@@ -182,7 +182,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                     && e.PostEntityId == postId)
                 .AnyAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { doesExist });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
             return doesExist;
         }
     }

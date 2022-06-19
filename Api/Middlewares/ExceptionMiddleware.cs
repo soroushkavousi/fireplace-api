@@ -42,7 +42,7 @@ namespace FireplaceApi.Api.Middlewares
                 var error = await CreateErrorAsync(apiException, errorOperator);
                 await ReportError(error, errorConverter, httpContext);
             }
-            _logger.LogAppTrace(sw);
+            _logger.LogAppTrace(sw: sw, title: "EXCEPTION_MIDDLEWARE");
         }
 
         private async Task<Error> CreateErrorAsync(ApiException apiException, ErrorOperator errorOperator)
@@ -56,7 +56,7 @@ namespace FireplaceApi.Api.Middlewares
             else
             {
                 error = Error.InternalServerError;
-                _logger.LogAppError(sw, $"Can't fill error details from database | {apiException.ToJson()}");
+                _logger.LogAppError($"Can't fill error details from database | {apiException.ToJson()}", sw, parameters: apiException); ;
             }
             error.ServerMessage = apiException.ErrorServerMessage;
             error.Exception = apiException.Exception;
@@ -76,11 +76,11 @@ namespace FireplaceApi.Api.Middlewares
             {
                 if (error.Exception.GetType().IsSubclassOf(typeof(Exception)))
                 {
-                    _logger.LogAppError(error.Exception, $"#ServerError | {error.ServerMessage} | {error.ToJson()}");
+                    _logger.LogAppError(error.ServerMessage, error.Exception, title: "SERVER_ERROR", parameters: error);
                 }
                 else
                 {
-                    _logger.LogAppCritical(error.Exception, $"#Exception | {error.ServerMessage} | {error.ToJson()}");
+                    _logger.LogAppCritical(error.ServerMessage, error.Exception, title: "EXCEPTION", parameters: error);
                 }
             }
 

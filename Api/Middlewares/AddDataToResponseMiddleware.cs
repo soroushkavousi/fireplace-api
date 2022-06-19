@@ -57,7 +57,7 @@ namespace FireplaceApi.Api.Middlewares
             }
             finally
             {
-                _logger.LogAppTrace(sw);
+                _logger.LogAppTrace(sw: sw);
             }
         }
     }

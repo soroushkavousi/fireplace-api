@@ -39,7 +39,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<List<Post>> ListPostsAsync(List<ulong> Ids,
             User requestingUser = null)
         {
-            _logger.LogAppIOInformation("Database | Input", new
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
                 Ids,
                 requestingUser = requestingUser != null
@@ -60,7 +60,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             postEntities = new List<PostEntity>();
             Ids.ForEach(id => postEntities.Add(postEntityDictionary[id]));
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { postEntities });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntities });
             return postEntities.Select(e => _postConverter.ConvertToModel(e)).ToList();
         }
 
@@ -69,7 +69,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             string search, SortType? sort,
             User requestingUser)
         {
-            _logger.LogAppIOInformation("Database | Input", new
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
                 authorId,
                 self,
@@ -97,7 +97,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
                 .ToListAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { postEntities });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntities });
             return postEntities.Select(e => _postConverter.ConvertToModel(e)).ToList();
         }
 
@@ -105,7 +105,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             bool? self, bool? joined, CommunityIdentifier communityIdentifier,
             string search, SortType? sort)
         {
-            _logger.LogAppIOInformation("Database | Input", new
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
                 authorId,
                 self,
@@ -129,7 +129,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Select(e => e.Id)
                 .ToListAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { postEntityIds });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntityIds });
             return postEntityIds;
         }
 
@@ -137,7 +137,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             bool includeAuthor = false, bool includeCommunity = false,
             User requestingUser = null)
         {
-            _logger.LogAppIOInformation("Database | Input", new
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
                 id,
                 includeAuthor,
@@ -155,7 +155,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { postEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
             return _postConverter.ConvertToModel(postEntity);
         }
 
@@ -163,7 +163,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             string authorUsername, ulong communityId, string communityName,
             string content)
         {
-            _logger.LogAppIOInformation("Database | Input", new
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
                 id,
                 authorUserId,
@@ -179,14 +179,14 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogAppIOInformation(sw, "Database | Output",
-                new { postEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { postEntity });
             return _postConverter.ConvertToModel(postEntity);
         }
 
         public async Task<Post> UpdatePostAsync(Post post)
         {
-            _logger.LogAppIOInformation("Database | Input", new { post });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { post });
             var sw = Stopwatch.StartNew();
             var postEntity = _postConverter.ConvertToEntity(post);
             _postEntities.Update(postEntity);
@@ -201,13 +201,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { postEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
             return _postConverter.ConvertToModel(postEntity);
         }
 
         public async Task DeletePostByIdAsync(ulong id)
         {
-            _logger.LogAppIOInformation("Database | Input", new { id });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
             var sw = Stopwatch.StartNew();
             var postEntity = await _postEntities
                 .Where(e => e.Id == id)
@@ -217,19 +217,19 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { postEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
         }
 
         public async Task<bool> DoesPostIdExistAsync(ulong id)
         {
-            _logger.LogAppIOInformation("Database | Input", new { id });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await _postEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .AnyAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { doesExist });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
             return doesExist;
         }
     }

@@ -39,7 +39,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<List<GoogleUser>> ListGoogleUsersAsync(
                     bool includeUser = false)
         {
-            _logger.LogAppIOInformation("Database | Input", new { includeUser });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { includeUser });
             var sw = Stopwatch.StartNew();
             var googleUserEntities = await _googleUserEntities
                 .AsNoTracking()
@@ -48,13 +48,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { googleUserEntities });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntities });
             return googleUserEntities.Select(e => _googleUserConverter.ConvertToModel(e)).ToList();
         }
 
         public async Task<GoogleUser> GetGoogleUserByIdAsync(ulong id, bool includeUser = false)
         {
-            _logger.LogAppIOInformation("Database | Input", new { id, includeUser });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id, includeUser });
             var sw = Stopwatch.StartNew();
             var googleUserEntity = await _googleUserEntities
                 .AsNoTracking()
@@ -64,14 +64,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { googleUserEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
             return _googleUserConverter.ConvertToModel(googleUserEntity);
         }
 
         public async Task<GoogleUser> GetGoogleUserByGmailAddressAsync(string gmailAddress,
             bool includeUser = false)
         {
-            _logger.LogAppIOInformation("Database | Input", new { gmailAddress, includeUser });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { gmailAddress, includeUser });
             var sw = Stopwatch.StartNew();
             var googleUserEntity = await _googleUserEntities
                 .AsNoTracking()
@@ -81,7 +81,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { googleUserEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
             return _googleUserConverter.ConvertToModel(googleUserEntity);
         }
 
@@ -93,8 +93,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             string lastName, string locale, string pictureUrl, string state,
             string authUser, string prompt, string redirectToUserUrl)
         {
-            _logger.LogAppIOInformation("Database | Input",
-                new
+            _logger.LogAppInformation(title: "DATABASE_INPUT",
+                parameters: new
                 {
                     id,
                     userId,
@@ -129,13 +129,13 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { googleUserEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
             return _googleUserConverter.ConvertToModel(googleUserEntity);
         }
 
         public async Task<GoogleUser> UpdateGoogleUserAsync(GoogleUser googleUser)
         {
-            _logger.LogAppIOInformation("Database | Input", new { googleUser });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { googleUser });
             var sw = Stopwatch.StartNew();
             var googleUserEntity = _googleUserConverter.ConvertToEntity(googleUser);
             _googleUserEntities.Update(googleUserEntity);
@@ -150,13 +150,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { googleUserEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
             return _googleUserConverter.ConvertToModel(googleUserEntity);
         }
 
         public async Task DeleteGoogleUserAsync(ulong id)
         {
-            _logger.LogAppIOInformation("Database | Input", new { id });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
             var sw = Stopwatch.StartNew();
             var googleUserEntity = await _googleUserEntities
                 .Where(e => e.Id == id)
@@ -166,32 +166,32 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { googleUserEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
         }
 
         public async Task<bool> DoesGoogleUserIdExistAsync(ulong id)
         {
-            _logger.LogAppIOInformation("Database | Input", new { id });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
             var sw = Stopwatch.StartNew();
             var doesExist = await _googleUserEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .AnyAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { doesExist });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
             return doesExist;
         }
 
         public async Task<bool> DoesGoogleUserGmailAddressExistAsync(string gmailAddress)
         {
-            _logger.LogAppIOInformation("Database | Input", new { gmailAddress });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { gmailAddress });
             var sw = Stopwatch.StartNew();
             var doesExist = await _googleUserEntities
                 .AsNoTracking()
                 .Where(e => e.GmailAddress == gmailAddress)
                 .AnyAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { doesExist });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
             return doesExist;
         }
     }

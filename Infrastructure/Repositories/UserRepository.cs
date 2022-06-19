@@ -40,8 +40,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                     bool includeEmail = false, bool includeGoogleUser = false,
                     bool includeAccessTokens = false, bool includeSessions = false)
         {
-            _logger.LogAppIOInformation("Database | Input",
-                new { includeEmail, includeGoogleUser, includeAccessTokens, includeSessions });
+            _logger.LogAppInformation(title: "DATABASE_INPUT",
+                parameters: new { includeEmail, includeGoogleUser, includeAccessTokens, includeSessions });
             var sw = Stopwatch.StartNew();
             var userEntities = await _userEntities
                 .AsNoTracking()
@@ -53,8 +53,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output",
-                new { userEntities });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { userEntities });
             return userEntities.Select(e => _userConverter.ConvertToModel(e)).ToList();
         }
 
@@ -62,8 +62,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             bool includeEmail = false, bool includeGoogleUser = false,
             bool includeAccessTokens = false, bool includeSessions = false)
         {
-            _logger.LogAppIOInformation("Database | Input",
-                new
+            _logger.LogAppInformation(title: "DATABASE_INPUT",
+                parameters: new
                 {
                     identifier,
                     includeEmail,
@@ -85,14 +85,14 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output",
-                new { userEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { userEntity });
             return _userConverter.ConvertToModel(userEntity);
         }
 
         public async Task<string> GetUsernameByIdAsync(ulong id)
         {
-            _logger.LogAppIOInformation("Database | Input", new { id });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
             var sw = Stopwatch.StartNew();
             var username = (await _userEntities
                 .AsNoTracking()
@@ -100,13 +100,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleAsync(e => e.Id == id))
                 .Username;
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { username });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { username });
             return username;
         }
 
         public async Task<ulong> GetIdByUsernameAsync(string username)
         {
-            _logger.LogAppIOInformation("Database | Input", new { username });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { username });
             var sw = Stopwatch.StartNew();
             var userId = (await _userEntities
                 .AsNoTracking()
@@ -114,7 +114,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleAsync(e => string.Equals(e.Username, username)))
                 .Id;
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { userId });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { userId });
             return userId;
         }
 
@@ -122,7 +122,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             UserState state, Password password = null, string displayName = null,
             string about = null, string avatarUrl = null, string bannerUrl = null)
         {
-            _logger.LogAppIOInformation("Database | Input", new
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
                 id,
                 username,
@@ -141,14 +141,14 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogAppIOInformation(sw, "Database | Output",
-                new { userEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { userEntity });
             return _userConverter.ConvertToModel(userEntity);
         }
 
         public async Task<User> UpdateUserAsync(User user)
         {
-            _logger.LogAppIOInformation("Database | Input", new { user });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { user });
             var sw = Stopwatch.StartNew();
             var userEntity = _userConverter.ConvertToEntity(user);
             _userEntities.Update(userEntity);
@@ -163,13 +163,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { userEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { userEntity });
             return _userConverter.ConvertToModel(userEntity);
         }
 
         public async Task UpdateUsernameAsync(ulong id, string newUsername)
         {
-            _logger.LogAppIOInformation("Database | Input", new { id, newUsername });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id, newUsername });
             var sw = Stopwatch.StartNew();
             int rowAffectedCount = 0;
             try
@@ -185,12 +185,12 @@ namespace FireplaceApi.Infrastructure.Repositories
                 throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
             }
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { rowAffectedCount });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { rowAffectedCount });
         }
 
         public async Task DeleteUserByIdentifierAsync(UserIdentifier identifier)
         {
-            _logger.LogAppIOInformation("Database | Input", new { identifier });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
             var sw = Stopwatch.StartNew();
             var userEntity = await _userEntities
                 .Search(
@@ -202,12 +202,12 @@ namespace FireplaceApi.Infrastructure.Repositories
             await _fireplaceApiContext.SaveChangesAsync();
             _fireplaceApiContext.DetachAllEntries();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { userEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { userEntity });
         }
 
         public async Task<bool> DoesUserIdentifierExistAsync(UserIdentifier identifier)
         {
-            _logger.LogAppIOInformation("Database | Input", new { identifier });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
             var sw = Stopwatch.StartNew();
             var doesExist = await _userEntities
                 .AsNoTracking()
@@ -216,7 +216,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .AnyAsync();
 
-            _logger.LogAppIOInformation(sw, "Database | Output", new { doesExist });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
             return doesExist;
         }
     }
