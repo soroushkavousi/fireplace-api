@@ -56,7 +56,7 @@ namespace FireplaceApi.Api.Middlewares
             else
             {
                 error = Error.InternalServerError;
-                _logger.LogAppError($"Can't fill error details from database | {apiException.ToJson()}", sw, parameters: apiException); ;
+                _logger.LogAppError($"Can't fill error details from database", sw, parameters: apiException); ;
             }
             error.ServerMessage = apiException.ErrorServerMessage;
             error.Exception = apiException.Exception;
@@ -76,11 +76,11 @@ namespace FireplaceApi.Api.Middlewares
             {
                 if (error.Exception.GetType().IsSubclassOf(typeof(Exception)))
                 {
-                    _logger.LogAppError(error.ServerMessage, error.Exception, title: "SERVER_ERROR", parameters: error);
+                    _logger.LogAppError(error.ServerMessage, error.Exception, title: "SERVER_ERROR", parameters: new { apiException = error });
                 }
                 else
                 {
-                    _logger.LogAppCritical(error.ServerMessage, error.Exception, title: "EXCEPTION", parameters: error);
+                    _logger.LogAppCritical(error.ServerMessage, error.Exception, title: "EXCEPTION", parameters: new { apiException = error });
                 }
             }
 

@@ -18,7 +18,6 @@ namespace FireplaceApi.Api.Extensions
                 throw new ApiException(ErrorName.INTERNAL_SERVER, $"Type {type} has no [Example] property!");
             }
 
-            var test = exampleProperty.GetValue(null);
             var example = exampleProperty.GetValue(null).To<OpenApiObject>();
             if (example == null || example.Count == 0)
                 throw new ApiException(ErrorName.INTERNAL_SERVER, $"Type {type} [Example] is empty!");
