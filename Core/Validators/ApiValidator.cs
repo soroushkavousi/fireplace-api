@@ -2,6 +2,7 @@
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Tools;
+using System;
 
 namespace FireplaceApi.Core.Validators
 {
@@ -25,15 +26,15 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public void ValidateInputEnum<TEnum>(TEnum? enumValue, string stringOfValue,
+        public void ValidateInputEnum<TEnum>(string inputString,
             string enumParameterName, ErrorName errorId) where TEnum : struct
         {
-            if (enumValue.HasValue)
+            if (string.IsNullOrWhiteSpace(inputString))
                 return;
 
-            if (!string.IsNullOrWhiteSpace(stringOfValue))
+            if (!Enum.TryParse(inputString, true, out TEnum result))
             {
-                var serverMessage = $"Enum parameter ({enumParameterName}) has illegal value!";
+                var serverMessage = $"Parameter ({enumParameterName}), which is enum {typeof(TEnum).Name}, has illegal value: {inputString}!";
                 throw new ApiException(errorId, serverMessage);
             }
         }

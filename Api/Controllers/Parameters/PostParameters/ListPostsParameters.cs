@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Core.Enums;
+﻿using FireplaceApi.Api.Tools;
+using FireplaceApi.Core.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FireplaceApi.Api.Controllers
@@ -21,9 +22,7 @@ namespace FireplaceApi.Api.Controllers
         public string Search { get; set; }
 
         [FromQuery(Name = "sort")]
-        public SortType? Sort { get; set; }
-
-        [FromQuery(Name = "sort")]
-        public string StringOfSort { get; set; }
+        [SwaggerEnum(Type = typeof(SortType))]
+        public string Sort { get; set; }
     }
 }

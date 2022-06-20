@@ -140,6 +140,7 @@ namespace FireplaceApi.Api
                 options.OperationFilter<SwaggerDefaultValueFilter>();
                 options.OperationFilter<SwaggerSecurityFilter>();
                 options.OperationFilter<ActionResponseExampleProvider>();
+                options.OperationFilter<SwaggerEnumFilter>();
                 options.DocumentFilter<CustomModelDocumentFilter<ApiExceptionErrorDto>>();
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

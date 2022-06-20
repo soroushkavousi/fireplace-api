@@ -33,23 +33,22 @@ namespace FireplaceApi.Core.Validators
         }
 
         public async Task ValidateListSelfCommentsInputParametersAsync(User requestingUser,
-            PaginationInputParameters paginationInputParameters, SortType? sort,
-            string stringOfSort)
+            PaginationInputParameters paginationInputParameters, string sort)
         {
             await _queryResultValidator.ValidatePaginationInputParameters(paginationInputParameters,
                 ModelName.COMMENT);
 
-            ValidateInputEnum(sort, stringOfSort, nameof(sort), ErrorName.INPUT_SORT_IS_NOT_VALID);
+            ValidateInputEnum<SortType>(sort, nameof(sort), ErrorName.INPUT_SORT_IS_NOT_VALID);
         }
 
         public async Task ValidateListPostCommentsInputParametersAsync(User requestingUser,
             PaginationInputParameters paginationInputParameters, string encodedPostId,
-            SortType? sort, string stringOfSort)
+            string sort)
         {
             await _queryResultValidator.ValidatePaginationInputParameters(paginationInputParameters,
                 ModelName.COMMENT);
 
-            ValidateInputEnum(sort, stringOfSort, nameof(sort), ErrorName.INPUT_SORT_IS_NOT_VALID);
+            ValidateInputEnum<SortType>(sort, nameof(sort), ErrorName.INPUT_SORT_IS_NOT_VALID);
             var postId = ValidateEncodedIdFormat(encodedPostId, nameof(encodedPostId)).Value;
             var post = await _postValidator.ValidatePostExistsAsync(postId);
         }

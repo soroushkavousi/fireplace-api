@@ -44,8 +44,7 @@ namespace FireplaceApi.Api.Controllers
         {
             var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
             var page = await _commentService.ListSelfCommentsAsync(requestingUser,
-                paginationInputParameters, inputQueryParameters.Sort,
-                inputQueryParameters.StringOfSort);
+                paginationInputParameters, inputQueryParameters.Sort);
             var requestPath = HttpContext.Request.Path;
             var pageDto = _commentConverter.ConvertToDto(page, requestPath);
             return pageDto;
@@ -66,8 +65,7 @@ namespace FireplaceApi.Api.Controllers
         {
             var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
             var page = await _commentService.ListPostCommentsAsync(requestingUser,
-                paginationInputParameters, inputRouteParameters.PostId, inputQueryParameters.Sort,
-                inputQueryParameters.StringOfSort);
+                paginationInputParameters, inputRouteParameters.PostId, inputQueryParameters.Sort);
             var requestPath = HttpContext.Request.Path;
             var pageDto = _commentConverter.ConvertToDto(page, requestPath);
             return pageDto;

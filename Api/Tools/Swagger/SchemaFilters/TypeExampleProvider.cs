@@ -25,6 +25,17 @@ namespace FireplaceApi.Api.Tools
             _serviceProvider = serviceProvider;
         }
 
+        public void Apply(OpenApiSchema schema, SchemaFilterContext context)
+        {
+            var example = context.Type.ExtractExample();
+
+            if (context.Type.Name.Contains("Error") && example.ContainsKey("message") == false)
+                example = FillErrorExampleFromName(example, _serviceProvider, _logger).GetAwaiter().GetResult();
+
+            schema.Example = example;
+            schema.Default = example;
+        }
+
         public static async Task<OpenApiObject> FillErrorExampleFromName<T>(OpenApiObject errorExample,
             IServiceProvider serviceProvider, ILogger<T> logger)
         {
@@ -56,40 +67,6 @@ namespace FireplaceApi.Api.Tools
             errorExample["message"] = new OpenApiString(error.ClientMessage);
             //example["http_status_code"] = new OpenApiInteger(error.HttpStatusCode);
             return errorExample;
-        }
-
-        public void Apply(OpenApiSchema schema, SchemaFilterContext context)
-        {
-            var example = context.Type.ExtractExample();
-
-            if (context.Type.Name.Contains("Error") && example.ContainsKey("message") == false)
-                example = FillErrorExampleFromName(example, _serviceProvider, _logger).GetAwaiter().GetResult();
-
-            schema.Example = example;
-            schema.Default = example;
-            //var openApiObject = new OpenApiObject();
-            //foreach (var property in context.Type.GetProperties())
-            //{
-            //    if (
-            //        property.HasAttribute<JsonIgnoreAttribute>() == false
-            //        && example.ContainsKey(property.Name)
-            //        && property.DeclaringType.Name == context.Type.Name)
-            //    {
-            //        var jsonPropertyNameAttribute = property.GetCustomAttribute<JsonPropertyNameAttribute>(true);
-            //        string jsonPropertyName;
-            //        if (jsonPropertyNameAttribute == null)
-            //            jsonPropertyName = SnakeCaseNamingPolicy.Instance.ConvertName(property.Name);
-            //        else
-            //            jsonPropertyName = jsonPropertyNameAttribute.Name;
-
-            //        example[jsonPropertyName].
-            //        openApiObject[jsonPropertyName] = example[property.Name];
-            //    }
-            //}
-
-            //schema.Reference.
-            //schema.Example = openApiObject;
-            //schema.Default = openApiObject;
         }
     }
 }

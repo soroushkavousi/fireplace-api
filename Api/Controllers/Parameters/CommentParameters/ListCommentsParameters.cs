@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Core.Enums;
+﻿using FireplaceApi.Api.Tools;
+using FireplaceApi.Core.Enums;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -7,10 +8,8 @@ namespace FireplaceApi.Api.Controllers
     public class ListSelfCommentsInputQueryParameters : PaginationInputQueryParameters
     {
         [FromQuery(Name = "sort")]
-        public SortType? Sort { get; set; }
-
-        [FromQuery(Name = "sort")]
-        public string StringOfSort { get; set; }
+        [SwaggerEnum(Type = typeof(SortType))]
+        public string Sort { get; set; }
     }
 
     public class ListPostCommentsInputRouteParameters
@@ -23,10 +22,8 @@ namespace FireplaceApi.Api.Controllers
     public class ListPostCommentsInputQueryParameters : PaginationInputQueryParameters
     {
         [FromQuery(Name = "sort")]
-        public SortType? Sort { get; set; }
-
-        [FromQuery(Name = "sort")]
-        public string StringOfSort { get; set; }
+        [SwaggerEnum(Type = typeof(SortType))]
+        public string Sort { get; set; }
     }
 
     public class ListChildCommentsInputRouteParameters

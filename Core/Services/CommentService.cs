@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Tools;
@@ -25,25 +26,24 @@ namespace FireplaceApi.Core.Services
         }
 
         public async Task<Page<Comment>> ListSelfCommentsAsync(User requestingUser,
-            PaginationInputParameters paginationInputParameters, SortType? sort,
-            string stringOfSort)
+            PaginationInputParameters paginationInputParameters, string sort)
         {
             await _commentValidator.ValidateListSelfCommentsInputParametersAsync(requestingUser,
-                paginationInputParameters, sort, stringOfSort);
-            var page = await _commentOperator.ListSelfCommentsAsync(requestingUser,
                 paginationInputParameters, sort);
+            var page = await _commentOperator.ListSelfCommentsAsync(requestingUser,
+                paginationInputParameters, sort.ToNullableEnum<SortType>());
             return page;
         }
 
         public async Task<Page<Comment>> ListPostCommentsAsync(User requestingUser,
             PaginationInputParameters paginationInputParameters, string encodedPostId,
-            SortType? sort, string stringOfSort)
+            string sort)
         {
             await _commentValidator.ValidateListPostCommentsInputParametersAsync(requestingUser,
-                paginationInputParameters, encodedPostId, sort, stringOfSort);
+                paginationInputParameters, encodedPostId, sort);
             var postId = encodedPostId.IdDecode();
             var page = await _commentOperator.ListPostCommentsAsync(requestingUser,
-                paginationInputParameters, postId, sort);
+                paginationInputParameters, postId, sort.ToNullableEnum<SortType>());
             return page;
         }
 

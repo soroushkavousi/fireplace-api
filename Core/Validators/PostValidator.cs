@@ -37,12 +37,12 @@ namespace FireplaceApi.Core.Validators
         public async Task<CommunityIdentifier> ValidateListPostsInputParametersAsync(User requestingUser,
             PaginationInputParameters paginationInputParameters, bool? self,
             bool? joined, string encodedCommunityId, string communityName,
-            string search, SortType? sort, string stringOfSort)
+            string search, string sort)
         {
             await _queryResultValidator.ValidatePaginationInputParameters(
                 paginationInputParameters, ModelName.POST);
 
-            ValidateInputEnum(sort, stringOfSort, nameof(sort), ErrorName.INPUT_SORT_IS_NOT_VALID);
+            ValidateInputEnum<SortType>(sort, nameof(sort), ErrorName.INPUT_SORT_IS_NOT_VALID);
             var communityIdentifier = await _communityValidator
                 .ValidateMultipleIdentifiers(encodedCommunityId, communityName, false);
             return communityIdentifier;
