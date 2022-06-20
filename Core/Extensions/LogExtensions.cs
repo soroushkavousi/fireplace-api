@@ -27,36 +27,37 @@ namespace FireplaceApi.Core.Extensions
             logger.LogInformation(CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
         }
 
-        public static void LogAppError<T>(this ILogger<T> logger, string message = null,
-            Stopwatch sw = null, string title = null, object parameters = null,
+        public static void LogAppWarning<T>(this ILogger<T> logger, string message = null,
+            Stopwatch sw = null, string title = null, object parameters = null, Exception ex = null,
             [CallerFilePath] string sourceFilePath = "", [CallerMemberName] string memberName = "",
             [CallerLineNumber] int sourceLineNumber = 0)
         {
-            logger.LogError(CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
+            if (ex == null)
+                logger.LogWarning(CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
+            else
+                logger.LogWarning(ex, CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
         }
 
         public static void LogAppError<T>(this ILogger<T> logger, string message = null,
-            Exception ex = null, Stopwatch sw = null, string title = null, object parameters = null,
+            Stopwatch sw = null, string title = null, object parameters = null, Exception ex = null,
             [CallerFilePath] string sourceFilePath = "", [CallerMemberName] string memberName = "",
             [CallerLineNumber] int sourceLineNumber = 0)
         {
-            logger.LogError(ex, CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
+            if (ex == null)
+                logger.LogError(CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
+            else
+                logger.LogError(ex, CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
         }
 
         public static void LogAppCritical<T>(this ILogger<T> logger, string message = null,
-            Stopwatch sw = null, string title = null, object parameters = null,
+            Stopwatch sw = null, string title = null, object parameters = null, Exception ex = null,
             [CallerFilePath] string sourceFilePath = "", [CallerMemberName] string memberName = "",
             [CallerLineNumber] int sourceLineNumber = 0)
         {
-            logger.LogCritical(CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
-        }
-
-        public static void LogAppCritical<T>(this ILogger<T> logger, string message = null,
-            Exception ex = null, Stopwatch sw = null, string title = null, object parameters = null,
-            [CallerFilePath] string sourceFilePath = "", [CallerMemberName] string memberName = "",
-            [CallerLineNumber] int sourceLineNumber = 0)
-        {
-            logger.LogCritical(ex, CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
+            if (ex == null)
+                logger.LogCritical(CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
+            else
+                logger.LogCritical(ex, CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
         }
 
         public static void LogAppTrace(this Logger logger, string message = null,

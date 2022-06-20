@@ -70,17 +70,17 @@ namespace FireplaceApi.Api.Middlewares
 
             if (error.Name != ErrorName.INTERNAL_SERVER)
             {
-                _logger.LogWarning($"#ClientError | {error.ServerMessage} | {error.ToJson()}");
+                _logger.LogAppWarning(message: $"{error.Name}: {error.ServerMessage}", title: "CLIENT_ERROR");
             }
             else
             {
                 if (error.Exception.GetType().IsSubclassOf(typeof(Exception)))
                 {
-                    _logger.LogAppError(error.ServerMessage, error.Exception, title: "SERVER_ERROR", parameters: new { apiException = error });
+                    _logger.LogAppError($"{error.Name}: {error.ServerMessage}", ex: error.Exception, title: "SERVER_ERROR");
                 }
                 else
                 {
-                    _logger.LogAppCritical(error.ServerMessage, error.Exception, title: "EXCEPTION", parameters: new { apiException = error });
+                    _logger.LogAppCritical($"{error.Name}: {error.ServerMessage}", ex: error.Exception, title: "EXCEPTION");
                 }
             }
 

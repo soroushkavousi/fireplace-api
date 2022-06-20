@@ -66,7 +66,7 @@ namespace FireplaceApi.Infrastructure.Gateways
                 catch (Exception ex)
                 {
                     string message = $"Can't send email from {fromEmailAddress} to {toEmailAddress}! body: {body[..10]}...";
-                    _logger.LogAppError(message, ex, sw);
+                    _logger.LogAppError(message, sw, ex: ex);
                 }
             });
         }
