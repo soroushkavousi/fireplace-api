@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Api.Tools;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Web;
 
@@ -36,5 +37,11 @@ namespace FireplaceApi.Api.Extensions
             KebabCaseNamingPolicy.Instance.ConvertName(str);
 
         public static string ToUrlEncoded(this string str) => HttpUtility.UrlEncode(str);
+
+        public static bool IsSafeHttpMethod(this string httpMethod) =>
+            HttpMethods.IsGet(httpMethod) ||
+            HttpMethods.IsHead(httpMethod) ||
+            HttpMethods.IsOptions(httpMethod) ||
+            HttpMethods.IsTrace(httpMethod);
     }
 }

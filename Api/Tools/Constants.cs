@@ -15,5 +15,6 @@
         public static string X_FORWARDED_FOR { get; } = "X-Forwarded-For";
         public static string EnvironmentNameKey { get; } = "ASPNETCORE_ENVIRONMENT";
         public static string MainDatabaseKey { get; } = "MainDatabase";
+        public static string CsrfTokenKey { get; } = "X-CSRF-TOKEN";
     }
 }

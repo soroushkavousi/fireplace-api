@@ -2,12 +2,38 @@
 var theExecuteButtonOfGoogleLogIn;
 
 $(document).ready(function () {
-    setTimeout(observeGoogleRoute, 2000)
+    setTimeout(onSwaggerUIReady, 1500)
 });
+
+function onSwaggerUIReady() {
+    observeGoogleRoute()
+    onDocumentStructureChanged()
+    observeDOM(document.documentElement, onDocumentStructureChanged)
+}
 
 function observeGoogleRoute() {
     googleLogInRouteNode = document.getElementById("operations-User-get_v0_1_users_open_google_log_in_page")
     observeDOM(googleLogInRouteNode, fixOpenGoogleLogInPageButton);
+}
+
+function onDocumentStructureChanged() {
+    setCsrfToken()
+}
+
+function setCsrfToken() {
+    var csrfToken = getCookie('X-CSRF-TOKEN')
+    var csrfTokenInputs = $('input[placeholder="X-CSRF-TOKEN"]');
+    if (csrfTokenInputs == null || csrfTokenInputs.length === 0) {
+        return
+    }
+    for (let i = 0; i < csrfTokenInputs.length; i++) {
+        var csrfTokenInput = csrfTokenInputs[i]
+        // @Grin https://stackoverflow.com/a/46012210/3449140
+        var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+        nativeInputValueSetter.call(csrfTokenInput, csrfToken);
+        var event = new Event('input', { bubbles: true });
+        csrfTokenInput.dispatchEvent(event);
+    }
 }
 
 function fixOpenGoogleLogInPageButton(m) {
@@ -28,7 +54,7 @@ function fixOpenGoogleLogInPageButton(m) {
     };
 }
 
-// From stackoverflow user:vsync https://stackoverflow.com/a/14570614/3449140
+// @vsync https://stackoverflow.com/a/14570614/3449140
 var observeDOM = (function () {
     var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
@@ -51,4 +77,17 @@ var observeDOM = (function () {
         }
     }
 })()
+
+function getCookie(c_name) {
+    if (document.cookie.length > 0) {
+        c_start = document.cookie.indexOf(c_name + "=");
+        if (c_start != -1) {
+            c_start = c_start + c_name.length + 1;
+            c_end = document.cookie.indexOf(";", c_start);
+            if (c_end == -1) c_end = document.cookie.length;
+            return unescape(document.cookie.substring(c_start, c_end));
+        }
+    }
+    return "";
+}
 

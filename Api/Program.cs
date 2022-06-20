@@ -3,6 +3,7 @@ using FireplaceApi.Api.Controllers;
 using FireplaceApi.Api.Extensions;
 using FireplaceApi.Api.Middlewares;
 using FireplaceApi.Api.Tools;
+using FireplaceApi.Core.Operators;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -91,6 +92,19 @@ namespace FireplaceApi.Api
             builder.Services.AddServices();
             builder.Services.AddApiConverters();
 
+            builder.Services.AddAntiforgery(options =>
+            {
+                options.Cookie = new CookieBuilder
+                {
+                    Name = Constants.CsrfTokenKey,
+                    MaxAge = new TimeSpan(GlobalOperator.GlobalValues.Api.CookieMaxAgeInDays, 0, 0, 0),
+                    IsEssential = true,
+                };
+                options.FormFieldName = Constants.CsrfTokenKey;
+                options.HeaderName = Constants.CsrfTokenKey;
+                options.SuppressXFrameOptionsHeader = true;
+            });
+
             builder.Services.AddRouting(options => options.LowercaseUrls = true);
             builder.Services.AddControllers(options =>
             {
@@ -123,7 +137,8 @@ namespace FireplaceApi.Api
             builder.Services.AddSwaggerGen(options =>
             {
                 options.EnableAnnotations(false, true);
-                options.OperationFilter<SwaggerDefaultValues>();
+                options.OperationFilter<SwaggerDefaultValueFilter>();
+                options.OperationFilter<SwaggerSecurityFilter>();
                 options.OperationFilter<ActionResponseExampleProvider>();
                 options.DocumentFilter<CustomModelDocumentFilter<ApiExceptionErrorDto>>();
 
@@ -141,9 +156,6 @@ namespace FireplaceApi.Api
                     });
 
                 options.DocumentFilter<OrderDocumentFilter>();
-
-
-
             });
 
             builder.Services.AddHsts(options =>
@@ -165,7 +177,6 @@ namespace FireplaceApi.Api
                 options.SuppressModelStateInvalidFilter = true;
                 options.SuppressMapClientErrors = true;
             });
-
         }
 
         private WebApplication CreateApp(WebApplicationBuilder builder)
@@ -229,10 +240,9 @@ namespace FireplaceApi.Api
                 options.InjectJavascript("https://apis.google.com/js/platform.js");
                 options.InjectJavascript("/swagger-ui/custom-swagger-ui.js");
             });
+
             app.UseRequestResponseLoggingMiddleware();
             app.UseExceptionMiddleware();
-            app.UseHeaderParametersMiddleware();
-            app.UseCookieParametersMiddleware();
             app.UseFirewallMiddleware();
             app.MapControllers();
             return app;

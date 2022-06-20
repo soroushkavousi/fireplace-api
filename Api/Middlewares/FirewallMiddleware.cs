@@ -4,11 +4,14 @@ using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Tools;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
@@ -27,9 +30,10 @@ namespace FireplaceApi.Api.Middlewares
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext httpContext, Firewall firewall)
+        public async Task InvokeAsync(HttpContext httpContext, Firewall firewall, IAntiforgery antiforgery)
         {
             var sw = Stopwatch.StartNew();
+            ValidateCsrfToken(httpContext);
             await ControlRequestBody(httpContext, firewall);
 
             var inputHeaderParameters = httpContext.GetInputHeaderParameters();
@@ -51,7 +55,7 @@ namespace FireplaceApi.Api.Middlewares
                 }
             }
 
-            if (isUserEndpoint)
+            if (isUserEndpoint || requestingUser != null)
             {
                 firewall.ValidateRequestingUserExists(requestingUser, accessTokenValue);
                 await firewall.CheckUser(requestingUser, ipAddress);
@@ -63,6 +67,7 @@ namespace FireplaceApi.Api.Middlewares
 
             _logger.LogAppInformation("Execution time for inner of the firewall only", sw);
             await _next(httpContext);
+            GenerateAndSetCsrfTokenAsCookie(httpContext, antiforgery);
         }
 
         private async Task ControlRequestBody(HttpContext httpContext, Firewall firewall)
@@ -77,7 +82,7 @@ namespace FireplaceApi.Api.Middlewares
                     || httpContext.Request.ContentType == "application/merge-patch+json")
                 {
                     requestBody = await httpContext.Request.ReadRequestBodyAsync();
-                    CheckRequestJsonBody(requestBody);
+                    ValidateRequestBodyIsJson(requestBody);
                 }
 
                 if (!string.IsNullOrWhiteSpace(requestBody))
@@ -118,13 +123,44 @@ namespace FireplaceApi.Api.Middlewares
             }
         }
 
-        public void CheckRequestJsonBody(string requestJsonBody)
+        public void ValidateRequestBodyIsJson(string requestJsonBody)
         {
             if (requestJsonBody.IsJson() == false)
             {
                 var serverMessage = $"Input request body is not json! requestJsonBody: {requestJsonBody}";
                 throw new ApiException(ErrorName.REQUEST_BODY_IS_NOT_JSON, serverMessage);
             }
+        }
+
+        private void ValidateCsrfToken(HttpContext httpContext)
+        {
+            if (httpContext.Request.Method.IsSafeHttpMethod())
+                return;
+
+            httpContext.Request.Headers.TryGetValue(Tools.Constants.CsrfTokenKey, out StringValues headerCsrfTokenStringValues);
+            var headerCsrfToken = headerCsrfTokenStringValues.ToString();
+            httpContext.Request.Cookies.TryGetValue(Tools.Constants.CsrfTokenKey, out string cookieCsrfToken);
+            if (headerCsrfToken != cookieCsrfToken)
+            {
+                var serverMessage = $"headerCsrfToken != cookieCsrfToken => {headerCsrfToken} != {cookieCsrfToken}";
+                throw new ApiException(ErrorName.AUTHENTICATION_FAILED, serverMessage);
+            }
+        }
+
+        private void GenerateAndSetCsrfTokenAsCookie(HttpContext httpContext, IAntiforgery antiforgery)
+        {
+            if (httpContext.Request.Method.IsSafeHttpMethod())
+                return;
+
+            var tokenSet = antiforgery.GetAndStoreTokens(httpContext);
+            var cookieOptions = new CookieOptions
+            {
+                MaxAge = new System.TimeSpan(
+                    GlobalOperator.GlobalValues.Api.CookieMaxAgeInDays, 0, 0, 0),
+                HttpOnly = false,
+            };
+            httpContext.Response.Cookies.Append(Tools.Constants.CsrfTokenKey, tokenSet.RequestToken!,
+                cookieOptions);
         }
     }
 

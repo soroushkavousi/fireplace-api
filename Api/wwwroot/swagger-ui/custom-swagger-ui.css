@@ -10,6 +10,14 @@
     margin-bottom: 20px !important;
 }
 
+.parameters-col_name {
+    min-width: 10em !important;
+}
+
+.parameter__name.required {
+    min-width: 12em !important;
+}
+
 #google-btn {
     margin-top: 15px;
     float: right;
