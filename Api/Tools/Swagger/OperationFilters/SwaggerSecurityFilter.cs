@@ -53,7 +53,7 @@ namespace FireplaceApi.Api.Tools
                 In = ParameterLocation.Header,
                 Schema = new OpenApiSchema { Type = "string" },
                 Required = true,
-                Description = "It should be read from a cookie named 'X-CSRF-TOKEN'. However in swagger ui, it will load automatically."
+                Description = "It should be read from the cookie named 'X-CSRF-TOKEN.' However, in swagger UI, it will load automatically."
             });
         }
 
