@@ -7,8 +7,8 @@ using System.ComponentModel.DataAnnotations;
 namespace FireplaceApi.Infrastructure.Entities
 {
     [Index(nameof(Name), IsUnique = true)]
-    [Index(nameof(CreatorEntityId), IsUnique = true)]
-    [Index(nameof(CreatorEntityUsername), IsUnique = true)]
+    [Index(nameof(CreatorEntityId), IsUnique = false)]
+    [Index(nameof(CreatorEntityUsername), IsUnique = false)]
     public class CommunityEntity : BaseEntity
     {
         [Required]
