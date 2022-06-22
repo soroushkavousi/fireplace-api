@@ -51,5 +51,12 @@ namespace FireplaceApi.Api.Extensions
 
             return requestBodyText;
         }
+
+        public static T GetActionAttribute<T>(this HttpContext httpContext)
+            where T : class
+        {
+            var endpoint = httpContext.Request.HttpContext.GetEndpoint();
+            return endpoint?.Metadata?.GetMetadata<T>();
+        }
     }
 }

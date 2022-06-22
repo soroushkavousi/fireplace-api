@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Api.Controllers;
+﻿using FireplaceApi.Api.Attributes;
+using FireplaceApi.Api.Controllers;
 using FireplaceApi.Api.Extensions;
 using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
@@ -33,7 +34,8 @@ namespace FireplaceApi.Api.Middlewares
         public async Task InvokeAsync(HttpContext httpContext, Firewall firewall, IAntiforgery antiforgery)
         {
             var sw = Stopwatch.StartNew();
-            ValidateCsrfToken(httpContext);
+            var isUserEndpoint = httpContext.GetActionAttribute<IAllowAnonymous>() == null;
+            ValidateCsrfToken(httpContext, isUserEndpoint);
             await ControlRequestBody(httpContext, firewall);
 
             var inputHeaderParameters = httpContext.GetInputHeaderParameters();
@@ -43,7 +45,6 @@ namespace FireplaceApi.Api.Middlewares
 
             User requestingUser = null;
             AccessToken accessToken = null;
-            var isUserEndpoint = IsUserEndpoint(httpContext);
             if (!string.IsNullOrWhiteSpace(accessTokenValue))
             {
                 accessToken = await firewall.ValidateAccessTokenAsync(accessTokenValue, isUserEndpoint);
@@ -65,9 +66,9 @@ namespace FireplaceApi.Api.Middlewares
                 await firewall.CheckGuest(ipAddress);
             }
 
+            GenerateAndSetCsrfTokenAsCookie(httpContext, antiforgery);
             _logger.LogAppInformation("Execution time for inner of the firewall only", sw);
             await _next(httpContext);
-            GenerateAndSetCsrfTokenAsCookie(httpContext, antiforgery);
         }
 
         private async Task ControlRequestBody(HttpContext httpContext, Firewall firewall)
@@ -90,14 +91,6 @@ namespace FireplaceApi.Api.Middlewares
                     CheckRequestContentType(httpContext.Request);
                 }
             }
-        }
-
-        public bool IsUserEndpoint(HttpContext httpContext)
-        {
-            var endpoint = httpContext.Request.HttpContext.GetEndpoint();
-            if (endpoint?.Metadata?.GetMetadata<IAllowAnonymous>() == null)
-                return true;
-            return false;
         }
 
         protected string FindAccessTokenValue(InputHeaderParameters inputHeaderParameters,
@@ -132,8 +125,11 @@ namespace FireplaceApi.Api.Middlewares
             }
         }
 
-        private void ValidateCsrfToken(HttpContext httpContext)
+        private void ValidateCsrfToken(HttpContext httpContext, bool isUserEndpoint)
         {
+            if (!isUserEndpoint)
+                return;
+
             if (httpContext.Request.Method.IsSafeHttpMethod())
                 return;
 
@@ -149,7 +145,8 @@ namespace FireplaceApi.Api.Middlewares
 
         private void GenerateAndSetCsrfTokenAsCookie(HttpContext httpContext, IAntiforgery antiforgery)
         {
-            if (httpContext.Request.Method.IsSafeHttpMethod())
+            if (httpContext.GetActionAttribute<AuthActionAttribute>() == null
+                && httpContext.Request.Method.IsSafeHttpMethod())
                 return;
 
             var tokenSet = antiforgery.GetAndStoreTokens(httpContext);
