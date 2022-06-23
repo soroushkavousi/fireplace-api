@@ -74,7 +74,7 @@ namespace FireplaceApi.Core.Operators
             email.Activation.Code = GenerateNewActivationCode();
             email.Activation.Message = GenerateNewActivationMessageAsync(email.Activation.Code.Value);
             email.Activation.Subject = GlobalOperator.GlobalValues.Email.ActivationSubject;
-            var sendEmailTask = _emailGateway.SendEmailMessage(email.Address,
+            _ = _emailGateway.SendEmailMessageAsync(email.Address,
                 email.Activation.Subject, email.Activation.Message);
             email.Activation.Status = ActivationStatus.SENT;
             email = await _emailRepository.UpdateEmailAsync(email);

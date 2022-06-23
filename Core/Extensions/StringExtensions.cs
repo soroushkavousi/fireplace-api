@@ -123,6 +123,16 @@ namespace FireplaceApi.Core.Extensions
             return result;
         }
 
+        public static string ToBase64UrlEncode(this string str)
+        {
+            var inputBytes = System.Text.Encoding.UTF8.GetBytes(str);
+            // Special "url-safe" base64 encode.
+            return Convert.ToBase64String(inputBytes)
+              .Replace('+', '-')
+              .Replace('/', '_')
+              .Replace("=", "");
+        }
+
         public static bool IsUrlStringValid(this string urlString, bool allSchemes = false)
         {
             if (!Uri.TryCreate(urlString, UriKind.Absolute, out Uri uriResult))

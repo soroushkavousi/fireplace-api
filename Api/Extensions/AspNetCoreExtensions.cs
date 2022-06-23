@@ -63,7 +63,7 @@ namespace FireplaceApi.Api.Extensions
 
         public static IServiceCollection AddGateways(this IServiceCollection services)
         {
-            services.AddScoped<IEmailGateway, EmailGateway>();
+            services.AddSingleton<IEmailGateway, GmailGateway>();
             services.AddScoped<IFileGateway, FileGateway>();
             services.AddScoped<IGoogleGateway, GoogleGateway>();
             return services;
