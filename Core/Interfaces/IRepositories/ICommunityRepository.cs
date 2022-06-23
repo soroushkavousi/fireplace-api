@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Core.Identifiers;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,8 +9,8 @@ namespace FireplaceApi.Core.Interfaces
     public interface ICommunityRepository
     {
         public Task<List<Community>> ListCommunitiesAsync(List<ulong> Ids);
-        public Task<List<Community>> ListCommunitiesAsync(string name);
-        public Task<List<ulong>> ListCommunityIdsAsync(string name);
+        public Task<List<Community>> ListCommunitiesAsync(string name, SortType? sort);
+        public Task<List<ulong>> ListCommunityIdsAsync(string name, SortType? sort);
         public Task<Community> GetCommunityByIdentifierAsync(CommunityIdentifier identifier,
             bool includeCreator = false);
         public Task<string> GetNameByIdAsync(ulong id);

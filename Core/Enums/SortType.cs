@@ -6,4 +6,10 @@
         NEW,
         OLD,
     }
+
+    public enum CommunitySortType
+    {
+        NEW,
+        OLD,
+    }
 }

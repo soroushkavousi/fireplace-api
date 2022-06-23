@@ -1,4 +1,6 @@
-﻿using FireplaceApi.Core.Identifiers;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Validators;
@@ -23,12 +25,12 @@ namespace FireplaceApi.Core.Services
         }
 
         public async Task<Page<Community>> ListCommunitiesAsync(User requestingUser,
-            PaginationInputParameters paginationInputParameters, string name)
+            PaginationInputParameters paginationInputParameters, string name, string sort)
         {
             await _communityValidator.ValidateListCommunitiesInputParametersAsync(requestingUser,
-                paginationInputParameters, name);
+                paginationInputParameters, name, sort);
             var page = await _communityOperator.ListCommunitiesAsync(requestingUser,
-                paginationInputParameters, name);
+                paginationInputParameters, name, sort.ToNullableEnum<SortType>());
             return page;
         }
 

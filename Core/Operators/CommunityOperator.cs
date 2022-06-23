@@ -28,12 +28,12 @@ namespace FireplaceApi.Core.Operators
         }
 
         public async Task<Page<Community>> ListCommunitiesAsync(User requestingUser,
-            PaginationInputParameters paginationInputParameters, string name)
+            PaginationInputParameters paginationInputParameters, string name, SortType? sortType)
         {
             Page<Community> resultPage = default;
             if (string.IsNullOrWhiteSpace(paginationInputParameters.Pointer))
             {
-                var communityIds = await _communityRepository.ListCommunityIdsAsync(name);
+                var communityIds = await _communityRepository.ListCommunityIdsAsync(name, sortType);
                 resultPage = await _pageOperator.CreatePageWithoutPointerAsync(ModelName.COMMUNITY,
                     paginationInputParameters, communityIds,
                     _communityRepository.ListCommunitiesAsync);

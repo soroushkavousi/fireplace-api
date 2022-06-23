@@ -51,7 +51,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return communityEntities.Select(e => _communityConverter.ConvertToModel(e)).ToList();
         }
 
-        public async Task<List<Community>> ListCommunitiesAsync(string name)
+        public async Task<List<Community>> ListCommunitiesAsync(string name, SortType? sort)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { name });
             var sw = Stopwatch.StartNew();
@@ -60,7 +60,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Search(
                     identifier: null,
                     search: name,
-                    sort: null
+                    sort: sort ?? SortType.NEW
                 )
                 .Take(Configs.Instance.Pagination.TotalItemsCount)
                 .ToListAsync();
@@ -69,7 +69,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return communityEntities.Select(e => _communityConverter.ConvertToModel(e)).ToList();
         }
 
-        public async Task<List<ulong>> ListCommunityIdsAsync(string name)
+        public async Task<List<ulong>> ListCommunityIdsAsync(string name, SortType? sort)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { name });
             var sw = Stopwatch.StartNew();
@@ -78,7 +78,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Search(
                     identifier: null,
                     search: name,
-                    sort: null
+                    sort: sort ?? SortType.NEW
                 )
                 .Take(Configs.Instance.Pagination.TotalItemsCount)
                 .Select(e => e.Id)

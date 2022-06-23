@@ -30,10 +30,11 @@ namespace FireplaceApi.Core.Validators
         }
 
         public async Task ValidateListCommunitiesInputParametersAsync(User requestingUser,
-            PaginationInputParameters paginationInputParameters, string name)
+            PaginationInputParameters paginationInputParameters, string name, string sort)
         {
             await _queryResultValidator.ValidatePaginationInputParameters(paginationInputParameters,
                 ModelName.COMMUNITY);
+            ValidateInputEnum<CommunitySortType>(sort, nameof(sort), ErrorName.INPUT_SORT_IS_NOT_VALID);
         }
 
         public async Task<CommunityIdentifier> ValidateGetCommunityByEncodedIdOrNameInputParametersAsync(
