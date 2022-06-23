@@ -477,7 +477,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<GlobalValues>("Values")
+                    b.Property<Configs>("Values")
                         .IsRequired()
                         .HasColumnType("jsonb")
                         .HasColumnName("Values");

@@ -4,11 +4,10 @@ using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,16 +20,14 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class CommunityMembershipRepository : ICommunityMembershipRepository
     {
         private readonly ILogger<CommunityMembershipRepository> _logger;
-        private readonly IConfiguration _configuration;
         private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<CommunityMembershipEntity> _communityMembershipEntities;
         private readonly CommunityMembershipConverter _communityMembershipConverter;
 
-        public CommunityMembershipRepository(ILogger<CommunityMembershipRepository> logger, IConfiguration configuration,
+        public CommunityMembershipRepository(ILogger<CommunityMembershipRepository> logger,
             FireplaceApiContext fireplaceApiContext, CommunityMembershipConverter communityMembershipConverter)
         {
             _logger = logger;
-            _configuration = configuration;
             _fireplaceApiContext = fireplaceApiContext;
             _communityMembershipEntities = fireplaceApiContext.CommunityMembershipEntities;
             _communityMembershipConverter = communityMembershipConverter;
@@ -69,7 +66,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                     userEntity: false,
                     communityEntity: false
                 )
-                .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
+                .Take(Configs.Instance.Pagination.TotalItemsCount)
                 .ToListAsync();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityMembershipEntities });
@@ -91,7 +88,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                     userEntity: false,
                     communityEntity: false
                 )
-                .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
+                .Take(Configs.Instance.Pagination.TotalItemsCount)
                 .Select(e => e.Id)
                 .ToListAsync();
 

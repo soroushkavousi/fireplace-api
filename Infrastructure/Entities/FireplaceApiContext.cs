@@ -30,7 +30,7 @@ namespace FireplaceApi.Infrastructure.Entities
 
         public DbSet<ErrorEntity> ErrorEntities { get; set; }
         public DbSet<FileEntity> FileEntities { get; set; }
-        public DbSet<GlobalEntity> GlobalEntities { get; set; }
+
         //Each entity has its own QueryResultEntity.
         public DbSet<CommunityQueryResultEntity> CommunityQueryResultEntities { get; set; }
         public DbSet<CommunityMembershipQueryResultEntity> CommunityMembershipQueryResultEntities { get; set; }
@@ -87,7 +87,6 @@ namespace FireplaceApi.Infrastructure.Entities
 
             modelBuilder.ApplyConfiguration(new ErrorEntityConfiguration());
             modelBuilder.ApplyConfiguration(new FileEntityConfiguration());
-            modelBuilder.ApplyConfiguration(new GlobalEntityConfiguration());
 
             modelBuilder.ApplyConfiguration(new CommunityQueryResultEntityConfiguration());
             modelBuilder.ApplyConfiguration(new CommunityMembershipQueryResultEntityConfiguration());

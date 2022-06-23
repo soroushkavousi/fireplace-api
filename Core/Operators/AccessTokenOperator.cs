@@ -1,7 +1,6 @@
 ﻿using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -12,15 +11,13 @@ namespace FireplaceApi.Core.Operators
     public class AccessTokenOperator
     {
         private readonly ILogger<AccessTokenOperator> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly IAccessTokenRepository _accessTokenRepository;
 
-        public AccessTokenOperator(ILogger<AccessTokenOperator> logger, IConfiguration configuration,
+        public AccessTokenOperator(ILogger<AccessTokenOperator> logger,
             IServiceProvider serviceProvider, IAccessTokenRepository accessTokenRepository)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _accessTokenRepository = accessTokenRepository;
         }

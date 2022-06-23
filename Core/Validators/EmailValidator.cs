@@ -6,7 +6,6 @@ using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -16,15 +15,13 @@ namespace FireplaceApi.Core.Validators
     public class EmailValidator : ApiValidator
     {
         private readonly ILogger<EmailValidator> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly EmailOperator _emailOperator;
 
-        public EmailValidator(ILogger<EmailValidator> logger, IConfiguration configuration,
+        public EmailValidator(ILogger<EmailValidator> logger,
             IServiceProvider serviceProvider, EmailOperator emailOperator)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _emailOperator = emailOperator;
         }

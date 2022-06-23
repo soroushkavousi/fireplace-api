@@ -2,7 +2,6 @@
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -13,15 +12,13 @@ namespace FireplaceApi.Core.Operators
     public class ErrorOperator
     {
         private readonly ILogger<ErrorOperator> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly IErrorRepository _errorRepository;
 
-        public ErrorOperator(ILogger<ErrorOperator> logger, IConfiguration configuration,
+        public ErrorOperator(ILogger<ErrorOperator> logger,
             IServiceProvider serviceProvider, IErrorRepository errorRepository)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _errorRepository = errorRepository;
         }

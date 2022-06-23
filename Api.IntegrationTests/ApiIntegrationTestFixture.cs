@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Api.Tools;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -22,7 +23,7 @@ namespace FireplaceApi.Api.IntegrationTests
     public class ApiIntegrationTestFixture : IDisposable
     {
         private readonly ILogger<ApiIntegrationTestFixture> _logger;
-        private readonly IConfiguration _configuration;
+
         private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly ErrorOperator _errorOperator;
 
@@ -60,7 +61,6 @@ namespace FireplaceApi.Api.IntegrationTests
             var scope = sp.CreateScope();
             ServiceProvider = scope.ServiceProvider;
             _logger = ServiceProvider.GetRequiredService<ILogger<ApiIntegrationTestFixture>>();
-            _configuration = ServiceProvider.GetRequiredService<IConfiguration>();
             _fireplaceApiContext = ServiceProvider.GetRequiredService<FireplaceApiContext>();
             _errorOperator = ServiceProvider.GetRequiredService<ErrorOperator>();
 
@@ -75,14 +75,12 @@ namespace FireplaceApi.Api.IntegrationTests
         private void InitTestDatabase()
         {
             //var optionsBuilder = new DbContextOptionsBuilder<FireplaceApiContext>();
-            //optionsBuilder.UseNpgsql(_configuration.GetConnectionString(Constants.MainDatabaseKey));
-            var mainFireplaceApiContext = new FireplaceApiContext(_configuration.GetConnectionString(Constants.MainDatabaseKey));
+            //optionsBuilder.UseNpgsql(Configs.Instance.Database.MainConnectionString);
+            var mainFireplaceApiContext = new FireplaceApiContext(Configs.Instance.Database.MainConnectionString);
 
             var errorEntities = mainFireplaceApiContext.ErrorEntities.AsNoTracking().ToList();
-            var globalEntities = mainFireplaceApiContext.GlobalEntities.AsNoTracking().ToList();
 
             _fireplaceApiContext.ErrorEntities.AddRange(errorEntities);
-            _fireplaceApiContext.GlobalEntities.AddRange(globalEntities);
             _fireplaceApiContext.SaveChanges();
             _fireplaceApiContext.DetachAllEntries();
         }

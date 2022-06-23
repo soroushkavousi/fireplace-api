@@ -6,7 +6,6 @@ using FireplaceApi.Core.Models;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,16 +18,14 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class AccessTokenRepository : IAccessTokenRepository
     {
         private readonly ILogger<AccessTokenRepository> _logger;
-        private readonly IConfiguration _configuration;
         private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<AccessTokenEntity> _accessTokenEntities;
         private readonly AccessTokenConverter _accessTokenConverter;
 
-        public AccessTokenRepository(ILogger<AccessTokenRepository> logger, IConfiguration configuration,
+        public AccessTokenRepository(ILogger<AccessTokenRepository> logger,
             FireplaceApiContext fireplaceApiContext, AccessTokenConverter accessTokenConverter)
         {
             _logger = logger;
-            _configuration = configuration;
             _fireplaceApiContext = fireplaceApiContext;
             _accessTokenEntities = fireplaceApiContext.AccessTokenEntities;
             _accessTokenConverter = accessTokenConverter;

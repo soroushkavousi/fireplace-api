@@ -87,12 +87,12 @@ namespace FireplaceApi.Infrastructure.Migrations
                 .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive")
                 .OldAnnotation("Npgsql:DefaultColumnCollation", "case_insensitive");
 
-            migrationBuilder.AlterColumn<GlobalValues>(
+            migrationBuilder.AlterColumn<Configs>(
                 name: "Values",
                 table: "GlobalEntities",
                 type: "jsonb",
                 nullable: false,
-                oldClrType: typeof(GlobalValues),
+                oldClrType: typeof(Configs),
                 oldType: "jsonb",
                 oldNullable: true);
 
@@ -301,12 +301,12 @@ namespace FireplaceApi.Infrastructure.Migrations
                 .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive")
                 .OldAnnotation("Npgsql:DefaultColumnCollation", "case_insensitive");
 
-            migrationBuilder.AlterColumn<GlobalValues>(
+            migrationBuilder.AlterColumn<Configs>(
                 name: "Values",
                 table: "GlobalEntities",
                 type: "jsonb",
                 nullable: true,
-                oldClrType: typeof(GlobalValues),
+                oldClrType: typeof(Configs),
                 oldType: "jsonb");
 
             migrationBuilder.AlterColumn<string>(

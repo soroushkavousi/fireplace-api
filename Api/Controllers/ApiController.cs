@@ -1,5 +1,5 @@
 ﻿using FireplaceApi.Api.Interfaces;
-using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.ValueObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -29,7 +29,7 @@ namespace FireplaceApi.Api.Controllers
             var cookieOptions = new CookieOptions
             {
                 MaxAge = new System.TimeSpan(
-                    GlobalOperator.GlobalValues.Api.CookieMaxAgeInDays, 0, 0, 0)
+                    Configs.Instance.Api.CookieMaxAgeInDays, 0, 0, 0)
             };
             foreach (Cookie cookie in cookieCollection)
             {

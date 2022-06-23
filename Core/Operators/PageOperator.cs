@@ -1,7 +1,6 @@
 ﻿using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.ValueObjects;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -12,15 +11,13 @@ namespace FireplaceApi.Core.Operators
     public class PageOperator
     {
         private readonly ILogger<PageOperator> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly QueryResultOperator _queryResultOperator;
 
-        public PageOperator(ILogger<PageOperator> logger, IConfiguration configuration,
+        public PageOperator(ILogger<PageOperator> logger,
             IServiceProvider serviceProvider, QueryResultOperator queryResultOperator)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _queryResultOperator = queryResultOperator;
         }
@@ -47,7 +44,8 @@ namespace FireplaceApi.Core.Operators
             Func<List<ulong>, User, Task<List<T>>> getItemsIncludeRequestingUserAsync,
             User requestingUser)
         {
-            var limit = paginationInputParameters.Limit ?? GlobalOperator.GlobalValues.Pagination.MaximumOfPageItemsCount;
+            var maximumOfPageItemsCount = Configs.Instance.Pagination.MaximumOfPageItemsCount;
+            var limit = paginationInputParameters.Limit ?? maximumOfPageItemsCount;
             var totalItemsCount = ItemIds.Count;
             var totalPagesCount = (int)MathF.Ceiling((float)totalItemsCount / limit);
             if (totalItemsCount == 0)

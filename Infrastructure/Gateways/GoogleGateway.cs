@@ -1,12 +1,10 @@
 ﻿using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces;
-using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.ValueObjects;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -21,22 +19,20 @@ namespace FireplaceApi.Infrastructure.Gateways
     public class GoogleGateway : IGoogleGateway
     {
         private readonly ILogger<GoogleGateway> _logger;
-        private readonly IConfiguration _configuration;
 
-        public GoogleGateway(ILogger<GoogleGateway> logger, IConfiguration configuration)
+        public GoogleGateway(ILogger<GoogleGateway> logger)
         {
             _logger = logger;
-            _configuration = configuration;
         }
 
         public async Task<GoogleUserToken> GetGoogleUserToken(string code)
         {
-            var googleGlobalValues = GlobalOperator.GlobalValues.Google;
-            var redirectUrl = GlobalOperator.GlobalValues.Api.BaseUrlPath
-                    + googleGlobalValues.RelativeRedirectUrl;
+            var googleConfigs = Configs.Instance.Google;
+            var redirectUrl = Configs.Instance.Api.BaseUrlPath
+                    + googleConfigs.RelativeRedirectUrl;
 
-            return await GetGoogleUserToken(googleGlobalValues.ClientId,
-                googleGlobalValues.ClientSecret, redirectUrl, code);
+            return await GetGoogleUserToken(googleConfigs.ClientId,
+                googleConfigs.ClientSecret, redirectUrl, code);
         }
 
         public async Task<GoogleUserToken> GetGoogleUserToken(string clientId,
@@ -92,12 +88,12 @@ namespace FireplaceApi.Infrastructure.Gateways
 
         public string GetTokenUrl(string code)
         {
-            var googleGlobalValues = GlobalOperator.GlobalValues.Google;
-            var apiGlobalValues = GlobalOperator.GlobalValues.Api;
-            var redirectUrl = $"{apiGlobalValues.BaseUrlPath}{googleGlobalValues.RelativeRedirectUrl}";
+            var googleConfigs = Configs.Instance.Google;
+            var apiConfigs = Configs.Instance.Api;
+            var redirectUrl = $"{apiConfigs.BaseUrlPath}{googleConfigs.RelativeRedirectUrl}";
 
-            return GetTokenUrl(googleGlobalValues.BaseTokenUrl,
-                googleGlobalValues.ClientId, googleGlobalValues.ClientSecret,
+            return GetTokenUrl(googleConfigs.BaseTokenUrl,
+                googleConfigs.ClientId, googleConfigs.ClientSecret,
                 code, "authorization_code", redirectUrl);
         }
 
@@ -142,12 +138,12 @@ namespace FireplaceApi.Infrastructure.Gateways
 
         public string GetAuthUrl()
         {
-            var googleGlobalValues = GlobalOperator.GlobalValues.Google;
-            var apiGlobalValues = GlobalOperator.GlobalValues.Api;
-            var redirectUrl = $"{apiGlobalValues.BaseUrlPath}{googleGlobalValues.RelativeRedirectUrl}";
+            var googleConfigs = Configs.Instance.Google;
+            var apiConfigs = Configs.Instance.Api;
+            var redirectUrl = $"{apiConfigs.BaseUrlPath}{googleConfigs.RelativeRedirectUrl}";
 
-            return GetAuthUrl(googleGlobalValues.BaseAuthUrl,
-                googleGlobalValues.ClientId, redirectUrl, "code",
+            return GetAuthUrl(googleConfigs.BaseAuthUrl,
+                googleConfigs.ClientId, redirectUrl, "code",
                 "openid profile email", "online", "docs", "true", "page");
         }
 

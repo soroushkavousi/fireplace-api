@@ -3,7 +3,6 @@ using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Tools;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -13,15 +12,13 @@ namespace FireplaceApi.Core.Validators
     public class AccessTokenValidator : ApiValidator
     {
         private readonly ILogger<AccessTokenValidator> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly AccessTokenOperator _accessTokenOperator;
 
-        public AccessTokenValidator(ILogger<AccessTokenValidator> logger, IConfiguration configuration,
+        public AccessTokenValidator(ILogger<AccessTokenValidator> logger,
             IServiceProvider serviceProvider, AccessTokenOperator accessTokenOperator)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _accessTokenOperator = accessTokenOperator;
         }

@@ -2,7 +2,6 @@
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -14,15 +13,13 @@ namespace FireplaceApi.Core.Operators
     public class SessionOperator
     {
         private readonly ILogger<SessionOperator> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly ISessionRepository _sessionRepository;
 
-        public SessionOperator(ILogger<SessionOperator> logger, IConfiguration configuration,
+        public SessionOperator(ILogger<SessionOperator> logger,
             IServiceProvider serviceProvider, ISessionRepository sessionRepository)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _sessionRepository = sessionRepository;
         }

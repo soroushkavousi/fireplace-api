@@ -4,7 +4,6 @@ using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.ValueObjects;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -14,18 +13,16 @@ namespace FireplaceApi.Core.Validators
     public class CommentValidator : ApiValidator
     {
         private readonly ILogger<CommentValidator> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly CommentOperator _commentOperator;
         private readonly QueryResultValidator _queryResultValidator;
         private readonly PostValidator _postValidator;
 
-        public CommentValidator(ILogger<CommentValidator> logger, IConfiguration configuration,
+        public CommentValidator(ILogger<CommentValidator> logger,
             IServiceProvider serviceProvider, CommentOperator commentOperator,
             QueryResultValidator queryResultValidator, PostValidator postValidator)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _commentOperator = commentOperator;
             _queryResultValidator = queryResultValidator;

@@ -6,7 +6,6 @@ using FireplaceApi.Core.Models;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,16 +18,14 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class CommentVoteRepository : ICommentVoteRepository
     {
         private readonly ILogger<CommentVoteRepository> _logger;
-        private readonly IConfiguration _configuration;
         private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<CommentVoteEntity> _commentVoteEntities;
         private readonly CommentVoteConverter _commentVoteConverter;
 
-        public CommentVoteRepository(ILogger<CommentVoteRepository> logger, IConfiguration configuration,
+        public CommentVoteRepository(ILogger<CommentVoteRepository> logger,
             FireplaceApiContext fireplaceApiContext, CommentVoteConverter commentVoteConverter)
         {
             _logger = logger;
-            _configuration = configuration;
             _fireplaceApiContext = fireplaceApiContext;
             _commentVoteEntities = fireplaceApiContext.CommentVoteEntities;
             _commentVoteConverter = commentVoteConverter;

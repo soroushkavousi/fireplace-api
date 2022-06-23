@@ -2,7 +2,7 @@
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
-using Microsoft.Extensions.Configuration;
+using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -13,15 +13,13 @@ namespace FireplaceApi.Core.Operators
     public class QueryResultOperator
     {
         private readonly ILogger<QueryResultOperator> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly IQueryResultRepository _queryResultRepository;
 
-        public QueryResultOperator(ILogger<QueryResultOperator> logger, IConfiguration configuration,
+        public QueryResultOperator(ILogger<QueryResultOperator> logger,
             IServiceProvider serviceProvider, IQueryResultRepository queryResultRepository)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _queryResultRepository = queryResultRepository;
         }
@@ -67,7 +65,8 @@ namespace FireplaceApi.Core.Operators
             string pointer;
             do
             {
-                pointer = Utils.GenerateRandomString(GlobalOperator.GlobalValues.Pagination.GeneratedPointerLength);
+                var generatedPointerLength = Configs.Instance.Pagination.GeneratedPointerLength;
+                pointer = Utils.GenerateRandomString(generatedPointerLength);
             } while (await DoesQueryResultPointerExistAsync(modelName, pointer));
 
             return pointer;

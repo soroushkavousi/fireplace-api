@@ -7,7 +7,6 @@ using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using FireplaceApi.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -21,15 +20,13 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class QueryResultRepository : IQueryResultRepository
     {
         private readonly ILogger<QueryResultRepository> _logger;
-        private readonly IConfiguration _configuration;
         private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly QueryResultConverter _queryResultConverter;
 
-        public QueryResultRepository(ILogger<QueryResultRepository> logger, IConfiguration configuration,
+        public QueryResultRepository(ILogger<QueryResultRepository> logger,
             FireplaceApiContext fireplaceApiContext, QueryResultConverter queryResultConverter)
         {
             _logger = logger;
-            _configuration = configuration;
             _fireplaceApiContext = fireplaceApiContext;
             _queryResultConverter = queryResultConverter;
         }

@@ -6,7 +6,6 @@ using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,15 +17,13 @@ namespace FireplaceApi.Core.Validators
     public class UserValidator : ApiValidator
     {
         private readonly ILogger<UserValidator> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly UserOperator _userOperator;
 
-        public UserValidator(ILogger<UserValidator> logger, IConfiguration configuration,
+        public UserValidator(ILogger<UserValidator> logger,
             IServiceProvider serviceProvider, UserOperator userOperator)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _userOperator = userOperator;
         }

@@ -1,13 +1,8 @@
-﻿using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Operators;
-using FireplaceApi.Infrastructure.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Configuration;
 using NLog;
 using NLog.Web;
 using System;
-using System.Linq;
 
 namespace FireplaceApi.Api.Tools
 {
@@ -15,7 +10,7 @@ namespace FireplaceApi.Api.Tools
     {
         private static bool _initialized = false;
         private static string _environmentName;
-        private static IConfigurationRoot _config;
+        private static IConfigurationRoot _configurationBuilder;
 
         public static Logger Logger { get; private set; }
 
@@ -23,10 +18,11 @@ namespace FireplaceApi.Api.Tools
         {
             _initialized = true;
             _environmentName = Environment.GetEnvironmentVariable(Constants.EnvironmentNameKey);
-            _config = new ConfigurationBuilder()
+            _configurationBuilder = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{_environmentName}.json", optional: false, reloadOnChange: true)
                 .Build();
+            Configs.Instance = _configurationBuilder.Get<Configs>();
         }
 
         public static void Start()
@@ -34,37 +30,22 @@ namespace FireplaceApi.Api.Tools
             if (!_initialized)
                 Initialize();
 
-            SetupGlobalValues();
             SetupLogger();
-        }
-
-        private static void SetupGlobalValues()
-        {
-            var connectionString = _config.GetConnectionString(Constants.MainDatabaseKey);
-            using var fireplaceApiContext = new FireplaceApiContext(connectionString);
-            var environmentName = _environmentName.ToEnum<EnvironmentName>();
-            GlobalOperator.GlobalValues = fireplaceApiContext.GlobalEntities
-                .AsNoTracking().Where(e => e.EnvironmentName == environmentName.ToString()).Single().Values;
         }
 
         private static void SetupLogger()
         {
             try
             {
-                NLogBuilder.ConfigureNLog(GlobalOperator.GlobalValues.Log.ConfigFilePath);
+                NLogBuilder.ConfigureNLog(Configs.Instance.Log.ConfigFilePath);
                 LogManager.Configuration.Variables["logRootDirectoryPath"] =
-                    GlobalOperator.GlobalValues.Log.RootDirectoryPath;
+                    Configs.Instance.Log.RootDirectoryPath;
                 Logger = LogManager.GetCurrentClassLogger();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Can't setup logger: {ex}");
             }
-        }
-
-        private static string ReadFromConfig(string key)
-        {
-            return _config.GetSection(key).Value;
         }
     }
 }

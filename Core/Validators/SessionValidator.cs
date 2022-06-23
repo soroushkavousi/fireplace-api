@@ -2,7 +2,6 @@
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -12,15 +11,13 @@ namespace FireplaceApi.Core.Validators
     public class SessionValidator : ApiValidator
     {
         private readonly ILogger<SessionValidator> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly SessionOperator _sessionOperator;
 
-        public SessionValidator(ILogger<SessionValidator> logger, IConfiguration configuration,
+        public SessionValidator(ILogger<SessionValidator> logger,
             IServiceProvider serviceProvider, SessionOperator sessionOperator)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _sessionOperator = sessionOperator;
         }

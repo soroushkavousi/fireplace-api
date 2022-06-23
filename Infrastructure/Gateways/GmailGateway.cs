@@ -1,12 +1,11 @@
 ﻿using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces;
-using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.ValueObjects;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;
 using Google.Apis.Gmail.v1.Data;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Threading;
@@ -18,15 +17,13 @@ namespace FireplaceApi.Infrastructure.Gateways
     public class GmailGateway : IEmailGateway
     {
         private readonly ILogger<GmailGateway> _logger;
-        private readonly IConfiguration _configuration;
         private GmailService _gmailService;
         private const string _projectName = "fireplace-api";
         private const string _credentialDirectory = "Secrets";
 
-        public GmailGateway(ILogger<GmailGateway> logger, IConfiguration configuration)
+        public GmailGateway(ILogger<GmailGateway> logger)
         {
             _logger = logger;
-            _configuration = configuration;
             InitializeGmailService();
         }
 
@@ -34,8 +31,8 @@ namespace FireplaceApi.Infrastructure.Gateways
         {
             var clientSecrets = new ClientSecrets
             {
-                ClientId = GlobalOperator.GlobalValues.Google.ClientId,
-                ClientSecret = GlobalOperator.GlobalValues.Google.ClientSecret,
+                ClientId = Configs.Instance.Google.ClientId,
+                ClientSecret = Configs.Instance.Google.ClientSecret,
             };
 
             var scopes = new string[] { ScopeConstants.GmailSend };

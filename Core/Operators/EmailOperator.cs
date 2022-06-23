@@ -4,7 +4,6 @@ using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -16,17 +15,16 @@ namespace FireplaceApi.Core.Operators
     public class EmailOperator
     {
         private readonly ILogger<EmailOperator> _logger;
-        private readonly IConfiguration _configuration;
+
         private readonly IServiceProvider _serviceProvider;
         private readonly IEmailRepository _emailRepository;
         private readonly IEmailGateway _emailGateway;
 
-        public EmailOperator(ILogger<EmailOperator> logger, IConfiguration configuration,
+        public EmailOperator(ILogger<EmailOperator> logger,
             IServiceProvider serviceProvider, IEmailRepository emailRepository,
             IEmailGateway emailGateway)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _emailRepository = emailRepository;
             _emailGateway = emailGateway;
@@ -73,7 +71,7 @@ namespace FireplaceApi.Core.Operators
         {
             email.Activation.Code = GenerateNewActivationCode();
             email.Activation.Message = GenerateNewActivationMessageAsync(email.Activation.Code.Value);
-            email.Activation.Subject = GlobalOperator.GlobalValues.Email.ActivationSubject;
+            email.Activation.Subject = Configs.Instance.Email.ActivationSubject;
             _ = _emailGateway.SendEmailMessageAsync(email.Address,
                 email.Activation.Subject, email.Activation.Message);
             email.Activation.Status = ActivationStatus.SENT;
@@ -150,7 +148,7 @@ namespace FireplaceApi.Core.Operators
         {
             var activationCode = GenerateNewActivationCode();
             var activationMessage = GenerateNewActivationMessageAsync(activationCode);
-            var activationSubject = GlobalOperator.GlobalValues.Email.ActivationSubject;
+            var activationSubject = Configs.Instance.Email.ActivationSubject;
             var activation = new Activation(ActivationStatus.CREATED, activationCode,
                 activationSubject, activationMessage);
             return activation;
@@ -164,7 +162,7 @@ namespace FireplaceApi.Core.Operators
 
         public string GenerateNewActivationMessageAsync(int activationCode)
         {
-            var messageFormat = GlobalOperator.GlobalValues.Email.ActivationMessageFormat;
+            var messageFormat = Configs.Instance.Email.ActivationMessageFormat;
             var activationMessage = string.Format(messageFormat, activationCode);
             return activationMessage;
         }

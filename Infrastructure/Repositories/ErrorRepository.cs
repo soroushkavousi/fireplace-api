@@ -6,7 +6,6 @@ using FireplaceApi.Core.Models;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,17 +18,14 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class ErrorRepository : IErrorRepository
     {
         private readonly ILogger<ErrorRepository> _logger;
-        private readonly IConfiguration _configuration;
         private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<ErrorEntity> _errorEntities;
         private readonly ErrorConverter _errorConverter;
 
-        public ErrorRepository(ILogger<ErrorRepository> logger, IConfiguration configuration,
-            FireplaceApiContext fireplaceApiContext, ErrorConverter errorConverter
-            )
+        public ErrorRepository(ILogger<ErrorRepository> logger,
+            FireplaceApiContext fireplaceApiContext, ErrorConverter errorConverter)
         {
             _logger = logger;
-            _configuration = configuration;
             _fireplaceApiContext = fireplaceApiContext;
             _errorEntities = fireplaceApiContext.ErrorEntities;
             _errorConverter = errorConverter;

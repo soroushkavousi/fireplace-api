@@ -4,7 +4,6 @@ using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -14,7 +13,6 @@ namespace FireplaceApi.Core.Operators
     public class PostOperator
     {
         private readonly ILogger<PostOperator> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly IPostRepository _postRepository;
         private readonly IPostVoteRepository _postVoteRepository;
@@ -23,14 +21,13 @@ namespace FireplaceApi.Core.Operators
         private readonly CommunityOperator _communityOperator;
 
         public PostOperator(ILogger<PostOperator> logger,
-            IConfiguration configuration, IServiceProvider serviceProvider,
+            IServiceProvider serviceProvider,
             IPostRepository postRepository,
             IPostVoteRepository postVoteRepository,
             PageOperator pageOperator, UserOperator userOperator,
             CommunityOperator communityOperator)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _postRepository = postRepository;
             _postVoteRepository = postVoteRepository;

@@ -2,7 +2,6 @@
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -13,17 +12,15 @@ namespace FireplaceApi.Core.Operators
     public class GoogleUserOperator
     {
         private readonly ILogger<GoogleUserOperator> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly IGoogleUserRepository _googleUserRepository;
         private readonly IGoogleGateway _googleUserGateway;
 
-        public GoogleUserOperator(ILogger<GoogleUserOperator> logger, IConfiguration configuration,
+        public GoogleUserOperator(ILogger<GoogleUserOperator> logger,
             IServiceProvider serviceProvider, IGoogleUserRepository googleUserRepository,
             IGoogleGateway googleUserGateway)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _googleUserRepository = googleUserRepository;
             _googleUserGateway = googleUserGateway;

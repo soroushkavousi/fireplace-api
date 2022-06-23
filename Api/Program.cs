@@ -3,7 +3,7 @@ using FireplaceApi.Api.Controllers;
 using FireplaceApi.Api.Extensions;
 using FireplaceApi.Api.Middlewares;
 using FireplaceApi.Api.Tools;
-using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -79,7 +78,7 @@ namespace FireplaceApi.Api
             var infrastructureAssemblyName = $"{nameof(FireplaceApi)}.{nameof(FireplaceApi.Infrastructure)}";
             builder.Services.AddDbContext<FireplaceApiContext>(
                 optionsBuilder => optionsBuilder.UseNpgsql(
-                    builder.Configuration.GetConnectionString(Constants.MainDatabaseKey),
+                    Configs.Instance.Database.MainConnectionString,
                     optionsBuilder => optionsBuilder.MigrationsAssembly(infrastructureAssemblyName))
             );
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -97,7 +96,7 @@ namespace FireplaceApi.Api
                 options.Cookie = new CookieBuilder
                 {
                     Name = Constants.CsrfTokenKey,
-                    MaxAge = new TimeSpan(GlobalOperator.GlobalValues.Api.CookieMaxAgeInDays, 0, 0, 0),
+                    MaxAge = new TimeSpan(Configs.Instance.Api.CookieMaxAgeInDays, 0, 0, 0),
                     IsEssential = true,
                 };
                 options.FormFieldName = Constants.CsrfTokenKey;

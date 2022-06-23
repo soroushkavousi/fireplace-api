@@ -4,7 +4,6 @@ using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -14,7 +13,6 @@ namespace FireplaceApi.Core.Operators
     public class CommunityMembershipOperator
     {
         private readonly ILogger<CommunityMembershipOperator> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly ICommunityMembershipRepository _communityMembershipRepository;
         private readonly PageOperator _pageOperator;
@@ -22,13 +20,10 @@ namespace FireplaceApi.Core.Operators
         private readonly CommunityOperator _communityOperator;
 
         public CommunityMembershipOperator(ILogger<CommunityMembershipOperator> logger,
-            IConfiguration configuration, IServiceProvider serviceProvider,
-            ICommunityMembershipRepository communityMembershipRepository,
-            PageOperator pageOperator, UserOperator userOperator,
-            CommunityOperator communityOperator)
+            IServiceProvider serviceProvider, ICommunityMembershipRepository communityMembershipRepository,
+            PageOperator pageOperator, UserOperator userOperator, CommunityOperator communityOperator)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _communityMembershipRepository = communityMembershipRepository;
             _pageOperator = pageOperator;

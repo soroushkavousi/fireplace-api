@@ -4,7 +4,6 @@ using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,6 @@ namespace FireplaceApi.Core.Operators
     public class CommentOperator
     {
         private readonly ILogger<CommentOperator> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly ICommentRepository _commentRepository;
         private readonly ICommentVoteRepository _commentVoteRepository;
@@ -25,14 +23,12 @@ namespace FireplaceApi.Core.Operators
         private readonly PostOperator _postOperator;
 
         public CommentOperator(ILogger<CommentOperator> logger,
-            IConfiguration configuration, IServiceProvider serviceProvider,
-            ICommentRepository commentRepository,
+            IServiceProvider serviceProvider, ICommentRepository commentRepository,
             ICommentVoteRepository commentVoteRepository,
             PageOperator pageOperator, UserOperator userOperator,
             PostOperator postOperator)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _commentRepository = commentRepository;
             _commentVoteRepository = commentVoteRepository;

@@ -43,7 +43,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false),
-                    Values = table.Column<GlobalValues>(type: "jsonb", nullable: true)
+                    Values = table.Column<Configs>(type: "jsonb", nullable: true)
                 },
                 constraints: table =>
                 {

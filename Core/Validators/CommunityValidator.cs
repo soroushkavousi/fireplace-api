@@ -5,7 +5,6 @@ using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.ValueObjects;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -15,18 +14,16 @@ namespace FireplaceApi.Core.Validators
     public class CommunityValidator : ApiValidator
     {
         private readonly ILogger<CommunityValidator> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly CommunityOperator _communityOperator;
         private readonly QueryResultValidator _queryResultValidator;
 
 
-        public CommunityValidator(ILogger<CommunityValidator> logger, IConfiguration configuration,
+        public CommunityValidator(ILogger<CommunityValidator> logger,
             IServiceProvider serviceProvider, CommunityOperator communityOperator,
             QueryResultValidator queryResultValidator)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _communityOperator = communityOperator;
             _queryResultValidator = queryResultValidator;

@@ -5,8 +5,8 @@ using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Tools;
+using FireplaceApi.Core.ValueObjects;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -153,7 +153,7 @@ namespace FireplaceApi.Api.Middlewares
             var cookieOptions = new CookieOptions
             {
                 MaxAge = new System.TimeSpan(
-                    GlobalOperator.GlobalValues.Api.CookieMaxAgeInDays, 0, 0, 0),
+                    Configs.Instance.Api.CookieMaxAgeInDays, 0, 0, 0),
                 HttpOnly = false,
             };
             httpContext.Response.Cookies.Append(Tools.Constants.CsrfTokenKey, tokenSet.RequestToken!,

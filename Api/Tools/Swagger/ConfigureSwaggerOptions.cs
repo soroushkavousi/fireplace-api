@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Core.Operators;
+﻿using FireplaceApi.Core.ValueObjects;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
@@ -62,11 +62,11 @@ namespace FireplaceApi.Api.Tools
             description_html += $@"
                 <div>
                     <div>Sample urls:</div>
-                    <p style=""margin-left: 40px;""><a href=""{GlobalOperator.GlobalValues.Api.BaseUrlPath}/communities?name=developers"">{GlobalOperator.GlobalValues.Api.BaseUrlPath}/communities?name=developers</a></p>
+                    <p style=""margin-left: 40px;""><a href=""{Configs.Instance.Api.BaseUrlPath}/communities?name=developers"">{Configs.Instance.Api.BaseUrlPath}/communities?name=developers</a></p>
                 </div>";
 
             description_html += $@"
-                <a id=""google-btn"" target=""_blank"" href=""{GlobalOperator.GlobalValues.Api.BaseUrlPath}/v0.1/users/open-google-log-in-page"">
+                <a id=""google-btn"" target=""_blank"" href=""{Configs.Instance.Api.BaseUrlPath}/v0.1/users/open-google-log-in-page"">
                     <div id=""google-icon-wrapper"">
                         <img id=""google-icon"" src=""https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg""/>
                     </div>

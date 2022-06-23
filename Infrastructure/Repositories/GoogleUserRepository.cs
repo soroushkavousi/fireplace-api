@@ -6,7 +6,6 @@ using FireplaceApi.Core.Models;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -20,17 +19,14 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class GoogleUserRepository : IGoogleUserRepository
     {
         private readonly ILogger<GoogleUserRepository> _logger;
-        private readonly IConfiguration _configuration;
         private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<GoogleUserEntity> _googleUserEntities;
         private readonly GoogleUserConverter _googleUserConverter;
 
-        public GoogleUserRepository(ILogger<GoogleUserRepository> logger, IConfiguration configuration,
-            FireplaceApiContext fireplaceApiContext, GoogleUserConverter googleUserConverter
-            )
+        public GoogleUserRepository(ILogger<GoogleUserRepository> logger,
+            FireplaceApiContext fireplaceApiContext, GoogleUserConverter googleUserConverter)
         {
             _logger = logger;
-            _configuration = configuration;
             _fireplaceApiContext = fireplaceApiContext;
             _googleUserEntities = fireplaceApiContext.GoogleUserEntities;
             _googleUserConverter = googleUserConverter;

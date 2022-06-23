@@ -6,7 +6,6 @@ using FireplaceApi.Core.Models;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -22,16 +21,14 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class SessionRepository : ISessionRepository
     {
         private readonly ILogger<SessionRepository> _logger;
-        private readonly IConfiguration _configuration;
         private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<SessionEntity> _sessionEntities;
         private readonly SessionConverter _sessionConverter;
 
-        public SessionRepository(ILogger<SessionRepository> logger, IConfiguration configuration,
+        public SessionRepository(ILogger<SessionRepository> logger,
             FireplaceApiContext fireplaceApiContext, SessionConverter sessionConverter)
         {
             _logger = logger;
-            _configuration = configuration;
             _fireplaceApiContext = fireplaceApiContext;
             _sessionEntities = fireplaceApiContext.SessionEntities;
             _sessionConverter = sessionConverter;

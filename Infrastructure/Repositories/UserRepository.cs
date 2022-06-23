@@ -8,7 +8,6 @@ using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,16 +20,14 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly ILogger<UserRepository> _logger;
-        private readonly IConfiguration _configuration;
         private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<UserEntity> _userEntities;
         private readonly UserConverter _userConverter;
 
-        public UserRepository(ILogger<UserRepository> logger, IConfiguration configuration,
+        public UserRepository(ILogger<UserRepository> logger,
                     FireplaceApiContext fireplaceApiContext, UserConverter userConverter)
         {
             _logger = logger;
-            _configuration = configuration;
             _fireplaceApiContext = fireplaceApiContext;
             _userEntities = fireplaceApiContext.UserEntities;
             _userConverter = userConverter;

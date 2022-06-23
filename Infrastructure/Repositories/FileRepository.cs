@@ -6,7 +6,6 @@ using FireplaceApi.Core.Models;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -20,21 +19,18 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class FileRepository : IFileRepository
     {
         private readonly ILogger<FileRepository> _logger;
-        private readonly IConfiguration _configuration;
         private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<FileEntity> _fileEntities;
         private readonly FileConverter _fileConverter;
 
 
-        public FileRepository(ILogger<FileRepository> logger, IConfiguration configuration,
+        public FileRepository(ILogger<FileRepository> logger,
             FireplaceApiContext fireplaceApiContext, FileConverter fileConverter)
         {
             _logger = logger;
-            _configuration = configuration;
             _fireplaceApiContext = fireplaceApiContext;
             _fileEntities = fireplaceApiContext.FileEntities;
             _fileConverter = fileConverter;
-
         }
 
         public async Task<List<File>> ListFilesAsync()

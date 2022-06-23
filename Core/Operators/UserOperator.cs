@@ -5,7 +5,6 @@ using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,17 +17,15 @@ namespace FireplaceApi.Core.Operators
     public class UserOperator
     {
         private readonly ILogger<UserOperator> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly IUserRepository _userRepository;
         private readonly IGoogleGateway _googleGateway;
 
-        public UserOperator(ILogger<UserOperator> logger, IConfiguration configuration,
+        public UserOperator(ILogger<UserOperator> logger,
             IServiceProvider serviceProvider, IUserRepository userRepository,
             IGoogleGateway googleGateway)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _userRepository = userRepository;
             _googleGateway = googleGateway;

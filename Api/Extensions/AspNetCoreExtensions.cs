@@ -31,7 +31,6 @@ namespace FireplaceApi.Api.Extensions
             services.AddScoped<Infrastructure.Converters.EmailConverter>();
             services.AddScoped<Infrastructure.Converters.ErrorConverter>();
             services.AddScoped<Infrastructure.Converters.FileConverter>();
-            services.AddScoped<Infrastructure.Converters.GlobalConverter>();
             services.AddScoped<Infrastructure.Converters.GoogleUserConverter>();
             services.AddScoped<Infrastructure.Converters.QueryResultConverter>();
             services.AddScoped<Infrastructure.Converters.PostConverter>();
@@ -51,7 +50,6 @@ namespace FireplaceApi.Api.Extensions
             services.AddScoped<IEmailRepository, EmailRepository>();
             services.AddScoped<IErrorRepository, ErrorRepository>();
             services.AddScoped<IFileRepository, FileRepository>();
-            services.AddScoped<IGlobalRepository, GlobalRepository>();
             services.AddScoped<IGoogleUserRepository, GoogleUserRepository>();
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IPostVoteRepository, PostVoteRepository>();
@@ -84,7 +82,6 @@ namespace FireplaceApi.Api.Extensions
             services.AddScoped<EmailOperator>();
             services.AddScoped<ErrorOperator>();
             services.AddScoped<FileOperator>();
-            services.AddScoped<GlobalOperator>();
             services.AddScoped<GoogleUserOperator>();
             services.AddScoped<PageOperator>();
             services.AddScoped<PostOperator>();

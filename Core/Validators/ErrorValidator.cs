@@ -3,7 +3,6 @@ using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Tools;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -13,15 +12,13 @@ namespace FireplaceApi.Core.Validators
     public class ErrorValidator : ApiValidator
     {
         private readonly ILogger<ErrorValidator> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly ErrorOperator _errorOperator;
 
-        public ErrorValidator(ILogger<ErrorValidator> logger, IConfiguration configuration,
+        public ErrorValidator(ILogger<ErrorValidator> logger,
             IServiceProvider serviceProvider, ErrorOperator errorOperator)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _errorOperator = errorOperator;
         }

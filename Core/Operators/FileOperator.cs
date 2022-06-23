@@ -2,8 +2,8 @@
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
+using FireplaceApi.Core.ValueObjects;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -15,24 +15,22 @@ namespace FireplaceApi.Core.Operators
     public class FileOperator
     {
         private readonly ILogger<FileOperator> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly IFileRepository _fileRepository;
         private readonly IFileGateway _fileGateway;
         private readonly Uri _baseUri;
         private readonly string _basePhysicalPath;
 
-        public FileOperator(ILogger<FileOperator> logger, IConfiguration configuration,
+        public FileOperator(ILogger<FileOperator> logger,
             IServiceProvider serviceProvider, IFileRepository fileRepository,
             IFileGateway fileGateway)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _fileRepository = fileRepository;
             _fileGateway = fileGateway;
-            _baseUri = new Uri(_configuration.GetValue<string>(Constants.FilesBaseUrlPathKey));
-            _basePhysicalPath = _configuration.GetValue<string>(Constants.FilesBasePhysicalPathKey);
+            _baseUri = new Uri(Configs.Instance.File.BaseUrlPath);
+            _basePhysicalPath = Configs.Instance.File.BasePhysicalPath;
         }
 
         public async Task<List<File>> ListFilesAsync()
@@ -128,7 +126,8 @@ namespace FireplaceApi.Core.Operators
             string fileName;
             do
             {
-                fileName = Utils.GenerateRandomString(GlobalOperator.GlobalValues.File.GeneratedFileNameLength) + extension;
+                var fileNameLength = Configs.Instance.File.GeneratedFileNameLength;
+                fileName = Utils.GenerateRandomString(fileNameLength) + extension;
             } while (await DoesFileNameExistAsync(fileName));
 
             return fileName;

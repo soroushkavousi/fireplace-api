@@ -51,7 +51,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("integer");
 
-                    b.Property<GlobalValues>("Values")
+                    b.Property<Configs>("Values")
                         .HasColumnName("Values")
                         .HasColumnType("jsonb");
 

@@ -3,7 +3,6 @@ using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.ValueObjects;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -13,15 +12,13 @@ namespace FireplaceApi.Core.Validators
     public class QueryResultValidator : ApiValidator
     {
         private readonly ILogger<QueryResultValidator> _logger;
-        private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
         private readonly QueryResultOperator _queryResultOperator;
 
-        public QueryResultValidator(ILogger<QueryResultValidator> logger, IConfiguration configuration,
+        public QueryResultValidator(ILogger<QueryResultValidator> logger,
             IServiceProvider serviceProvider, QueryResultOperator queryResultOperator)
         {
             _logger = logger;
-            _configuration = configuration;
             _serviceProvider = serviceProvider;
             _queryResultOperator = queryResultOperator;
         }
@@ -59,7 +56,7 @@ namespace FireplaceApi.Core.Validators
                 throw new ApiException(ErrorName.PAGINATION_LIMIT_MIN_LIMIT, serverMessage);
             }
 
-            if (limit > GlobalOperator.GlobalValues.Pagination.MaximumOfPageItemsCount)
+            if (limit > Configs.Instance.Pagination.MaximumOfPageItemsCount)
             {
                 var serverMessage = $"Pagination limit { limit } is exceed its maximum!";
                 throw new ApiException(ErrorName.PAGINATION_LIMIT_MAX_LIMIT, serverMessage);

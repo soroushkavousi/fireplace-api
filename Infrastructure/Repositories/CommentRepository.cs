@@ -3,12 +3,11 @@ using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Operators;
+using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using FireplaceApi.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,16 +20,14 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class CommentRepository : ICommentRepository
     {
         private readonly ILogger<CommentRepository> _logger;
-        private readonly IConfiguration _configuration;
         private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<CommentEntity> _commentEntities;
         private readonly CommentConverter _commentConverter;
 
-        public CommentRepository(ILogger<CommentRepository> logger, IConfiguration configuration,
+        public CommentRepository(ILogger<CommentRepository> logger,
             FireplaceApiContext fireplaceApiContext, CommentConverter commentConverter)
         {
             _logger = logger;
-            _configuration = configuration;
             _fireplaceApiContext = fireplaceApiContext;
             _commentEntities = fireplaceApiContext.CommentEntities;
             _commentConverter = commentConverter;
@@ -86,7 +83,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                     parentCommentId: null,
                     isRoot: null
                 )
-                .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
+                .Take(Configs.Instance.Pagination.TotalItemsCount)
                 .Select(e => e.Id)
                 .ToListAsync();
 
@@ -115,7 +112,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                     parentCommentId: null,
                     isRoot: true
                 )
-                .Take(GlobalOperator.GlobalValues.Pagination.TotalItemsCount)
+                .Take(Configs.Instance.Pagination.TotalItemsCount)
                 .Select(e => e.Id)
                 .ToListAsync();
 

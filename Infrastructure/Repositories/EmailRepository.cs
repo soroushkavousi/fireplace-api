@@ -8,7 +8,6 @@ using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,17 +20,14 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class EmailRepository : IEmailRepository
     {
         private readonly ILogger<EmailRepository> _logger;
-        private readonly IConfiguration _configuration;
         private readonly FireplaceApiContext _fireplaceApiContext;
         private readonly DbSet<EmailEntity> _emailEntities;
         private readonly EmailConverter _emailConverter;
 
-        public EmailRepository(ILogger<EmailRepository> logger, IConfiguration configuration,
-            FireplaceApiContext fireplaceApiContext, EmailConverter emailConverter
-            )
+        public EmailRepository(ILogger<EmailRepository> logger,
+            FireplaceApiContext fireplaceApiContext, EmailConverter emailConverter)
         {
             _logger = logger;
-            _configuration = configuration;
             _fireplaceApiContext = fireplaceApiContext;
             _emailEntities = fireplaceApiContext.EmailEntities;
             _emailConverter = emailConverter;

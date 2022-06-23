@@ -1,5 +1,5 @@
 ﻿using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Tools;
+using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -11,7 +11,6 @@ namespace FireplaceApi.Infrastructure.Converters
     {
         private readonly ILogger<FileConverter> _logger;
         private readonly IServiceProvider _serviceProvider;
-        private readonly IConfiguration _configuration;
         private readonly Uri _baseUri;
         private readonly string _basePhysicalPath;
 
@@ -20,9 +19,8 @@ namespace FireplaceApi.Infrastructure.Converters
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
-            _configuration = configuration;
-            _baseUri = new Uri(_configuration.GetValue<string>(Constants.FilesBaseUrlPathKey));
-            _basePhysicalPath = _configuration.GetValue<string>(Constants.FilesBasePhysicalPathKey);
+            _baseUri = new Uri(Configs.Instance.File.BaseUrlPath);
+            _basePhysicalPath = Configs.Instance.File.BasePhysicalPath;
         }
 
         public FileEntity ConvertToEntity(File file)
