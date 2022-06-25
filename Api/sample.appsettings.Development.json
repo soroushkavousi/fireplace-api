@@ -1,0 +1,17 @@
+//sample of appsettings.Development.json
+{
+  "Database": {
+    "MainConnectionString": "Host=localhost;Port=1234;Username=username;Password=password;Database=DatabaseName;Include Error Detail=true;Log Parameters=true;",
+    "TestConnectionString": "Host=localhost;Port=1234;Username=username;Password=password;Database=TestDatabaseName;Include Error Detail=true;Log Parameters=true;"
+  },
+  "Log": {
+    "RootDirectoryPath": "/path/to/the/project/data/logs"
+  },
+  "Api": {
+    "BaseUrlPath": "http://localhost:5000"
+  },
+  "File": {
+    "BaseUrlPath": "https://files.fireplace.com",
+    "BasePhysicalPath": "/path/to/the/project/data/files"
+  }
+}
