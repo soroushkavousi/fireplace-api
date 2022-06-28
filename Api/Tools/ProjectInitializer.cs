@@ -9,28 +9,27 @@ namespace FireplaceApi.Api.Tools
     public static class ProjectInitializer
     {
         private static bool _initialized = false;
-        private static string _environmentName;
-        private static IConfigurationRoot _configurationBuilder;
 
         public static Logger Logger { get; private set; }
 
-        private static void Initialize()
-        {
-            _initialized = true;
-            _environmentName = Environment.GetEnvironmentVariable(Constants.EnvironmentNameKey);
-            _configurationBuilder = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{_environmentName}.json", optional: false, reloadOnChange: true)
-                .Build();
-            Configs.Instance = _configurationBuilder.Get<Configs>();
-        }
-
         public static void Start()
         {
-            if (!_initialized)
-                Initialize();
-
+            if (_initialized)
+                return;
+            
+            _initialized = true;
+            InitializeConfigs();
             SetupLogger();
+        }
+
+        private static void InitializeConfigs()
+        {
+            var environmentName = Environment.GetEnvironmentVariable(Constants.EnvironmentNameKey);
+            var configurationBuilder = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{environmentName}.json", optional: false, reloadOnChange: true)
+                .Build();
+            Configs.Instance = configurationBuilder.Get<Configs>();
         }
 
         private static void SetupLogger()
