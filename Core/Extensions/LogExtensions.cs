@@ -84,7 +84,7 @@ namespace FireplaceApi.Core.Extensions
 
             var fileName = sourceFilePath.ExtractFileNameWithoutExtension();
             var codeLocationInfo = $"{fileName}.{memberName} {sourceLineNumber}";
-            logMessage += $"{codeLocationInfo,-61}";
+            logMessage += $"{codeLocationInfo,-64}";
 
             var executionTime = sw.Finish();
             logMessage += $" | {executionTime,4}ms";
