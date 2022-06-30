@@ -26,8 +26,8 @@ namespace FireplaceApi.Api.Tools
         {
             var environmentName = Environment.GetEnvironmentVariable(Constants.EnvironmentNameKey);
             var configurationBuilder = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{environmentName}.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                .AddJsonFile($"appsettings.{environmentName}.json", optional: false, reloadOnChange: false)
                 .Build();
             Configs.Instance = configurationBuilder.Get<Configs>();
         }
