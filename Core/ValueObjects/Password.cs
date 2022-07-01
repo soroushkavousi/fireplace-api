@@ -1,4 +1,6 @@
-﻿namespace FireplaceApi.Core.ValueObjects
+﻿using FireplaceApi.Core.Extensions;
+
+namespace FireplaceApi.Core.ValueObjects
 {
     public class Password
     {
@@ -28,7 +30,7 @@
 
         private string ComputeHashOfPasswordValue(string password)
         {
-            _hash = password;
+            _hash = password.ToHash();
             return _hash;
         }
     }

@@ -7,9 +7,6 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Api.Middlewares
 {
-    /// <summary>
-    /// Not used. Just for learning approach.
-    /// </summary>
     public class RequestDurationMiddleware
     {
         private readonly ILogger<RequestDurationMiddleware> _logger;

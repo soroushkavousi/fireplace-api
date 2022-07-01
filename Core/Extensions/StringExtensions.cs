@@ -148,5 +148,26 @@ namespace FireplaceApi.Core.Extensions
         {
             return Path.GetFileNameWithoutExtension(path);
         }
+
+        // Todo
+        public static string ToHash(this string content)
+        {
+            var hash = content;
+            return hash;
+        }
+
+        // Todo
+        public static string Encrypt(this string content)
+        {
+            var encryptedContent = content;
+            return encryptedContent;
+        }
+
+        // Todo
+        public static string Decrypt(this string encryptedContent)
+        {
+            var content = encryptedContent;
+            return content;
+        }
     }
 }

@@ -11,9 +11,6 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Api.Middlewares
 {
-    /// <summary>
-    /// Not used. Just for learning approach.
-    /// </summary>
     public class RequestResponseLoggingMiddleware
     {
         private readonly ILogger<RequestResponseLoggingMiddleware> _logger;
@@ -61,6 +58,23 @@ namespace FireplaceApi.Api.Middlewares
         private async Task LogRequest(HttpRequest request)
         {
             var sw = Stopwatch.StartNew();
+            var requestBodyText = await ExtractRequestBodyTextAsync(request);
+            var requestQueryString = ExtractRequestQueryString(request);
+
+            var requestLogMessage = $"{requestQueryString} | {requestBodyText.Encrypt()}";
+            _logger.LogAppInformation(requestLogMessage, sw, "REQUEST");
+        }
+
+        private async Task LogResponse(HttpResponse response, Stopwatch sw)
+        {
+            var responseBodyText = await ExtractResponseBodyTextAsync(response);
+
+            var responseLogMessage = $"#ControllerDuration | {response.StatusCode} | {responseBodyText.Encrypt()}";
+            _logger.LogAppInformation(responseLogMessage, sw, "RESPONSE");
+        }
+
+        private static async Task<string> ExtractRequestBodyTextAsync(HttpRequest request)
+        {
             string requestBodyText;
             if (request.ContentType != null && request.ContentType.Contains("multipart/form-data"))
             {
@@ -73,15 +87,19 @@ namespace FireplaceApi.Api.Middlewares
             if (string.IsNullOrWhiteSpace(requestBodyText))
                 requestBodyText = "Empty body";
 
+            return requestBodyText;
+        }
+
+        private static string ExtractRequestQueryString(HttpRequest request)
+        {
             var requestQueryString = "NoQueryString";
             if (request.QueryString.HasValue)
                 requestQueryString = request.QueryString.Value;
 
-            var requestLogMessage = $"{requestQueryString} | {requestBodyText}";
-            _logger.LogAppInformation(requestLogMessage, sw, "REQUEST");
+            return requestQueryString;
         }
 
-        private async Task LogResponse(HttpResponse response, Stopwatch sw)
+        private static async Task<string> ExtractResponseBodyTextAsync(HttpResponse response)
         {
             //We need to read the response stream from the beginning...
             response.Body.Seek(0, SeekOrigin.Begin);
@@ -94,10 +112,7 @@ namespace FireplaceApi.Api.Middlewares
                 responseBodyText = "NoBody";
             //We need to reset the reader for the response so that the client can read it.
             response.Body.Seek(0, SeekOrigin.Begin);
-
-            //Return the string for the response, including the status code (e.g. 200, 404, 401, etc.)
-            var responseLogMessage = $"#ControllerDuration | {response.StatusCode} | {responseBodyText}";
-            _logger.LogAppInformation(responseLogMessage, sw, "RESPONSE");
+            return responseBodyText;
         }
     }
 
