@@ -1,8 +1,7 @@
 //sample of appsettings.Production.json
 {
   "Database": {
-    "MainConnectionString": "Host=host;Port=1234;Username=username;Password=password;Database=DatabaseName;Include Error Detail=true;Log Parameters=true;",
-    "TestConnectionString": "Host=host;Port=1234;Username=username;Password=password;Database=TestDatabaseName;Include Error Detail=true;Log Parameters=true;"
+    "ConnectionString": "Host=host;Port=1234;Username=username;Password=password;Database=DatabaseName;Include Error Detail=true;Log Parameters=true;"
   },
   "Log": {
     "RootDirectoryPath": "/path/to/the/project/data/logs"

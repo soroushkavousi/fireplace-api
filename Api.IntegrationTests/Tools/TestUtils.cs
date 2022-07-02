@@ -5,17 +5,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-//
-// LogApp$1(
-
-namespace FireplaceApi.Api.IntegrationTests
+namespace FireplaceApi.Api.IntegrationTests.Tools
 {
     public class TestUtils
     {
@@ -31,82 +28,59 @@ namespace FireplaceApi.Api.IntegrationTests
             SampleObject = new { Property1 = "value1" };
         }
 
-        public async Task AssertResponseContainsErrorAsync(ErrorName expectedErrorName, HttpResponseMessage response, string testName)
+        public async Task AssertResponseIsErrorAsync(ErrorName expectedErrorName, HttpResponseMessage response)
         {
-            var sw = Stopwatch.StartNew();
-            _logger.LogAppInformation($"{testName} | Checking response status code is bad request. ({response.StatusCode})");
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
-            var responseBodyJObject = await ReadResponseBodyAsJObject(response, testName);
+            var responseBodyJObject = await AssertResponseBodyIsJObject(response);
             var responseBodyJson = responseBodyJObject.ToString(Formatting.None);
+            _logger.LogAppInformation($"responseBodyJson: {responseBodyJson}");
 
-            _logger.LogAppInformation($"{testName} | Checking response body contains code. ({responseBodyJson})");
             Assert.Contains("code", responseBodyJObject);
-
-            _logger.LogAppInformation($"{testName} | Checking response body contains message. ({responseBodyJson})");
             Assert.Contains("message", responseBodyJObject);
 
             var responseError = await _errorOperator.GetErrorByCodeAsync(responseBodyJObject.Value<int>("code"));
-
-            _logger.LogAppInformation($"{testName} | Checking response is {expectedErrorName.ToString()}. ({responseError.Name.ToString()})", sw);
             Assert.Equal(expectedErrorName, responseError.Name);
         }
 
-        public async Task AssertResponseDoesNotContainErrorAsync(ErrorName notExpectedErrorName, HttpResponseMessage response, string testName)
+        public async Task AssertResponseIsNotErrorAsync(ErrorName notExpectedErrorName, HttpResponseMessage response,
+            [CallerMemberName] string testName = "")
         {
-            var responseBodyJToken = await ReadResponseBodyAsJToken(response, testName);
+            var responseBodyJToken = await ReadResponseBodyAsJToken(response);
             if (responseBodyJToken.Type != JTokenType.Object)
                 return;
 
             var responseBodyJObject = responseBodyJToken.To<JObject>();
 
             var responseBodyJson = responseBodyJObject.ToString(Formatting.None);
-            _logger.LogAppInformation($"{testName} | responseBodyJson: {responseBodyJson}");
+            _logger.LogAppInformation($"responseBodyJson: {responseBodyJson}");
 
             var responseErrorCode = responseBodyJObject.Value<int?>("code");
             if (responseErrorCode.HasValue)
             {
                 var responseError = await _errorOperator.GetErrorByCodeAsync(responseErrorCode.Value);
-
-                _logger.LogAppInformation($"{testName} | Checking response is not {notExpectedErrorName.ToString()}. ({responseError.Name.ToString()})");
                 Assert.NotEqual(notExpectedErrorName, responseError.Name);
             }
         }
 
-        public HttpContent MakeRequestContent(HttpMethod httpMethod, object requestContent)
-        {
-            if (httpMethod == HttpMethod.Post || httpMethod == HttpMethod.Put)
-                return new StringContent(requestContent.ToJson(), Encoding.UTF8, "application/json");
-            else if (httpMethod == HttpMethod.Patch)
-                return new StringContent(requestContent.ToJson(), Encoding.UTF8, "application/merge-patch+json");
-            else
-                return null;
-        }
+        public HttpContent MakeRequestContent(object requestContent, string contentType = "application/json")
+            => MakeRequestContent(requestContent.ToJson(), contentType);
 
-        public async Task<string> ReadResponseBodyAsString(HttpResponseMessage response, string testName)
+        public HttpContent MakeRequestContent(string requestContent, string contentType = "application/json")
+            => new StringContent(requestContent, Encoding.UTF8, contentType);
+
+        public async Task<JToken> ReadResponseBodyAsJToken(HttpResponseMessage response)
         {
             var responseBodyString = await response.Content.ReadAsStringAsync();
-
-            _logger.LogAppInformation($"{testName} | Checking response body is not null or empty. ({responseBodyString})");
-            Assert.False(responseBodyString.IsNullOrEmpty(), $"responseBody.IsNullOrEmpty(), responseBody: ({responseBodyString})");
-
-            return responseBodyString;
-        }
-
-        public async Task<JToken> ReadResponseBodyAsJToken(HttpResponseMessage response, string testName)
-        {
-            var responseBodyString = await ReadResponseBodyAsString(response, testName);
+            Assert.False(responseBodyString.IsNullOrEmpty());
             var responseBodyJToken = JToken.Parse(responseBodyString);
             return responseBodyJToken;
         }
 
-        public async Task<JObject> ReadResponseBodyAsJObject(HttpResponseMessage response, string testName)
+        public async Task<JObject> AssertResponseBodyIsJObject(HttpResponseMessage response)
         {
-            var responseBodyJToken = await ReadResponseBodyAsJToken(response, testName);
-
-            _logger.LogAppInformation($"{testName} | Checking response body is json object. ({responseBodyJToken.ToString(Formatting.None)})");
+            var responseBodyJToken = await ReadResponseBodyAsJToken(response);
             Assert.Equal(JTokenType.Object, responseBodyJToken.Type);
-
             var responseBodyJObject = responseBodyJToken.To<JObject>();
             return responseBodyJObject;
         }

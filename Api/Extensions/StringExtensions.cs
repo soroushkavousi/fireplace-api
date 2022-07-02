@@ -18,9 +18,8 @@ namespace FireplaceApi.Api.Extensions
                     var obj = System.Text.Json.JsonDocument.Parse(strInput);
                     return true;
                 }
-                catch (Exception) //some other exception
+                catch (Exception)
                 {
-                    //Console.WriteLine(ex.ToString());
                     return false;
                 }
             }

@@ -78,7 +78,7 @@ namespace FireplaceApi.Api
             var infrastructureAssemblyName = $"{nameof(FireplaceApi)}.{nameof(FireplaceApi.Infrastructure)}";
             builder.Services.AddDbContext<FireplaceApiContext>(
                 optionsBuilder => optionsBuilder.UseNpgsql(
-                    Configs.Instance.Database.MainConnectionString,
+                    Configs.Instance.Database.ConnectionString,
                     optionsBuilder => optionsBuilder.MigrationsAssembly(infrastructureAssemblyName))
             );
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();

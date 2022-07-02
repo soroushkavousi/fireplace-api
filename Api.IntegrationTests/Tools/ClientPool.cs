@@ -1,5 +1,9 @@
-﻿using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Api.IntegrationTests.Extensions;
+using FireplaceApi.Api.IntegrationTests.Models;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces;
+using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
@@ -12,7 +16,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Api.IntegrationTests
+namespace FireplaceApi.Api.IntegrationTests.Tools
 {
     public class ClientPool
     {
@@ -24,9 +28,10 @@ namespace FireplaceApi.Api.IntegrationTests
         private readonly IEmailRepository _emailRepository;
         private readonly IAccessTokenRepository _accessTokenRepository;
         private readonly AccessTokenOperator _accessTokenOperator;
+        private readonly TestUtils _testUtils;
 
-        public HttpClient GuestClient { get; }
-        public HttpClient TheHulkClient { get; }
+        public User NarutoUser { get; set; }
+        public HttpClient NarutoHttpClient { get; set; }
 
         public ClientPool(ApiIntegrationTestFixture testFixture)
         {
@@ -35,7 +40,7 @@ namespace FireplaceApi.Api.IntegrationTests
             _clientOptions = new WebApplicationFactoryClientOptions
             {
                 AllowAutoRedirect = true,
-                BaseAddress = new Uri("http://localhost:5020"),
+                BaseAddress = new Uri(Configs.Instance.Api.BaseUrlPath),
                 HandleCookies = true,
                 MaxAutomaticRedirections = 7
             };
@@ -44,40 +49,88 @@ namespace FireplaceApi.Api.IntegrationTests
             _emailRepository = testFixture.ServiceProvider.GetRequiredService<IEmailRepository>();
             _accessTokenRepository = testFixture.ServiceProvider.GetRequiredService<IAccessTokenRepository>();
             _accessTokenOperator = testFixture.ServiceProvider.GetRequiredService<AccessTokenOperator>();
-            GuestClient = CreateGuestClient();
-            TheHulkClient = CreateTheHulkClientAsync().GetAwaiter().GetResult();
+            _testUtils = testFixture.TestUtils;
         }
 
-        private HttpClient CreateGuestClient()
-        {
-            var sw = Stopwatch.StartNew();
-            var guestClient = _apiFactory.CreateClient(_clientOptions);
-            var defaultRequestHeaders = guestClient.DefaultRequestHeaders;
-            defaultRequestHeaders.Add(Api.Tools.Constants.X_FORWARDED_FOR, @"::1");
-            _logger.LogAppInformation($"Guest client initialized successfully.", sw);
-            return guestClient;
-        }
+        public HttpClient CreateGuestHttpClientAsync()
+            => CreateHttpClient();
 
-        private async Task<HttpClient> CreateTheHulkClientAsync()
+        public async Task<TestUser> CreateNotVerifiedUserAsync()
+            => await CreateTestUser(
+                username: "NotVerifiedUser",
+                displayName: "NotVerified User",
+                passwordValue: "NotVerifiedUserPassword",
+                activationCode: 11111,
+                emailAddress: "NotVerifiedUser@gmail.com",
+                state: UserState.NOT_VERIFIED
+                );
+
+        public async Task<TestUser> CreateNarutoUserAsync()
+        => await CreateTestUser(
+                username: "Naruto",
+                displayName: "Naruto Uzumaki",
+                passwordValue: "NarutoPassword",
+                activationCode: 22222,
+                emailAddress: "Naruto@gmail.com",
+                state: UserState.VERIFIED
+                );
+
+        public async Task<TestUser> CreateSasukeUserAsync()
+        => await CreateTestUser(
+                username: "Sasuke",
+                displayName: "Sasuke Uchiha",
+                passwordValue: "SasukePassword",
+                activationCode: 33333,
+                emailAddress: "Sasuke@gmail.com",
+                state: UserState.VERIFIED
+                );
+
+        private async Task<TestUser> CreateTestUser(string username,
+            string displayName, string passwordValue, int activationCode,
+            string emailAddress, UserState state)
         {
             var sw = Stopwatch.StartNew();
             var id = await IdGenerator.GenerateNewIdAsync();
-            var user = await _userRepository.CreateUserAsync(id, "TheHulk",
-                Core.Enums.UserState.NOT_VERIFIED, Password.OfValue("TheHulkP0"),
-                displayName: "Bruce Banner");
-            var emailActivation = new Activation(Core.Enums.ActivationStatus.SENT, 12345, "Code: 12345");
+            var password = Password.OfValue(passwordValue);
+            var user = await _userRepository.CreateUserAsync(id, username,
+                state, password, displayName: displayName);
+            user.Password = password;
+
+            var activationStatus = state == UserState.VERIFIED ? ActivationStatus.COMPLETED : ActivationStatus.SENT;
+            var emailActivation = new Activation(activationStatus, activationCode, $"Code: {activationCode}");
             id = await IdGenerator.GenerateNewIdAsync();
-            var email = await _emailRepository.CreateEmailAsync(id, user.Id, "TheHulk", emailActivation);
-            var newAccessTokenValue = _accessTokenOperator.GenerateNewAccessTokenValue();
-            id = await IdGenerator.GenerateNewIdAsync();
-            var accessToken = await _accessTokenRepository.CreateAccessTokenAsync(id, user.Id,
-                newAccessTokenValue);
-            var theHulkClient = _apiFactory.CreateClient(_clientOptions);
-            var defaultRequestHeaders = theHulkClient.DefaultRequestHeaders;
-            defaultRequestHeaders.Add(Api.Tools.Constants.AuthorizationHeaderKey, $"Bearer {newAccessTokenValue}");
+            user.Email = await _emailRepository.CreateEmailAsync(id, user.Id, emailAddress, emailActivation);
+
+            var httpClient = CreateHttpClient();
+            var testUser = new TestUser(user, httpClient);
+            await LogInUser(testUser);
+
+            _logger.LogAppInformation($"User {username} created successfully!", sw);
+            return testUser;
+        }
+
+        private async Task LogInUser(TestUser testUser)
+        {
+            var httpMethod = new HttpMethod("POST");
+            var requestUri = "/v0.1/users/log-in-with-email";
+            var request = new HttpRequestMessage(httpMethod, requestUri)
+            {
+                Content = _testUtils.MakeRequestContent(new
+                {
+                    EmailAddress = testUser.Email.Address,
+                    Password = testUser.Password.Value
+                }),
+            };
+            var response = await testUser.SendRequestAsync(request);
+            testUser.HttpClient.AddOrUpdateAccessToken(response);
+        }
+
+        private HttpClient CreateHttpClient()
+        {
+            var httpClient = _apiFactory.CreateClient(_clientOptions);
+            var defaultRequestHeaders = httpClient.DefaultRequestHeaders;
             defaultRequestHeaders.Add(Api.Tools.Constants.X_FORWARDED_FOR, @"::1");
-            _logger.LogAppInformation($"The Hulk client initialized successfully.", sw);
-            return theHulkClient;
+            return httpClient;
         }
     }
 }

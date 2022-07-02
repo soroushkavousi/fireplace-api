@@ -1,8 +1,7 @@
 //sample of appsettings.Development.json
 {
   "Database": {
-    "MainConnectionString": "Host=localhost;Port=1234;Username=username;Password=password;Database=DatabaseName;Include Error Detail=true;Log Parameters=true;",
-    "TestConnectionString": "Host=localhost;Port=1234;Username=username;Password=password;Database=TestDatabaseName;Include Error Detail=true;Log Parameters=true;"
+    "ConnectionString": "Host=localhost;Port=1234;Username=username;Password=password;Database=DatabaseName;Include Error Detail=true;Log Parameters=true;"
   },
   "Log": {
     "RootDirectoryPath": "/path/to/the/project/data/logs"

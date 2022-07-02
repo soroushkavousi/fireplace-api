@@ -65,6 +65,12 @@
     <ProjectReference Include="..\Infrastructure\FireplaceApi.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Secrets\Google.Apis.Auth.OAuth2.Responses.TokenResponse-fireplace-api">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>

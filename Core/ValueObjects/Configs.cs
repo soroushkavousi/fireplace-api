@@ -14,8 +14,7 @@
 
         public class DatabaseConfigs
         {
-            public string MainConnectionString { get; set; }
-            public string TestConnectionString { get; set; }
+            public string ConnectionString { get; set; }
         }
 
         public class LogConfigs

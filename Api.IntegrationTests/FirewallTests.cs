@@ -1,7 +1,9 @@
-﻿using FireplaceApi.Core.Enums;
+﻿using FireplaceApi.Api.IntegrationTests.Tools;
+using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -9,161 +11,114 @@ using Xunit;
 
 namespace FireplaceApi.Api.IntegrationTests
 {
-    [Collection("Api Integration Test Collection")]
-    public class FirewallTests
+    public class FirewallTests : IClassFixture<ApiIntegrationTestFixture>
     {
+        private readonly ApiIntegrationTestFixture _fixture;
         private readonly ILogger<FirewallTests> _logger;
         private readonly ClientPool _clientPool;
         private readonly TestUtils _testUtils;
 
-        public FirewallTests(ApiIntegrationTestFixture testFixture)
+        public FirewallTests(ApiIntegrationTestFixture fixture)
         {
-            _logger = testFixture.ServiceProvider.GetRequiredService<ILogger<FirewallTests>>();
-            _clientPool = testFixture.ClientPool;
-            _testUtils = testFixture.TestUtils;
+            _fixture = fixture;
+            _fixture.CleanDatabase();
+            _logger = _fixture.ServiceProvider.GetRequiredService<ILogger<FirewallTests>>();
+            _clientPool = _fixture.ClientPool;
+            _testUtils = _fixture.TestUtils;
         }
 
-        [InlineData("GET", "/v0.1/access-tokens/some-token")]
 
-        [InlineData("POST", "/v0.1/emails/999/activate")]
-        [InlineData("GET", "/v0.1/emails/999")]
-
-        [InlineData("GET", "/v0.1/errors")]
-        [InlineData("GET", "/v0.1/errors/999")]
-        [InlineData("PATCH", "/v0.1/errors/999")]
-
-        [InlineData("POST", "/v0.1/files")]
-
-        [InlineData("POST", "/v0.1/sessions/999/revoke")]
-        [InlineData("GET", "/v0.1/sessions")]
-        [InlineData("GET", "/v0.1/sessions/999")]
-
-        [InlineData("GET", "/v0.1/users")]
-        [InlineData("GET", "/v0.1/users/999")]
-        [InlineData("PATCH", "/v0.1/users/999")]
-        [InlineData("DELETE", "/v0.1/users/999")]
-        [Theory]
-        public async Task TestFirewallCheckContentType(
-            string httpMethodName, string requestUri)
+        [Fact]
+        public async Task Guest_TryToAccessPrivateEndpoint_AccessDenied()
         {
             var sw = Stopwatch.StartNew();
-            _logger.LogAppInformation($"{nameof(TestFirewallCheckContentType)} | Start | ({httpMethodName}, {requestUri})");
-
-            var httpMethod = new HttpMethod(httpMethodName);
-            var request = new HttpRequestMessage(httpMethod, requestUri);
-            var response = await _clientPool.GuestClient.SendAsync(request);
-
-            if (httpMethod == HttpMethod.Post
-                || httpMethod == HttpMethod.Put
-                || httpMethod == HttpMethod.Patch)
+            try
             {
-                await _testUtils.AssertResponseContainsErrorAsync(ErrorName.REQUEST_CONTENT_TYPE_IS_NOT_VALID, response, nameof(TestFirewallCheckContentType));
+                _logger.LogAppInformation(title: "TEST_START");
 
-                request = new HttpRequestMessage(httpMethod, requestUri)
+                var request = new HttpRequestMessage(HttpMethod.Get, "/v0.1/users/me");
+                var httpClient = _clientPool.CreateGuestHttpClientAsync();
+                var response = await httpClient.SendAsync(request);
+                await _testUtils.AssertResponseIsErrorAsync(ErrorName.AUTHENTICATION_FAILED, response);
+
+                _logger.LogAppInformation(title: "TEST_END", sw: sw);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogAppCritical(title: "TEST_FAILED", sw: sw, ex: ex);
+                throw;
+            }
+        }
+
+        [Fact]
+        public async Task User_TryToAccessPrivateEndpoint_AccessAccept()
+        {
+            var sw = Stopwatch.StartNew();
+            try
+            {
+                _logger.LogAppInformation(title: "TEST_START");
+
+                var request = new HttpRequestMessage(HttpMethod.Get, "/users/me");
+                var narutoUser = await _clientPool.CreateNarutoUserAsync();
+                var response = await narutoUser.SendRequestAsync(request);
+                await _testUtils.AssertResponseIsNotErrorAsync(ErrorName.AUTHENTICATION_FAILED, response);
+
+                _logger.LogAppInformation(title: "TEST_END", sw: sw);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogAppCritical(title: "TEST_FAILED", sw: sw, ex: ex);
+                throw;
+            }
+        }
+
+        [Fact]
+        public async Task User_SendEmptyBody_InvalidContentType()
+        {
+            var sw = Stopwatch.StartNew();
+            try
+            {
+                _logger.LogAppInformation(title: "TEST_START");
+
+                var narutoUser = await _clientPool.CreateNarutoUserAsync();
+                var request = new HttpRequestMessage(HttpMethod.Post, "/communities");
+                var response = await narutoUser.SendRequestAsync(request);
+                await _testUtils.AssertResponseIsErrorAsync(ErrorName.REQUEST_CONTENT_TYPE_IS_NOT_VALID, response);
+
+                _logger.LogAppInformation(title: "TEST_END", sw: sw);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogAppCritical(title: "TEST_FAILED", sw: sw, ex: ex);
+                throw;
+            }
+        }
+
+        [Theory]
+        [InlineData("{name:\"test-community-name\"}")]
+        public async Task User_SendBodyWithWrongJsonFormat_BodyIsNotJsonError(
+            string jsonWithWrongFormat)
+        {
+            var sw = Stopwatch.StartNew();
+            try
+            {
+                _logger.LogAppInformation(title: "TEST_START", parameters: new { jsonWithWrongFormat });
+
+                var narutoUser = await _clientPool.CreateNarutoUserAsync();
+                var request = new HttpRequestMessage(HttpMethod.Post, "/communities")
                 {
-                    Content = _testUtils.MakeRequestContent(httpMethod, _testUtils.SampleObject)
+                    Content = _testUtils.MakeRequestContent(jsonWithWrongFormat),
                 };
-                response = await _clientPool.GuestClient.SendAsync(request);
-                await _testUtils.AssertResponseDoesNotContainErrorAsync(ErrorName.REQUEST_CONTENT_TYPE_IS_NOT_VALID, response, nameof(TestFirewallCheckContentType));
+                var response = await narutoUser.SendRequestAsync(request);
+                await _testUtils.AssertResponseIsErrorAsync(ErrorName.REQUEST_BODY_IS_NOT_JSON, response);
+
+                _logger.LogAppInformation(title: "TEST_END", sw: sw);
             }
-            else
+            catch (Exception ex)
             {
-                await _testUtils.AssertResponseDoesNotContainErrorAsync(ErrorName.REQUEST_CONTENT_TYPE_IS_NOT_VALID, response, nameof(TestFirewallCheckContentType));
+                _logger.LogAppCritical(title: "TEST_FAILED", sw: sw, ex: ex);
+                throw;
             }
-
-            _logger.LogAppInformation($"{nameof(TestFirewallCheckContentType)} | End", sw);
-        }
-
-        [InlineData("GET", "/v0.1/access-tokens/some-token")]
-
-        [InlineData("POST", "/v0.1/emails/999/activate")]
-        [InlineData("GET", "/v0.1/emails/999")]
-
-        [InlineData("GET", "/v0.1/errors")]
-        [InlineData("GET", "/v0.1/errors/999")]
-        [InlineData("PATCH", "/v0.1/errors/999")]
-
-        [InlineData("POST", "/v0.1/files")]
-
-        [InlineData("POST", "/v0.1/sessions/999/revoke")]
-        [InlineData("GET", "/v0.1/sessions")]
-        [InlineData("GET", "/v0.1/sessions/999")]
-
-        [InlineData("GET", "/v0.1/users")]
-        [InlineData("GET", "/v0.1/users/999")]
-        [InlineData("PATCH", "/v0.1/users/999")]
-        [InlineData("DELETE", "/v0.1/users/999")]
-        [Theory]
-        public async Task TestGuestCantAccessToPrivateMethods(
-            string httpMethodName, string requestUri)
-        {
-            var sw = Stopwatch.StartNew();
-            _logger.LogAppInformation($"{nameof(TestGuestCantAccessToPrivateMethods)} | Start | ({httpMethodName}, {requestUri})");
-            var httpMethod = new HttpMethod(httpMethodName);
-            var request = new HttpRequestMessage(httpMethod, requestUri)
-            {
-                Content = _testUtils.MakeRequestContent(httpMethod, _testUtils.SampleObject)
-            };
-
-            var response = await _clientPool.GuestClient.SendAsync(request);
-            await _testUtils.AssertResponseContainsErrorAsync(ErrorName.AUTHENTICATION_FAILED, response, nameof(TestGuestCantAccessToPrivateMethods));
-            _logger.LogAppInformation($"{nameof(TestGuestCantAccessToPrivateMethods)} | End", sw);
-        }
-
-        [InlineData("POST", "/v0.1/users/sign-up-with-email")]
-        [InlineData("POST", "/v0.1/users/log-in-with-email")]
-        [InlineData("POST", "/v0.1/users/log-in-with-username")]
-        [Theory]
-        public async Task TestGuestCanAccessToPublicMethods(
-            string httpMethodName, string requestUri)
-        {
-            var sw = Stopwatch.StartNew();
-            _logger.LogAppInformation($"{nameof(TestGuestCanAccessToPublicMethods)} | Start | ({httpMethodName}, {requestUri})");
-            var httpMethod = new HttpMethod(httpMethodName);
-            var request = new HttpRequestMessage(httpMethod, requestUri)
-            {
-                Content = _testUtils.MakeRequestContent(httpMethod, _testUtils.SampleObject)
-            };
-
-            var response = await _clientPool.GuestClient.SendAsync(request);
-            await _testUtils.AssertResponseDoesNotContainErrorAsync(ErrorName.AUTHENTICATION_FAILED, response, nameof(TestGuestCantAccessToPrivateMethods));
-            _logger.LogAppInformation($"{nameof(TestGuestCanAccessToPublicMethods)} | End", sw);
-        }
-
-        [InlineData("GET", "/v0.1/access-tokens/some-token")]
-
-        [InlineData("POST", "/v0.1/emails/999/activate")]
-        [InlineData("GET", "/v0.1/emails/999")]
-
-        [InlineData("GET", "/v0.1/errors")]
-        [InlineData("GET", "/v0.1/errors/999")]
-        [InlineData("PATCH", "/v0.1/errors/999")]
-
-        [InlineData("POST", "/v0.1/files")]
-
-        [InlineData("POST", "/v0.1/sessions/999/revoke")]
-        [InlineData("GET", "/v0.1/sessions")]
-        [InlineData("GET", "/v0.1/sessions/999")]
-
-        [InlineData("GET", "/v0.1/users")]
-        [InlineData("GET", "/v0.1/users/999")]
-        [InlineData("PATCH", "/v0.1/users/999")]
-        [InlineData("DELETE", "/v0.1/users/999")]
-        [Theory]
-        public async Task TestTheHulkCanAccessWithAuthentication(
-            string httpMethodName, string requestUri)
-        {
-            var sw = Stopwatch.StartNew();
-            _logger.LogAppInformation($"{nameof(TestTheHulkCanAccessWithAuthentication)} | Start | ({httpMethodName}, {requestUri})");
-            var httpMethod = new HttpMethod(httpMethodName);
-            var request = new HttpRequestMessage(httpMethod, requestUri)
-            {
-                Content = _testUtils.MakeRequestContent(httpMethod, _testUtils.SampleObject)
-            };
-
-            var response = await _clientPool.TheHulkClient.SendAsync(request);
-            await _testUtils.AssertResponseDoesNotContainErrorAsync(ErrorName.AUTHENTICATION_FAILED, response, nameof(TestTheHulkCanAccessWithAuthentication));
-            _logger.LogAppInformation($"{nameof(TestTheHulkCanAccessWithAuthentication)} | End", sw);
         }
     }
 }

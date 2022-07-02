@@ -16,7 +16,7 @@ namespace FireplaceApi.Api.Tools
         {
             if (_initialized)
                 return;
-            
+
             _initialized = true;
             InitializeConfigs();
             SetupLogger();
