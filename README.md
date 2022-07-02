@@ -11,16 +11,17 @@ This project, ***Fireplace API***, provides an API for Fireplace, and it aims to
 
 1. [The Architecture](#the-architecture)
 2. [The Swagger](#the-swagger)
-3. [PostgreSQL](https://www.postgresql.org/) database
+3. With [PostgreSQL](https://www.postgresql.org/) database
 4. Supports pagination
 5. Supports nested comments
 6. Supports user sessions
 7. Supports error codes
 8. Prevents CSRF attacks
-9. Has logging system with [NLog](https://nlog-project.org/)
-10. [Id Generation and Encoding](#id-generation-and-encoding)
-11. [Various sign up and log in methods](#various-sign-up-and-log-in-methods)
-12. Hosted with [Docker](https://www.docker.com/)
+9. Supports Integration Testing
+10. Has logging system with [NLog](https://nlog-project.org/)
+11. [Id Generation and Encoding](#id-generation-and-encoding)
+12. [Various sign up and log in methods](#various-sign-up-and-log-in-methods)
+13. Hosted with [Docker](https://www.docker.com/)
 
 
  <br/> <br/>
