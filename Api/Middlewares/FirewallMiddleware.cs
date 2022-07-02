@@ -79,17 +79,12 @@ namespace FireplaceApi.Api.Middlewares
                 || httpMethod == HttpMethod.Put
                 || httpMethod == HttpMethod.Patch)
             {
-                string requestBody = null;
-                if (httpContext.Request.ContentType == "application/json"
-                    || httpContext.Request.ContentType == "application/merge-patch+json")
+                CheckRequestContentType(httpContext.Request);
+                if (httpContext.Request.ContentType.Contains("application/json")
+                    || httpContext.Request.ContentType.Contains("application/merge-patch+json"))
                 {
-                    requestBody = await httpContext.Request.ReadRequestBodyAsync();
+                    var requestBody = await httpContext.Request.ReadRequestBodyAsync();
                     ValidateRequestBodyIsJson(requestBody);
-                }
-
-                if (!string.IsNullOrWhiteSpace(requestBody))
-                {
-                    CheckRequestContentType(httpContext.Request);
                 }
             }
         }
