@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -150,14 +151,26 @@ namespace FireplaceApi.Api.Middlewares
                 return;
 
             var tokenSet = antiforgery.GetAndStoreTokens(httpContext);
+            if (DoesCsrfTokenExistInResponseCookies(httpContext.Response))
+                return;
+            var newCsrfToken = tokenSet.RequestToken!;
             var cookieOptions = new CookieOptions
             {
                 MaxAge = new System.TimeSpan(
                     Configs.Instance.Api.CookieMaxAgeInDays, 0, 0, 0),
                 HttpOnly = false,
             };
-            httpContext.Response.Cookies.Append(Tools.Constants.CsrfTokenKey, tokenSet.RequestToken!,
+            httpContext.Response.Cookies.Append(Tools.Constants.CsrfTokenKey, newCsrfToken,
                 cookieOptions);
+        }
+
+        private static bool DoesCsrfTokenExistInResponseCookies(HttpResponse httpResponse)
+        {
+            if (httpResponse.Headers.TryGetValue(Tools.Constants.SetCookieHeaderKey, out StringValues cookies))
+            {
+                return cookies.Any(c => c.StartsWith(Tools.Constants.CsrfTokenKey));
+            }
+            return false;
         }
     }
 
