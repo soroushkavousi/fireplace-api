@@ -22,7 +22,9 @@ namespace FireplaceApi.Core.ValueObjects
             var provider = new UtcDateTimeProvider();
             IJwtValidator validator = new JwtValidator(serializer, provider);
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
+#pragma warning disable CS0618 // Type or member is obsolete
             IJwtAlgorithm algorithm = new HMACSHA256Algorithm();
+#pragma warning restore CS0618 // Type or member is obsolete
             return new JwtDecoder(serializer, validator, urlEncoder, algorithm);
         }
 
