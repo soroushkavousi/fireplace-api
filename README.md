@@ -1,8 +1,9 @@
 # Introduction
 
-***Fireplace*** is a discussion application with communities, posts, and comments, just like Reddit.
 
-This project, ***Fireplace API***, provides an API for Fireplace, and it aims to be a real-world example of web API concepts with the ***`ASP.NET Core`*** framework. As I needed to record the knowledge and experience I have learned in my coding history, I created this project for myself and everyone who considers it valuable.
+**_Fireplace API_** _is a **web API** project developed with the_ **`ASP.NET Core`** framework. It is like a **simple version of Reddit API**, which has communities, posts, and comments.
+
+This project was a practice for me on how **to design an API for real-world applications**. It also can help me as a template for my future projects.
 
  <br/>
  
@@ -41,7 +42,7 @@ This project, ***Fireplace API***, provides an API for Fireplace, and it aims to
 # The Architecture
 
 <div align="center">
-  <img src="http://files.fireplace.bitiano.com/api/the-architecture.png" />
+  <img src="https://files.fireplace.bitiano.com/api/the-architecture.png" />
 </div>
 
 ### Layers:
@@ -78,13 +79,13 @@ With the ***swagger UI***, you can easily interact with the API and learn it. It
  <br/>
  
 <div align="center">
-  <img src="http://files.fireplace.bitiano.com/api/swagger-top.png" width="85%" />
+  <img src="https://files.fireplace.bitiano.com/api/swagger-top.png" width="85%" />
 </div>
 
  <br/>
  
 <div align="center">
-  <img src="http://files.fireplace.bitiano.com/api/swagger-sample-execution.png" width="85%" />
+  <img src="https://files.fireplace.bitiano.com/api/swagger-sample-execution.png" width="85%" />
   <p><i>a sample of an execution</i></p>
 </div>
 
@@ -100,7 +101,7 @@ I did customize the swagger UI to have a `log-in-with-google` button.
 
 
 <div align="center">
-  <img src="http://files.fireplace.bitiano.com/api/swagger-log-in-with-google.png" width="30%" />
+  <img src="https://files.fireplace.bitiano.com/api/swagger-log-in-with-google.png" width="30%" />
 </div>
 
  <br/>
@@ -134,13 +135,13 @@ description_html += $@"
  <br/>
  
 <div align="center">
-  <img src="http://files.fireplace.bitiano.com/api/response-list-communities.png" width="85%" />
+  <img src="https://files.fireplace.bitiano.com/api/response-list-communities.png" width="85%" />
 </div>
 
  <br/>
  
 <div align="center">
-  <img src="http://files.fireplace.bitiano.com/api/response-bad-request.png" width="60%" />
+  <img src="https://files.fireplace.bitiano.com/api/response-bad-request.png" width="60%" />
 </div>
 
  <br/> <br/>
@@ -261,7 +262,7 @@ The access token can be placed at ***cookies*** or ***headers***.
 <br/>
   
 <div align="center">
-  <img src="http://files.fireplace.bitiano.com/api/various-log-in-sign-up.png" width="85%" />
+  <img src="https://files.fireplace.bitiano.com/api/various-log-in-sign-up.png" width="85%" />
 </div>
 
 <br/><br/>
