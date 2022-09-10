@@ -1,15 +1,15 @@
 # Introduction
 
+**Fireplace API** is a web API project developed with the ASP&#46;NET Core framework. It is like a simple version of Reddit API, which has communities, posts, and comments.
 
-**_Fireplace API_** _is a **web API** project developed with the_ **`ASP.NET Core`** framework. It is like a **simple version of Reddit API**, which has communities, posts, and comments.
-
-This project was a practice for me on how **to design an API for real-world applications**. It also can help me as a template for my future projects.
+This project was a practice for me on how to design an API for real-world applications. It also can be used as a sample.
 
  <br/>
  
-[Check the **Swagger UI of API**](https://api.fireplace.bitiano.com/docs/index.html)
+Check [**The Swagger UI**](https://api.fireplace.bitiano.com/docs/index.html) of the API
 
  <br/>
+
  
 # Highlights
 
@@ -30,13 +30,6 @@ This project was a practice for me on how **to design an API for real-world appl
 
  <br/> <br/>
 
-
-# To-do list
-
-1. Add [Elasticsearch](https://www.elastic.co/) for finding relevant communities, posts, and comments
-	- It may need better server requirements
-
- <br/> <br/>
 
  
 # The Architecture
