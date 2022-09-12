@@ -4,17 +4,11 @@
     {
         public static Configs Instance { get; set; }
 
-        public DatabaseConfigs Database { get; set; }
         public ApiConfigs Api { get; set; }
         public FileConfigs File { get; set; }
         public PaginationConfigs Pagination { get; set; }
         public EmailConfigs Email { get; set; }
         public GoogleConfigs Google { get; set; }
-
-        public class DatabaseConfigs
-        {
-            public string ConnectionString { get; set; }
-        }
 
         public class ApiConfigs
         {

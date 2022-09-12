@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Core.ValueObjects;
+﻿using FireplaceApi.Core.Extensions;
+using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Configuration;
 using NLog;
 using NLog.Web;
@@ -12,6 +13,7 @@ namespace FireplaceApi.Api.Tools
         private static IConfigurationRoot _appSettings;
 
         public static Logger Logger { get; private set; }
+        public static string DatabaseConnectionString { get; private set; }
 
         public static void Start()
         {
@@ -21,6 +23,7 @@ namespace FireplaceApi.Api.Tools
             _initialized = true;
             ReadAppSettings();
             SetupLogger();
+            ReadDatabaseConnectionString();
         }
 
         private static void ReadAppSettings()
@@ -47,6 +50,26 @@ namespace FireplaceApi.Api.Tools
             catch (Exception ex)
             {
                 Console.WriteLine($"Can't setup logger: {ex}");
+                throw;
+            }
+        }
+
+        private static void ReadDatabaseConnectionString()
+        {
+            DatabaseConnectionString = Environment.GetEnvironmentVariable(Constants.ConnectionStringKey, EnvironmentVariableTarget.Process);
+
+            if (string.IsNullOrWhiteSpace(DatabaseConnectionString))
+                DatabaseConnectionString = Environment.GetEnvironmentVariable(Constants.ConnectionStringKey, EnvironmentVariableTarget.Machine);
+
+            if (string.IsNullOrWhiteSpace(DatabaseConnectionString))
+                DatabaseConnectionString = Environment.GetEnvironmentVariable(Constants.ConnectionStringKey, EnvironmentVariableTarget.User);
+
+            if (string.IsNullOrWhiteSpace(DatabaseConnectionString))
+            {
+                var message = "Can't find the connection string!\n";
+                message += $"Please add {Constants.ConnectionStringKey} to the environment variables.";
+                Logger.LogAppError(message: message, parameters: new { DatabaseConnectionString });
+                throw new Exception(message);
             }
         }
     }

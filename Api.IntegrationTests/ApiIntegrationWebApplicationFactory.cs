@@ -1,7 +1,6 @@
 ﻿using FireplaceApi.Api.IntegrationTests.Tools;
 using FireplaceApi.Api.Tools;
 using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -27,7 +26,7 @@ namespace FireplaceApi.Api.IntegrationTests
         private string _databaseName;
         private static List<ErrorEntity> _errorEntities;
 
-        public WebApplicationFactory<Program> ApiFactory;
+        public WebApplicationFactory<Program> ApiFactory { get; private set; }
         public IServiceProvider ServiceProvider { get; private set; }
         public ClientPool ClientPool { get; private set; }
         public TestUtils TestUtils { get; private set; }
@@ -129,7 +128,7 @@ namespace FireplaceApi.Api.IntegrationTests
         {
             _databaseName = Core.Tools.Utils.GenerateRandomString(8);
             var databaseNameRegex = @"^(.*)Database=([^;]+);(.*)$";
-            var newConnectionString = Regex.Replace(Configs.Instance.Database.ConnectionString,
+            var newConnectionString = Regex.Replace(ProjectInitializer.DatabaseConnectionString,
                 databaseNameRegex, $"$1Database={_databaseName};$3", RegexOptions.IgnoreCase);
             return newConnectionString;
         }
@@ -143,11 +142,11 @@ namespace FireplaceApi.Api.IntegrationTests
             _fireplaceApiContext.DetachAllEntries();
         }
 
-        private static void LoadErrors()
+        private void LoadErrors()
         {
             if (_errorEntities != null)
                 return;
-            var mainFireplaceApiContext = new FireplaceApiContext(Configs.Instance.Database.ConnectionString);
+            var mainFireplaceApiContext = new FireplaceApiContext(ProjectInitializer.DatabaseConnectionString);
             _errorEntities = mainFireplaceApiContext.ErrorEntities.AsNoTracking().ToList();
         }
 
