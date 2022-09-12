@@ -9,6 +9,7 @@ namespace FireplaceApi.Api.Tools
     public static class ProjectInitializer
     {
         private static bool _initialized = false;
+        private static IConfigurationRoot _appSettings;
 
         public static Logger Logger { get; private set; }
 
@@ -18,27 +19,29 @@ namespace FireplaceApi.Api.Tools
                 return;
 
             _initialized = true;
-            InitializeConfigs();
+            ReadAppSettings();
             SetupLogger();
         }
 
-        private static void InitializeConfigs()
+        private static void ReadAppSettings()
         {
             var environmentName = Environment.GetEnvironmentVariable(Constants.EnvironmentNameKey);
-            var configurationBuilder = new ConfigurationBuilder()
+            _appSettings = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
                 .AddJsonFile($"appsettings.{environmentName}.json", optional: false, reloadOnChange: false)
                 .Build();
-            Configs.Instance = configurationBuilder.Get<Configs>();
+
+            Configs.Instance = _appSettings.Get<Configs>();
         }
 
         private static void SetupLogger()
         {
             try
             {
-                NLogBuilder.ConfigureNLog(Configs.Instance.Log.ConfigFilePath);
-                LogManager.Configuration.Variables["logRootDirectoryPath"] =
-                    Configs.Instance.Log.RootDirectoryPath;
+                var logConfigFilePath = _appSettings["Log:ConfigFilePath"];
+                var logRootDirectoryPath = _appSettings["Log:RootDirectoryPath"];
+                NLogBuilder.ConfigureNLog(logConfigFilePath);
+                LogManager.Configuration.Variables["logRootDirectoryPath"] = logRootDirectoryPath;
                 Logger = LogManager.GetCurrentClassLogger();
             }
             catch (Exception ex)
