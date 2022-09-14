@@ -44,7 +44,7 @@ namespace FireplaceApi.Core.Operators
             Func<List<ulong>, User, Task<List<T>>> getItemsIncludeRequestingUserAsync,
             User requestingUser)
         {
-            var maximumOfPageItemsCount = Configs.Instance.Pagination.MaximumOfPageItemsCount;
+            var maximumOfPageItemsCount = Configs.Current.Pagination.MaximumOfPageItemsCount;
             var limit = paginationInputParameters.Limit ?? maximumOfPageItemsCount;
             var totalItemsCount = ItemIds.Count;
             var totalPagesCount = (int)MathF.Ceiling((float)totalItemsCount / limit);

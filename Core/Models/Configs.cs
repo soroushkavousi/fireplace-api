@@ -1,14 +1,35 @@
-﻿namespace FireplaceApi.Core.ValueObjects
-{
-    public class Configs
-    {
-        public static Configs Instance { get; set; }
+﻿using FireplaceApi.Core.Enums;
+using System;
 
+namespace FireplaceApi.Core.Models
+{
+    public class Configs : BaseModel
+    {
+        public static Configs Current { get; set; }
+
+        public EnvironmentName EnvironmentName { get; set; }
         public ApiConfigs Api { get; set; }
         public FileConfigs File { get; set; }
         public PaginationConfigs Pagination { get; set; }
         public EmailConfigs Email { get; set; }
         public GoogleConfigs Google { get; set; }
+
+        public Configs(ulong id, EnvironmentName environmentName, ApiConfigs api,
+            FileConfigs file, PaginationConfigs pagination,
+            EmailConfigs email, GoogleConfigs google, DateTime creationDate,
+            DateTime? modifiedDate = null)
+            : base(id, creationDate, modifiedDate)
+        {
+            EnvironmentName = environmentName;
+            Api = api ?? throw new ArgumentNullException(nameof(api));
+            File = file ?? throw new ArgumentNullException(nameof(file));
+            Pagination = pagination ?? throw new ArgumentNullException(nameof(pagination));
+            Email = email ?? throw new ArgumentNullException(nameof(email));
+            Google = google ?? throw new ArgumentNullException(nameof(google));
+        }
+
+        public Configs PureCopy() => new(Id, EnvironmentName, Api, File,
+            Pagination, Email, Google, CreationDate, ModifiedDate);
 
         public class ApiConfigs
         {
@@ -32,8 +53,8 @@
 
         public class EmailConfigs
         {
-            public string ActivationMessageFormat { get; set; }
             public string ActivationSubject { get; set; }
+            public string ActivationMessageFormat { get; set; }
         }
 
         public class GoogleConfigs

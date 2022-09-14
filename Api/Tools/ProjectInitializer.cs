@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Configuration;
 using NLog;
 using NLog.Web;
@@ -33,8 +32,6 @@ namespace FireplaceApi.Api.Tools
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
                 .AddJsonFile($"appsettings.{environmentName}.json", optional: false, reloadOnChange: false)
                 .Build();
-
-            Configs.Instance = _appSettings.Get<Configs>();
         }
 
         private static void SetupLogger()

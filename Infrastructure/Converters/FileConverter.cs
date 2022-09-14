@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Core.Models;
-using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -19,8 +18,8 @@ namespace FireplaceApi.Infrastructure.Converters
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
-            _baseUri = new Uri(Configs.Instance.File.BaseUrlPath);
-            _basePhysicalPath = Configs.Instance.File.BasePhysicalPath;
+            _baseUri = new Uri(Configs.Current.File.BaseUrlPath);
+            _basePhysicalPath = Configs.Current.File.BasePhysicalPath;
         }
 
         public FileEntity ConvertToEntity(File file)

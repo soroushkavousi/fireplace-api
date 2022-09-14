@@ -3,7 +3,7 @@ using FireplaceApi.Api.Controllers;
 using FireplaceApi.Api.Extensions;
 using FireplaceApi.Api.Middlewares;
 using FireplaceApi.Api.Tools;
-using FireplaceApi.Core.ValueObjects;
+using FireplaceApi.Core.Models;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -54,7 +54,6 @@ namespace FireplaceApi.Api
             }
             finally
             {
-                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
                 _logger.Trace("Flushing logger...");
                 LogManager.Shutdown();
             }
@@ -96,7 +95,7 @@ namespace FireplaceApi.Api
                 options.Cookie = new CookieBuilder
                 {
                     Name = Constants.CsrfTokenKey,
-                    MaxAge = new TimeSpan(Configs.Instance.Api.CookieMaxAgeInDays, 0, 0, 0),
+                    MaxAge = new TimeSpan(Configs.Current.Api.CookieMaxAgeInDays, 0, 0, 0),
                     IsEssential = true,
                 };
                 options.FormFieldName = Constants.CsrfTokenKey;
@@ -177,6 +176,8 @@ namespace FireplaceApi.Api
                 options.SuppressModelStateInvalidFilter = true;
                 options.SuppressMapClientErrors = true;
             });
+
+            builder.Services.AddHostedService<ConfigLoaderService>();
         }
 
         private WebApplication CreateApp(WebApplicationBuilder builder)
@@ -190,7 +191,6 @@ namespace FireplaceApi.Api
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
 
-
             if (app.Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -201,29 +201,19 @@ namespace FireplaceApi.Api
             }
 
             app.UseRewriter(new RewriteOptions()
-                // Saving for time that api wants redirecting.
-                //.AddRedirect(@"api/(?!v\d)(.*)", "api/v0.2/$1", (int)HttpStatusCode.Redirect)); 
                 .AddRewrite(@"^(?!v\d\.)(?!docs)(?!swagger)(.*)", "v0.1/$1", false));
             app.UseRouting();
-            //app.UseAuthorization();
 
             app.UseStaticFiles();
 
             app.UseSwagger(options =>
             {
-                options.PreSerializeFilters.Add((swaggerDoc, httpRequest) =>
-                {
-                    // hide all SwaggerDocument PathItems with added Security information for OAuth2 without accepted roles (for example, "AcceptedRole")
-                    var x = swaggerDoc;
-                    var y = httpRequest;
-                });
                 options.RouteTemplate = "docs/{documentName}/swagger.json";
             });
             app.UseSwaggerUI(options =>
             {
                 options.DocumentTitle = "Fireplace Api Docs";
                 options.EnableDeepLinking();
-                //options.EnableFilter();
                 options.RoutePrefix = "docs";
                 options.SwaggerEndpoint($"/docs/v0.1/swagger.json", "V0.1");
                 //Todo

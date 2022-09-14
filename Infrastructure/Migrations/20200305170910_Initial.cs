@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Core.ValueObjects;
+﻿using FireplaceApi.Core.Models;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 

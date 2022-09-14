@@ -2,7 +2,6 @@
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
-using FireplaceApi.Core.ValueObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
@@ -29,8 +28,8 @@ namespace FireplaceApi.Core.Operators
             _serviceProvider = serviceProvider;
             _fileRepository = fileRepository;
             _fileGateway = fileGateway;
-            _baseUri = new Uri(Configs.Instance.File.BaseUrlPath);
-            _basePhysicalPath = Configs.Instance.File.BasePhysicalPath;
+            _baseUri = new Uri(Configs.Current.File.BaseUrlPath);
+            _basePhysicalPath = Configs.Current.File.BasePhysicalPath;
         }
 
         public async Task<List<File>> ListFilesAsync()
@@ -126,7 +125,7 @@ namespace FireplaceApi.Core.Operators
             string fileName;
             do
             {
-                var fileNameLength = Configs.Instance.File.GeneratedFileNameLength;
+                var fileNameLength = Configs.Current.File.GeneratedFileNameLength;
                 fileName = Utils.GenerateRandomString(fileNameLength) + extension;
             } while (await DoesFileNameExistAsync(fileName));
 

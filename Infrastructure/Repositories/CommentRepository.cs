@@ -3,7 +3,6 @@ using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
-using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using FireplaceApi.Infrastructure.Extensions;
@@ -83,7 +82,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                     parentCommentId: null,
                     isRoot: null
                 )
-                .Take(Configs.Instance.Pagination.TotalItemsCount)
+                .Take(Configs.Current.Pagination.TotalItemsCount)
                 .Select(e => e.Id)
                 .ToListAsync();
 
@@ -112,7 +111,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                     parentCommentId: null,
                     isRoot: true
                 )
-                .Take(Configs.Instance.Pagination.TotalItemsCount)
+                .Take(Configs.Current.Pagination.TotalItemsCount)
                 .Select(e => e.Id)
                 .ToListAsync();
 
