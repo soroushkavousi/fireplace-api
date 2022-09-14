@@ -28,6 +28,7 @@ namespace FireplaceApi.Infrastructure.Entities
         public DbSet<SessionEntity> SessionEntities { get; set; }
         public DbSet<UserEntity> UserEntities { get; set; }
 
+        public DbSet<ConfigsEntity> ConfigsEntities { get; set; }
         public DbSet<ErrorEntity> ErrorEntities { get; set; }
         public DbSet<FileEntity> FileEntities { get; set; }
 
@@ -41,8 +42,6 @@ namespace FireplaceApi.Infrastructure.Entities
             : base(options)
         {
             _logger = logger;
-            //ChangeTracker.LazyLoadingEnabled = false;
-            //ChangeTracker.AutoDetectChangesEnabled = false;
             ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
@@ -54,12 +53,6 @@ namespace FireplaceApi.Infrastructure.Entities
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //EnableDeepLogging(optionsBuilder);
-            //optionsBuilder.EnableSensitiveDataLogging();
-            //optionsBuilder.EnableDetailedErrors();
-            //optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-            //optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-            //optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -85,6 +78,7 @@ namespace FireplaceApi.Infrastructure.Entities
             modelBuilder.ApplyConfiguration(new SessionEntityConfiguration());
             modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
 
+            modelBuilder.ApplyConfiguration(new ConfigsEntityConfiguration());
             modelBuilder.ApplyConfiguration(new ErrorEntityConfiguration());
             modelBuilder.ApplyConfiguration(new FileEntityConfiguration());
 

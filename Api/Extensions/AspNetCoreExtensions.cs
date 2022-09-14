@@ -28,6 +28,7 @@ namespace FireplaceApi.Api.Extensions
             services.AddScoped<Infrastructure.Converters.CommentVoteConverter>();
             services.AddScoped<Infrastructure.Converters.CommunityConverter>();
             services.AddScoped<Infrastructure.Converters.CommunityMembershipConverter>();
+            services.AddScoped<Infrastructure.Converters.ConfigsConverter>();
             services.AddScoped<Infrastructure.Converters.EmailConverter>();
             services.AddScoped<Infrastructure.Converters.ErrorConverter>();
             services.AddScoped<Infrastructure.Converters.FileConverter>();
@@ -47,6 +48,7 @@ namespace FireplaceApi.Api.Extensions
             services.AddScoped<ICommentVoteRepository, CommentVoteRepository>();
             services.AddScoped<ICommunityRepository, CommunityRepository>();
             services.AddScoped<ICommunityMembershipRepository, CommunityMembershipRepository>();
+            services.AddScoped<IConfigsRepository, ConfigsRepository>();
             services.AddScoped<IEmailRepository, EmailRepository>();
             services.AddScoped<IErrorRepository, ErrorRepository>();
             services.AddScoped<IFileRepository, FileRepository>();
@@ -79,6 +81,7 @@ namespace FireplaceApi.Api.Extensions
             services.AddScoped<CommentOperator>();
             services.AddScoped<CommunityOperator>();
             services.AddScoped<CommunityMembershipOperator>();
+            services.AddScoped<ConfigsOperator>();
             services.AddScoped<EmailOperator>();
             services.AddScoped<ErrorOperator>();
             services.AddScoped<FileOperator>();

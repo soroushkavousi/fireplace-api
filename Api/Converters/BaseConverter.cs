@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Api.Controllers;
+using FireplaceApi.Core.Models;
 using FireplaceApi.Core.ValueObjects;
 using System.Linq;
 
@@ -16,7 +17,7 @@ namespace FireplaceApi.Api.Converters
             if (page == null)
                 return null;
 
-            var listPath = $"{Configs.Instance.Api.BaseUrlPath}{relativeRequestPath}";
+            var listPath = $"{Configs.Current.Api.BaseUrlPath}{relativeRequestPath}";
 
             var paginationDto = new PaginationDto(page.QueryResultPointer,
                 listPath, page.Number, page.Start, page.End, page.Limit,

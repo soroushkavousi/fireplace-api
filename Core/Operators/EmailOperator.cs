@@ -71,7 +71,7 @@ namespace FireplaceApi.Core.Operators
         {
             email.Activation.Code = GenerateNewActivationCode();
             email.Activation.Message = GenerateNewActivationMessageAsync(email.Activation.Code.Value);
-            email.Activation.Subject = Configs.Instance.Email.ActivationSubject;
+            email.Activation.Subject = Configs.Current.Email.ActivationSubject;
             _ = _emailGateway.SendEmailMessageAsync(email.Address,
                 email.Activation.Subject, email.Activation.Message);
             email.Activation.Status = ActivationStatus.SENT;
@@ -148,7 +148,7 @@ namespace FireplaceApi.Core.Operators
         {
             var activationCode = GenerateNewActivationCode();
             var activationMessage = GenerateNewActivationMessageAsync(activationCode);
-            var activationSubject = Configs.Instance.Email.ActivationSubject;
+            var activationSubject = Configs.Current.Email.ActivationSubject;
             var activation = new Activation(ActivationStatus.CREATED, activationCode,
                 activationSubject, activationMessage);
             return activation;
@@ -162,7 +162,7 @@ namespace FireplaceApi.Core.Operators
 
         public string GenerateNewActivationMessageAsync(int activationCode)
         {
-            var messageFormat = Configs.Instance.Email.ActivationMessageFormat;
+            var messageFormat = Configs.Current.Email.ActivationMessageFormat;
             var activationMessage = string.Format(messageFormat, activationCode);
             return activationMessage;
         }

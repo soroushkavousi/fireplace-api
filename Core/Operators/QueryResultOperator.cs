@@ -2,7 +2,6 @@
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
-using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -65,7 +64,7 @@ namespace FireplaceApi.Core.Operators
             string pointer;
             do
             {
-                var generatedPointerLength = Configs.Instance.Pagination.GeneratedPointerLength;
+                var generatedPointerLength = Configs.Current.Pagination.GeneratedPointerLength;
                 pointer = Utils.GenerateRandomString(generatedPointerLength);
             } while (await DoesQueryResultPointerExistAsync(modelName, pointer));
 

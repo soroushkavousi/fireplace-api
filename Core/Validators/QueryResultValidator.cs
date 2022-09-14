@@ -52,13 +52,13 @@ namespace FireplaceApi.Core.Validators
         {
             if (limit < 3)
             {
-                var serverMessage = $"Pagination limit { limit } is below its minimum!";
+                var serverMessage = $"Pagination limit {limit} is below its minimum!";
                 throw new ApiException(ErrorName.PAGINATION_LIMIT_MIN_LIMIT, serverMessage);
             }
 
-            if (limit > Configs.Instance.Pagination.MaximumOfPageItemsCount)
+            if (limit > Configs.Current.Pagination.MaximumOfPageItemsCount)
             {
-                var serverMessage = $"Pagination limit { limit } is exceed its maximum!";
+                var serverMessage = $"Pagination limit {limit} is exceed its maximum!";
                 throw new ApiException(ErrorName.PAGINATION_LIMIT_MAX_LIMIT, serverMessage);
             }
         }
@@ -79,7 +79,7 @@ namespace FireplaceApi.Core.Validators
         {
             if (pointer.Length < 6)
             {
-                var serverMessage = $"Pagination pointer ({ pointer }) is not valid!";
+                var serverMessage = $"Pagination pointer ({pointer}) is not valid!";
                 throw new ApiException(ErrorName.PAGINATION_PAGE_POINTER_NOT_VALID, serverMessage);
             }
         }
@@ -89,7 +89,7 @@ namespace FireplaceApi.Core.Validators
             var queryResult = await _queryResultOperator.GetQueryResultByPointerAsync(modelName, pointer);
             if (queryResult == null)
             {
-                var serverMessage = $"Pagination pointer { pointer } in model {modelName} is not exists!";
+                var serverMessage = $"Pagination pointer {pointer} in model {modelName} is not exists!";
                 throw new ApiException(ErrorName.PAGINATION_POINTER_DOES_NOT_EXIST, serverMessage);
             }
 
@@ -100,7 +100,7 @@ namespace FireplaceApi.Core.Validators
         {
             if (page < 0 || totalPagesCount <= page)
             {
-                var serverMessage = $"Pagination page ({ page }) is out of range!";
+                var serverMessage = $"Pagination page ({page}) is out of range!";
                 throw new ApiException(ErrorName.PAGINATION_PAGE_OUT_OF_RANGE, serverMessage);
             }
         }

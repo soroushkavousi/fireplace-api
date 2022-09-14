@@ -1,6 +1,6 @@
 ﻿using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces;
-using FireplaceApi.Core.ValueObjects;
+using FireplaceApi.Core.Models;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;
 using Google.Apis.Gmail.v1.Data;
@@ -31,8 +31,8 @@ namespace FireplaceApi.Infrastructure.Gateways
         {
             var clientSecrets = new ClientSecrets
             {
-                ClientId = Configs.Instance.Google.ClientId,
-                ClientSecret = Configs.Instance.Google.ClientSecret,
+                ClientId = Configs.Current.Google.ClientId,
+                ClientSecret = Configs.Current.Google.ClientSecret,
             };
 
             var scopes = new string[] { ScopeConstants.GmailSend };

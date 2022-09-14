@@ -1,7 +1,6 @@
 ﻿using FireplaceApi.Api.Controllers;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
-using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
 using System;
 
@@ -16,8 +15,8 @@ namespace FireplaceApi.Api.Converters
         public FileConverter(ILogger<FileConverter> logger)
         {
             _logger = logger;
-            _baseUri = new Uri(Configs.Instance.File.BaseUrlPath);
-            _basePhysicalPath = Configs.Instance.File.BasePhysicalPath;
+            _baseUri = new Uri(Configs.Current.File.BaseUrlPath);
+            _basePhysicalPath = Configs.Current.File.BasePhysicalPath;
         }
 
         public override FileDto ConvertToDto(File file)

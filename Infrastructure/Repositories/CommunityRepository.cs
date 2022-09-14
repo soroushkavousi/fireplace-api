@@ -4,7 +4,6 @@ using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
-using FireplaceApi.Core.ValueObjects;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -62,7 +61,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                     search: name,
                     sort: sort ?? SortType.NEW
                 )
-                .Take(Configs.Instance.Pagination.TotalItemsCount)
+                .Take(Configs.Current.Pagination.TotalItemsCount)
                 .ToListAsync();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntities });
@@ -80,7 +79,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                     search: name,
                     sort: sort ?? SortType.NEW
                 )
-                .Take(Configs.Instance.Pagination.TotalItemsCount)
+                .Take(Configs.Current.Pagination.TotalItemsCount)
                 .Select(e => e.Id)
                 .ToListAsync();
 

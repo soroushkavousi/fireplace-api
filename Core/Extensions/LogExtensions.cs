@@ -76,6 +76,17 @@ namespace FireplaceApi.Core.Extensions
             logger.Info(CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
         }
 
+        public static void LogAppError(this Logger logger, string message = null,
+            Stopwatch sw = null, string title = null, object parameters = null, Exception ex = null,
+            [CallerFilePath] string sourceFilePath = "", [CallerMemberName] string memberName = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+        {
+            if (ex == null)
+                logger.Error(CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
+            else
+                logger.Error(ex, CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
+        }
+
         public static string CreateLogMessage(string sourceFilePath, string memberName,
             int sourceLineNumber, string message = null, Stopwatch sw = null,
             string title = null, object parameters = null)

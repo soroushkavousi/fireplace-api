@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces;
+using FireplaceApi.Core.Models;
 using FireplaceApi.Core.ValueObjects;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
@@ -27,8 +28,8 @@ namespace FireplaceApi.Infrastructure.Gateways
 
         public async Task<GoogleUserToken> GetGoogleUserToken(string code)
         {
-            var googleConfigs = Configs.Instance.Google;
-            var redirectUrl = Configs.Instance.Api.BaseUrlPath
+            var googleConfigs = Configs.Current.Google;
+            var redirectUrl = Configs.Current.Api.BaseUrlPath
                     + googleConfigs.RelativeRedirectUrl;
 
             return await GetGoogleUserToken(googleConfigs.ClientId,
@@ -88,8 +89,8 @@ namespace FireplaceApi.Infrastructure.Gateways
 
         public string GetTokenUrl(string code)
         {
-            var googleConfigs = Configs.Instance.Google;
-            var apiConfigs = Configs.Instance.Api;
+            var googleConfigs = Configs.Current.Google;
+            var apiConfigs = Configs.Current.Api;
             var redirectUrl = $"{apiConfigs.BaseUrlPath}{googleConfigs.RelativeRedirectUrl}";
 
             return GetTokenUrl(googleConfigs.BaseTokenUrl,
@@ -138,8 +139,8 @@ namespace FireplaceApi.Infrastructure.Gateways
 
         public string GetAuthUrl()
         {
-            var googleConfigs = Configs.Instance.Google;
-            var apiConfigs = Configs.Instance.Api;
+            var googleConfigs = Configs.Current.Google;
+            var apiConfigs = Configs.Current.Api;
             var redirectUrl = $"{apiConfigs.BaseUrlPath}{googleConfigs.RelativeRedirectUrl}";
 
             return GetAuthUrl(googleConfigs.BaseAuthUrl,

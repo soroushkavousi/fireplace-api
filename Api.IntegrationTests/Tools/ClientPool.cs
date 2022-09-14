@@ -40,7 +40,7 @@ namespace FireplaceApi.Api.IntegrationTests.Tools
             _clientOptions = new WebApplicationFactoryClientOptions
             {
                 AllowAutoRedirect = true,
-                BaseAddress = new Uri(Configs.Instance.Api.BaseUrlPath),
+                BaseAddress = new Uri(Configs.Current.Api.BaseUrlPath),
                 HandleCookies = true,
                 MaxAutomaticRedirections = 7
             };
@@ -105,7 +105,7 @@ namespace FireplaceApi.Api.IntegrationTests.Tools
             var testUser = new TestUser(user, httpClient);
             await LogInUser(testUser);
 
-            _logger.LogAppInformation($"User {username} created successfully!", sw);
+            _logger.LogAppInformation($"User {username} created successfully.", sw);
             return testUser;
         }
 
