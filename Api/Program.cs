@@ -204,8 +204,6 @@ namespace FireplaceApi.Api
                 .AddRewrite(@"^(?!v\d\.)(?!docs)(?!swagger)(.*)", "v0.1/$1", false));
             app.UseRouting();
 
-            app.UseStaticFiles();
-
             app.UseSwagger(options =>
             {
                 options.RouteTemplate = "docs/{documentName}/swagger.json";
