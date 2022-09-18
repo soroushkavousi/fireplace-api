@@ -18,16 +18,16 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class CommentVoteRepository : ICommentVoteRepository
     {
         private readonly ILogger<CommentVoteRepository> _logger;
-        private readonly FireplaceApiContext _fireplaceApiContext;
+        private readonly FireplaceApiDbContext _dbContext;
         private readonly DbSet<CommentVoteEntity> _commentVoteEntities;
         private readonly CommentVoteConverter _commentVoteConverter;
 
         public CommentVoteRepository(ILogger<CommentVoteRepository> logger,
-            FireplaceApiContext fireplaceApiContext, CommentVoteConverter commentVoteConverter)
+            FireplaceApiDbContext dbContext, CommentVoteConverter commentVoteConverter)
         {
             _logger = logger;
-            _fireplaceApiContext = fireplaceApiContext;
-            _commentVoteEntities = fireplaceApiContext.CommentVoteEntities;
+            _dbContext = dbContext;
+            _commentVoteEntities = dbContext.CommentVoteEntities;
             _commentVoteConverter = commentVoteConverter;
         }
 
@@ -112,8 +112,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             var commentEntity = new CommentVoteEntity(id, voterUserId,
                 voterUsername, commentId, isUp);
             _commentVoteEntities.Add(commentEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
                 parameters: new { commentEntity });
@@ -128,8 +128,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _commentVoteEntities.Update(commentEntity);
             try
             {
-                await _fireplaceApiContext.SaveChangesAsync();
-                _fireplaceApiContext.DetachAllEntries();
+                await _dbContext.SaveChangesAsync();
+                _dbContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -150,8 +150,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _commentVoteEntities.Remove(commentEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntity });
         }

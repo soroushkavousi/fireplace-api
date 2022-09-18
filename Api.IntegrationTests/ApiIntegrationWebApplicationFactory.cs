@@ -23,7 +23,7 @@ namespace FireplaceApi.Api.IntegrationTests
     public class ApiIntegrationTestFixture : IDisposable
     {
         private readonly Logger _logger;
-        private readonly FireplaceApiContext _fireplaceApiContext;
+        private readonly FireplaceApiDbContext _dbContext;
         private string _databaseName;
         private string _databaseConnectionString;
         private static List<ConfigsEntity> _configsEntities;
@@ -63,7 +63,7 @@ namespace FireplaceApi.Api.IntegrationTests
 
         private static void ReadDatabaseInitialData()
         {
-            var mainFireplaceApiContext = new FireplaceApiContext(ProjectInitializer.DatabaseConnectionString);
+            var mainFireplaceApiContext = new FireplaceApiDbContext(ProjectInitializer.DatabaseConnectionString);
             _configsEntities ??= mainFireplaceApiContext.ConfigsEntities.AsNoTracking().ToList();
             _errorEntities ??= mainFireplaceApiContext.ErrorEntities.AsNoTracking().ToList();
         }
@@ -75,7 +75,7 @@ namespace FireplaceApi.Api.IntegrationTests
             CreateDatabaseClone();
             InitializeApiFactory();
             InitializeServiceProvider();
-            _fireplaceApiContext = ServiceProvider.GetRequiredService<FireplaceApiContext>();
+            _dbContext = ServiceProvider.GetRequiredService<FireplaceApiDbContext>();
             TestUtils = new TestUtils(this);
             ClientPool = new ClientPool(this);
 
@@ -88,7 +88,7 @@ namespace FireplaceApi.Api.IntegrationTests
             try
             {
                 _databaseConnectionString = GenerateRandomConnectionString();
-                var newDbContext = new FireplaceApiContext(_databaseConnectionString);
+                var newDbContext = new FireplaceApiDbContext(_databaseConnectionString);
                 newDbContext.Database.EnsureDeleted();
                 newDbContext.Database.EnsureCreated();
                 newDbContext.ConfigsEntities.AddRange(_configsEntities);
@@ -132,12 +132,12 @@ namespace FireplaceApi.Api.IntegrationTests
         private void ReplaceMainDatabaseWithTestDatabase(IServiceCollection services)
         {
             var descriptor = services.SingleOrDefault(d =>
-                d.ServiceType == typeof(DbContextOptions<FireplaceApiContext>));
+                d.ServiceType == typeof(DbContextOptions<FireplaceApiDbContext>));
 
             if (descriptor != null)
                 services.Remove(descriptor);
 
-            services.AddDbContext<FireplaceApiContext>(
+            services.AddDbContext<FireplaceApiDbContext>(
                 optionsBuilder => optionsBuilder.UseNpgsql(_databaseConnectionString)
             );
         }
@@ -160,7 +160,7 @@ namespace FireplaceApi.Api.IntegrationTests
         public void CleanDatabase()
         {
             var sw = Stopwatch.StartNew();
-            _fireplaceApiContext.Database.ExecuteSqlRaw(@"TRUNCATE TABLE public.""UserEntities"" CASCADE;");
+            _dbContext.Database.ExecuteSqlRaw(@"TRUNCATE TABLE public.""UserEntities"" CASCADE;");
             _logger.LogAppTrace($"Database [{_databaseName}] cleaned successfully.", sw);
         }
 
@@ -169,7 +169,7 @@ namespace FireplaceApi.Api.IntegrationTests
         public void Dispose()
         {
             var sw = Stopwatch.StartNew();
-            _fireplaceApiContext.Database.EnsureDeleted();
+            _dbContext.Database.EnsureDeleted();
             _logger.LogAppTrace($"Database [{_databaseName}] removed successfully.", sw);
         }
     }

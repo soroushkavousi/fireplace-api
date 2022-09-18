@@ -75,7 +75,7 @@ namespace FireplaceApi.Api
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddSingleton<IObjectModelValidator, NullObjectModelValidator>();
             var infrastructureAssemblyName = $"{nameof(FireplaceApi)}.{nameof(FireplaceApi.Infrastructure)}";
-            builder.Services.AddDbContext<FireplaceApiContext>(
+            builder.Services.AddDbContext<FireplaceApiDbContext>(
                 optionsBuilder => optionsBuilder.UseNpgsql(
                     ProjectInitializer.DatabaseConnectionString,
                     optionsBuilder => optionsBuilder.MigrationsAssembly(infrastructureAssemblyName))

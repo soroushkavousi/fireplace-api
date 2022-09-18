@@ -19,16 +19,16 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class CommunityRepository : ICommunityRepository
     {
         private readonly ILogger<CommunityRepository> _logger;
-        private readonly FireplaceApiContext _fireplaceApiContext;
+        private readonly FireplaceApiDbContext _dbContext;
         private readonly DbSet<CommunityEntity> _communityEntities;
         private readonly CommunityConverter _communityConverter;
 
         public CommunityRepository(ILogger<CommunityRepository> logger,
-            FireplaceApiContext fireplaceApiContext, CommunityConverter communityConverter)
+            FireplaceApiDbContext dbContext, CommunityConverter communityConverter)
         {
             _logger = logger;
-            _fireplaceApiContext = fireplaceApiContext;
-            _communityEntities = fireplaceApiContext.CommunityEntities;
+            _dbContext = dbContext;
+            _communityEntities = dbContext.CommunityEntities;
             _communityConverter = communityConverter;
         }
 
@@ -144,8 +144,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             var sw = Stopwatch.StartNew();
             var communityEntity = new CommunityEntity(id, name, creatorId, creatorUsername);
             _communityEntities.Add(communityEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntity });
             return _communityConverter.ConvertToModel(communityEntity);
@@ -159,8 +159,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _communityEntities.Update(communityEntity);
             try
             {
-                await _fireplaceApiContext.SaveChangesAsync();
-                _fireplaceApiContext.DetachAllEntries();
+                await _dbContext.SaveChangesAsync();
+                _dbContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -179,9 +179,9 @@ namespace FireplaceApi.Infrastructure.Repositories
             int rowAffectedCount = 0;
             try
             {
-                rowAffectedCount = await _fireplaceApiContext.Database.ExecuteSqlInterpolatedAsync(
+                rowAffectedCount = await _dbContext.Database.ExecuteSqlInterpolatedAsync(
                     $"CALL public.\"UpdateCommunityName\"({id}, {newCommunityName});");
-                _fireplaceApiContext.DetachAllEntries();
+                _dbContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -206,8 +206,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _communityEntities.Remove(communityEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntity });
         }

@@ -19,16 +19,16 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class GoogleUserRepository : IGoogleUserRepository
     {
         private readonly ILogger<GoogleUserRepository> _logger;
-        private readonly FireplaceApiContext _fireplaceApiContext;
+        private readonly FireplaceApiDbContext _dbContext;
         private readonly DbSet<GoogleUserEntity> _googleUserEntities;
         private readonly GoogleUserConverter _googleUserConverter;
 
         public GoogleUserRepository(ILogger<GoogleUserRepository> logger,
-            FireplaceApiContext fireplaceApiContext, GoogleUserConverter googleUserConverter)
+            FireplaceApiDbContext dbContext, GoogleUserConverter googleUserConverter)
         {
             _logger = logger;
-            _fireplaceApiContext = fireplaceApiContext;
-            _googleUserEntities = fireplaceApiContext.GoogleUserEntities;
+            _dbContext = dbContext;
+            _googleUserEntities = dbContext.GoogleUserEntities;
             _googleUserConverter = googleUserConverter;
         }
 
@@ -122,8 +122,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 fullName, firstName, lastName, locale, pictureUrl, state, authUser,
                 prompt, redirectToUserUrl);
             _googleUserEntities.Add(googleUserEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
             return _googleUserConverter.ConvertToModel(googleUserEntity);
@@ -137,8 +137,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _googleUserEntities.Update(googleUserEntity);
             try
             {
-                await _fireplaceApiContext.SaveChangesAsync();
-                _fireplaceApiContext.DetachAllEntries();
+                await _dbContext.SaveChangesAsync();
+                _dbContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -159,8 +159,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _googleUserEntities.Remove(googleUserEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
         }

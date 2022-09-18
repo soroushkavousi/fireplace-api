@@ -20,16 +20,16 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class EmailRepository : IEmailRepository
     {
         private readonly ILogger<EmailRepository> _logger;
-        private readonly FireplaceApiContext _fireplaceApiContext;
+        private readonly FireplaceApiDbContext _dbContext;
         private readonly DbSet<EmailEntity> _emailEntities;
         private readonly EmailConverter _emailConverter;
 
         public EmailRepository(ILogger<EmailRepository> logger,
-            FireplaceApiContext fireplaceApiContext, EmailConverter emailConverter)
+            FireplaceApiDbContext dbContext, EmailConverter emailConverter)
         {
             _logger = logger;
-            _fireplaceApiContext = fireplaceApiContext;
-            _emailEntities = fireplaceApiContext.EmailEntities;
+            _dbContext = dbContext;
+            _emailEntities = dbContext.EmailEntities;
             _emailConverter = emailConverter;
         }
 
@@ -76,8 +76,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             var emailEntity = new EmailEntity(id, userId, address,
                 activation.Status.ToString(), activationCode: activation.Code);
             _emailEntities.Add(emailEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { emailEntity });
             return _emailConverter.ConvertToModel(emailEntity);
@@ -91,8 +91,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _emailEntities.Update(emailEntity);
             try
             {
-                await _fireplaceApiContext.SaveChangesAsync();
-                _fireplaceApiContext.DetachAllEntries();
+                await _dbContext.SaveChangesAsync();
+                _dbContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -115,8 +115,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _emailEntities.Remove(emailEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { emailEntity });
         }

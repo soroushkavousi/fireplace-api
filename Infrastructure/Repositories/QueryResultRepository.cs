@@ -20,14 +20,14 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class QueryResultRepository : IQueryResultRepository
     {
         private readonly ILogger<QueryResultRepository> _logger;
-        private readonly FireplaceApiContext _fireplaceApiContext;
+        private readonly FireplaceApiDbContext _dbContext;
         private readonly QueryResultConverter _queryResultConverter;
 
         public QueryResultRepository(ILogger<QueryResultRepository> logger,
-            FireplaceApiContext fireplaceApiContext, QueryResultConverter queryResultConverter)
+            FireplaceApiDbContext dbContext, QueryResultConverter queryResultConverter)
         {
             _logger = logger;
-            _fireplaceApiContext = fireplaceApiContext;
+            _dbContext = dbContext;
             _queryResultConverter = queryResultConverter;
         }
 
@@ -36,16 +36,16 @@ namespace FireplaceApi.Infrastructure.Repositories
             return modelName switch
             {
                 ModelName.COMMUNITY => await GetQueryResultByPointerAsync(
-                    _fireplaceApiContext.CommunityQueryResultEntities, pointer),
+                    _dbContext.CommunityQueryResultEntities, pointer),
 
                 ModelName.COMMUNITY_MEMBERSHIP => await GetQueryResultByPointerAsync(
-                    _fireplaceApiContext.CommunityMembershipQueryResultEntities, pointer),
+                    _dbContext.CommunityMembershipQueryResultEntities, pointer),
 
                 ModelName.POST => await GetQueryResultByPointerAsync(
-                    _fireplaceApiContext.PostQueryResultEntities, pointer),
+                    _dbContext.PostQueryResultEntities, pointer),
 
                 ModelName.COMMENT => await GetQueryResultByPointerAsync(
-                    _fireplaceApiContext.CommentQueryResultEntities, pointer),
+                    _dbContext.CommentQueryResultEntities, pointer),
 
                 _ => throw new NotImplementedException($"Model name {modelName} is not supported!"),
             };
@@ -74,19 +74,19 @@ namespace FireplaceApi.Infrastructure.Repositories
             return modelName switch
             {
                 ModelName.COMMUNITY => await CreateQueryResultAsync(
-                    _fireplaceApiContext.CommunityQueryResultEntities, id, pointer, lastStart,
+                    _dbContext.CommunityQueryResultEntities, id, pointer, lastStart,
                     lastEnd, lastLimit, lastPage, referenceEntityIds),
 
                 ModelName.COMMUNITY_MEMBERSHIP => await CreateQueryResultAsync(
-                    _fireplaceApiContext.CommunityMembershipQueryResultEntities, id, pointer, lastStart,
+                    _dbContext.CommunityMembershipQueryResultEntities, id, pointer, lastStart,
                     lastEnd, lastLimit, lastPage, referenceEntityIds),
 
                 ModelName.POST => await CreateQueryResultAsync(
-                    _fireplaceApiContext.PostQueryResultEntities, id, pointer, lastStart,
+                    _dbContext.PostQueryResultEntities, id, pointer, lastStart,
                     lastEnd, lastLimit, lastPage, referenceEntityIds),
 
                 ModelName.COMMENT => await CreateQueryResultAsync(
-                    _fireplaceApiContext.CommentQueryResultEntities, id, pointer, lastStart,
+                    _dbContext.CommentQueryResultEntities, id, pointer, lastStart,
                     lastEnd, lastLimit, lastPage, referenceEntityIds),
 
                 _ => throw new NotImplementedException($"Model name {modelName} is not supported!"),
@@ -112,8 +112,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             queryResultEntity.FillParameters(id, pointer, lastStart,
                 lastEnd, lastLimit, lastPage, referenceEntityIds.ToDecimals());
             entities.Add(queryResultEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { queryResultEntity });
             return _queryResultConverter.ConvertToModel(queryResultEntity);
@@ -124,16 +124,16 @@ namespace FireplaceApi.Infrastructure.Repositories
             return modelName switch
             {
                 ModelName.COMMUNITY => await UpdateQueryResultAsync(
-                    _fireplaceApiContext.CommunityQueryResultEntities, queryResult),
+                    _dbContext.CommunityQueryResultEntities, queryResult),
 
                 ModelName.COMMUNITY_MEMBERSHIP => await UpdateQueryResultAsync(
-                    _fireplaceApiContext.CommunityMembershipQueryResultEntities, queryResult),
+                    _dbContext.CommunityMembershipQueryResultEntities, queryResult),
 
                 ModelName.POST => await UpdateQueryResultAsync(
-                    _fireplaceApiContext.PostQueryResultEntities, queryResult),
+                    _dbContext.PostQueryResultEntities, queryResult),
 
                 ModelName.COMMENT => await UpdateQueryResultAsync(
-                    _fireplaceApiContext.CommentQueryResultEntities, queryResult),
+                    _dbContext.CommentQueryResultEntities, queryResult),
 
                 _ => throw new NotImplementedException($"Model name {modelName} is not supported!"),
             };
@@ -148,8 +148,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             entities.Update(queryResultEntity);
             try
             {
-                await _fireplaceApiContext.SaveChangesAsync();
-                _fireplaceApiContext.DetachAllEntries();
+                await _dbContext.SaveChangesAsync();
+                _dbContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -167,19 +167,19 @@ namespace FireplaceApi.Infrastructure.Repositories
             {
                 case ModelName.COMMUNITY:
                     await DeleteQueryResultByPointerAsync(
-                        _fireplaceApiContext.CommunityQueryResultEntities, pointer);
+                        _dbContext.CommunityQueryResultEntities, pointer);
                     break;
                 case ModelName.COMMUNITY_MEMBERSHIP:
                     await DeleteQueryResultByPointerAsync(
-                        _fireplaceApiContext.CommunityMembershipQueryResultEntities, pointer);
+                        _dbContext.CommunityMembershipQueryResultEntities, pointer);
                     break;
                 case ModelName.POST:
                     await DeleteQueryResultByPointerAsync(
-                        _fireplaceApiContext.PostQueryResultEntities, pointer);
+                        _dbContext.PostQueryResultEntities, pointer);
                     break;
                 case ModelName.COMMENT:
                     await DeleteQueryResultByPointerAsync(
-                        _fireplaceApiContext.CommentQueryResultEntities, pointer);
+                        _dbContext.CommentQueryResultEntities, pointer);
                     break;
                 default:
                     throw new NotImplementedException($"Model name {modelName} is not supported!");
@@ -196,8 +196,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             entities.Remove(queryResultEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { queryResultEntity });
         }
@@ -207,16 +207,16 @@ namespace FireplaceApi.Infrastructure.Repositories
             return modelName switch
             {
                 ModelName.COMMUNITY => await DoesQueryResultIdExistAsync(
-                    _fireplaceApiContext.CommunityQueryResultEntities, id),
+                    _dbContext.CommunityQueryResultEntities, id),
 
                 ModelName.COMMUNITY_MEMBERSHIP => await DoesQueryResultIdExistAsync(
-                    _fireplaceApiContext.CommunityMembershipQueryResultEntities, id),
+                    _dbContext.CommunityMembershipQueryResultEntities, id),
 
                 ModelName.POST => await DoesQueryResultIdExistAsync(
-                    _fireplaceApiContext.PostQueryResultEntities, id),
+                    _dbContext.PostQueryResultEntities, id),
 
                 ModelName.COMMENT => await DoesQueryResultIdExistAsync(
-                    _fireplaceApiContext.CommentQueryResultEntities, id),
+                    _dbContext.CommentQueryResultEntities, id),
 
                 _ => throw new NotImplementedException($"Model name {modelName} is not supported!"),
             };
@@ -241,16 +241,16 @@ namespace FireplaceApi.Infrastructure.Repositories
             return modelName switch
             {
                 ModelName.COMMUNITY => await DoesQueryResultPointerExistAsync(
-                    _fireplaceApiContext.CommunityQueryResultEntities, pointer),
+                    _dbContext.CommunityQueryResultEntities, pointer),
 
                 ModelName.COMMUNITY_MEMBERSHIP => await DoesQueryResultPointerExistAsync(
-                    _fireplaceApiContext.CommunityMembershipQueryResultEntities, pointer),
+                    _dbContext.CommunityMembershipQueryResultEntities, pointer),
 
                 ModelName.POST => await DoesQueryResultPointerExistAsync(
-                    _fireplaceApiContext.PostQueryResultEntities, pointer),
+                    _dbContext.PostQueryResultEntities, pointer),
 
                 ModelName.COMMENT => await DoesQueryResultPointerExistAsync(
-                    _fireplaceApiContext.CommentQueryResultEntities, pointer),
+                    _dbContext.CommentQueryResultEntities, pointer),
 
                 _ => throw new NotImplementedException($"Model name {modelName} is not supported!"),
             };
