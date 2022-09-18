@@ -177,6 +177,7 @@ namespace FireplaceApi.Api
                 options.SuppressMapClientErrors = true;
             });
 
+            builder.Services.AddHostedService<StatusCheckerService>();
             builder.Services.AddHostedService<ConfigLoaderService>();
         }
 
