@@ -201,6 +201,9 @@ namespace FireplaceApi.Api
                 app.UseHsts();
             }
 
+            // Used for injecting additional CSS and JS files into the swagger UI.
+            app.UseStaticFiles();
+
             app.UseRewriter(new RewriteOptions()
                 .AddRewrite(@"^(?!v\d\.)(?!docs)(?!swagger)(.*)", "v0.1/$1", false));
             app.UseRouting();
