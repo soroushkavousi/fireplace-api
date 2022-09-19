@@ -74,6 +74,13 @@ namespace FireplaceApi.Api.Tools
                 </a> 
                 ";
 
+            if (Configs.Current == Configs.Default)
+            {
+                description_html += @"<br /> <div id=""configs-error"">
+                    Error: Could not load configs from the database!!!
+                </div> <br />";
+            }
+
             description_html += "</div> <br />";
 
             var info = new OpenApiInfo()
