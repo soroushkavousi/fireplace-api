@@ -4,6 +4,7 @@ using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Operators
@@ -26,7 +27,24 @@ namespace FireplaceApi.Core.Operators
         {
             var environmentName = _webHostEnvironment.EnvironmentName.ToUpper().ToEnum<Enums.EnvironmentName>();
             var identifier = ConfigsIdentifier.OfEnvironmentName(environmentName);
-            Configs.Current = await _configsRepository.GetConfigsByIdentifierAsync(identifier);
+            try
+            {
+                Configs.Current = await _configsRepository.GetConfigsByIdentifierAsync(identifier);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogAppCritical("Could not load configs from the database!", ex: ex);
+            }
+            finally
+            {
+                if (Configs.Current == null || Configs.Current.Api == null)
+                {
+                    _logger.LogAppCritical("No configs are found in the database!");
+                    Configs.Current = Configs.Default;
+                }
+                else
+                    _logger.LogAppInformation($"The configs of environment {environmentName} were successfully retrieved from the database.");
+            }
         }
     }
 }
