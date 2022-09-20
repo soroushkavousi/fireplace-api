@@ -29,9 +29,11 @@ namespace FireplaceApi.Api.Tools
             var dbContext = scope.ServiceProvider
                 .GetRequiredService<FireplaceApiDbContext>();
 
-            if (dbContext.Database.GetPendingMigrations().Any())
+            var pendingMigrations = dbContext.Database.GetPendingMigrations();
+            if (pendingMigrations.Any())
             {
-                _logger.LogAppCritical("Database migrations are not applied!!!");
+                _logger.LogAppCritical("Database migrations are not applied!!!",
+                    parameters: new { PendingMigrations = $"[ {string.Join(", ", pendingMigrations)} ]" });
             }
             else
             {

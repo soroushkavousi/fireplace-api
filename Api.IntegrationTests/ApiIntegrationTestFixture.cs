@@ -70,22 +70,25 @@ namespace FireplaceApi.Api.IntegrationTests
 
             if (mainDbContext.Database.GetPendingMigrations().Any())
             {
-                _logger.LogAppCritical("Database migrations are not applied!!!");
-                throw new ApiException(ErrorName.INTERNAL_SERVER, "Database migrations are not applied!!!");
+                var message = "Database migrations are not applied!!!";
+                _logger.LogAppCritical(message);
+                throw new ApiException(ErrorName.INTERNAL_SERVER, message);
             }
 
             _configsEntities ??= mainDbContext.ConfigsEntities.AsNoTracking().ToList();
             if (_configsEntities.Any() == false)
             {
-                _logger.LogAppCritical("Database migrations are not applied!!!");
-                throw new ApiException(ErrorName.INTERNAL_SERVER, "No configs are found in the database!!!");
+                var message = "No configs are found in the database!!!";
+                _logger.LogAppCritical(message);
+                throw new ApiException(ErrorName.INTERNAL_SERVER, message);
             }
 
             _errorEntities ??= mainDbContext.ErrorEntities.AsNoTracking().ToList();
             if (_errorEntities.Any() == false)
             {
-                _logger.LogAppCritical("Database migrations are not applied!!!");
-                throw new ApiException(ErrorName.INTERNAL_SERVER, "No errors are found in the database!!!");
+                var message = "No errors are found in the database!!!";
+                _logger.LogAppCritical(message);
+                throw new ApiException(ErrorName.INTERNAL_SERVER, message);
             }
         }
 
