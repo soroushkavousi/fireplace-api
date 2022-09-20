@@ -19,17 +19,17 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class FileRepository : IFileRepository
     {
         private readonly ILogger<FileRepository> _logger;
-        private readonly FireplaceApiContext _fireplaceApiContext;
+        private readonly FireplaceApiDbContext _dbContext;
         private readonly DbSet<FileEntity> _fileEntities;
         private readonly FileConverter _fileConverter;
 
 
         public FileRepository(ILogger<FileRepository> logger,
-            FireplaceApiContext fireplaceApiContext, FileConverter fileConverter)
+            FireplaceApiDbContext dbContext, FileConverter fileConverter)
         {
             _logger = logger;
-            _fireplaceApiContext = fireplaceApiContext;
-            _fileEntities = fireplaceApiContext.FileEntities;
+            _dbContext = dbContext;
+            _fileEntities = dbContext.FileEntities;
             _fileConverter = fileConverter;
         }
 
@@ -72,8 +72,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             var relativePhysicalPath = _fileConverter.GetRelativePhysicalPath(physicalPath);
             var fileEntity = new FileEntity(id, name, realName, relativeUri, relativePhysicalPath);
             _fileEntities.Add(fileEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { fileEntity });
             return _fileConverter.ConvertToModel(fileEntity);
@@ -87,8 +87,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _fileEntities.Update(fileEntity);
             try
             {
-                await _fireplaceApiContext.SaveChangesAsync();
-                _fireplaceApiContext.DetachAllEntries();
+                await _dbContext.SaveChangesAsync();
+                _dbContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -109,8 +109,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _fileEntities.Remove(fileEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { fileEntity });
         }

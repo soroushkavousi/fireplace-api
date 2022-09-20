@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Operators;
+﻿using FireplaceApi.Core.Operators;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -23,7 +22,6 @@ namespace FireplaceApi.Api.Tools
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogAppInformation("ConfigLoaderService StartAsync");
             using IServiceScope scope = _serviceProvider.CreateScope();
             var configsOperator = scope.ServiceProvider
                 .GetRequiredService<ConfigsOperator>();
@@ -33,8 +31,6 @@ namespace FireplaceApi.Api.Tools
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.LogAppInformation("ConfigLoaderService StopAsync");
-
             await Task.CompletedTask;
         }
     }

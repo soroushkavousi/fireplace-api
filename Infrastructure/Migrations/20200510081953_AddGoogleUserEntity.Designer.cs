@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FireplaceApi.Infrastructure.Migrations
 {
-    [DbContext(typeof(FireplaceApiContext))]
+    [DbContext(typeof(FireplaceApiDbContext))]
     [Migration("20200510081953_AddGoogleUserEntity")]
     partial class AddGoogleUserEntity
     {

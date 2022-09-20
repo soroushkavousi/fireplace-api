@@ -20,16 +20,16 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly ILogger<UserRepository> _logger;
-        private readonly FireplaceApiContext _fireplaceApiContext;
+        private readonly FireplaceApiDbContext _dbContext;
         private readonly DbSet<UserEntity> _userEntities;
         private readonly UserConverter _userConverter;
 
         public UserRepository(ILogger<UserRepository> logger,
-                    FireplaceApiContext fireplaceApiContext, UserConverter userConverter)
+                    FireplaceApiDbContext dbContext, UserConverter userConverter)
         {
             _logger = logger;
-            _fireplaceApiContext = fireplaceApiContext;
-            _userEntities = fireplaceApiContext.UserEntities;
+            _dbContext = dbContext;
+            _userEntities = dbContext.UserEntities;
             _userConverter = userConverter;
         }
 
@@ -135,8 +135,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 displayName: displayName, about: about, avatarUrl: avatarUrl,
                 bannerUrl: bannerUrl, passwordHash: password?.Hash);
             _userEntities.Add(userEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
                 parameters: new { userEntity });
@@ -151,8 +151,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _userEntities.Update(userEntity);
             try
             {
-                await _fireplaceApiContext.SaveChangesAsync();
-                _fireplaceApiContext.DetachAllEntries();
+                await _dbContext.SaveChangesAsync();
+                _dbContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -171,9 +171,9 @@ namespace FireplaceApi.Infrastructure.Repositories
             int rowAffectedCount = 0;
             try
             {
-                rowAffectedCount = await _fireplaceApiContext.Database.ExecuteSqlInterpolatedAsync(
+                rowAffectedCount = await _dbContext.Database.ExecuteSqlInterpolatedAsync(
                     $"CALL public.\"UpdateUsername\"({id}, {newUsername});");
-                _fireplaceApiContext.DetachAllEntries();
+                _dbContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -196,8 +196,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _userEntities.Remove(userEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { userEntity });
         }

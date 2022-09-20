@@ -18,16 +18,16 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class AccessTokenRepository : IAccessTokenRepository
     {
         private readonly ILogger<AccessTokenRepository> _logger;
-        private readonly FireplaceApiContext _fireplaceApiContext;
+        private readonly FireplaceApiDbContext _dbContext;
         private readonly DbSet<AccessTokenEntity> _accessTokenEntities;
         private readonly AccessTokenConverter _accessTokenConverter;
 
         public AccessTokenRepository(ILogger<AccessTokenRepository> logger,
-            FireplaceApiContext fireplaceApiContext, AccessTokenConverter accessTokenConverter)
+            FireplaceApiDbContext dbContext, AccessTokenConverter accessTokenConverter)
         {
             _logger = logger;
-            _fireplaceApiContext = fireplaceApiContext;
-            _accessTokenEntities = fireplaceApiContext.AccessTokenEntities;
+            _dbContext = dbContext;
+            _accessTokenEntities = dbContext.AccessTokenEntities;
             _accessTokenConverter = accessTokenConverter;
         }
 
@@ -85,8 +85,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             var sw = Stopwatch.StartNew();
             var accessTokenEntity = new AccessTokenEntity(id, userId, value);
             _accessTokenEntities.Add(accessTokenEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { accessTokenEntity });
             return _accessTokenConverter.ConvertToModel(accessTokenEntity);
@@ -100,8 +100,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _accessTokenEntities.Update(accessTokenEntity);
             try
             {
-                await _fireplaceApiContext.SaveChangesAsync();
-                _fireplaceApiContext.DetachAllEntries();
+                await _dbContext.SaveChangesAsync();
+                _dbContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -122,8 +122,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _accessTokenEntities.Remove(accessTokenEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { accessTokenEntity });
         }

@@ -18,16 +18,16 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class ErrorRepository : IErrorRepository
     {
         private readonly ILogger<ErrorRepository> _logger;
-        private readonly FireplaceApiContext _fireplaceApiContext;
+        private readonly FireplaceApiDbContext _dbContext;
         private readonly DbSet<ErrorEntity> _errorEntities;
         private readonly ErrorConverter _errorConverter;
 
         public ErrorRepository(ILogger<ErrorRepository> logger,
-            FireplaceApiContext fireplaceApiContext, ErrorConverter errorConverter)
+            FireplaceApiDbContext dbContext, ErrorConverter errorConverter)
         {
             _logger = logger;
-            _fireplaceApiContext = fireplaceApiContext;
-            _errorEntities = fireplaceApiContext.ErrorEntities;
+            _dbContext = dbContext;
+            _errorEntities = dbContext.ErrorEntities;
             _errorConverter = errorConverter;
         }
 
@@ -84,8 +84,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             var sw = Stopwatch.StartNew();
             var errorEntity = new ErrorEntity(id, name.ToString(), code, clientMessage, httpStatusCode);
             _errorEntities.Add(errorEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { errorEntity });
             return _errorConverter.ConvertToModel(errorEntity);
@@ -99,8 +99,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _errorEntities.Update(errorEntity);
             try
             {
-                await _fireplaceApiContext.SaveChangesAsync();
-                _fireplaceApiContext.DetachAllEntries();
+                await _dbContext.SaveChangesAsync();
+                _dbContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -121,8 +121,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _errorEntities.Remove(errorEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { errorEntity });
         }

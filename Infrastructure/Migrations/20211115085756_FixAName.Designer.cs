@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FireplaceApi.Infrastructure.Migrations
 {
-    [DbContext(typeof(FireplaceApiContext))]
+    [DbContext(typeof(FireplaceApiDbContext))]
     [Migration("20211115085756_FixAName")]
     partial class FixAName
     {

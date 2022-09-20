@@ -53,20 +53,26 @@ namespace FireplaceApi.Api.Tools
 
         private static void ReadDatabaseConnectionString()
         {
-            DatabaseConnectionString = Environment.GetEnvironmentVariable(Constants.ConnectionStringKey, EnvironmentVariableTarget.Process);
+            var connectionStringEnvironmentKey = _appSettings["ConnectionStringEnvironmentKey"];
+            DatabaseConnectionString = Environment.GetEnvironmentVariable(connectionStringEnvironmentKey, EnvironmentVariableTarget.Process);
 
             if (string.IsNullOrWhiteSpace(DatabaseConnectionString))
-                DatabaseConnectionString = Environment.GetEnvironmentVariable(Constants.ConnectionStringKey, EnvironmentVariableTarget.Machine);
+                DatabaseConnectionString = Environment.GetEnvironmentVariable(connectionStringEnvironmentKey, EnvironmentVariableTarget.Machine);
 
             if (string.IsNullOrWhiteSpace(DatabaseConnectionString))
-                DatabaseConnectionString = Environment.GetEnvironmentVariable(Constants.ConnectionStringKey, EnvironmentVariableTarget.User);
+                DatabaseConnectionString = Environment.GetEnvironmentVariable(connectionStringEnvironmentKey, EnvironmentVariableTarget.User);
 
             if (string.IsNullOrWhiteSpace(DatabaseConnectionString))
             {
                 var message = "Can't find the connection string!\n";
-                message += $"Please add {Constants.ConnectionStringKey} to the environment variables.";
+                message += $"Please add {connectionStringEnvironmentKey} to the environment variables.";
                 Logger.LogAppError(message: message, parameters: new { DatabaseConnectionString });
                 throw new Exception(message);
+            }
+            else
+            {
+                var message = $"Connection String with key {connectionStringEnvironmentKey} successfully found in environment variables. ";
+                Logger.LogAppInformation(message, parameters: new { ConnectionString = DatabaseConnectionString[..10] + "..." });
             }
         }
     }

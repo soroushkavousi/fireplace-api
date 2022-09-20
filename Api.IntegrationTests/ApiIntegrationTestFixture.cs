@@ -1,5 +1,7 @@
 ﻿using FireplaceApi.Api.IntegrationTests.Tools;
 using FireplaceApi.Api.Tools;
+using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.AspNetCore.Hosting;
@@ -22,10 +24,10 @@ namespace FireplaceApi.Api.IntegrationTests
 {
     public class ApiIntegrationTestFixture : IDisposable
     {
-        private readonly Logger _logger;
-        private readonly FireplaceApiContext _fireplaceApiContext;
         private string _databaseName;
         private string _databaseConnectionString;
+        private readonly FireplaceApiDbContext _dbContext;
+        private readonly static Logger _logger;
         private static List<ConfigsEntity> _configsEntities;
         private static List<ErrorEntity> _errorEntities;
 
@@ -36,6 +38,7 @@ namespace FireplaceApi.Api.IntegrationTests
 
         static ApiIntegrationTestFixture()
         {
+            _logger = LogManager.GetCurrentClassLogger();
             LoadLaunchSettingEnvironmentVariables();
             ProjectInitializer.Start();
             ReadDatabaseInitialData();
@@ -63,19 +66,36 @@ namespace FireplaceApi.Api.IntegrationTests
 
         private static void ReadDatabaseInitialData()
         {
-            var mainFireplaceApiContext = new FireplaceApiContext(ProjectInitializer.DatabaseConnectionString);
-            _configsEntities ??= mainFireplaceApiContext.ConfigsEntities.AsNoTracking().ToList();
-            _errorEntities ??= mainFireplaceApiContext.ErrorEntities.AsNoTracking().ToList();
+            var mainDbContext = new FireplaceApiDbContext(ProjectInitializer.DatabaseConnectionString);
+
+            if (mainDbContext.Database.GetPendingMigrations().Any())
+            {
+                _logger.LogAppCritical("Database migrations are not applied!!!");
+                throw new ApiException(ErrorName.INTERNAL_SERVER, "Database migrations are not applied!!!");
+            }
+
+            _configsEntities ??= mainDbContext.ConfigsEntities.AsNoTracking().ToList();
+            if (_configsEntities.Any() == false)
+            {
+                _logger.LogAppCritical("Database migrations are not applied!!!");
+                throw new ApiException(ErrorName.INTERNAL_SERVER, "No configs are found in the database!!!");
+            }
+
+            _errorEntities ??= mainDbContext.ErrorEntities.AsNoTracking().ToList();
+            if (_errorEntities.Any() == false)
+            {
+                _logger.LogAppCritical("Database migrations are not applied!!!");
+                throw new ApiException(ErrorName.INTERNAL_SERVER, "No errors are found in the database!!!");
+            }
         }
 
         public ApiIntegrationTestFixture()
         {
             var sw = Stopwatch.StartNew();
-            _logger = LogManager.GetCurrentClassLogger();
             CreateDatabaseClone();
             InitializeApiFactory();
             InitializeServiceProvider();
-            _fireplaceApiContext = ServiceProvider.GetRequiredService<FireplaceApiContext>();
+            _dbContext = ServiceProvider.GetRequiredService<FireplaceApiDbContext>();
             TestUtils = new TestUtils(this);
             ClientPool = new ClientPool(this);
 
@@ -88,7 +108,7 @@ namespace FireplaceApi.Api.IntegrationTests
             try
             {
                 _databaseConnectionString = GenerateRandomConnectionString();
-                var newDbContext = new FireplaceApiContext(_databaseConnectionString);
+                var newDbContext = new FireplaceApiDbContext(_databaseConnectionString);
                 newDbContext.Database.EnsureDeleted();
                 newDbContext.Database.EnsureCreated();
                 newDbContext.ConfigsEntities.AddRange(_configsEntities);
@@ -132,12 +152,12 @@ namespace FireplaceApi.Api.IntegrationTests
         private void ReplaceMainDatabaseWithTestDatabase(IServiceCollection services)
         {
             var descriptor = services.SingleOrDefault(d =>
-                d.ServiceType == typeof(DbContextOptions<FireplaceApiContext>));
+                d.ServiceType == typeof(DbContextOptions<FireplaceApiDbContext>));
 
             if (descriptor != null)
                 services.Remove(descriptor);
 
-            services.AddDbContext<FireplaceApiContext>(
+            services.AddDbContext<FireplaceApiDbContext>(
                 optionsBuilder => optionsBuilder.UseNpgsql(_databaseConnectionString)
             );
         }
@@ -160,16 +180,14 @@ namespace FireplaceApi.Api.IntegrationTests
         public void CleanDatabase()
         {
             var sw = Stopwatch.StartNew();
-            _fireplaceApiContext.Database.ExecuteSqlRaw(@"TRUNCATE TABLE public.""UserEntities"" CASCADE;");
+            _dbContext.Database.ExecuteSqlRaw(@"TRUNCATE TABLE public.""UserEntities"" CASCADE;");
             _logger.LogAppTrace($"Database [{_databaseName}] cleaned successfully.", sw);
         }
-
-
 
         public void Dispose()
         {
             var sw = Stopwatch.StartNew();
-            _fireplaceApiContext.Database.EnsureDeleted();
+            _dbContext.Database.EnsureDeleted();
             _logger.LogAppTrace($"Database [{_databaseName}] removed successfully.", sw);
         }
     }

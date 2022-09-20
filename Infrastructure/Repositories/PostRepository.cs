@@ -19,16 +19,16 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class PostRepository : IPostRepository
     {
         private readonly ILogger<PostRepository> _logger;
-        private readonly FireplaceApiContext _fireplaceApiContext;
+        private readonly FireplaceApiDbContext _dbContext;
         private readonly DbSet<PostEntity> _postEntities;
         private readonly PostConverter _postConverter;
 
         public PostRepository(ILogger<PostRepository> logger,
-            FireplaceApiContext fireplaceApiContext, PostConverter postConverter)
+            FireplaceApiDbContext dbContext, PostConverter postConverter)
         {
             _logger = logger;
-            _fireplaceApiContext = fireplaceApiContext;
-            _postEntities = fireplaceApiContext.PostEntities;
+            _dbContext = dbContext;
+            _postEntities = dbContext.PostEntities;
             _postConverter = postConverter;
         }
 
@@ -172,8 +172,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             var postEntity = new PostEntity(id, authorUserId, authorUsername,
                 communityId, communityName, content);
             _postEntities.Add(postEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
                 parameters: new { postEntity });
@@ -188,8 +188,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _postEntities.Update(postEntity);
             try
             {
-                await _fireplaceApiContext.SaveChangesAsync();
-                _fireplaceApiContext.DetachAllEntries();
+                await _dbContext.SaveChangesAsync();
+                _dbContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -210,8 +210,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _postEntities.Remove(postEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
         }

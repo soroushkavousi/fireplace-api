@@ -75,7 +75,7 @@ namespace FireplaceApi.Api
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddSingleton<IObjectModelValidator, NullObjectModelValidator>();
             var infrastructureAssemblyName = $"{nameof(FireplaceApi)}.{nameof(FireplaceApi.Infrastructure)}";
-            builder.Services.AddDbContext<FireplaceApiContext>(
+            builder.Services.AddDbContext<FireplaceApiDbContext>(
                 optionsBuilder => optionsBuilder.UseNpgsql(
                     ProjectInitializer.DatabaseConnectionString,
                     optionsBuilder => optionsBuilder.MigrationsAssembly(infrastructureAssemblyName))
@@ -177,6 +177,7 @@ namespace FireplaceApi.Api
                 options.SuppressMapClientErrors = true;
             });
 
+            builder.Services.AddHostedService<StatusCheckerService>();
             builder.Services.AddHostedService<ConfigLoaderService>();
         }
 
@@ -200,11 +201,12 @@ namespace FireplaceApi.Api
                 app.UseHsts();
             }
 
+            // Used for injecting additional CSS and JS files into the swagger UI.
+            app.UseStaticFiles();
+
             app.UseRewriter(new RewriteOptions()
                 .AddRewrite(@"^(?!v\d\.)(?!docs)(?!swagger)(.*)", "v0.1/$1", false));
             app.UseRouting();
-
-            app.UseStaticFiles();
 
             app.UseSwagger(options =>
             {

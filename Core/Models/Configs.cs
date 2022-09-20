@@ -1,5 +1,6 @@
 ﻿using FireplaceApi.Core.Enums;
 using System;
+using System.Text.Json.Serialization;
 
 namespace FireplaceApi.Core.Models
 {
@@ -61,9 +62,47 @@ namespace FireplaceApi.Core.Models
         {
             public string BaseAuthUrl { get; set; }
             public string BaseTokenUrl { get; set; }
+            [JsonIgnore]
             public string ClientId { get; set; }
+            [JsonIgnore]
             public string ClientSecret { get; set; }
             public string RelativeRedirectUrl { get; set; }
         }
+
+        public static Configs Default { get; } = new(
+            id: 0,
+            environmentName: EnvironmentName.DEVELOPMENT,
+            api: new ApiConfigs
+            {
+                BaseUrlPath = "https://api.server.com",
+                CookieMaxAgeInDays = 30
+            },
+            file: new FileConfigs
+            {
+                BasePhysicalPath = "files",
+                BaseUrlPath = "https://files.server.com",
+                GeneratedFileNameLength = 12
+            },
+            pagination: new PaginationConfigs
+            {
+                TotalItemsCount = 300,
+                MaximumOfPageItemsCount = 30,
+                GeneratedPointerLength = 10
+            },
+            email: new EmailConfigs
+            {
+                ActivationSubject = "Project Email Activation",
+                ActivationMessageFormat = "Congratulations! Code: {0}"
+            },
+            google: new GoogleConfigs
+            {
+                BaseAuthUrl = "https://accounts.google.com/o/oauth2/auth",
+                BaseTokenUrl = "https://oauth2.googleapis.com/token",
+                ClientId = "client-id",
+                ClientSecret = "client-secret",
+                RelativeRedirectUrl = "/users/log-in-with-google",
+            },
+            creationDate: DateTime.UtcNow
+        );
     }
 }

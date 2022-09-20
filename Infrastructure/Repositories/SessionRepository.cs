@@ -21,16 +21,16 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class SessionRepository : ISessionRepository
     {
         private readonly ILogger<SessionRepository> _logger;
-        private readonly FireplaceApiContext _fireplaceApiContext;
+        private readonly FireplaceApiDbContext _dbContext;
         private readonly DbSet<SessionEntity> _sessionEntities;
         private readonly SessionConverter _sessionConverter;
 
         public SessionRepository(ILogger<SessionRepository> logger,
-            FireplaceApiContext fireplaceApiContext, SessionConverter sessionConverter)
+            FireplaceApiDbContext dbContext, SessionConverter sessionConverter)
         {
             _logger = logger;
-            _fireplaceApiContext = fireplaceApiContext;
-            _sessionEntities = fireplaceApiContext.SessionEntities;
+            _dbContext = dbContext;
+            _sessionEntities = dbContext.SessionEntities;
             _sessionConverter = sessionConverter;
         }
 
@@ -102,8 +102,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             var sessionEntity = new SessionEntity(id, userId, ipAddress.ToString(),
                 state.ToString());
             _sessionEntities.Add(sessionEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { sessionEntity });
             return _sessionConverter.ConvertToModel(sessionEntity);
@@ -117,8 +117,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _sessionEntities.Update(sessionEntity);
             try
             {
-                await _fireplaceApiContext.SaveChangesAsync();
-                _fireplaceApiContext.DetachAllEntries();
+                await _dbContext.SaveChangesAsync();
+                _dbContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -139,8 +139,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _sessionEntities.Remove(sessionEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { sessionEntity });
         }

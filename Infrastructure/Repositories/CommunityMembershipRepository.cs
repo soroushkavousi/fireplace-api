@@ -19,16 +19,16 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class CommunityMembershipRepository : ICommunityMembershipRepository
     {
         private readonly ILogger<CommunityMembershipRepository> _logger;
-        private readonly FireplaceApiContext _fireplaceApiContext;
+        private readonly FireplaceApiDbContext _dbContext;
         private readonly DbSet<CommunityMembershipEntity> _communityMembershipEntities;
         private readonly CommunityMembershipConverter _communityMembershipConverter;
 
         public CommunityMembershipRepository(ILogger<CommunityMembershipRepository> logger,
-            FireplaceApiContext fireplaceApiContext, CommunityMembershipConverter communityMembershipConverter)
+            FireplaceApiDbContext dbContext, CommunityMembershipConverter communityMembershipConverter)
         {
             _logger = logger;
-            _fireplaceApiContext = fireplaceApiContext;
-            _communityMembershipEntities = fireplaceApiContext.CommunityMembershipEntities;
+            _dbContext = dbContext;
+            _communityMembershipEntities = dbContext.CommunityMembershipEntities;
             _communityMembershipConverter = communityMembershipConverter;
         }
 
@@ -129,8 +129,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             var communityMembershipEntity = new CommunityMembershipEntity(id, userId,
                 username, communityId, communityName);
             _communityMembershipEntities.Add(communityMembershipEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityMembershipEntity });
             return _communityMembershipConverter.ConvertToModel(communityMembershipEntity);
@@ -145,8 +145,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _communityMembershipEntities.Update(communityMembershipEntity);
             try
             {
-                await _fireplaceApiContext.SaveChangesAsync();
-                _fireplaceApiContext.DetachAllEntries();
+                await _dbContext.SaveChangesAsync();
+                _dbContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -171,8 +171,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _communityMembershipEntities.Remove(communityMembershipEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityMembershipEntity });
         }

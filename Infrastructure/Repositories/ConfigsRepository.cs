@@ -18,16 +18,16 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class ConfigsRepository : IConfigsRepository
     {
         private readonly ILogger<ConfigsRepository> _logger;
-        private readonly FireplaceApiContext _fireplaceApiContext;
+        private readonly FireplaceApiDbContext _dbContext;
         private readonly DbSet<ConfigsEntity> _configsEntities;
         private readonly ConfigsConverter _configsConverter;
 
         public ConfigsRepository(ILogger<ConfigsRepository> logger,
-            FireplaceApiContext fireplaceApiContext, ConfigsConverter configsConverter)
+            FireplaceApiDbContext dbContext, ConfigsConverter configsConverter)
         {
             _logger = logger;
-            _fireplaceApiContext = fireplaceApiContext;
-            _configsEntities = fireplaceApiContext.ConfigsEntities;
+            _dbContext = dbContext;
+            _configsEntities = dbContext.ConfigsEntities;
             _configsConverter = configsConverter;
         }
 
@@ -53,8 +53,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             var sw = Stopwatch.StartNew();
             var configsEntity = _configsConverter.ConvertToEntity(configs);
             _configsEntities.Add(configsEntity);
-            await _fireplaceApiContext.SaveChangesAsync();
-            _fireplaceApiContext.DetachAllEntries();
+            await _dbContext.SaveChangesAsync();
+            _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { configsEntity });
             return _configsConverter.ConvertToModel(configsEntity);
@@ -68,8 +68,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             _configsEntities.Update(configsEntity);
             try
             {
-                await _fireplaceApiContext.SaveChangesAsync();
-                _fireplaceApiContext.DetachAllEntries();
+                await _dbContext.SaveChangesAsync();
+                _dbContext.DetachAllEntries();
             }
             catch (DbUpdateConcurrencyException ex)
             {
