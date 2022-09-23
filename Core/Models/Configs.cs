@@ -56,6 +56,8 @@ namespace FireplaceApi.Core.Models
         {
             public string ActivationSubject { get; set; }
             public string ActivationMessageFormat { get; set; }
+            [Sensitive]
+            public ValueObjects.TokenResponse GmailTokenResponse { get; set; }
         }
 
         public class GoogleConfigs

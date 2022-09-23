@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Tools;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;
 using Google.Apis.Gmail.v1.Data;
@@ -8,6 +9,7 @@ using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using static Google.Apis.Gmail.v1.GmailService;
@@ -19,15 +21,27 @@ namespace FireplaceApi.Infrastructure.Gateways
         private readonly ILogger<GmailGateway> _logger;
         private GmailService _gmailService;
         private const string _projectName = "fireplace-api";
-        private const string _credentialDirectory = "Secrets";
+        private const string _tokenResponseFileName = $"Google.Apis.Auth.OAuth2.Responses.TokenResponse-{_projectName}";
 
         public GmailGateway(ILogger<GmailGateway> logger)
         {
             _logger = logger;
+            MakeTokenResponseFileNameIfNotExists();
             InitializeGmailService();
         }
 
-        public void InitializeGmailService()
+        private static void MakeTokenResponseFileNameIfNotExists()
+        {
+            var theFilePath = Path.Combine(Constants.SecretsDirectoryPath, _tokenResponseFileName);
+            if (System.IO.File.Exists(theFilePath))
+                return;
+
+            var tokenResponse = Configs.Current.Email.GmailTokenResponse;
+            Directory.CreateDirectory(Constants.SecretsDirectoryPath);
+            System.IO.File.WriteAllText(theFilePath, tokenResponse.ToJson());
+        }
+
+        private void InitializeGmailService()
         {
             var clientSecrets = new ClientSecrets
             {
@@ -41,7 +55,7 @@ namespace FireplaceApi.Infrastructure.Gateways
                         scopes,
                         _projectName,
                         CancellationToken.None,
-                        new FileDataStore(_credentialDirectory, true)).Result;
+                        new FileDataStore(Constants.SecretsDirectoryPath, true)).Result;
 
             _gmailService = new GmailService(new BaseClientService.Initializer
             {

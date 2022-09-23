@@ -51,7 +51,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Secrets\" />
     <Folder Include="V01\Controllers\" />
     <Folder Include="wwwroot\Assets\css\" />
   </ItemGroup>
@@ -63,12 +62,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Core\FireplaceApi.Core.csproj" />
     <ProjectReference Include="..\Infrastructure\FireplaceApi.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Secrets\Google.Apis.Auth.OAuth2.Responses.TokenResponse-fireplace-api">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
   <PropertyGroup>
