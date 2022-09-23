@@ -23,8 +23,5 @@ namespace FireplaceApi.Core.Tools
         public static Regex AuthorizationHeaderValue { get; } = new Regex(@"Bearer\s+(.+)", RegexOptions.IgnoreCase);
         public static Regex AccessTokenValue { get; } = new Regex(@"([\d|a-f]{32})", RegexOptions.IgnoreCase);
         public static Regex ErrorClientMessage { get; } = new Regex(@"^(?=.*\S).*$");
-        public static Regex SensitiveInformation { get; } = new Regex(
-            @"(token|password|code)((?:[^=:\s&""](?<!type|expire|time|issued))*)(""\s*)?(=|:)(\s*)((?:("")[^""]*(""))|(?!null)[^&\s,\n]+(?=&|$|\s|,|\n))",
-            RegexOptions.IgnoreCase);
     }
 }

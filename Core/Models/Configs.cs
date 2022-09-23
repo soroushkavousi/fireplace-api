@@ -1,6 +1,6 @@
-﻿using FireplaceApi.Core.Enums;
+﻿using FireplaceApi.Core.Attributes;
+using FireplaceApi.Core.Enums;
 using System;
-using System.Text.Json.Serialization;
 
 namespace FireplaceApi.Core.Models
 {
@@ -62,9 +62,9 @@ namespace FireplaceApi.Core.Models
         {
             public string BaseAuthUrl { get; set; }
             public string BaseTokenUrl { get; set; }
-            [JsonIgnore]
+            [Sensitive]
             public string ClientId { get; set; }
-            [JsonIgnore]
+            [Sensitive]
             public string ClientSecret { get; set; }
             public string RelativeRedirectUrl { get; set; }
         }
