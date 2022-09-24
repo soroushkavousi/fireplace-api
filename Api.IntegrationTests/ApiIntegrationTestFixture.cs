@@ -46,7 +46,7 @@ namespace FireplaceApi.Api.IntegrationTests
 
         private static void LoadLaunchSettingEnvironmentVariables()
         {
-            using var file = File.OpenText("Properties\\launchSettings.json");
+            using var file = File.OpenText("Properties/launchSettings.json");
             var reader = new JsonTextReader(file);
             var jObject = JObject.Load(reader);
 
