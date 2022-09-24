@@ -45,6 +45,7 @@ namespace FireplaceApi.Infrastructure.Gateways
             catch (IOException)
             {
                 _logger.LogAppInformation("The gmail token response file is being used by another process.");
+                System.Threading.Thread.Sleep(50);
             }
         }
 
