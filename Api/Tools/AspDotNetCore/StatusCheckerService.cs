@@ -25,14 +25,21 @@ namespace FireplaceApi.Api.Tools
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+            await CheckDatabase(cancellationToken);
+        }
+
+        private async Task CheckDatabase(CancellationToken cancellationToken)
+        {
             using IServiceScope scope = _serviceProvider.CreateScope();
             var dbContext = scope.ServiceProvider
                 .GetRequiredService<FireplaceApiDbContext>();
 
             var pendingMigrations = dbContext.Database.GetPendingMigrations();
-            if (pendingMigrations.Any())
+            var databaseName = dbContext.Database.GetDbConnection().Database;
+            var isTestDatabase = databaseName.Contains("test", StringComparison.OrdinalIgnoreCase);
+            if (pendingMigrations.Any() && !isTestDatabase)
             {
-                _logger.LogAppCritical("Database migrations are not applied!!!",
+                _logger.LogAppCritical($"Database migrations are not applied!!!",
                     parameters: new { PendingMigrations = $"[ {string.Join(", ", pendingMigrations)} ]" });
             }
             else

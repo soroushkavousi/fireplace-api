@@ -26,11 +26,11 @@ namespace FireplaceApi.Infrastructure.Gateways
         public GmailGateway(ILogger<GmailGateway> logger)
         {
             _logger = logger;
-            MakeTokenResponseFileNameIfNotExists();
+            CreateTokenResponseFileIfNotExists();
             InitializeGmailService();
         }
 
-        private static void MakeTokenResponseFileNameIfNotExists()
+        private void CreateTokenResponseFileIfNotExists()
         {
             var theFilePath = Path.Combine(Constants.SecretsDirectoryPath, _tokenResponseFileName);
             if (System.IO.File.Exists(theFilePath))
@@ -38,7 +38,14 @@ namespace FireplaceApi.Infrastructure.Gateways
 
             var tokenResponse = Configs.Current.Email.GmailTokenResponse;
             Directory.CreateDirectory(Constants.SecretsDirectoryPath);
-            System.IO.File.WriteAllText(theFilePath, tokenResponse.ToJson());
+            try
+            {
+                System.IO.File.WriteAllText(theFilePath, tokenResponse.ToJson());
+            }
+            catch (IOException)
+            {
+                _logger.LogAppInformation("The gmail token response file is being used by another process.");
+            }
         }
 
         private void InitializeGmailService()

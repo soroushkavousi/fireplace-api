@@ -128,7 +128,7 @@ namespace FireplaceApi.Api.IntegrationTests
 
         private string GenerateRandomConnectionString()
         {
-            _databaseName = Core.Tools.Utils.GenerateRandomString(8);
+            _databaseName = $"test-{Core.Tools.Utils.GenerateRandomString(8)}";
             var databaseNameRegex = @"^(.*)Database=([^;]+);(.*)$";
             var newConnectionString = Regex.Replace(ProjectInitializer.DatabaseConnectionString,
                 databaseNameRegex, $"$1Database={_databaseName};$3", RegexOptions.IgnoreCase);
