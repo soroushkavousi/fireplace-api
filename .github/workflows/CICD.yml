@@ -27,11 +27,25 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    - name: Cache app
+      id: app-cache
+      uses: actions/cache@v3
+      with:
+        path: app
+        key: app-cache
     - name: Publish
       run: dotnet publish -c Release -o app
   
-  #deploy:
-  #  needs: test
-  #  runs-on: ubuntu-latest
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
 
-  #  steps:
+    steps:
+    - name: Using app cache
+      id: app-cache
+      uses: actions/cache@v3
+      with:
+        path: app
+        key: app-cache
+    - name: Check app directory
+      run: ls -alh app
