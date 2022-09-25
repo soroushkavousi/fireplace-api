@@ -12,40 +12,51 @@ env:
   CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
 
 jobs:
-  test:
+  test-and-build:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
+
     - name: Restore dependencies
       run: dotnet restore
+
     - name: Build
       run: dotnet build --no-restore
+
     - name: Test
       run: dotnet test --no-build --logger "console;verbosity=detailed"
-    - name: Cache app
-      id: app-cache
-      uses: actions/cache@v3
-      with:
-        path: app
-        key: app-cache
+
     - name: Publish
       run: dotnet publish -c Release -o app
+
+    - name: Upload publish files
+      uses: actions/upload-artifact@v3
+      with:
+        name: publish
+        path: |
+          app
+          Dockerfile
+          docker-compose.yml
   
   deploy:
-    needs: test
+    needs: test-and-build
     runs-on: ubuntu-latest
 
     steps:
-    - name: Using app cache
-      id: app-cache
-      uses: actions/cache@v3
+    - name: Download publish files
+      uses: actions/download-artifact@v3
       with:
-        path: app
-        key: app-cache
-    - name: Check app directory
-      run: ls -alh app
+        name: publish
+
+    - name: Check files
+      run: |
+        echo "root:"
+        ls -alh
+        echo "\n\napp:"
+        ls -alh app

@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  fireplace-api:
+    image: fireplaceapi/fireplace-api
+    container_name: fireplace-api
+    ports:
+      - '3301:5000'
+    volumes:
+      - ./app:/app
+      - ./files:/files
+      - ./logs:/logs
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - CONNECTION_STRING
