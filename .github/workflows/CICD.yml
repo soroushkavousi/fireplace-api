@@ -81,7 +81,6 @@ jobs:
     
     - name: Create the private.key file
       run: |
-        echo "SSH_PRIVATE_KEY_PATH = $SSH_PRIVATE_KEY_PATH"
         mkdir -p ~/.ssh/
         echo "$SSH_PRIVATE_KEY" > $SSH_PRIVATE_KEY_PATH
         chmod 600 $SSH_PRIVATE_KEY_PATH
@@ -114,9 +113,10 @@ jobs:
 
     - name: Run the docker compose
       run: ssh server "
+        cd $PROJECT_DIRECTORY;  
         ls -alh;
-        echo "Running docker compose...";
-        cd $PROJECT_DIRECTORY;
+        echo 'Running docker compose...';
+        export CONNECTION_STRING='$CONNECTION_STRING';
         docker compose down -t 2;
         docker compose up -d;
         ls -alh;
