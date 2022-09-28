@@ -7,9 +7,14 @@ services:
     ports:
       - '3301:5000'
     volumes:
-      - ./app:/app
-      - ./files:/files
       - ./logs:/logs
+      - /bitiano/files/files.fireplace.bitiano.com:/files
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - CONNECTION_STRING
+    networks:
+      - fireplace-api-network
+
+networks:
+  fireplace-api-network:
+    name: fireplace-api-network
