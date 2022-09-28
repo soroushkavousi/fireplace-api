@@ -64,9 +64,9 @@ namespace FireplaceApi.Api
             _logger.Trace("Starting api...");
             var builder = WebApplication.CreateBuilder(args);
             builder.Logging.ClearProviders();
-            builder.Logging.AddConsole();
             builder.WebHost.UseNLog();
             ConfigureBuilderServices(builder);
+            Console.WriteLine("Api is ready...");
             return builder;
         }
 
