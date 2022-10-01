@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using FireplaceApi.Infrastructure.Entities;
+using FireplaceApi.Infrastructure.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -13,16 +13,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FireplaceApi.Infrastructure.Migrations
 {
     [DbContext(typeof(FireplaceApiDbContext))]
-    [Migration("20220623202858_RemoveGlobalEntities")]
-    partial class RemoveGlobalEntities
+    partial class FireplaceApiDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:CollationDefinition:case_insensitive", "en-u-ks-primary,en-u-ks-primary,icu,False")
                 .HasAnnotation("Npgsql:DefaultColumnCollation", "case_insensitive")
-                .HasAnnotation("ProductVersion", "6.0.6")
+                .HasAnnotation("ProductVersion", "6.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -346,6 +345,36 @@ namespace FireplaceApi.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("CommunityQueryResultEntities");
+                });
+
+            modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.ConfigsEntity", b =>
+                {
+                    b.Property<decimal>("Id")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW()");
+
+                    b.Property<ConfigsEntityData>("Data")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("Data");
+
+                    b.Property<string>("EnvironmentName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EnvironmentName")
+                        .IsUnique();
+
+                    b.ToTable("ConfigsEntities");
                 });
 
             modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.EmailEntity", b =>
