@@ -46,6 +46,9 @@ namespace FireplaceApi.Api.IntegrationTests
 
         private static void LoadLaunchSettingEnvironmentVariables()
         {
+            var launchSettingsPath = @"Properties/launchSettings.json";
+            if (!File.Exists(launchSettingsPath))
+                return;
             using var file = File.OpenText("Properties/launchSettings.json");
             var reader = new JsonTextReader(file);
             var jObject = JObject.Load(reader);
@@ -123,6 +126,7 @@ namespace FireplaceApi.Api.IntegrationTests
             catch (Exception ex)
             {
                 _logger.LogAppError($"Can't clone the database! Error: {ex.Message}", sw, ex: ex);
+                throw;
             }
         }
 
@@ -140,6 +144,9 @@ namespace FireplaceApi.Api.IntegrationTests
             ApiFactory = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
                 {
+                    //builder.Configure(app2 =>
+                    //{
+                    //});
                     builder.ConfigureServices(services =>
                     {
                         ReplaceMainDatabaseWithTestDatabase(services);
@@ -177,6 +184,7 @@ namespace FireplaceApi.Api.IntegrationTests
             catch (Exception ex)
             {
                 _logger.LogAppError($"Error: {ex.Message}", sw, ex: ex);
+                throw;
             }
         }
 

@@ -12,6 +12,7 @@ namespace FireplaceApi.Api.Tools
         private static IConfigurationRoot _appSettings;
 
         public static Logger Logger { get; private set; }
+        public static string EnvironmentName { get; private set; }
         public static string DatabaseConnectionString { get; private set; }
 
         public static void Start()
@@ -27,10 +28,10 @@ namespace FireplaceApi.Api.Tools
 
         private static void ReadAppSettings()
         {
-            var environmentName = Environment.GetEnvironmentVariable(Constants.EnvironmentNameKey);
+            EnvironmentName = Utils.GetEnvironmentVariable(Constants.EnvironmentNameKey);
             _appSettings = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-                .AddJsonFile($"appsettings.{environmentName}.json", optional: false, reloadOnChange: false)
+                .AddJsonFile($"appsettings.{EnvironmentName}.json", optional: false, reloadOnChange: false)
                 .Build();
         }
 
@@ -54,14 +55,7 @@ namespace FireplaceApi.Api.Tools
         private static void ReadDatabaseConnectionString()
         {
             var connectionStringEnvironmentKey = _appSettings["ConnectionStringEnvironmentKey"];
-            DatabaseConnectionString = Environment.GetEnvironmentVariable(connectionStringEnvironmentKey, EnvironmentVariableTarget.Process);
-
-            if (string.IsNullOrWhiteSpace(DatabaseConnectionString))
-                DatabaseConnectionString = Environment.GetEnvironmentVariable(connectionStringEnvironmentKey, EnvironmentVariableTarget.Machine);
-
-            if (string.IsNullOrWhiteSpace(DatabaseConnectionString))
-                DatabaseConnectionString = Environment.GetEnvironmentVariable(connectionStringEnvironmentKey, EnvironmentVariableTarget.User);
-
+            DatabaseConnectionString = Utils.GetEnvironmentVariable(connectionStringEnvironmentKey);
             if (string.IsNullOrWhiteSpace(DatabaseConnectionString))
             {
                 var message = "Can't find the connection string!\n";
