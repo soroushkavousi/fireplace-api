@@ -5,17 +5,17 @@ namespace FireplaceApi.Api.Tools
 {
     public static class Utils
     {
-        public static string GetEnvironmentVariable(string name)
+        public static string ContentRootPath
         {
-            var value = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
-
-            if (string.IsNullOrWhiteSpace(value))
-                value = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Machine);
-
-            if (string.IsNullOrWhiteSpace(value))
-                value = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.User);
-
-            return value;
+            get
+            {
+                var rootDirectory = AppContext.BaseDirectory;
+                if (rootDirectory.Contains("bin"))
+                {
+                    rootDirectory = rootDirectory[..rootDirectory.IndexOf("bin")];
+                }
+                return rootDirectory;
+            }
         }
 
         public static bool IsOsWindows()

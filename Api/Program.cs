@@ -65,7 +65,7 @@ namespace FireplaceApi.Api
             var builder = WebApplication.CreateBuilder(new WebApplicationOptions
             {
                 Args = args,
-                EnvironmentName = ProjectInitializer.EnvironmentName
+                EnvironmentName = EnvironmentVariable.EnvironmentName.Value
             });
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
@@ -81,7 +81,7 @@ namespace FireplaceApi.Api
             var infrastructureAssemblyName = $"{nameof(FireplaceApi)}.{nameof(FireplaceApi.Infrastructure)}";
             builder.Services.AddDbContext<FireplaceApiDbContext>(
                 optionsBuilder => optionsBuilder.UseNpgsql(
-                    ProjectInitializer.DatabaseConnectionString,
+                    EnvironmentVariable.ConnectionString.Value,
                     optionsBuilder => optionsBuilder.MigrationsAssembly(infrastructureAssemblyName))
             );
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();

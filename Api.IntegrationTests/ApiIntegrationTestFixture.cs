@@ -69,7 +69,7 @@ namespace FireplaceApi.Api.IntegrationTests
 
         private static void ReadDatabaseInitialData()
         {
-            var mainDbContext = new FireplaceApiDbContext(ProjectInitializer.DatabaseConnectionString);
+            var mainDbContext = new FireplaceApiDbContext(EnvironmentVariable.ConnectionString.Value);
 
             if (mainDbContext.Database.GetPendingMigrations().Any())
             {
@@ -134,7 +134,7 @@ namespace FireplaceApi.Api.IntegrationTests
         {
             _databaseName = $"test-{Core.Tools.Utils.GenerateRandomString(8)}";
             var databaseNameRegex = @"^(.*)Database=([^;]+);(.*)$";
-            var newConnectionString = Regex.Replace(ProjectInitializer.DatabaseConnectionString,
+            var newConnectionString = Regex.Replace(EnvironmentVariable.ConnectionString.Value,
                 databaseNameRegex, $"$1Database={_databaseName};$3", RegexOptions.IgnoreCase);
             return newConnectionString;
         }

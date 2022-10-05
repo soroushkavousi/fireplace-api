@@ -11,7 +11,8 @@ services:
       - /bitiano/files/files.fireplace.bitiano.com:/files
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - CONNECTION_STRING
+      - FIREPLACE_API_LOG_DIRECTORY=/logs
+      - FIREPLACE_API_CONNECTION_STRING
     networks:
       - fireplace-api-network
 

@@ -12,8 +12,6 @@ namespace FireplaceApi.Api.Tools
         private static IConfigurationRoot _appSettings;
 
         public static Logger Logger { get; private set; }
-        public static string EnvironmentName { get; private set; }
-        public static string DatabaseConnectionString { get; private set; }
 
         public static void Start()
         {
@@ -21,17 +19,24 @@ namespace FireplaceApi.Api.Tools
                 return;
 
             _initialized = true;
+            ReadEnvironmentVariables();
             ReadAppSettings();
             SetupLogger();
-            ReadDatabaseConnectionString();
+            CheckConnectionString();
+        }
+
+        private static void ReadEnvironmentVariables()
+        {
+            EnvironmentVariable.EnvironmentName.ReadValue();
+            EnvironmentVariable.LogDirectory.ReadValue();
+            EnvironmentVariable.ConnectionString.ReadValue();
         }
 
         private static void ReadAppSettings()
         {
-            EnvironmentName = Utils.GetEnvironmentVariable(Constants.EnvironmentNameKey);
             _appSettings = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-                .AddJsonFile($"appsettings.{EnvironmentName}.json", optional: false, reloadOnChange: false)
+                .AddJsonFile($"appsettings.{EnvironmentVariable.EnvironmentName.Value}.json", optional: false, reloadOnChange: false)
                 .Build();
         }
 
@@ -40,9 +45,8 @@ namespace FireplaceApi.Api.Tools
             try
             {
                 var logConfigFilePath = _appSettings["Log:ConfigFilePath"];
-                var logRootDirectoryPath = _appSettings["Log:RootDirectoryPath"];
                 NLogBuilder.ConfigureNLog(logConfigFilePath);
-                LogManager.Configuration.Variables["logRootDirectoryPath"] = logRootDirectoryPath;
+                LogManager.Configuration.Variables["logRootDirectoryPath"] = EnvironmentVariable.LogDirectory.Value;
                 Logger = LogManager.GetCurrentClassLogger();
             }
             catch (Exception ex)
@@ -52,21 +56,15 @@ namespace FireplaceApi.Api.Tools
             }
         }
 
-        private static void ReadDatabaseConnectionString()
+        private static void CheckConnectionString()
         {
-            var connectionStringEnvironmentKey = _appSettings["ConnectionStringEnvironmentKey"];
-            DatabaseConnectionString = Utils.GetEnvironmentVariable(connectionStringEnvironmentKey);
-            if (string.IsNullOrWhiteSpace(DatabaseConnectionString))
+            if (!EnvironmentVariable.ConnectionString.IsProvided)
             {
                 var message = "Can't find the connection string!\n";
-                message += $"Please add {connectionStringEnvironmentKey} to the environment variables.";
-                Logger.LogAppError(message: message, parameters: new { DatabaseConnectionString });
+                message += $"Please add {EnvironmentVariable.ConnectionString.Key} to the environment variables.";
+                Logger.LogAppCritical(message: message);
+                Console.WriteLine($"Error: {message}");
                 throw new Exception(message);
-            }
-            else
-            {
-                var message = $"Connection String with key {connectionStringEnvironmentKey} successfully found in environment variables. ";
-                Logger.LogAppInformation(message, parameters: new { ConnectionString = DatabaseConnectionString[..10] + "..." });
             }
         }
     }
