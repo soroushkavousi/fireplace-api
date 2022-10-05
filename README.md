@@ -27,8 +27,8 @@ Check [**The Swagger UI**](https://api.fireplace.bitiano.com/docs/index.html) of
 10. Supports error codes
 11. Prevents CSRF attacks
 12. Has logging system with [NLog](https://nlog-project.org/)
-13. [Various sign up and log in methods](#various-sign-up-and-log-in-methods)
-14. Id Generation and Encoding ([guides/id-generation-and-encoding.md](guides/id-generation-and-encoding.md))
+13. [Sign up and Log in methods](#sign-up-and-log-in-methods)
+14. Id Generation and Encoding ([Guides/id-generation-and-encoding.md](Guides/id-generation-and-encoding.md))
 
 
  <br/> 
@@ -95,33 +95,14 @@ With the ***swagger UI***, you can easily interact with the API and learn it. It
  <br/>  <br/>
  
  
-### *Special Features*:
 
-1. Log in with google ([guides/swagger-google-login-button.md](guides/swagger-google-login-button.md))
-2. Full examples of possible responses
-
-<div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/swagger-log-in-with-google.png" width="30%" />
-</div>
-
- <br/>
- 
-<div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/response-list-communities.png" width="85%" />
-</div>
-
- <br/>
- 
-<div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/response-bad-request.png" width="60%" />
-</div>
-
+More details? Check the [Guides/the-swagger.md](Guides/the-swagger.md)
 
 
  <br/> 
 
 
-# Various sign up and log in methods
+# Sign up and Log in methods
 
 
 ### - Sign up methods
@@ -157,13 +138,9 @@ The access token can be placed at ***cookies*** or ***headers***.
 
 <br/><br/>
 
-If you are interested in the Google OAuth 2.0 implementation, you can check these links:
 
-[Check the **GoogleGateway** class](Infrastructure/Gateways/GoogleGateway.cs)
+More details? Check the [Guides/sign-up-and-log-in-methods.md](Guides/sign-up-and-log-in-methods.md)
 
-[Check the **LogInWithGoogleInputQueryParameters** class](Api/Controllers/Parameters/UserParameters/LogInWithGoogleParameters.cs)
-
-[Check the **LogInWithGoogleAsync** method in **UserOperator** Class](Core/Operators/UserOperator.cs#L91)
 
  <br/>
 

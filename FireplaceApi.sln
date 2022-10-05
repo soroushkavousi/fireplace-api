@@ -24,7 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Guides", "Guides", "{2B8681
 	ProjectSection(SolutionItems) = preProject
 		Guides\id-generation-and-encoding.md = Guides\id-generation-and-encoding.md
 		Guides\initial-data.sql = Guides\initial-data.sql
-		Guides\swagger-google-login-button.md = Guides\swagger-google-login-button.md
+		Guides\sign-up-and-log-in-methods.md = Guides\sign-up-and-log-in-methods.md
+		Guides\the-swagger.md = Guides\the-swagger.md
 	EndProjectSection
 EndProject
 Global
