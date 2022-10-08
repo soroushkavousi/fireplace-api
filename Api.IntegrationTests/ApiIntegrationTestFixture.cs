@@ -144,9 +144,6 @@ namespace FireplaceApi.Api.IntegrationTests
             ApiFactory = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
                 {
-                    //builder.Configure(app2 =>
-                    //{
-                    //});
                     builder.ConfigureServices(services =>
                     {
                         ReplaceMainDatabaseWithTestDatabase(services);
