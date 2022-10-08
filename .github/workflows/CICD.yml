@@ -118,6 +118,7 @@ jobs:
         echo 'Running docker compose...';
         export FIREPLACE_API_CONNECTION_STRING='$FIREPLACE_API_CONNECTION_STRING';
         docker compose down -t 2;
+        docker compose pull;
         docker compose up -d;
         ls -alh;
         "
