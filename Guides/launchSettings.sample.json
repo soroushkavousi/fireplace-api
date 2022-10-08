@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "FireplaceApi": {
+      "commandName": "Project",
+      "applicationUrl": "http://localhost:5000",
+      "launchBrowser": true,
+      "launchUrl": "docs",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "FIREPLACE_API_LOG_DIRECTORY": "path/to/logs",
+        "FIREPLACE_API_CONNECTION_STRING": "<connection-string>"
+      }
+    }
+  }
+}

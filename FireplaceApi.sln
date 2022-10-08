@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.github\workflows\CICD.yml = .github\workflows\CICD.yml
 		docker-compose.yml = docker-compose.yml
 		Dockerfile = Dockerfile
+		Guides\launchSettings.sample.json = Guides\launchSettings.sample.json
 		README.md = README.md
 	EndProjectSection
 EndProject

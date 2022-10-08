@@ -2,16 +2,12 @@
 
 **Fireplace API** is a web API project developed with the ASP&#46;NET Core framework. It is like a simple version of Reddit API, which has communities, posts, and comments.
 
-This project is a practice on how to design an API for real-world applications. It also can be used as a sample.
-
- <br/>
- 
+This project is just a practice on how to design an API for real-world applications. It also can be used as a sample. <br/>
 Check [**The Swagger UI**](https://api.fireplace.bitiano.com/docs/index.html) of the API
 
-[**How to run a clone?**](#how-to-run-a-clone)
-
+[**How to run a clone?**](#how-to-run-a-clone) 
+ 
  <br/>
-
  
 # Highlights
 
@@ -165,23 +161,60 @@ Host=<server-address>;Port=1234;Username=<username>;Password=<password>;Database
 
 <br/>
 
-**3. Set the two environment variables**
+**3. Set the environment variables**
 
-|Environment Name| Environment Value|
-|--|--|
-| ASPNETCORE_ENVIRONMENT | 'Development' or 'Production' |
-| CONNECTION_STRING | &#60;connection-string> |
+<br/>
 
-```
+| Environment Key | Value | Default | Required | 
+|--|:--:|:--:|:--:|
+| ASPNETCORE_ENVIRONMENT | 'Development' or 'Production' | 'Development'|  &#10006;
+| FIREPLACE_API_LOG_DIRECTORY| path/to/logs | Project Root | &#10006;|
+| FIREPLACE_API_CONNECTION_STRING| &#60;connection-string> | - |  &#10004;|
+
+<br/>
+
+- **How to set?**
+<br/>
+
+Option 1: Directly in shell
+
+```csharp
 linux: 
 > export ASPNETCORE_ENVIRONMENT='Development'
-> export CONNECTION_STRING='<connection-string>'
+> export FIREPLACE_API_LOG_DIRECTORY='path/to/logs'
+> export FIREPLACE_API_CONNECTION_STRING='<connection-string>'
 ```
-```
+```csharp
 windows powershell: 
 > $env:ASPNETCORE_ENVIRONMENT = 'Development'
-> $env:CONNECTION_STRING = '<connection-string>'
+> $env:FIREPLACE_API_LOG_DIRECTORY= 'path/to/logs'
+> $env:FIREPLACE_API_CONNECTION_STRING = '<connection-string>'
 ```
+<br/>
+
+Option 2: Via launchSettings.json
+
+```json
+{
+  "profiles": {
+    "FireplaceApi": {
+      "commandName": "Project",
+      "applicationUrl": "http://localhost:5000",
+      "launchBrowser": true,
+      "launchUrl": "docs",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "FIREPLACE_API_LOG_DIRECTORY": "path/to/logs",
+        "FIREPLACE_API_CONNECTION_STRING": "<connection-string>"
+      }
+    }
+  }
+}
+```
+
+Copy the json to a file at this path: `Api\Properties\launchSettings.json`
+
+Note: In this project, the file 'launchSettings.json' will not be pushed to the git repository because it is placed in the .gitignore file. You can freely customize envrionment variables in it.
 
 <br/>
 
@@ -202,7 +235,7 @@ windows powershell:
 Now you can check the docs:
  http://localhost:5000/docs
 
-Note: At this stage, you may have noticed that some errors say there are no configs or errors in the database! So lets fix them.
+Note: At this stage, you may have noticed that some errors say there are no configs or errors in the database! So we are going to fix them.
 
 <br/>
 
@@ -210,19 +243,16 @@ Note: At this stage, you may have noticed that some errors say there are no conf
 
 The file [Guides/initial-data.sql](Guides/initial-data.sql) has multiple insert queries to feed the initial data. You have two ways in order to inject the data to the database:
 
-1. Using psql command
+Option 1:  Using psql command
 
 ```
 > psql -h localhost -p <port> -U <user> -d <database-name> -f "Guides/initial-data.sql"
 ```
 
-2. Running queries directly
+Option 2: Running queries directly
 
 You can easily run queries directly by copying the file content .
 
-<br/>
-
-**Note**: Alter the configs data with your configurations details.
 
 <br/>
 
@@ -232,4 +262,12 @@ You can easily run queries directly by copying the file content .
 ```
 > dotnet test --logger "console;verbosity=detailed"
 ```
+
+Congratulations, you have almost run a clone.
+
+<br/>
+
+**8. Customize the configs data**
+
+Global variables and sensitive data are stored in a table in the database. You fed sample config data at step 6, but you need to alter it with your project specifications. For instance, generate and set your own google client-id and client-secret to use Google OAuth 2.0.
 
