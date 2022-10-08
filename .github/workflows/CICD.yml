@@ -36,6 +36,7 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
 
     steps:
     - uses: actions/checkout@v3
@@ -71,6 +72,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
 
     env:
       SSH_PRIVATE_KEY_PATH: /home/runner/.ssh/private.key
