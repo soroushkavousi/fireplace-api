@@ -35,7 +35,7 @@ namespace FireplaceApi.Core.Tools
             await ValidateLimitationOfUserRequestCounts(requestingUser.Id);
             await ValidateLimitationOfIpRequestCounts(ipAddress);
             _logger.LogAppTrace($"User {requestingUser.Id} doesn't have any problem to continue. ",
-                sw: sw, parameters: requestingUser.ToJson());
+                sw: sw, parameters: new { requestingUser });
             return requestingUser;
         }
 

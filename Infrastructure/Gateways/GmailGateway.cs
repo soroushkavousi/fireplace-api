@@ -40,7 +40,7 @@ namespace FireplaceApi.Infrastructure.Gateways
             Directory.CreateDirectory(Constants.SecretsDirectoryPath);
             try
             {
-                System.IO.File.WriteAllText(theFilePath, tokenResponse.ToJson());
+                System.IO.File.WriteAllText(theFilePath, tokenResponse.ToJson(ignoreSensitiveLimit: true));
             }
             catch (IOException)
             {

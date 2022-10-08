@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FireplaceApi.Core.Attributes;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 
@@ -8,12 +9,16 @@ namespace FireplaceApi.Infrastructure.Entities
     public class GoogleUserEntity : BaseEntity
     {
         public ulong UserEntityId { get; set; }
+        [Sensitive]
         public string Code { get; set; }
+        [Sensitive]
         public string AccessToken { get; set; }
         public string TokenType { get; set; }
         public long AccessTokenExpiresInSeconds { get; set; }
+        [Sensitive]
         public string RefreshToken { get; set; }
         public string Scope { get; set; }
+        [Sensitive]
         public string IdToken { get; set; }
         public DateTime AccessTokenIssuedTime { get; set; }
         public string GmailAddress { get; set; }

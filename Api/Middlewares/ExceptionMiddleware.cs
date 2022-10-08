@@ -85,7 +85,7 @@ namespace FireplaceApi.Api.Middlewares
             }
 
             var apiExceptionErrorDto = errorConverter.ConvertToApiExceptionDto(error);
-            await httpContext.Response.WriteAsync(apiExceptionErrorDto.ToJson());
+            await httpContext.Response.WriteAsync(apiExceptionErrorDto.ToJson(ignoreSensitiveLimit: true));
         }
     }
 

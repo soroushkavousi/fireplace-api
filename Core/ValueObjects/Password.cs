@@ -1,10 +1,12 @@
-﻿using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Core.Attributes;
+using FireplaceApi.Core.Extensions;
 
 namespace FireplaceApi.Core.ValueObjects
 {
     public class Password
     {
         private string _hash;
+        [Sensitive]
         public string Value { get; set; }
         public string Hash { get => _hash ?? ComputeHashOfPasswordValue(Value); set => _hash = value; }
 

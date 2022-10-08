@@ -1,5 +1,6 @@
 ﻿using FireplaceApi.Api.Extensions;
 using FireplaceApi.Api.Tools;
+using FireplaceApi.Core.Attributes;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -13,7 +14,9 @@ namespace FireplaceApi.Api.Controllers
         public string AvatarUrl { get; set; }
         public string BannerUrl { get; set; }
         public string Username { get; set; }
+        [Sensitive]
         public string OldPassword { get; set; }
+        [Sensitive]
         public string Password { get; set; }
         public string EmailAddress { get; set; }
 

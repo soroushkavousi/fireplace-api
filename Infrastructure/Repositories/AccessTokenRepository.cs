@@ -65,7 +65,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<AccessToken> GetAccessTokenByValueAsync(string value, bool includeUser = false)
         {
-            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { value, includeUser });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { value = "(SENSITIVE)", includeUser });
             var sw = Stopwatch.StartNew();
             var accessTokenEntity = await _accessTokenEntities
                 .AsNoTracking()
@@ -81,7 +81,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<AccessToken> CreateAccessTokenAsync(ulong id, ulong userId, string value)
         {
-            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id, userId, value });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id, userId, value = "(SENSITIVE)" });
             var sw = Stopwatch.StartNew();
             var accessTokenEntity = new AccessTokenEntity(id, userId, value);
             _accessTokenEntities.Add(accessTokenEntity);
@@ -143,7 +143,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<bool> DoesAccessTokenValueExistAsync(string value)
         {
-            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { value });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { value = "(SENSITIVE)" });
             var sw = Stopwatch.StartNew();
             var doesExist = await _accessTokenEntities
                 .AsNoTracking()

@@ -1,10 +1,12 @@
-﻿using System;
+﻿using FireplaceApi.Core.Attributes;
+using System;
 
 namespace FireplaceApi.Core.Models
 {
     public class AccessToken : BaseModel
     {
         public ulong UserId { get; set; }
+        [Sensitive]
         public string Value { get; set; }
         public User User { get; set; }
 

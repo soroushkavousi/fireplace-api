@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FireplaceApi.Core.Attributes;
+using System;
 using System.Text.Json.Serialization;
 
 namespace FireplaceApi.Core.ValueObjects
@@ -6,6 +7,7 @@ namespace FireplaceApi.Core.ValueObjects
     public class TokenResponse
     {
         [JsonPropertyName("access_token")]
+        [Sensitive]
         public string AccessToken { get; set; }
 
         [JsonPropertyName("token_type")]
@@ -15,12 +17,14 @@ namespace FireplaceApi.Core.ValueObjects
         public long? ExpiresInSeconds { get; set; }
 
         [JsonPropertyName("refresh_token")]
+        [Sensitive]
         public string RefreshToken { get; set; }
 
         [JsonPropertyName("scope")]
         public string Scope { get; set; }
 
         [JsonPropertyName("id_token")]
+        [Sensitive]
         public string IdToken { get; set; }
 
         [JsonPropertyName("Issued")]

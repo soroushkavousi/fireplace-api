@@ -5,15 +5,15 @@ namespace FireplaceApi.Core.Extensions
 {
     public static class ObjectExtensions
     {
-        public static string ToJson(this object obj, bool secureSensitive = false)
+        public static string ToJson(this object obj, bool ignoreSensitiveLimit = false)
         {
             if (obj == null)
                 return null;
 
-            if (secureSensitive)
-                return JsonConvert.SerializeObject(obj, SensitiveJsonSerializerSettings.Instance);
-            else
+            if (ignoreSensitiveLimit)
                 return JsonConvert.SerializeObject(obj, CoreJsonSerializerSettings.Instance);
+            else
+                return JsonConvert.SerializeObject(obj, SensitiveJsonSerializerSettings.Instance);
         }
 
         public static DestinationType To<DestinationType>(this object obj)
