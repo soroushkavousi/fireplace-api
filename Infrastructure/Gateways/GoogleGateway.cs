@@ -20,6 +20,8 @@ namespace FireplaceApi.Infrastructure.Gateways
     public class GoogleGateway : IGoogleGateway
     {
         private readonly ILogger<GoogleGateway> _logger;
+        private const string _baseAuthUrl = @"https://accounts.google.com/o/oauth2/auth";
+        private const string _baseTokenUrl = @"https://oauth2.googleapis.com/token";
 
         public GoogleGateway(ILogger<GoogleGateway> logger)
         {
@@ -93,7 +95,7 @@ namespace FireplaceApi.Infrastructure.Gateways
             var apiConfigs = Configs.Current.Api;
             var redirectUrl = $"{apiConfigs.BaseUrlPath}{googleConfigs.RelativeRedirectUrl}";
 
-            return GetTokenUrl(googleConfigs.BaseTokenUrl,
+            return GetTokenUrl(_baseTokenUrl,
                 googleConfigs.ClientId, googleConfigs.ClientSecret,
                 code, "authorization_code", redirectUrl);
         }
@@ -143,7 +145,7 @@ namespace FireplaceApi.Infrastructure.Gateways
             var apiConfigs = Configs.Current.Api;
             var redirectUrl = $"{apiConfigs.BaseUrlPath}{googleConfigs.RelativeRedirectUrl}";
 
-            return GetAuthUrl(googleConfigs.BaseAuthUrl,
+            return GetAuthUrl(_baseAuthUrl,
                 googleConfigs.ClientId, redirectUrl, "code",
                 "openid profile email", "online", "docs", "true", "page");
         }

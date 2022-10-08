@@ -8,7 +8,8 @@ on:
 
 env:
   ASPNETCORE_ENVIRONMENT: Production
-  CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
+  FIREPLACE_API_LOG_DIRECTORY: /logs
+  FIREPLACE_API_CONNECTION_STRING: ${{ secrets.FIREPLACE_API_CONNECTION_STRING }}
 
 jobs:
   test:
@@ -115,7 +116,7 @@ jobs:
         cd $PROJECT_DIRECTORY;  
         ls -alh;
         echo 'Running docker compose...';
-        export CONNECTION_STRING='$CONNECTION_STRING';
+        export FIREPLACE_API_CONNECTION_STRING='$FIREPLACE_API_CONNECTION_STRING';
         docker compose down -t 2;
         docker compose up -d;
         ls -alh;

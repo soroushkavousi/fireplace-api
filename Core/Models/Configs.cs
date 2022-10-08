@@ -62,8 +62,6 @@ namespace FireplaceApi.Core.Models
 
         public class GoogleConfigs
         {
-            public string BaseAuthUrl { get; set; }
-            public string BaseTokenUrl { get; set; }
             [Sensitive]
             public string ClientId { get; set; }
             [Sensitive]
@@ -98,8 +96,6 @@ namespace FireplaceApi.Core.Models
             },
             google: new GoogleConfigs
             {
-                BaseAuthUrl = "https://accounts.google.com/o/oauth2/auth",
-                BaseTokenUrl = "https://oauth2.googleapis.com/token",
                 ClientId = "client-id",
                 ClientSecret = "client-secret",
                 RelativeRedirectUrl = "/users/log-in-with-google",

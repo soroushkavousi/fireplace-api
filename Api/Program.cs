@@ -43,6 +43,7 @@ namespace FireplaceApi.Api
             _logger = ProjectInitializer.Logger;
             try
             {
+                _logger.Trace("Starting api...");
                 var builder = CreateBuilder(args);
                 var app = CreateApp(builder);
                 app.Run();
@@ -61,12 +62,15 @@ namespace FireplaceApi.Api
 
         private WebApplicationBuilder CreateBuilder(string[] args)
         {
-            _logger.Trace("Starting api...");
-            var builder = WebApplication.CreateBuilder(args);
+            var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+            {
+                Args = args,
+                EnvironmentName = EnvironmentVariable.EnvironmentName.Value
+            });
             builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
             builder.WebHost.UseNLog();
             ConfigureBuilderServices(builder);
-            Console.WriteLine("Api is ready...");
             return builder;
         }
 
@@ -77,7 +81,7 @@ namespace FireplaceApi.Api
             var infrastructureAssemblyName = $"{nameof(FireplaceApi)}.{nameof(FireplaceApi.Infrastructure)}";
             builder.Services.AddDbContext<FireplaceApiDbContext>(
                 optionsBuilder => optionsBuilder.UseNpgsql(
-                    ProjectInitializer.DatabaseConnectionString,
+                    EnvironmentVariable.ConnectionString.Value,
                     optionsBuilder => optionsBuilder.MigrationsAssembly(infrastructureAssemblyName))
             );
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
