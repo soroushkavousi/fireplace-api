@@ -178,18 +178,20 @@ Host=<server-address>;Port=1234;Username=<username>;Password=<password>;Database
 
 Option 1: Directly in shell
 
-```csharp
+```
 linux: 
 > export ASPNETCORE_ENVIRONMENT='Development'
 > export FIREPLACE_API_LOG_DIRECTORY='path/to/logs'
 > export FIREPLACE_API_CONNECTION_STRING='<connection-string>'
 ```
-```csharp
+
+```
 windows powershell: 
 > $env:ASPNETCORE_ENVIRONMENT = 'Development'
 > $env:FIREPLACE_API_LOG_DIRECTORY= 'path/to/logs'
 > $env:FIREPLACE_API_CONNECTION_STRING = '<connection-string>'
 ```
+
 <br/>
 
 Option 2: Via launchSettings.json
@@ -219,6 +221,7 @@ Note: In this project, the file 'launchSettings.json' will not be pushed to the 
 <br/>
 
 **4. Apply the database migrations**
+
 ```
 > dotnet ef database update --startup-project Api --project Infrastructure
 ```
