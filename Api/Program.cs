@@ -153,7 +153,8 @@ namespace FireplaceApi.Api
                 options.AddSecurityDefinition("Bearer",
                     new OpenApiSecurityScheme
                     {
-                        Description = "Authorization header using the Bearer scheme.",
+                        Description = "Authorization header using the Bearer scheme." +
+                            " <br/> <br/> Just put your **access token** as the value. <br/>",
                         Type = SecuritySchemeType.Http,
                         Scheme = "bearer",
                         In = ParameterLocation.Header,
