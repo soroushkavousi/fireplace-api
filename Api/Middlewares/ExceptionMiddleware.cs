@@ -69,19 +69,13 @@ namespace FireplaceApi.Api.Middlewares
             httpContext.Response.StatusCode = error.HttpStatusCode;
 
             if (error.Name != ErrorName.INTERNAL_SERVER)
-            {
                 _logger.LogAppWarning(message: $"{error.Name}: {error.ServerMessage}", title: "CLIENT_ERROR");
-            }
             else
             {
-                if (error.Exception.GetType().IsSubclassOf(typeof(Exception)))
-                {
+                if (error.Exception.GetType().IsSubclassOf(typeof(ApiException)))
                     _logger.LogAppError($"{error.Name}: {error.ServerMessage}", ex: error.Exception, title: "SERVER_ERROR");
-                }
                 else
-                {
-                    _logger.LogAppCritical($"{error.Name}: {error.ServerMessage}", ex: error.Exception, title: "EXCEPTION");
-                }
+                    _logger.LogAppCritical($"{error.Name}: {error.ServerMessage}", ex: error.Exception, title: "UNKNOWN_ERROR");
             }
 
             var apiExceptionErrorDto = errorConverter.ConvertToApiExceptionDto(error);
