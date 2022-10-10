@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Core.Exceptions;
+using FireplaceApi.Core.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
@@ -18,15 +19,30 @@ namespace FireplaceApi.Api.Attributes
         {
             var actionInput = context.ActionArguments;
             _logger.LogAppInformation(title: "ACTION_INPUT", parameters: actionInput);
-            base.OnActionExecuting(context);
         }
 
         public override void OnActionExecuted(ActionExecutedContext context)
         {
+            if (context.Exception != null)
+            {
+                var message = context.Exception.GetType().Name;
+                if (context.Exception is ApiException apiException)
+                    message += $" | {apiException.ErrorName}";
+                else
+                    message += $" | {context.Exception.Message}";
+                _logger.LogAppInformation(title: "ACTION_OUTPUT", message: message);
+                return;
+            }
+
+            if (context.Result == null)
+            {
+                _logger.LogAppInformation(title: "ACTION_OUTPUT", message: "No Result!");
+                return;
+            }
+
             var result = context.Result as ObjectResult;
             var actionOutput = result.Value;
             _logger.LogAppInformation(title: "ACTION_OUTPUT", parameters: actionOutput);
-            base.OnActionExecuted(context);
         }
     }
 }
