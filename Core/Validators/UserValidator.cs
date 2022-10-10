@@ -190,7 +190,7 @@ namespace FireplaceApi.Core.Validators
         {
             if (Equals(requestingUser.Password.Hash, oldPassword.Hash))
             {
-                var serverMessage = $"Old paassword ({oldPassword}) is not correct!";
+                var serverMessage = $"Old paassword is not correct!";
                 throw new ApiException(ErrorName.OLD_PASSWORD_NOT_CORRECT, serverMessage);
             }
         }
@@ -288,32 +288,32 @@ namespace FireplaceApi.Core.Validators
         {
             if (Regexes.PasswordMinLength.IsMatch(password.Value) == false)
             {
-                var serverMessage = $"Password ({password.Value}) doesn't have the minimum length!";
+                var serverMessage = $"Input password doesn't have the minimum length!";
                 throw new ApiException(ErrorName.PASSWORD_MIN_LENGTH, serverMessage);
             }
             if (Regexes.PasswordMaxLength.IsMatch(password.Value) == false)
             {
-                var serverMessage = $"Password ({password.Value}) exceeds the maximum length!";
+                var serverMessage = $"Input password exceeds the maximum length!";
                 throw new ApiException(ErrorName.PASSWORD_MAX_LENGTH, serverMessage);
             }
             if (Regexes.PasswordAnUppercaseLetter.IsMatch(password.Value) == false)
             {
-                var serverMessage = $"Password ({password.Value}) doesn't have an uppercase letter!";
+                var serverMessage = $"Input password doesn't have an uppercase letter!";
                 throw new ApiException(ErrorName.PASSWORD_AN_UPPERCASE_LETTER, serverMessage);
             }
             if (Regexes.PasswordANumber.IsMatch(password.Value) == false)
             {
-                var serverMessage = $"Password ({password.Value}) doesn't have a number!";
+                var serverMessage = $"Input password doesn't have a number!";
                 throw new ApiException(ErrorName.PASSWORD_A_NUMBER, serverMessage);
             }
             if (Regexes.PasswordALowercaseLetter.IsMatch(password.Value) == false)
             {
-                var serverMessage = $"Password ({password.Value}) doesn't have a lowercase letter!";
+                var serverMessage = $"Input password doesn't have a lowercase letter!";
                 throw new ApiException(ErrorName.PASSWORD_A_LOWERCASE_LETTER, serverMessage);
             }
             if (Regexes.PasswordValidCharacters.IsMatch(password.Value) == false)
             {
-                var serverMessage = $"Password ({password.Value}) doesn't have valid characters!";
+                var serverMessage = $"Input password doesn't have valid characters!";
                 throw new ApiException(ErrorName.PASSWORD_VALID_CHARACTERS, serverMessage);
             }
         }
@@ -323,13 +323,13 @@ namespace FireplaceApi.Core.Validators
             var user = await _userOperator.GetUserByIdentifierAsync(UserIdentifier.OfUsername(username));
             if (user == null)
             {
-                var serverMessage = $"Username {username} doesn't exist! password: {password.Value}";
+                var serverMessage = $"Username {username} doesn't exist! Password Hash: {password.Hash}";
                 throw new ApiException(ErrorName.AUTHENTICATION_FAILED, serverMessage);
             }
 
             if (string.Equals(user.Password.Hash, password.Hash) == false)
             {
-                var serverMessage = $"Username {username} isn't match with password {password.Value}!";
+                var serverMessage = $"Input password is not correct! Username: {username}, Password Hash: {password.Hash}";
                 throw new ApiException(ErrorName.AUTHENTICATION_FAILED, serverMessage);
             }
         }

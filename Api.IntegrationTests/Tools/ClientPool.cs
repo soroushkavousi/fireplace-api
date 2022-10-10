@@ -97,7 +97,7 @@ namespace FireplaceApi.Api.IntegrationTests.Tools
             user.Password = password;
 
             var activationStatus = state == UserState.VERIFIED ? ActivationStatus.COMPLETED : ActivationStatus.SENT;
-            var emailActivation = new Activation(activationStatus, activationCode, $"Code: {activationCode}");
+            var emailActivation = new Activation(activationStatus, activationCode, "Fireplace Email Activation", $"Code: {activationCode}");
             id = await IdGenerator.GenerateNewIdAsync();
             user.Email = await _emailRepository.CreateEmailAsync(id, user.Id, emailAddress, emailActivation);
 

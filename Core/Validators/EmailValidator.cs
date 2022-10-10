@@ -72,13 +72,13 @@ namespace FireplaceApi.Core.Validators
             var email = await _emailOperator.GetEmailByIdentifierAsync(EmailIdentifier.OfAddress(emailAddress), true);
             if (email == null)
             {
-                var serverMessage = $"Email address {emailAddress} doesn't exist! password: {password.Value}";
+                var serverMessage = $"Email address {emailAddress} doesn't exist! Password Hash: {password.Hash}";
                 throw new ApiException(ErrorName.AUTHENTICATION_FAILED, serverMessage);
             }
 
             if (string.Equals(email.User.Password.Hash, password.Hash) == false)
             {
-                var serverMessage = $"Email address {emailAddress} isn't match with password {password.Value}!";
+                var serverMessage = $"Input password is not correct! Email: {emailAddress}, Password Hash: {password.Hash}";
                 throw new ApiException(ErrorName.AUTHENTICATION_FAILED, serverMessage);
             }
         }
@@ -87,7 +87,7 @@ namespace FireplaceApi.Core.Validators
         {
             if (activationCode != email.Activation.Code)
             {
-                var serverMessage = $"Input activation code {activationCode} is not correct for email {email.Id}!";
+                var serverMessage = $"Input activation code is not correct for email {email.Id}!";
                 throw new ApiException(ErrorName.EMAIL_ACTIVATION_CODE_NOT_CORRECT, serverMessage);
             }
         }
