@@ -21,6 +21,7 @@ namespace FireplaceApi.Api.Middlewares
         public async Task InvokeAsync(HttpContext context)
         {
             var sw = Stopwatch.StartNew();
+            _logger.LogAppInformation(title: "REQUEST");
             await _next(context);
             _logger.LogAppInformation(sw: sw, title: "REQUEST_DURATION");
         }

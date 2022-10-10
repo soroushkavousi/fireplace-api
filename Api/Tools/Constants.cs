@@ -8,7 +8,6 @@
         public static string ApiExceptionErrorDtoClassName { get; } = "ApiExceptionErrorDto";
         public static string ResponseAccessTokenHeaderKey { get; } = "access_token";
         public static string ResponseAccessTokenCookieKey { get; } = "access_token";
-        public static string RequestingUserActionArgumentKey { get; } = "requestingUser";
         public static string RequestingUserKey { get; } = "User";
         public static string X_FORWARDED_FOR { get; } = "X-Forwarded-For";
         public static string CsrfTokenKey { get; } = "X-CSRF-TOKEN";

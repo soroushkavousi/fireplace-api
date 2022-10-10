@@ -113,6 +113,7 @@ namespace FireplaceApi.Api
                 options.Filters.Add(typeof(RequestingUserInjectorAttribute));
                 options.Filters.Add(typeof(InputHeaderParametersInjectorAttribute));
                 options.Filters.Add(typeof(InputCookieParametersInjectorAttribute));
+                options.Filters.Add(typeof(ActionLoggingAttribute));
             }).AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = SnakeCaseNamingPolicy.Instance;
@@ -237,7 +238,6 @@ namespace FireplaceApi.Api
                 options.InjectJavascript("/swagger-ui/custom-swagger-ui.js");
             });
 
-            app.UseRequestResponseLoggingMiddleware();
             app.UseExceptionMiddleware();
             app.UseFirewallMiddleware();
             app.MapControllers();

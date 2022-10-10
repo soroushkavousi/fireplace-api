@@ -160,19 +160,5 @@ namespace FireplaceApi.Core.Extensions
                 hash.Append(b.ToString("X2"));
             return hash.ToString();
         }
-
-        // Todo
-        public static string Encrypt(this string content)
-        {
-            var encryptedContent = content;
-            return encryptedContent;
-        }
-
-        // Todo
-        public static string Decrypt(this string encryptedContent)
-        {
-            var content = encryptedContent;
-            return content;
-        }
     }
 }
