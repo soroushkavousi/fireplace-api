@@ -85,7 +85,7 @@ namespace FireplaceApi.Core.Validators
 
         public void ValidateActivationCodeIsCorrectAsync(Email email, int activationCode)
         {
-            if (activationCode != email.Activation.Code && activationCode != 55555)
+            if (activationCode != email.Activation.Code)
             {
                 var serverMessage = $"Input activation code {activationCode} is not correct for email {email.Id}!";
                 throw new ApiException(ErrorName.EMAIL_ACTIVATION_CODE_NOT_CORRECT, serverMessage);
