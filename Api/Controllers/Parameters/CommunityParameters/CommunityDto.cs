@@ -69,17 +69,16 @@ namespace FireplaceApi.Api.Controllers
         {
             Example1, Example2
         };
-        public static OpenApiObject PageExample1 { get; } = new OpenApiObject
+        public static OpenApiObject QueryResultExample1 { get; } = new OpenApiObject
         {
-            [nameof(PageDto<CommunityDto>.Pagination).ToSnakeCase()] = PaginationDto.PureExample1,
-            [nameof(PageDto<CommunityDto>.Items).ToSnakeCase()] = PureListExample1
+            [nameof(QueryResultDto<CommunityDto>.Items).ToSnakeCase()] = PureListExample1,
+            [nameof(QueryResultDto<CommunityDto>.MoreItemIds).ToSnakeCase()] = QueryResultDto<CommunityDto>.MoreItemIdsExample1
         };
-
 
         public static IOpenApiAny Example { get; } = Example1;
         public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
         {
-            [nameof(CommunityController.ListCommunitiesAsync)] = PageExample1,
+            [nameof(CommunityController.ListCommunitiesAsync)] = QueryResultExample1,
             [nameof(CommunityController.GetCommunityByIdOrNameAsync)] = Example1,
             [nameof(CommunityController.CreateCommunityAsync)] = Example1,
             [nameof(CommunityController.PatchCommunityByEncodedIdOrNameAsync)] = Example1,

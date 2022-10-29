@@ -80,10 +80,10 @@ namespace FireplaceApi.Api.Controllers
         {
             Example1, Example2
         };
-        public static OpenApiObject PageExample1 { get; } = new OpenApiObject
+        public static OpenApiObject QueryResultExample1 { get; } = new OpenApiObject
         {
-            [nameof(PageDto<CommunityMembershipDto>.Pagination).ToSnakeCase()] = PaginationDto.PureExample1,
-            [nameof(PageDto<CommunityMembershipDto>.Items).ToSnakeCase()] = PureListExample1
+            [nameof(QueryResultDto<CommunityMembershipDto>.Items).ToSnakeCase()] = PureListExample1,
+            [nameof(QueryResultDto<CommunityMembershipDto>.MoreItemIds).ToSnakeCase()] = QueryResultDto<CommunityMembershipDto>.MoreItemIdsExample1
         };
 
 
@@ -91,7 +91,7 @@ namespace FireplaceApi.Api.Controllers
         public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
         {
             [nameof(CommunityMembershipController.CreateCommunityMembershipAsync)] = Example1,
-            [nameof(CommunityMembershipController.DeleteCommunityMembershipByCommunityIdAsync)] = new OpenApiNull(),
+            [nameof(CommunityMembershipController.DeleteCommunityMembershipByCommunityIdentifierAsync)] = new OpenApiNull(),
         };
 
         static CommunityMembershipDto()

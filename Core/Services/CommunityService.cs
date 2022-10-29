@@ -1,11 +1,10 @@
-﻿using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Identifiers;
+﻿using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Validators;
 using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Services
@@ -24,14 +23,20 @@ namespace FireplaceApi.Core.Services
             _communityOperator = communityOperator;
         }
 
-        public async Task<Page<Community>> ListCommunitiesAsync(User requestingUser,
-            PaginationInputParameters paginationInputParameters, string name, string sort)
+        public async Task<QueryResult<Community>> ListCommunitiesAsync(string name, string sort)
         {
-            await _communityValidator.ValidateListCommunitiesInputParametersAsync(requestingUser,
-                paginationInputParameters, name, sort);
-            var page = await _communityOperator.ListCommunitiesAsync(requestingUser,
-                paginationInputParameters, name, sort.ToNullableEnum<SortType>());
+            await _communityValidator.ValidateListCommunitiesInputParametersAsync(name, sort);
+            var page = await _communityOperator.ListCommunitiesAsync(name, _communityValidator.Sort);
             return page;
+        }
+
+        public async Task<List<Community>> ListCommunitiesByIdsAsync(string encodedIds)
+        {
+            await _communityValidator
+                .ValidateListCommunitiesByIdsInputParametersAsync(encodedIds);
+            var communities = await _communityOperator.ListCommunitiesByIdsAsync(
+                _communityValidator.Ids);
+            return communities;
         }
 
         public async Task<Community> GetCommunityByEncodedIdOrNameAsync(User requestingUser,

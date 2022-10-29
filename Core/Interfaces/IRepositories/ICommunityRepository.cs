@@ -8,9 +8,8 @@ namespace FireplaceApi.Core.Interfaces
 {
     public interface ICommunityRepository
     {
-        public Task<List<Community>> ListCommunitiesAsync(List<ulong> Ids);
         public Task<List<Community>> ListCommunitiesAsync(string name, SortType? sort);
-        public Task<List<ulong>> ListCommunityIdsAsync(string name, SortType? sort);
+        public Task<List<Community>> ListCommunitiesByIdsAsync(List<ulong> Ids);
         public Task<Community> GetCommunityByIdentifierAsync(CommunityIdentifier identifier,
             bool includeCreator = false);
         public Task<string> GetNameByIdAsync(ulong id);

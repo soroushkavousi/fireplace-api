@@ -18,9 +18,9 @@ namespace FireplaceApi.Api.Tools
         {
             swaggerDoc.Tags = new List<OpenApiTag> {
                 new OpenApiTag { Name = "Community", },
-                new OpenApiTag { Name = "CommunityMembership", },
                 new OpenApiTag { Name = "Post", },
                 new OpenApiTag { Name = "Comment", },
+                new OpenApiTag { Name = "CommunityMembership", },
                 new OpenApiTag { Name = "User", },
                 new OpenApiTag { Name = "Email", },
                 new OpenApiTag { Name = "Session", },

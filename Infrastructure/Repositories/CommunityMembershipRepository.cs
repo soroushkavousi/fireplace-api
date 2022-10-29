@@ -65,7 +65,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                     userEntity: false,
                     communityEntity: false
                 )
-                .Take(Configs.Current.Pagination.TotalItemsCount)
+                .Take(Configs.Current.QueryResult.TotalLimit)
                 .ToListAsync();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityMembershipEntities });
@@ -87,7 +87,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                     userEntity: false,
                     communityEntity: false
                 )
-                .Take(Configs.Current.Pagination.TotalItemsCount)
+                .Take(Configs.Current.QueryResult.TotalLimit)
                 .Select(e => e.Id)
                 .ToListAsync();
 

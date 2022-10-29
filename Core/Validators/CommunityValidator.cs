@@ -4,9 +4,9 @@ using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
-using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Validators
@@ -16,25 +16,28 @@ namespace FireplaceApi.Core.Validators
         private readonly ILogger<CommunityValidator> _logger;
         private readonly IServiceProvider _serviceProvider;
         private readonly CommunityOperator _communityOperator;
-        private readonly QueryResultValidator _queryResultValidator;
 
+        public List<ulong> Ids { get; private set; }
+        public SortType? Sort { get; private set; }
 
         public CommunityValidator(ILogger<CommunityValidator> logger,
-            IServiceProvider serviceProvider, CommunityOperator communityOperator,
-            QueryResultValidator queryResultValidator)
+            IServiceProvider serviceProvider, CommunityOperator communityOperator)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
             _communityOperator = communityOperator;
-            _queryResultValidator = queryResultValidator;
         }
 
-        public async Task ValidateListCommunitiesInputParametersAsync(User requestingUser,
-            PaginationInputParameters paginationInputParameters, string name, string sort)
+        public async Task ValidateListCommunitiesInputParametersAsync(string name, string sort)
         {
-            await _queryResultValidator.ValidatePaginationInputParameters(paginationInputParameters,
-                ModelName.COMMUNITY);
-            ValidateInputEnum<CommunitySortType>(sort, nameof(sort), ErrorName.INPUT_SORT_IS_NOT_VALID);
+            Sort = (SortType?)ValidateInputEnum<CommunitySortType>(sort, nameof(sort), ErrorName.INPUT_SORT_IS_NOT_VALID);
+            await Task.CompletedTask;
+        }
+
+        public async Task ValidateListCommunitiesByIdsInputParametersAsync(string encodedIds)
+        {
+            Ids = ValidateIdsFormat(encodedIds);
+            await Task.CompletedTask;
         }
 
         public async Task<CommunityIdentifier> ValidateGetCommunityByEncodedIdOrNameInputParametersAsync(

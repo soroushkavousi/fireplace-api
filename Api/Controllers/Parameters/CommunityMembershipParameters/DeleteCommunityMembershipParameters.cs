@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 namespace FireplaceApi.Api.Controllers
 {
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
-    public class DeleteCommunityMembershipByCommunityEncodedIdOrNameInputRouteParameters
+    public class DeleteCommunityMembershipByCommunityIdentifierInputRouteParameters
     {
         [Required]
         [FromRoute(Name = "id-or-name")]

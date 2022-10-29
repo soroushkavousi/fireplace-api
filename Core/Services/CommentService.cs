@@ -1,6 +1,4 @@
-﻿using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.Validators;
@@ -25,47 +23,54 @@ namespace FireplaceApi.Core.Services
             _commentOperator = commentOperator;
         }
 
-        public async Task<Page<Comment>> ListSelfCommentsAsync(User requestingUser,
-            PaginationInputParameters paginationInputParameters, string sort)
+        public async Task<QueryResult<Comment>> ListPostCommentsAsync(string encodedPostId,
+            string sort, User requestingUser = null)
         {
-            await _commentValidator.ValidateListSelfCommentsInputParametersAsync(requestingUser,
-                paginationInputParameters, sort);
-            var page = await _commentOperator.ListSelfCommentsAsync(requestingUser,
-                paginationInputParameters, sort.ToNullableEnum<SortType>());
-            return page;
+            await _commentValidator.ValidateListPostCommentsInputParametersAsync(
+                encodedPostId, sort, requestingUser);
+            var queryResult = await _commentOperator.ListPostCommentsAsync(
+                _commentValidator.PostId, _commentValidator.Sort, requestingUser);
+            return queryResult;
         }
 
-        public async Task<Page<Comment>> ListPostCommentsAsync(User requestingUser,
-            PaginationInputParameters paginationInputParameters, string encodedPostId,
+        public async Task<List<Comment>> ListCommentsByIdsAsync(string encodedIds,
+            string sort, User requestingUser = null)
+        {
+            await _commentValidator.ValidateListCommentsByIdsInputParametersAsync(
+                encodedIds, sort, requestingUser);
+            var comments = await _commentOperator.ListCommentsByIdsAsync(
+                _commentValidator.Ids, _commentValidator.Sort, requestingUser);
+            return comments;
+        }
+
+        public async Task<QueryResult<Comment>> ListSelfCommentsAsync(User requestingUser,
             string sort)
         {
-            await _commentValidator.ValidateListPostCommentsInputParametersAsync(requestingUser,
-                paginationInputParameters, encodedPostId, sort);
-            var postId = encodedPostId.IdDecode();
-            var page = await _commentOperator.ListPostCommentsAsync(requestingUser,
-                paginationInputParameters, postId, sort.ToNullableEnum<SortType>());
-            return page;
+            await _commentValidator.ValidateListSelfCommentsInputParametersAsync(requestingUser,
+                sort);
+            var queryResult = await _commentOperator.ListSelfCommentsAsync(requestingUser,
+                _commentValidator.Sort);
+            return queryResult;
         }
 
-        public async Task<List<Comment>> ListChildCommentsAsync(User requestingUser,
-            string encodedParentCommentId)
+        public async Task<QueryResult<Comment>> ListChildCommentsAsync(
+            string encodedParentCommentId, User requestingUser = null)
         {
             await _commentValidator.ValidateListChildCommentsAsyncInputParametersAsync(
-                requestingUser, encodedParentCommentId);
-            var parentCommentId = encodedParentCommentId.IdDecode();
-            var page = await _commentOperator.ListChildCommentsAsync(requestingUser,
-                parentCommentId);
-            return page;
+                encodedParentCommentId, requestingUser);
+            var queryResult = await _commentOperator.ListChildCommentsAsync(requestingUser,
+                _commentValidator.ParentCommentId);
+            return queryResult;
         }
 
-        public async Task<Comment> GetCommentByIdAsync(User requestingUser, string encodedId,
-            bool? includeAuthor, bool? includePost)
+        public async Task<Comment> GetCommentByIdAsync(string encodedId,
+            bool? includeAuthor, bool? includePost, User requestingUser = null)
         {
             await _commentValidator.ValidateGetCommentByIdInputParametersAsync(
-                requestingUser, encodedId, includeAuthor, includePost);
-            var id = encodedId.IdDecode();
-            var comment = await _commentOperator.GetCommentByIdAsync(id,
-                includeAuthor.Value, includePost.Value, requestingUser);
+                encodedId, includeAuthor, includePost, requestingUser);
+            var comment = await _commentOperator.GetCommentByIdAsync(
+                _commentValidator.CommentId, includeAuthor.Value, includePost.Value,
+                requestingUser);
             return comment;
         }
 

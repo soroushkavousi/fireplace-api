@@ -24,6 +24,14 @@ namespace FireplaceApi.Core.Tools
             return id;
         }
 
+        public static string IdEncode(this ulong? id)
+        {
+            if (id == null)
+                return null;
+
+            return IdEncode(id.Value);
+        }
+
         public static string IdEncode(this ulong id)
         {
             var bytes = BitConverter.GetBytes(id);
@@ -68,6 +76,7 @@ namespace FireplaceApi.Core.Tools
             if (string.IsNullOrWhiteSpace(encodedId))
                 return false;
 
+            encodedId = encodedId.Trim();
             if (encodedId.Length != 11)
                 return false;
 

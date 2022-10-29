@@ -1,5 +1,6 @@
 ﻿using FireplaceApi.Api.Extensions;
 using FireplaceApi.Api.Tools;
+using FireplaceApi.Core.Enums;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -24,7 +25,7 @@ namespace FireplaceApi.Api.Controllers
         [Required]
         public int Vote { get; set; }
         [Required]
-        public int RequestingUserVote { get; set; }
+        public VoteType RequestingUserVote { get; set; }
         [Required]
         public string Content { get; set; }
         [Required]
@@ -42,7 +43,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(CommunityId).ToSnakeCase()] = CommunityDto.PureExample1[nameof(CommunityDto.Id).ToSnakeCase()],
             [nameof(CommunityName).ToSnakeCase()] = CommunityDto.PureExample1[nameof(CommunityDto.Name).ToSnakeCase()],
             [nameof(Vote).ToSnakeCase()] = new OpenApiInteger(53),
-            [nameof(RequestingUserVote).ToSnakeCase()] = new OpenApiInteger(1),
+            [nameof(RequestingUserVote).ToSnakeCase()] = new OpenApiString(VoteType.UPVOTE.ToString()),
             [nameof(Content).ToSnakeCase()] = new OpenApiString("Hello guys.\nThis is my content!"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(ModifiedDate).ToSnakeCase()] = new OpenApiNull(),
@@ -57,7 +58,7 @@ namespace FireplaceApi.Api.Controllers
             [nameof(CommunityId).ToSnakeCase()] = CommunityDto.PureExample2[nameof(CommunityDto.Id).ToSnakeCase()],
             [nameof(CommunityName).ToSnakeCase()] = CommunityDto.PureExample2[nameof(CommunityDto.Name).ToSnakeCase()],
             [nameof(Vote).ToSnakeCase()] = new OpenApiInteger(4),
-            [nameof(RequestingUserVote).ToSnakeCase()] = new OpenApiInteger(0),
+            [nameof(RequestingUserVote).ToSnakeCase()] = new OpenApiString(VoteType.NEUTRAL.ToString()),
             [nameof(Content).ToSnakeCase()] = new OpenApiString("What is the best way to ...?"),
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(ModifiedDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetLastHourDate()),
@@ -104,17 +105,23 @@ namespace FireplaceApi.Api.Controllers
         {
             Example1, Example2
         };
-        public static OpenApiObject PageExample1 { get; } = new OpenApiObject
+        public static OpenApiObject QueryResultExample1 { get; } = new OpenApiObject
         {
-            [nameof(PageDto<PostDto>.Pagination).ToSnakeCase()] = PaginationDto.PureExample1,
-            [nameof(PageDto<PostDto>.Items).ToSnakeCase()] = PureListExample1
+            [nameof(QueryResultDto<PostDto>.Items).ToSnakeCase()] = PureListExample1,
+            [nameof(QueryResultDto<PostDto>.MoreItemIds).ToSnakeCase()] = QueryResultDto<PostDto>.MoreItemIdsExample1
         };
-
+        public static OpenApiObject QueryResultExample2 { get; } = new OpenApiObject
+        {
+            [nameof(QueryResultDto<PostDto>.Items).ToSnakeCase()] = PureListExample1,
+            [nameof(QueryResultDto<PostDto>.MoreItemIds).ToSnakeCase()] = new OpenApiNull(),
+        };
 
         public static IOpenApiAny Example { get; } = Example1;
         public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
         {
-            [nameof(PostController.ListPostsAsync)] = PageExample1,
+            [nameof(PostController.ListCommunityPostsAsync)] = QueryResultExample1,
+            [nameof(PostController.ListPostsAsync)] = QueryResultExample1,
+            [nameof(PostController.ListSelfPostsAsync)] = QueryResultExample1,
             [nameof(PostController.GetPostByIdAsync)] = PureExample1,
             [nameof(PostController.CreatePostAsync)] = PureExample1,
             [nameof(PostController.VotePostAsync)] = PureExample1,
@@ -130,7 +137,7 @@ namespace FireplaceApi.Api.Controllers
         }
 
         public PostDto(string id, string authorId, string authorUsername, string communityId,
-            string communityName, int vote, int requestingUserVote, string content,
+            string communityName, int vote, VoteType requestingUserVote, string content,
             DateTime creationDate, DateTime? modifiedDate, UserDto author = null,
             CommunityDto community = null)
         {

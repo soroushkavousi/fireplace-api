@@ -33,7 +33,6 @@ namespace FireplaceApi.Api.Extensions
             services.AddScoped<Infrastructure.Converters.ErrorConverter>();
             services.AddScoped<Infrastructure.Converters.FileConverter>();
             services.AddScoped<Infrastructure.Converters.GoogleUserConverter>();
-            services.AddScoped<Infrastructure.Converters.QueryResultConverter>();
             services.AddScoped<Infrastructure.Converters.PostConverter>();
             services.AddScoped<Infrastructure.Converters.PostVoteConverter>();
             services.AddScoped<Infrastructure.Converters.SessionConverter>();
@@ -55,7 +54,6 @@ namespace FireplaceApi.Api.Extensions
             services.AddScoped<IGoogleUserRepository, GoogleUserRepository>();
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IPostVoteRepository, PostVoteRepository>();
-            services.AddScoped<IQueryResultRepository, QueryResultRepository>();
             services.AddScoped<ISessionRepository, SessionRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             return services;
@@ -86,9 +84,7 @@ namespace FireplaceApi.Api.Extensions
             services.AddScoped<ErrorOperator>();
             services.AddScoped<FileOperator>();
             services.AddScoped<GoogleUserOperator>();
-            services.AddScoped<PageOperator>();
             services.AddScoped<PostOperator>();
-            services.AddScoped<QueryResultOperator>();
             services.AddScoped<SessionOperator>();
             services.AddScoped<UserOperator>();
             return services;
@@ -104,7 +100,6 @@ namespace FireplaceApi.Api.Extensions
             services.AddScoped<ErrorValidator>();
             services.AddScoped<FileValidator>();
             services.AddScoped<PostValidator>();
-            services.AddScoped<QueryResultValidator>();
             services.AddScoped<SessionValidator>();
             services.AddScoped<UserValidator>();
             return services;
@@ -133,7 +128,6 @@ namespace FireplaceApi.Api.Extensions
             services.AddScoped<EmailConverter>();
             services.AddScoped<ErrorConverter>();
             services.AddScoped<FileConverter>();
-            services.AddScoped<GlobalConverter>();
             services.AddScoped<PostConverter>();
             services.AddScoped<SessionConverter>();
             services.AddScoped<UserConverter>();

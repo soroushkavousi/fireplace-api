@@ -1,11 +1,12 @@
 ﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
-using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Operators
@@ -13,50 +14,61 @@ namespace FireplaceApi.Core.Operators
     public class PostOperator
     {
         private readonly ILogger<PostOperator> _logger;
-        private readonly IServiceProvider _serviceProvider;
         private readonly IPostRepository _postRepository;
         private readonly IPostVoteRepository _postVoteRepository;
-        private readonly PageOperator _pageOperator;
         private readonly UserOperator _userOperator;
         private readonly CommunityOperator _communityOperator;
 
         public PostOperator(ILogger<PostOperator> logger,
-            IServiceProvider serviceProvider,
             IPostRepository postRepository,
             IPostVoteRepository postVoteRepository,
-            PageOperator pageOperator, UserOperator userOperator,
+            UserOperator userOperator,
             CommunityOperator communityOperator)
         {
             _logger = logger;
-            _serviceProvider = serviceProvider;
             _postRepository = postRepository;
             _postVoteRepository = postVoteRepository;
-            _pageOperator = pageOperator;
             _userOperator = userOperator;
             _communityOperator = communityOperator;
         }
 
-        public async Task<Page<Post>> ListPostsAsync(User requestingUser,
-            PaginationInputParameters paginationInputParameters, bool? self,
-            bool? joined, CommunityIdentifier communityIdentifier,
-            string search, SortType? sort)
+        public async Task<QueryResult<Post>> ListCommunityPostsAsync(CommunityIdentifier communityIdentifier,
+            SortType? sort, User requestingUser)
         {
-            Page<Post> resultPage = default;
-            if (string.IsNullOrWhiteSpace(paginationInputParameters.Pointer))
-            {
-                var postIds = await _postRepository.ListPostIdsAsync(
-                    requestingUser.Id, self, joined, communityIdentifier, search, sort);
-                resultPage = await _pageOperator.CreatePageWithoutPointerAsync(
-                    ModelName.POST, paginationInputParameters, postIds,
-                    _postRepository.ListPostsAsync, requestingUser);
-            }
-            else
-            {
-                resultPage = await _pageOperator.CreatePageWithPointerAsync(
-                    ModelName.POST, paginationInputParameters,
-                    _postRepository.ListPostsAsync, requestingUser);
-            }
-            return resultPage;
+            sort ??= Constants.DefaultSort;
+            var communityPosts = await _postRepository.ListCommunityPostsAsync(
+                communityIdentifier, sort, requestingUser);
+            var queryResult = new QueryResult<Post>(communityPosts);
+            return queryResult;
+        }
+
+        public async Task<QueryResult<Post>> ListPostsAsync(string search, SortType? sort, User requestingUser = null)
+        {
+            sort ??= Constants.DefaultSort;
+            var posts = await _postRepository.ListPostsAsync(search, sort, requestingUser);
+            var queryResult = new QueryResult<Post>(posts);
+            return queryResult;
+        }
+
+        public async Task<List<Post>> ListPostsByIdsAsync(List<ulong> ids, User requestingUser = null)
+        {
+            if (ids.IsNullOrEmpty())
+                return null;
+
+            var posts = await _postRepository
+                .ListPostsByIdsAsync(ids, requestingUser);
+            return posts;
+        }
+
+        public async Task<QueryResult<Post>> ListSelfPostsAsync(User author,
+            SortType? sort = null)
+        {
+            sort ??= Constants.DefaultSort;
+            var selfPosts = await _postRepository.ListSelfPostsAsync(
+                author, sort);
+
+            var queryResult = new QueryResult<Post>(selfPosts);
+            return queryResult;
         }
 
         public async Task<Post> GetPostByIdAsync(ulong id,

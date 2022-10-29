@@ -15,17 +15,15 @@ namespace FireplaceApi.Core.Validators
         private readonly ILogger<CommunityMembershipValidator> _logger;
         private readonly IServiceProvider _serviceProvider;
         private readonly CommunityMembershipOperator _communityMembershipOperator;
-        private readonly QueryResultValidator _queryResultValidator;
         private readonly CommunityValidator _communityValidator;
 
         public CommunityMembershipValidator(ILogger<CommunityMembershipValidator> logger,
             IServiceProvider serviceProvider, CommunityMembershipOperator communityMembershipOperator,
-            QueryResultValidator queryResultValidator, CommunityValidator communityValidator)
+            CommunityValidator communityValidator)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
             _communityMembershipOperator = communityMembershipOperator;
-            _queryResultValidator = queryResultValidator;
             _communityValidator = communityValidator;
         }
 

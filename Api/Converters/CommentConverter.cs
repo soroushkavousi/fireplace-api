@@ -1,11 +1,11 @@
 ﻿using FireplaceApi.Api.Controllers;
+using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace FireplaceApi.Api.Converters
 {
@@ -36,8 +36,7 @@ namespace FireplaceApi.Api.Converters
                     .ConvertToDto(comment.Post.PureCopy());
 
             List<CommentDto> childCommentDtos = null;
-            if (comment.ChildComments != null &&
-                comment.ChildComments.Count != 0)
+            if (!comment.ChildComments.IsNullOrEmpty())
             {
                 childCommentDtos = new List<CommentDto>();
                 foreach (var childComment in comment.ChildComments)
@@ -48,15 +47,24 @@ namespace FireplaceApi.Api.Converters
                 }
             }
 
-            var encodedParentCommentIds = comment.ParentCommentIds
-                .Select(pcid => pcid.IdEncode()).ToList();
+            List<string> moreChildCommentEncodedIds = null;
+            if (!comment.MoreChildCommentIds.IsNullOrEmpty())
+            {
+                moreChildCommentEncodedIds = new List<string>();
+                foreach (var childCommentId in comment.MoreChildCommentIds)
+                {
+                    moreChildCommentEncodedIds.Add(childCommentId.IdEncode());
+                }
+            }
 
             var commentDto = new CommentDto(comment.Id.IdEncode(),
                 comment.AuthorId.IdEncode(), comment.AuthorUsername,
-                comment.PostId.IdEncode(), comment.Vote, comment.RequestingUserVote,
+                comment.PostId.IdEncode(), comment.Vote,
+                comment.RequestingUserVote,
                 comment.Content, comment.CreationDate,
-                comment.ModifiedDate, encodedParentCommentIds,
-                authorDto, postDto, childComments: childCommentDtos);
+                comment.ParentCommentId.IdEncode(),
+                comment.ModifiedDate, authorDto, postDto,
+                childCommentDtos, moreChildCommentEncodedIds);
 
             return commentDto;
         }

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FireplaceApi.Api.Controllers
 {
-    public class ListCommunitiesInputQueryParameters : PaginationInputQueryParameters
+    public class ListCommunitiesInputQueryParameters
     {
         [FromQuery(Name = "name")]
         public string Name { get; set; }
@@ -12,5 +12,8 @@ namespace FireplaceApi.Api.Controllers
         [FromQuery(Name = "sort")]
         [SwaggerEnum(Type = typeof(CommunitySortType))]
         public string Sort { get; set; }
+
+        [FromQuery(Name = "ids")]
+        public string Ids { get; set; }
     }
 }

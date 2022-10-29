@@ -1,11 +1,12 @@
 ﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
-using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Operators
@@ -13,37 +14,31 @@ namespace FireplaceApi.Core.Operators
     public class CommunityOperator
     {
         private readonly ILogger<CommunityOperator> _logger;
-        private readonly IServiceProvider _serviceProvider;
         private readonly ICommunityRepository _communityRepository;
-        private readonly PageOperator _pageOperator;
 
         public CommunityOperator(ILogger<CommunityOperator> logger,
-            IServiceProvider serviceProvider, ICommunityRepository communityRepository,
-            PageOperator pageOperator)
+            ICommunityRepository communityRepository)
         {
             _logger = logger;
-            _serviceProvider = serviceProvider;
             _communityRepository = communityRepository;
-            _pageOperator = pageOperator;
         }
 
-        public async Task<Page<Community>> ListCommunitiesAsync(User requestingUser,
-            PaginationInputParameters paginationInputParameters, string name, SortType? sortType)
+        public async Task<QueryResult<Community>> ListCommunitiesAsync(string name, SortType? sort)
         {
-            Page<Community> resultPage = default;
-            if (string.IsNullOrWhiteSpace(paginationInputParameters.Pointer))
-            {
-                var communityIds = await _communityRepository.ListCommunityIdsAsync(name, sortType);
-                resultPage = await _pageOperator.CreatePageWithoutPointerAsync(ModelName.COMMUNITY,
-                    paginationInputParameters, communityIds,
-                    _communityRepository.ListCommunitiesAsync);
-            }
-            else
-            {
-                resultPage = await _pageOperator.CreatePageWithPointerAsync(ModelName.COMMUNITY,
-                    paginationInputParameters, _communityRepository.ListCommunitiesAsync);
-            }
-            return resultPage;
+            sort ??= Constants.DefaultSort;
+            var communities = await _communityRepository.ListCommunitiesAsync(name, sort);
+            var queryResult = new QueryResult<Community>(communities);
+            return queryResult;
+        }
+
+        public async Task<List<Community>> ListCommunitiesByIdsAsync(List<ulong> ids)
+        {
+            if (ids.IsNullOrEmpty())
+                return null;
+
+            var communities = await _communityRepository
+                .ListCommunitiesByIdsAsync(ids);
+            return communities;
         }
 
         public async Task<Community> GetCommunityByIdentifierAsync(

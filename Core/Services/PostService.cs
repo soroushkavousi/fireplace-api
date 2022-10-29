@@ -1,11 +1,10 @@
-﻿using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.Validators;
 using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Services
@@ -24,18 +23,38 @@ namespace FireplaceApi.Core.Services
             _postOperator = postOperator;
         }
 
-        public async Task<Page<Post>> ListPostsAsync(User requestingUser,
-            PaginationInputParameters paginationInputParameters, bool? self,
-            bool? joined, string encodedCommunityId, string communityName,
-            string search, string sort)
+        public async Task<QueryResult<Post>> ListCommunityPostsAsync(string communityIdOrName, string sort,
+            User requestingUser = null)
         {
-            var communityIdentifier = await _postValidator.ValidateListPostsInputParametersAsync(
-                requestingUser, paginationInputParameters, self, joined, encodedCommunityId, communityName,
-                search, sort);
-            var page = await _postOperator.ListPostsAsync(requestingUser,
-                paginationInputParameters, self, joined, communityIdentifier,
-                search, sort.ToNullableEnum<SortType>());
-            return page;
+            await _postValidator.ValidateListCommunityPostsInputParametersAsync(
+                communityIdOrName, sort, requestingUser);
+            return await _postOperator.ListCommunityPostsAsync(_postValidator.CommunityIdentifier,
+                _postValidator.Sort, requestingUser);
+        }
+
+        public async Task<QueryResult<Post>> ListPostsAsync(string search, string sort, User requestingUser = null)
+        {
+            await _postValidator.ValidateListPostsInputParametersAsync(search, sort, requestingUser);
+            return await _postOperator.ListPostsAsync(search, _postValidator.Sort, requestingUser);
+        }
+
+        public async Task<List<Post>> ListPostsByIdsAsync(string encodedIds, User requestingUser = null)
+        {
+            await _postValidator
+                .ValidateListPostsByIdsInputParametersAsync(encodedIds, requestingUser);
+            var communities = await _postOperator.ListPostsByIdsAsync(
+                _postValidator.Ids, requestingUser);
+            return communities;
+        }
+
+        public async Task<QueryResult<Post>> ListSelfPostsAsync(User requestingUser,
+            string sort)
+        {
+            await _postValidator.ValidateListSelfPostsInputParametersAsync(requestingUser,
+                sort);
+            var queryResult = await _postOperator.ListSelfPostsAsync(requestingUser,
+                _postValidator.Sort);
+            return queryResult;
         }
 
         public async Task<Post> GetPostByIdAsync(User requestingUser, string encodedId,

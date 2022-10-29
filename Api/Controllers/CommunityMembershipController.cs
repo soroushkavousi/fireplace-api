@@ -53,9 +53,9 @@ namespace FireplaceApi.Api.Controllers
         /// <response code="200">The community membership was successfully deleted.</response>
         [HttpDelete("/v{version:apiVersion}/communities/{id-or-name}/members/me")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteCommunityMembershipByCommunityIdAsync(
+        public async Task<IActionResult> DeleteCommunityMembershipByCommunityIdentifierAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] DeleteCommunityMembershipByCommunityEncodedIdOrNameInputRouteParameters inputRouteParameters)
+            [FromRoute] DeleteCommunityMembershipByCommunityIdentifierInputRouteParameters inputRouteParameters)
         {
             await _communityMembershipService.DeleteCommunityMembershipAsync(requestingUser,
                 inputRouteParameters.CommunityEncodedIdOrName);

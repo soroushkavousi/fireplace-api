@@ -7,24 +7,20 @@ namespace FireplaceApi.Core.Interfaces
 {
     public interface ICommentRepository
     {
-        public Task<List<Comment>> ListCommentsAsync(List<ulong> Ids,
-            User requestingUser = null);
-        public Task<List<ulong>> ListSelfCommentIdsAsync(ulong authorId,
-            SortType? sort);
-        public Task<List<ulong>> ListPostCommentIdsAsync(ulong postId,
-            SortType? sort);
-        public Task<List<Comment>> ListChildCommentsAsync(ulong postId,
-            List<ulong> parentCommentIds, User requestingUser = null);
-        public Task<List<Comment>> ListChildCommentsAsync(ulong postId,
-            ulong parentCommentId, User requestingUser = null);
+        public Task<List<Comment>> ListPostCommentsAsync(ulong postId,
+            SortType? sort = null, User requestingUser = null);
+        public Task<List<Comment>> ListCommentsByIdsAsync(
+            List<ulong> Ids, SortType? sort = null, User requestingUser = null);
+        public Task<List<Comment>> ListSelfCommentsAsync(User author,
+            SortType? sort = null);
         public Task<Comment> GetCommentByIdAsync(ulong id,
             bool includeAuthor = false, bool includePost = false,
+            bool includeChildComments = false, SortType? sort = null,
             User requestingUser = null);
         public Task<Comment> CreateCommentAsync(ulong id,
             ulong authorUserId, string authorUsername, ulong postId,
-            string content, List<ulong> parentCommentIds = null);
-        public Task<Comment> UpdateCommentAsync(
-            Comment comment);
+            string content, ulong? parentCommentId = null);
+        public Task<Comment> UpdateCommentAsync(Comment comment);
         public Task DeleteCommentByIdAsync(ulong id);
         public Task<bool> DoesCommentIdExistAsync(ulong id);
     }

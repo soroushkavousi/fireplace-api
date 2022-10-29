@@ -4,9 +4,9 @@ using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
-using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Core.Validators
@@ -16,33 +16,47 @@ namespace FireplaceApi.Core.Validators
         private readonly ILogger<PostValidator> _logger;
         private readonly IServiceProvider _serviceProvider;
         private readonly PostOperator _postOperator;
-        private readonly QueryResultValidator _queryResultValidator;
         private readonly CommunityValidator _communityValidator;
+
+        public CommunityIdentifier CommunityIdentifier { get; set; }
+        public List<ulong> Ids { get; private set; }
+        public SortType? Sort { get; private set; }
 
         public PostValidator(ILogger<PostValidator> logger,
             IServiceProvider serviceProvider, PostOperator postOperator,
-            QueryResultValidator queryResultValidator,
             CommunityValidator communityValidator)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
             _postOperator = postOperator;
-            _queryResultValidator = queryResultValidator;
             _communityValidator = communityValidator;
         }
 
-        public async Task<CommunityIdentifier> ValidateListPostsInputParametersAsync(User requestingUser,
-            PaginationInputParameters paginationInputParameters, bool? self,
-            bool? joined, string encodedCommunityId, string communityName,
-            string search, string sort)
+        public async Task ValidateListCommunityPostsInputParametersAsync(string communityIdOrName,
+            string sort, User requestingUser)
         {
-            await _queryResultValidator.ValidatePaginationInputParameters(
-                paginationInputParameters, ModelName.POST);
+            Sort = ValidateInputEnum<SortType>(sort, nameof(sort), ErrorName.INPUT_SORT_IS_NOT_VALID);
+            CommunityIdentifier = await _communityValidator
+                .ValidateMultipleIdentifiers(communityIdOrName, communityIdOrName);
+        }
 
-            ValidateInputEnum<SortType>(sort, nameof(sort), ErrorName.INPUT_SORT_IS_NOT_VALID);
-            var communityIdentifier = await _communityValidator
-                .ValidateMultipleIdentifiers(encodedCommunityId, communityName, false);
-            return communityIdentifier;
+        public async Task ValidateListPostsInputParametersAsync(string search, string sort, User requestingUser)
+        {
+            Sort = ValidateInputEnum<SortType>(sort, nameof(sort), ErrorName.INPUT_SORT_IS_NOT_VALID);
+            await Task.CompletedTask;
+        }
+
+        public async Task ValidateListPostsByIdsInputParametersAsync(string encodedIds, User requestingUser)
+        {
+            Ids = ValidateIdsFormat(encodedIds);
+            await Task.CompletedTask;
+        }
+
+        public async Task ValidateListSelfPostsInputParametersAsync(User requestingUser,
+            string sort)
+        {
+            Sort = ValidateInputEnum<SortType>(sort, nameof(sort), ErrorName.INPUT_SORT_IS_NOT_VALID);
+            await Task.CompletedTask;
         }
 
         public async Task ValidateGetPostByIdInputParametersAsync(User requestingUser, string encodedId,

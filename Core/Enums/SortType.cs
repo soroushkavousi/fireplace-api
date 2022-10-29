@@ -2,14 +2,14 @@
 {
     public enum SortType
     {
-        TOP,
-        NEW,
-        OLD,
+        TOP = 0,
+        OLD = 1,
+        NEW = 2,
     }
 
     public enum CommunitySortType
     {
-        NEW,
-        OLD,
+        OLD = 1,
+        NEW = 2,
     }
 }

@@ -1,26 +1,39 @@
 ﻿using FireplaceApi.Api.Tools;
 using FireplaceApi.Core.Enums;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Api.Controllers
 {
-    public class ListPostsInputQueryParameters : PaginationInputQueryParameters
+    public class ListCommunityPostsInputRouteParameters
     {
-        [FromQuery(Name = "self")]
-        public bool? Self { get; set; }
+        [Required]
+        [FromRoute(Name = "id-or-name")]
+        public string CommunityIdOrName { get; set; }
+    }
 
-        [FromQuery(Name = "joined")]
-        public bool? Joined { get; set; }
+    public class ListCommunityPostsInputQueryParameters
+    {
+        [FromQuery(Name = "sort")]
+        [SwaggerEnum(Type = typeof(SortType))]
+        public string Sort { get; set; }
+    }
 
-        [FromQuery(Name = "community_id")]
-        public string CommunityId { get; set; }
-
-        [FromQuery(Name = "community_name")]
-        public string CommunityName { get; set; }
-
+    public class ListPostsInputQueryParameters
+    {
         [FromQuery(Name = "search")]
         public string Search { get; set; }
 
+        [FromQuery(Name = "sort")]
+        [SwaggerEnum(Type = typeof(SortType))]
+        public string Sort { get; set; }
+
+        [FromQuery(Name = "ids")]
+        public string Ids { get; set; }
+    }
+
+    public class ListSelfPostsInputQueryParameters
+    {
         [FromQuery(Name = "sort")]
         [SwaggerEnum(Type = typeof(SortType))]
         public string Sort { get; set; }
