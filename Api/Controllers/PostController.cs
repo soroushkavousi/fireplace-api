@@ -120,16 +120,16 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Created post</returns>
         /// <response code="200">Returns the newly created item</response>
-        [HttpPost]
+        [HttpPost("/v{version:apiVersion}/communities/{id-or-name}/posts")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> CreatePostAsync(
             [BindNever][FromHeader] User requestingUser,
+            [FromRoute] CreatePostInputRouteParameters inputRouteParameters,
             [FromBody] CreatePostInputBodyParameters inputBodyParameters)
         {
-            var post = await _postService.CreatePostAsync(
-                requestingUser, inputBodyParameters.CommunityId,
-                inputBodyParameters.CommunityName, inputBodyParameters.Content);
+            var post = await _postService.CreatePostAsync(requestingUser,
+                inputRouteParameters.CommunityIdOrName, inputBodyParameters.Content);
             var postDto = _postConverter.ConvertToDto(post);
             return postDto;
         }

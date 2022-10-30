@@ -68,13 +68,13 @@ namespace FireplaceApi.Core.Services
             return post;
         }
 
-        public async Task<Post> CreatePostAsync(User requestingUser, string encodedCommunityId,
-            string communityName, string content)
+        public async Task<Post> CreatePostAsync(User requestingUser,
+            string communityEncodedIdOrName, string content)
         {
-            var communityIdentifier = await _postValidator.ValidateCreatePostInputParametersAsync(
-                    requestingUser, encodedCommunityId, communityName, content);
-            return await _postOperator.CreatePostAsync(requestingUser, communityIdentifier,
-                    content);
+            await _postValidator.ValidateCreatePostInputParametersAsync(
+                    requestingUser, communityEncodedIdOrName, content);
+            return await _postOperator.CreatePostAsync(requestingUser,
+                _postValidator.CommunityIdentifier, content);
         }
 
         public async Task<Post> VotePostAsync(User requestingUser,

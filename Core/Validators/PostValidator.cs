@@ -32,12 +32,12 @@ namespace FireplaceApi.Core.Validators
             _communityValidator = communityValidator;
         }
 
-        public async Task ValidateListCommunityPostsInputParametersAsync(string communityIdOrName,
+        public async Task ValidateListCommunityPostsInputParametersAsync(string communityEncodedIdOrName,
             string sort, User requestingUser)
         {
             Sort = ValidateInputEnum<SortType>(sort, nameof(sort), ErrorName.INPUT_SORT_IS_NOT_VALID);
             CommunityIdentifier = await _communityValidator
-                .ValidateMultipleIdentifiers(communityIdOrName, communityIdOrName);
+                .ValidateMultipleIdentifiers(communityEncodedIdOrName, communityEncodedIdOrName);
         }
 
         public async Task ValidateListPostsInputParametersAsync(string search, string sort, User requestingUser)
@@ -66,13 +66,12 @@ namespace FireplaceApi.Core.Validators
             var post = await ValidatePostExistsAsync(id);
         }
 
-        public async Task<CommunityIdentifier> ValidateCreatePostInputParametersAsync(
-            User requestingUser, string encodedCommunityId, string communityName, string content)
+        public async Task ValidateCreatePostInputParametersAsync(
+            User requestingUser, string communityEncodedIdOrName, string content)
         {
             ValidatePostContentFormat(content);
-            var communityIdentifier = await _communityValidator
-                .ValidateMultipleIdentifiers(encodedCommunityId, communityName);
-            return communityIdentifier;
+            CommunityIdentifier = await _communityValidator
+                .ValidateMultipleIdentifiers(communityEncodedIdOrName, communityEncodedIdOrName);
         }
 
         public async Task ValidateVotePostInputParametersAsync(User requestingUser,
