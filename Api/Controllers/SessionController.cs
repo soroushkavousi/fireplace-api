@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace FireplaceApi.Api.Controllers
 {
     [ApiController]
-    [ApiVersion("0.1")]
+    [ApiVersion("1.0")]
     [Route("v{version:apiVersion}/sessions")]
     [Produces("application/json")]
     public class SessionController : ApiController

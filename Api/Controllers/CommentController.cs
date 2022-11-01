@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace FireplaceApi.Api.Controllers
 {
     [ApiController]
-    [ApiVersion("0.1")]
+    [ApiVersion("1.0")]
     [Route("v{version:apiVersion}/comments")]
     [Produces("application/json")]
     public class CommentController : ApiController
@@ -180,7 +180,6 @@ namespace FireplaceApi.Api.Controllers
             [BindNever][FromHeader] User requestingUser,
             [FromRoute] VoteCommentInputRouteParameters inputRouteParameters,
             [FromBody] VoteCommentInputBodyParameters inputBodyParameters)
-
         {
             var comment = await _commentService.VoteCommentAsync(
                 requestingUser, inputRouteParameters.Id, inputBodyParameters.IsUpvote);

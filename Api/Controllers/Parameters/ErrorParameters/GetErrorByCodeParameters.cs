@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Api.Controllers
@@ -9,11 +8,5 @@ namespace FireplaceApi.Api.Controllers
         [Required]
         [FromRoute(Name = "code")]
         public int Code { get; set; }
-    }
-
-    [BindNever]
-    public class GetErrorByCodeInputQueryParameters
-    {
-
     }
 }

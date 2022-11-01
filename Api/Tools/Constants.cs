@@ -2,6 +2,7 @@
 {
     public static class Constants
     {
+        public static string LatestApiVersion { get; } = "v1";
         public static string AuthorizationHeaderKey { get; } = "Authorization";
         public static string ExamplePropertyName { get; } = "Example";
         public static string ActionExamplesPropertyName { get; } = "ActionExamples";

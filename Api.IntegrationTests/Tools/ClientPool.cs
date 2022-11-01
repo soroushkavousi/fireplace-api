@@ -112,7 +112,7 @@ namespace FireplaceApi.Api.IntegrationTests.Tools
         private async Task LogInUser(TestUser testUser)
         {
             var httpMethod = new HttpMethod("POST");
-            var requestUri = "/v0.1/users/log-in-with-email";
+            var requestUri = "/users/log-in-with-email";
             var request = new HttpRequestMessage(httpMethod, requestUri)
             {
                 Content = _testUtils.MakeRequestContent(new

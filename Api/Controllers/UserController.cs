@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace FireplaceApi.Api.Controllers
 {
     [ApiController]
-    [ApiVersion("0.1")]
+    [ApiVersion("1.0")]
     [Route("v{version:apiVersion}/users")]
     [Produces("application/json")]
     public class UserController : ApiController
