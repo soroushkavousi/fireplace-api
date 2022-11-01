@@ -17,6 +17,10 @@ namespace FireplaceApi.Core.Validators
         private readonly CommunityMembershipOperator _communityMembershipOperator;
         private readonly CommunityValidator _communityValidator;
 
+        public CommunityMembershipIdentifier CommunityMembershipIdentifier { get; private set; }
+        public CommunityIdentifier CommunityIdentitifer { get; private set; }
+        public UserIdentifier UserIdentifier { get; private set; }
+
         public CommunityMembershipValidator(ILogger<CommunityMembershipValidator> logger,
             IServiceProvider serviceProvider, CommunityMembershipOperator communityMembershipOperator,
             CommunityValidator communityValidator)
@@ -27,29 +31,26 @@ namespace FireplaceApi.Core.Validators
             _communityValidator = communityValidator;
         }
 
-        public async Task<CommunityIdentifier> ValidateCreateCommunityMembershipInputParametersAsync(User requestingUser,
+        public async Task ValidateCreateCommunityMembershipInputParametersAsync(User requestingUser,
             string encodedCommunityId, string communityName)
         {
-            var communityIdentifier = await _communityValidator
+            CommunityIdentitifer = await _communityValidator
                 .ValidateMultipleIdentifiers(encodedCommunityId, communityName);
-            var userIdentifier = UserIdentifier.OfId(requestingUser.Id);
-            var communityMembershipIdentifier = CommunityMembershipIdentifier
-                .OfUserAndCommunity(userIdentifier, communityIdentifier);
-            await ValidateCommunityMembershipDoesNotAlreadyExist(communityMembershipIdentifier);
-
-            return communityIdentifier;
+            UserIdentifier = UserIdentifier.OfId(requestingUser.Id);
+            CommunityMembershipIdentifier = CommunityMembershipIdentifier
+                .OfUserAndCommunity(UserIdentifier, CommunityIdentitifer);
+            await ValidateCommunityMembershipDoesNotAlreadyExist(CommunityMembershipIdentifier);
         }
 
-        public async Task<CommunityMembershipIdentifier> ValidateDeleteCommunityMembershipInputParametersAsync(User requestingUser,
+        public async Task ValidateDeleteCommunityMembershipInputParametersAsync(User requestingUser,
             string communityEncodedIdOrName)
         {
-            var communityIdentifier = await _communityValidator
+            CommunityIdentitifer = await _communityValidator
                 .ValidateMultipleIdentifiers(communityEncodedIdOrName, communityEncodedIdOrName);
-            var userIdentifier = UserIdentifier.OfId(requestingUser.Id);
-            var communityMembershipIdentifier = CommunityMembershipIdentifier.OfUserAndCommunity(userIdentifier, communityIdentifier);
-            await ValidateCommunityMembershipAlreadyExists(communityMembershipIdentifier);
-
-            return communityMembershipIdentifier;
+            UserIdentifier = UserIdentifier.OfId(requestingUser.Id);
+            CommunityMembershipIdentifier = CommunityMembershipIdentifier
+                .OfUserAndCommunity(UserIdentifier, CommunityIdentitifer);
+            await ValidateCommunityMembershipAlreadyExists(CommunityMembershipIdentifier);
         }
 
         public void ValidateRequestingUserCanAlterCommunityMembership(User requestingUser,

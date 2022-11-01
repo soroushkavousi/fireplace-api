@@ -20,6 +20,8 @@ namespace FireplaceApi.Core.Validators
         private readonly IServiceProvider _serviceProvider;
         private readonly UserOperator _userOperator;
 
+        public UserIdentifier UserIdentifier { get; private set; }
+
         public UserValidator(ILogger<UserValidator> logger,
             IServiceProvider serviceProvider, UserOperator userOperator)
         {
@@ -83,15 +85,15 @@ namespace FireplaceApi.Core.Validators
             await Task.CompletedTask;
         }
 
-        public async Task<UserIdentifier> ValidateGetUserByEncodedIdOrUsernameInputParametersAsync(
+        public async Task ValidateGetUserByEncodedIdOrUsernameInputParametersAsync(
             User requestingUser, string encodedIdOrUsername)
         {
-            var userIdentifier = await ValidateMultipleIdentifiers(encodedIdOrUsername, encodedIdOrUsername);
-            return userIdentifier;
+            UserIdentifier = await ValidateMultipleIdentifiers(encodedIdOrUsername, encodedIdOrUsername);
         }
 
         public async Task ValidateDeleteUserInputParametersAsync(User requestingUser)
         {
+            UserIdentifier = UserIdentifier.OfId(requestingUser.Id);
             await Task.CompletedTask;
         }
 

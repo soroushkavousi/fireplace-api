@@ -19,6 +19,8 @@ namespace FireplaceApi.Core.Validators
 
         public List<ulong> Ids { get; private set; }
         public SortType? Sort { get; private set; }
+        public CommunityIdentifier CommunityIdentifier { get; private set; }
+        public Community Community { get; private set; }
 
         public CommunityValidator(ILogger<CommunityValidator> logger,
             IServiceProvider serviceProvider, CommunityOperator communityOperator)
@@ -40,11 +42,10 @@ namespace FireplaceApi.Core.Validators
             await Task.CompletedTask;
         }
 
-        public async Task<CommunityIdentifier> ValidateGetCommunityByEncodedIdOrNameInputParametersAsync(
+        public async Task ValidateGetCommunityByEncodedIdOrNameInputParametersAsync(
             User requestingUser, string encodedIdOrName, bool? includeCreator)
         {
-            var communityIdentifier = await ValidateMultipleIdentifiers(encodedIdOrName, encodedIdOrName);
-            return communityIdentifier;
+            CommunityIdentifier = await ValidateMultipleIdentifiers(encodedIdOrName, encodedIdOrName);
         }
 
         public async Task ValidateCreateCommunityInputParametersAsync(User requestingUser, string name)
@@ -53,26 +54,24 @@ namespace FireplaceApi.Core.Validators
             await ValidateCommunityIdentifierDoesNotExistAsync(CommunityIdentifier.OfName(name));
         }
 
-        public async Task<Community> ValidatePatchCommunityByEncodedIdOrNameInputParametersAsync(User requestingUser,
+        public async Task ValidatePatchCommunityByEncodedIdOrNameInputParametersAsync(User requestingUser,
             string encodedIdOrName, string newName)
         {
-            var communityIdentifier = await ValidateMultipleIdentifiers(encodedIdOrName, encodedIdOrName);
-            var community = await _communityOperator.GetCommunityByIdentifierAsync(
-                communityIdentifier, false);
-            ValidateRequestingUserCanAlterCommunity(requestingUser, community);
+            CommunityIdentifier = await ValidateMultipleIdentifiers(encodedIdOrName, encodedIdOrName);
+            Community = await _communityOperator.GetCommunityByIdentifierAsync(
+                CommunityIdentifier, false);
+            ValidateRequestingUserCanAlterCommunity(requestingUser, Community);
             ValidateCommunityNameFormat(newName);
             await ValidateCommunityIdentifierDoesNotExistAsync(CommunityIdentifier.OfName(newName));
-            return community;
         }
 
-        public async Task<CommunityIdentifier> ValidateDeleteCommunityByEncodedIdOrNameInputParametersAsync(User requestingUser,
+        public async Task ValidateDeleteCommunityByEncodedIdOrNameInputParametersAsync(User requestingUser,
             string encodedIdOrName)
         {
-            var communityIdentifier = await ValidateMultipleIdentifiers(encodedIdOrName, encodedIdOrName);
-            var community = await _communityOperator.GetCommunityByIdentifierAsync(
-                communityIdentifier, false);
-            ValidateRequestingUserCanAlterCommunity(requestingUser, community);
-            return communityIdentifier;
+            CommunityIdentifier = await ValidateMultipleIdentifiers(encodedIdOrName, encodedIdOrName);
+            Community = await _communityOperator.GetCommunityByIdentifierAsync(
+                CommunityIdentifier, false);
+            ValidateRequestingUserCanAlterCommunity(requestingUser, Community);
         }
 
         public async Task<CommunityIdentifier> ValidateMultipleIdentifiers(string encodedId,

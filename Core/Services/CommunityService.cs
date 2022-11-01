@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Core.Identifiers;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Validators;
 using FireplaceApi.Core.ValueObjects;
@@ -26,14 +25,14 @@ namespace FireplaceApi.Core.Services
         public async Task<QueryResult<Community>> ListCommunitiesAsync(string name, string sort)
         {
             await _communityValidator.ValidateListCommunitiesInputParametersAsync(name, sort);
-            var page = await _communityOperator.ListCommunitiesAsync(name, _communityValidator.Sort);
-            return page;
+            var queryResult = await _communityOperator.ListCommunitiesAsync(
+                name, _communityValidator.Sort);
+            return queryResult;
         }
 
         public async Task<List<Community>> ListCommunitiesByIdsAsync(string encodedIds)
         {
-            await _communityValidator
-                .ValidateListCommunitiesByIdsInputParametersAsync(encodedIds);
+            await _communityValidator.ValidateListCommunitiesByIdsInputParametersAsync(encodedIds);
             var communities = await _communityOperator.ListCommunitiesByIdsAsync(
                 _communityValidator.Ids);
             return communities;
@@ -42,39 +41,36 @@ namespace FireplaceApi.Core.Services
         public async Task<Community> GetCommunityByEncodedIdOrNameAsync(User requestingUser,
             string encodedIdOrName, bool? includeCreator)
         {
-            var communityIdentifier = await _communityValidator.ValidateGetCommunityByEncodedIdOrNameInputParametersAsync(
+            await _communityValidator.ValidateGetCommunityByEncodedIdOrNameInputParametersAsync(
                 requestingUser, encodedIdOrName, includeCreator);
             var community = await _communityOperator.GetCommunityByIdentifierAsync(
-                    communityIdentifier, includeCreator.Value);
+                _communityValidator.CommunityIdentifier, includeCreator.Value);
             return community;
         }
 
         public async Task<Community> CreateCommunityAsync(User requestingUser, string name)
         {
-            await _communityValidator
-                .ValidateCreateCommunityInputParametersAsync(requestingUser, name);
-            return await _communityOperator
-                .CreateCommunityAsync(requestingUser, name);
+            await _communityValidator.ValidateCreateCommunityInputParametersAsync(
+                requestingUser, name);
+            return await _communityOperator.CreateCommunityAsync(requestingUser, name);
         }
 
         public async Task<Community> PatchCommunityByEncodedIdOrNameAsync(User requestingUser,
             string encodedIdOrName, string newName)
         {
-            var community = await _communityValidator.ValidatePatchCommunityByEncodedIdOrNameInputParametersAsync(
+            await _communityValidator.ValidatePatchCommunityByEncodedIdOrNameInputParametersAsync(
                 requestingUser, encodedIdOrName, newName);
-            community = await _communityOperator.ApplyCommunityChangesAsync(
-                community, newName);
-            community = await _communityOperator.GetCommunityByIdentifierAsync(
-                CommunityIdentifier.OfId(community.Id), false);
+            var community = await _communityOperator.PatchCommunityByIdentifierAsync(
+                _communityValidator.Community, newName);
             return community;
         }
 
         public async Task DeleteCommunityByEncodedIdOrNameAsync(User requestingUser, string encodedIdOrName)
         {
-            var communityIdentifier = await _communityValidator.ValidateDeleteCommunityByEncodedIdOrNameInputParametersAsync(
+            await _communityValidator.ValidateDeleteCommunityByEncodedIdOrNameInputParametersAsync(
                 requestingUser, encodedIdOrName);
             await _communityOperator.DeleteCommunityByIdentifierAsync(
-                    communityIdentifier);
+                _communityValidator.CommunityIdentifier);
         }
     }
 }

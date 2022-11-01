@@ -26,18 +26,22 @@ namespace FireplaceApi.Core.Validators
             _emailOperator = emailOperator;
         }
 
+        public EmailIdentifier EmailIdentifier { get; private set; }
+        public Email Email { get; private set; }
+
         public async Task ValidateGetRequestingUserEmailInputParametersAsync(User requestingUser)
         {
+            EmailIdentifier = EmailIdentifier.OfUserId(requestingUser.Id);
             await Task.CompletedTask;
         }
 
-        public async Task<Email> ValidateActivateRequestingUserEmailInputParametersAsync(User requestingUser, int? activationCode)
+        public async Task ValidateActivateRequestingUserEmailInputParametersAsync(User requestingUser, int? activationCode)
         {
             ValidateParameterIsNotMissing(activationCode, nameof(activationCode), ErrorName.ACTIVATION_CODE_IS_MISSING);
-            var email = await _emailOperator.GetEmailByIdentifierAsync(EmailIdentifier.OfUserId(requestingUser.Id));
-            ValidateEmailIsNotAlreadyActivated(email);
-            ValidateActivationCodeIsCorrectAsync(email, activationCode.Value);
-            return email;
+            EmailIdentifier = EmailIdentifier.OfUserId(requestingUser.Id);
+            Email = await _emailOperator.GetEmailByIdentifierAsync(EmailIdentifier);
+            ValidateEmailIsNotAlreadyActivated(Email);
+            ValidateActivationCodeIsCorrectAsync(Email, activationCode.Value);
         }
 
         public void ValidateEmailAddressFormat(string address)

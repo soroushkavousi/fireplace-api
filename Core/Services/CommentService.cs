@@ -1,6 +1,5 @@
 ﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
-using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.Validators;
 using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
@@ -79,9 +78,8 @@ namespace FireplaceApi.Core.Services
         {
             await _commentValidator.ValidateReplyToPostInputParametersAsync(
                 requestingUser, encodedPostId, content);
-            var postId = encodedPostId.IdDecode();
             return await _commentOperator.ReplyToPostAsync(requestingUser,
-                postId, content);
+                _commentValidator.PostId, content);
         }
 
         public async Task<Comment> ReplyToCommentAsync(User requestingUser,
@@ -89,9 +87,8 @@ namespace FireplaceApi.Core.Services
         {
             await _commentValidator.ValidateReplyToCommentInputParametersAsync(
                 requestingUser, encodedCommentId, content);
-            var commentId = encodedCommentId.IdDecode();
             return await _commentOperator.ReplyToCommentAsync(requestingUser,
-                commentId, content);
+                _commentValidator.ParentCommentId, content);
         }
 
         public async Task<Comment> VoteCommentAsync(User requestingUser,
@@ -99,9 +96,8 @@ namespace FireplaceApi.Core.Services
         {
             await _commentValidator.ValidateVoteCommentInputParametersAsync(
                 requestingUser, encodedId, isUpvote);
-            var id = encodedId.IdDecode();
             var comment = await _commentOperator.VoteCommentAsync(
-                requestingUser, id, isUpvote.Value);
+                requestingUser, _commentValidator.CommentId, isUpvote.Value);
             return comment;
         }
 
@@ -110,9 +106,8 @@ namespace FireplaceApi.Core.Services
         {
             await _commentValidator.ValidateToggleVoteForCommentInputParametersAsync(
                 requestingUser, encodedId);
-            var id = encodedId.IdDecode();
             var comment = await _commentOperator.ToggleVoteForCommentAsync(
-                requestingUser, id);
+                requestingUser, _commentValidator.CommentId);
             return comment;
         }
 
@@ -121,9 +116,8 @@ namespace FireplaceApi.Core.Services
         {
             await _commentValidator.ValidateDeleteVoteForCommentInputParametersAsync(
                 requestingUser, encodedId);
-            var id = encodedId.IdDecode();
             var comment = await _commentOperator.DeleteVoteForCommentAsync(
-                requestingUser, id);
+                requestingUser, _commentValidator.CommentId);
             return comment;
         }
 
@@ -133,9 +127,8 @@ namespace FireplaceApi.Core.Services
             await _commentValidator
                 .ValidatePatchCommentByIdInputParametersAsync(requestingUser,
                     encodedId, content);
-            var id = encodedId.IdDecode();
             var comment = await _commentOperator.PatchCommentByIdAsync(
-                requestingUser, id, content, null);
+                requestingUser, _commentValidator.CommentId, content, null);
             return comment;
         }
 
@@ -143,8 +136,7 @@ namespace FireplaceApi.Core.Services
         {
             await _commentValidator
                 .ValidateDeleteCommentByIdInputParametersAsync(requestingUser, encodedId);
-            var id = encodedId.IdDecode();
-            await _commentOperator.DeleteCommentByIdAsync(id);
+            await _commentOperator.DeleteCommentByIdAsync(_commentValidator.CommentId);
         }
     }
 }

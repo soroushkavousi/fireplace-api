@@ -71,11 +71,11 @@ namespace FireplaceApi.Core.Services
 
         public async Task<User> GetUserByEncodedIdOrUsernameAsync(User requestingUser, string encodedIdOrUsername)
         {
-            var userIdentifier = await _userValidator.ValidateGetUserByEncodedIdOrUsernameInputParametersAsync(
+            await _userValidator.ValidateGetUserByEncodedIdOrUsernameInputParametersAsync(
                 requestingUser, encodedIdOrUsername);
 
-            var user = await _userOperator.GetUserByIdentifierAsync(userIdentifier, false,
-                    false, false, false);
+            var user = await _userOperator.GetUserByIdentifierAsync(_userValidator.UserIdentifier,
+                false, false, false, false);
 
             return user;
         }
@@ -95,7 +95,7 @@ namespace FireplaceApi.Core.Services
         public async Task DeleteRequestingUserAsync(User requestingUser)
         {
             await _userValidator.ValidateDeleteUserInputParametersAsync(requestingUser);
-            await _userOperator.DeleteUserByIdentifierAsync(UserIdentifier.OfId(requestingUser.Id));
+            await _userOperator.DeleteUserByIdentifierAsync(_userValidator.UserIdentifier);
         }
     }
 }

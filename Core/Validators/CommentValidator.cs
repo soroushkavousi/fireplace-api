@@ -78,59 +78,59 @@ namespace FireplaceApi.Core.Validators
             string encodedPostId, string content)
         {
             ValidateCommentContentFormat(content);
-            var postId = ValidateEncodedIdFormat(encodedPostId, nameof(encodedPostId)).Value;
-            var post = await _postValidator.ValidatePostExistsAsync(postId);
+            PostId = ValidateEncodedIdFormat(encodedPostId, nameof(encodedPostId)).Value;
+            Post = await _postValidator.ValidatePostExistsAsync(PostId);
         }
 
         public async Task ValidateReplyToCommentInputParametersAsync(User requestingUser,
             string encodedParentCommentId, string content)
         {
             ValidateCommentContentFormat(content);
-            var parentCommentId = ValidateEncodedIdFormat(encodedParentCommentId,
+            ParentCommentId = ValidateEncodedIdFormat(encodedParentCommentId,
                 nameof(encodedParentCommentId)).Value;
-            var parentComment = await ValidateCommentExistsAsync(parentCommentId);
+            ParentComment = await ValidateCommentExistsAsync(ParentCommentId);
         }
 
         public async Task ValidateVoteCommentInputParametersAsync(User requestingUser,
             string encodedId, bool? isUpvote)
         {
             ValidateParameterIsNotMissing(isUpvote, nameof(isUpvote), ErrorName.IS_UPVOTE_IS_MISSING);
-            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
-            var comment = await ValidateCommentExistsAsync(id, requestingUser);
-            ValidateCommentIsNotVotedByUser(comment, requestingUser);
+            CommentId = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
+            Comment = await ValidateCommentExistsAsync(CommentId, requestingUser);
+            ValidateCommentIsNotVotedByUser(Comment, requestingUser);
         }
 
         public async Task ValidateToggleVoteForCommentInputParametersAsync(User requestingUser,
             string encodedId)
         {
-            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
-            var comment = await ValidateCommentExistsAsync(id, requestingUser);
-            ValidateCommentVoteExists(comment, requestingUser);
+            CommentId = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
+            Comment = await ValidateCommentExistsAsync(CommentId, requestingUser);
+            ValidateCommentVoteExists(Comment, requestingUser);
         }
 
         public async Task ValidateDeleteVoteForCommentInputParametersAsync(User requestingUser,
             string encodedId)
         {
-            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
-            var comment = await ValidateCommentExistsAsync(id, requestingUser);
-            ValidateCommentVoteExists(comment, requestingUser);
+            CommentId = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
+            Comment = await ValidateCommentExistsAsync(CommentId, requestingUser);
+            ValidateCommentVoteExists(Comment, requestingUser);
         }
 
         public async Task ValidatePatchCommentByIdInputParametersAsync(User requestingUser,
             string encodedId, string content)
         {
-            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
+            CommentId = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
             ValidateCommentContentFormat(content);
-            var comment = await ValidateCommentExistsAsync(id);
-            ValidateRequestingUserCanAlterComment(requestingUser, comment);
+            Comment = await ValidateCommentExistsAsync(CommentId);
+            ValidateRequestingUserCanAlterComment(requestingUser, Comment);
         }
 
         public async Task ValidateDeleteCommentByIdInputParametersAsync(User requestingUser,
             string encodedId)
         {
-            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
-            var comment = await ValidateCommentExistsAsync(id);
-            ValidateRequestingUserCanAlterComment(requestingUser, comment);
+            CommentId = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
+            Comment = await ValidateCommentExistsAsync(CommentId);
+            ValidateRequestingUserCanAlterComment(requestingUser, Comment);
         }
 
         public void ValidateCommentIsNotVotedByUser(Comment comment, User requestingUser)

@@ -76,8 +76,13 @@ namespace FireplaceApi.Core.Operators
         public async Task<Community> PatchCommunityByIdentifierAsync(CommunityIdentifier identifier,
             string name = null)
         {
-            var community = await _communityRepository
-                .GetCommunityByIdentifierAsync(identifier);
+            var community = await _communityRepository.GetCommunityByIdentifierAsync(identifier);
+            return await PatchCommunityByIdentifierAsync(community, name);
+        }
+
+        public async Task<Community> PatchCommunityByIdentifierAsync(Community community,
+            string name = null)
+        {
             community = await ApplyCommunityChangesAsync(community, name);
             community = await GetCommunityByIdentifierAsync(
                 CommunityIdentifier.OfId(community.Id), false);

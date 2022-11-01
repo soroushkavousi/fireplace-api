@@ -14,6 +14,8 @@ namespace FireplaceApi.Core.Validators
         private readonly IServiceProvider _serviceProvider;
         private readonly SessionOperator _sessionOperator;
 
+        public ulong SessionId { get; private set; }
+
         public SessionValidator(ILogger<SessionValidator> logger,
             IServiceProvider serviceProvider, SessionOperator sessionOperator)
         {
@@ -30,23 +32,23 @@ namespace FireplaceApi.Core.Validators
         public async Task ValidateGetSessionByIdInputParametersAsync(User requestingUser,
             string encodedId, bool? includeUser)
         {
-            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
-            await ValidateSessionIdExists(id);
-            await ValidateUserCanAccessToSessionId(requestingUser, id);
+            SessionId = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
+            await ValidateSessionIdExists(SessionId);
+            await ValidateUserCanAccessToSessionId(requestingUser, SessionId);
         }
 
         public async Task ValidateRevokeSessionByIdInputParametersAsync(User requestingUser,
             string encodedId)
         {
-            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
-            await ValidateSessionIdExists(id);
-            await ValidateUserCanAccessToSessionId(requestingUser, id);
+            SessionId = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
+            await ValidateSessionIdExists(SessionId);
+            await ValidateUserCanAccessToSessionId(requestingUser, SessionId);
         }
 
         public async Task ValidateUserCanAccessToSessionId(User requestingUser, ulong id)
         {
-            var email = await _sessionOperator.GetSessionByIdAsync(id);
-            if (email.UserId != requestingUser.Id)
+            var session = await _sessionOperator.GetSessionByIdAsync(id);
+            if (session.UserId != requestingUser.Id)
             {
                 var serverMessage = $"User id {requestingUser.Id} can't access to session id {id}";
                 throw new ApiException(ErrorName.SESSION_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);

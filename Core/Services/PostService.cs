@@ -1,6 +1,5 @@
 ﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
-using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.Validators;
 using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
@@ -40,8 +39,7 @@ namespace FireplaceApi.Core.Services
 
         public async Task<List<Post>> ListPostsByIdsAsync(string encodedIds, User requestingUser = null)
         {
-            await _postValidator
-                .ValidateListPostsByIdsInputParametersAsync(encodedIds, requestingUser);
+            await _postValidator.ValidateListPostsByIdsInputParametersAsync(encodedIds, requestingUser);
             var communities = await _postOperator.ListPostsByIdsAsync(
                 _postValidator.Ids, requestingUser);
             return communities;
@@ -62,8 +60,7 @@ namespace FireplaceApi.Core.Services
         {
             await _postValidator.ValidateGetPostByIdInputParametersAsync(
                 requestingUser, encodedId, includeAuthor, includeCommunity);
-            var id = encodedId.IdDecode();
-            var post = await _postOperator.GetPostByIdAsync(id,
+            var post = await _postOperator.GetPostByIdAsync(_postValidator.PostId,
                 includeAuthor.Value, includeCommunity.Value, requestingUser);
             return post;
         }
@@ -82,9 +79,8 @@ namespace FireplaceApi.Core.Services
         {
             await _postValidator.ValidateVotePostInputParametersAsync(
                 requestingUser, encodedId, isUpvote);
-            var id = encodedId.IdDecode();
             var post = await _postOperator.VotePostAsync(
-                requestingUser, id, isUpvote.Value);
+                requestingUser, _postValidator.PostId, isUpvote.Value);
             return post;
         }
 
@@ -93,9 +89,8 @@ namespace FireplaceApi.Core.Services
         {
             await _postValidator.ValidateToggleVoteForPostInputParametersAsync(
                 requestingUser, encodedId);
-            var id = encodedId.IdDecode();
             var post = await _postOperator.ToggleVoteForPostAsync(
-                requestingUser, id);
+                requestingUser, _postValidator.PostId);
             return post;
         }
 
@@ -104,9 +99,8 @@ namespace FireplaceApi.Core.Services
         {
             await _postValidator.ValidateDeleteVoteForPostInputParametersAsync(
                 requestingUser, encodedId);
-            var id = encodedId.IdDecode();
             var post = await _postOperator.DeleteVoteForPostAsync(
-                requestingUser, id);
+                requestingUser, _postValidator.PostId);
             return post;
         }
 
@@ -115,9 +109,8 @@ namespace FireplaceApi.Core.Services
         {
             await _postValidator.ValidatePatchPostByIdInputParametersAsync(
                 requestingUser, encodedId, content);
-            var id = encodedId.IdDecode();
             var post = await _postOperator.PatchPostByIdAsync(requestingUser,
-                id, content, null);
+                _postValidator.PostId, content, null);
             return post;
         }
 
@@ -125,8 +118,7 @@ namespace FireplaceApi.Core.Services
         {
             await _postValidator.ValidateDeletePostByIdInputParametersAsync(
                 requestingUser, encodedId);
-            var id = encodedId.IdDecode();
-            await _postOperator.DeletePostByIdAsync(id);
+            await _postOperator.DeletePostByIdAsync(_postValidator.PostId);
         }
     }
 }

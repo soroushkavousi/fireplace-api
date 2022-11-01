@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Core.Identifiers;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Validators;
 using Microsoft.Extensions.Logging;
@@ -22,9 +21,9 @@ namespace FireplaceApi.Core.Services
 
         public async Task<Email> ActivateRequestingUserEmailAsync(User requestingUser, int? activationCode)
         {
-            var email = await _emailValidator.ValidateActivateRequestingUserEmailInputParametersAsync(requestingUser,
+            await _emailValidator.ValidateActivateRequestingUserEmailInputParametersAsync(requestingUser,
                 activationCode);
-            email = await _emailOperator.ActivateEmailByIdentifierAsync(EmailIdentifier.OfId(email.Id));
+            var email = await _emailOperator.ActivateEmailByIdentifierAsync(_emailValidator.EmailIdentifier);
             return email;
         }
 
@@ -32,7 +31,7 @@ namespace FireplaceApi.Core.Services
         {
             await _emailValidator.ValidateGetRequestingUserEmailInputParametersAsync(requestingUser);
             var email = await _emailOperator.GetEmailByIdentifierAsync(
-                EmailIdentifier.OfUserId(requestingUser.Id));
+                _emailValidator.EmailIdentifier);
             return email;
         }
     }

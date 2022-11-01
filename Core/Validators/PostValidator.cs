@@ -18,6 +18,8 @@ namespace FireplaceApi.Core.Validators
         private readonly PostOperator _postOperator;
         private readonly CommunityValidator _communityValidator;
 
+        public ulong PostId { get; private set; }
+        public Post Post { get; private set; }
         public CommunityIdentifier CommunityIdentifier { get; set; }
         public List<ulong> Ids { get; private set; }
         public SortType? Sort { get; private set; }
@@ -62,8 +64,8 @@ namespace FireplaceApi.Core.Validators
         public async Task ValidateGetPostByIdInputParametersAsync(User requestingUser, string encodedId,
             bool? includeAuthor, bool? includeCommunity)
         {
-            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
-            var post = await ValidatePostExistsAsync(id);
+            PostId = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
+            Post = await ValidatePostExistsAsync(PostId);
         }
 
         public async Task ValidateCreatePostInputParametersAsync(
@@ -78,42 +80,42 @@ namespace FireplaceApi.Core.Validators
             string encodedId, bool? isUpvote)
         {
             ValidateParameterIsNotMissing(isUpvote, nameof(isUpvote), ErrorName.IS_UPVOTE_IS_MISSING);
-            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
-            var post = await ValidatePostExistsAsync(id, requestingUser);
-            ValidatePostIsNotVotedByUser(post, requestingUser);
+            PostId = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
+            Post = await ValidatePostExistsAsync(PostId, requestingUser);
+            ValidatePostIsNotVotedByUser(Post, requestingUser);
         }
 
         public async Task ValidateToggleVoteForPostInputParametersAsync(User requestingUser,
             string encodedId)
         {
-            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
-            var post = await ValidatePostExistsAsync(id, requestingUser);
-            ValidatePostVoteExists(post, requestingUser);
+            PostId = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
+            Post = await ValidatePostExistsAsync(PostId, requestingUser);
+            ValidatePostVoteExists(Post, requestingUser);
         }
 
         public async Task ValidateDeleteVoteForPostInputParametersAsync(User requestingUser,
             string encodedId)
         {
-            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
-            var post = await ValidatePostExistsAsync(id, requestingUser);
-            ValidatePostVoteExists(post, requestingUser);
+            PostId = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
+            Post = await ValidatePostExistsAsync(PostId, requestingUser);
+            ValidatePostVoteExists(Post, requestingUser);
         }
 
         public async Task ValidatePatchPostByIdInputParametersAsync(User requestingUser,
             string encodedId, string content)
         {
-            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
+            PostId = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
             ValidatePostContentFormat(content);
-            var post = await ValidatePostExistsAsync(id);
-            ValidateRequestingUserCanAlterPost(requestingUser, post);
+            Post = await ValidatePostExistsAsync(PostId);
+            ValidateRequestingUserCanAlterPost(requestingUser, Post);
         }
 
         public async Task ValidateDeletePostByIdInputParametersAsync(User requestingUser,
             string encodedId)
         {
-            var id = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
-            var post = await ValidatePostExistsAsync(id);
-            ValidateRequestingUserCanAlterPost(requestingUser, post);
+            PostId = ValidateEncodedIdFormat(encodedId, nameof(encodedId)).Value;
+            Post = await ValidatePostExistsAsync(PostId);
+            ValidateRequestingUserCanAlterPost(requestingUser, Post);
         }
 
         public async Task<Post> ValidatePostExistsAsync(ulong id, User requestingUser = null)
