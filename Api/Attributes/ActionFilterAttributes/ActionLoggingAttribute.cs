@@ -43,6 +43,12 @@ namespace FireplaceApi.Api.Attributes
                 return;
             }
 
+            if (context.Result is OkResult)
+            {
+                _logger.LogAppInformation(title: "ACTION_OUTPUT", message: "Ok Result!", sw: _sw);
+                return;
+            }
+
             var result = context.Result as ObjectResult;
             var actionOutput = result.Value;
             _logger.LogAppInformation(title: "ACTION_OUTPUT", parameters: actionOutput, sw: _sw);
