@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Api.Controllers;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
+using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -43,6 +44,17 @@ namespace FireplaceApi.Api.Converters
                 accessTokenValue, emailDto, sessionDtos);
 
             return userDto;
+        }
+
+        public ProfileDto ConvertToDto(Profile profile)
+        {
+            if (profile == null)
+                return null;
+
+            var profileDto = new ProfileDto(profile.Username, profile.CreationDate,
+                profile.DisplayName, profile.About, profile.AvatarUrl, profile.BannerUrl);
+
+            return profileDto;
         }
     }
 }

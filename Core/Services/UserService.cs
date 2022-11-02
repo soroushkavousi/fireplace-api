@@ -69,15 +69,16 @@ namespace FireplaceApi.Core.Services
             return user;
         }
 
-        public async Task<User> GetUserByEncodedIdOrUsernameAsync(User requestingUser, string encodedIdOrUsername)
+        public async Task<Profile> GetUserProfileAsync(User requestingUser, string username)
         {
-            await _userValidator.ValidateGetUserByEncodedIdOrUsernameInputParametersAsync(
-                requestingUser, encodedIdOrUsername);
+            await _userValidator.ValidateGetUserByUsernameInputParametersAsync(
+                requestingUser, username);
 
             var user = await _userOperator.GetUserByIdentifierAsync(_userValidator.UserIdentifier,
                 false, false, false, false);
 
-            return user;
+            var profile = new Profile(user);
+            return profile;
         }
 
         public async Task<User> PatchRequestingUserAsync(User requestingUser, string displayName,

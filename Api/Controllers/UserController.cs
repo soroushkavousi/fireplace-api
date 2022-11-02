@@ -159,20 +159,20 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
-        /// Get a single user by id or username.
+        /// Get the profile of a user
         /// </summary>
-        /// <returns>Requested user</returns>
-        /// <response code="200">The user was successfully retrieved.</response>
-        [HttpGet("{id-or-username}")]
-        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<UserDto>> GetUserByEncodedIdOrUsernameAsync(
+        /// <returns>Requested user profile</returns>
+        /// <response code="200">The user profile was successfully retrieved.</response>
+        [HttpGet("{username}")]
+        [ProducesResponseType(typeof(ProfileDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<ProfileDto>> GetUserProfileAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] GetUserByEncodedIdOrUsernameInputRouteParameters inputRouteParameters)
+            [FromRoute] GetUserProfileInputRouteParameters inputRouteParameters)
         {
-            var user = await _userService.GetUserByEncodedIdOrUsernameAsync(requestingUser,
-                inputRouteParameters.EncodedIdOrUsername);
-            var userDto = _userConverter.ConvertToDto(user);
-            return userDto;
+            var profile = await _userService.GetUserProfileAsync(requestingUser,
+                inputRouteParameters.Username);
+            var profileDto = _userConverter.ConvertToDto(profile);
+            return profileDto;
         }
 
         /// <summary>

@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Api.Controllers
 {
-    public class GetUserByEncodedIdOrUsernameInputRouteParameters
+    public class GetUserProfileInputRouteParameters
     {
         [Required]
-        [FromRoute(Name = "id-or-username")]
-        public string EncodedIdOrUsername { get; set; }
+        [FromRoute(Name = "username")]
+        public string Username { get; set; }
     }
 
     public class GetUserInputQueryParameters

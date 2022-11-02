@@ -85,10 +85,12 @@ namespace FireplaceApi.Core.Validators
             await Task.CompletedTask;
         }
 
-        public async Task ValidateGetUserByEncodedIdOrUsernameInputParametersAsync(
-            User requestingUser, string encodedIdOrUsername)
+        public async Task ValidateGetUserByUsernameInputParametersAsync(
+            User requestingUser, string username)
         {
-            UserIdentifier = await ValidateMultipleIdentifiers(encodedIdOrUsername, encodedIdOrUsername);
+            ValidateUsernameFormat(username);
+            UserIdentifier = UserIdentifier.OfUsername(username);
+            await ValidateUserIdentifierExists(UserIdentifier);
         }
 
         public async Task ValidateDeleteUserInputParametersAsync(User requestingUser)
