@@ -31,7 +31,7 @@ namespace FireplaceApi.Api.Controllers
         [HttpPost("me/activate")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(EmailDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<EmailDto>> ActivateRequestingUserEmail(
+        public async Task<ActionResult<EmailDto>> ActivateRequestingUserEmailAsync(
             [BindNever][FromHeader] User requestingUser,
             [FromBody] ActivateRequestingUserEmailInputBodyParameters inputBodyParameters)
         {
@@ -39,6 +39,22 @@ namespace FireplaceApi.Api.Controllers
                 inputBodyParameters.ActivationCode);
             var emailDto = _emailConverter.ConvertToDto(email);
             return emailDto;
+        }
+
+        /// <summary>
+        /// Resend activation code.
+        /// </summary>
+        /// <returns>No content</returns>
+        /// <response code="200">New activation code successfully sent.</response>
+        [HttpPost("me/resend-activation-code")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> ResendActivationCodeAsync(
+            [BindNever][FromHeader] User requestingUser,
+            [FromBody] ResendActivationCodeAsyncInputBodyParameters inputBodyParameters)
+        {
+            await _emailService.ResendActivationCodeAsync(requestingUser);
+            return Ok();
         }
 
         /// <summary>

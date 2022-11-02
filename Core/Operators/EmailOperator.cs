@@ -41,6 +41,11 @@ namespace FireplaceApi.Core.Operators
             return email;
         }
 
+        public async Task ResendActivationCodeAsync(Email email)
+        {
+            await SendActivationCodeAsync(email);
+        }
+
         public async Task<List<Email>> ListEmailsAsync(bool includeUser = false)
         {
             var email = await _emailRepository.ListEmailsAsync(includeUser);

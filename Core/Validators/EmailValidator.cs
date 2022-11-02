@@ -44,6 +44,13 @@ namespace FireplaceApi.Core.Validators
             ValidateActivationCodeIsCorrectAsync(Email, activationCode.Value);
         }
 
+        public async Task ValidateResendActivationCodeInputParametersAsync(User requestingUser)
+        {
+            EmailIdentifier = EmailIdentifier.OfUserId(requestingUser.Id);
+            Email = await _emailOperator.GetEmailByIdentifierAsync(EmailIdentifier);
+            ValidateEmailIsNotAlreadyActivated(Email);
+        }
+
         public void ValidateEmailAddressFormat(string address)
         {
             if (Regexes.EmailAddress.IsMatch(address) == false)

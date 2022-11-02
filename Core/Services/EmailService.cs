@@ -27,6 +27,12 @@ namespace FireplaceApi.Core.Services
             return email;
         }
 
+        public async Task ResendActivationCodeAsync(User requestingUser)
+        {
+            await _emailValidator.ValidateResendActivationCodeInputParametersAsync(requestingUser);
+            await _emailOperator.ResendActivationCodeAsync(_emailValidator.Email);
+        }
+
         public async Task<Email> GetRequestingUserEmailAsync(User requestingUser)
         {
             await _emailValidator.ValidateGetRequestingUserEmailInputParametersAsync(requestingUser);
