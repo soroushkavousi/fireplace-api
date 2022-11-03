@@ -43,15 +43,22 @@ namespace FireplaceApi.Api.Attributes
                 return;
             }
 
-            if (context.Result is OkResult)
+            switch (context.Result)
             {
-                _logger.LogAppInformation(title: "ACTION_OUTPUT", message: "Ok Result!", sw: _sw);
-                return;
+                case OkResult:
+                    _logger.LogAppInformation(title: "ACTION_OUTPUT", message: "Ok Result!", sw: _sw);
+                    break;
+                case RedirectResult redirectResult:
+                    var redirectUrl = redirectResult.Url.Length > 25 ? $"{redirectResult.Url[..25]}..." : redirectResult.Url;
+                    _logger.LogAppInformation(title: "ACTION_OUTPUT", message: "Redirect Result!", parameters: new { redirectUrl }, sw: _sw);
+                    break;
+                case ObjectResult objectResult:
+                    _logger.LogAppInformation(title: "ACTION_OUTPUT", parameters: objectResult.Value, sw: _sw);
+                    break;
+                default:
+                    _logger.LogAppInformation(title: "ACTION_OUTPUT", message: $"Unknown Output => {context.Result}", sw: _sw);
+                    break;
             }
-
-            var result = context.Result as ObjectResult;
-            var actionOutput = result.Value;
-            _logger.LogAppInformation(title: "ACTION_OUTPUT", parameters: actionOutput, sw: _sw);
         }
     }
 }
