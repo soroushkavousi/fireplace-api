@@ -140,7 +140,7 @@ namespace FireplaceApi.Api.Middlewares
 
         private void GenerateAndSetCsrfTokenAsCookie(HttpContext httpContext, IAntiforgery antiforgery)
         {
-            if (httpContext.GetActionAttribute<AuthActionAttribute>() == null
+            if (httpContext.GetActionAttribute<ProducesCsrfTokenAttribute>() == null
                 && httpContext.Request.Method.IsSafeHttpMethod())
                 return;
 

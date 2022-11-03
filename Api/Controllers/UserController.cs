@@ -53,7 +53,6 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Created user</returns>
         /// <response code="200">Returns the newly created item</response>
         [AllowAnonymous]
-        [AuthAction]
         [HttpPost("sign-up-with-email")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
@@ -76,7 +75,7 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Created user</returns>
         /// <response code="200">Returns the newly created item</response>
         [AllowAnonymous]
-        [AuthAction]
+        [ProducesCsrfToken]
         [HttpGet("log-in-with-google")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> LogInWithGoogleAsync(
@@ -101,7 +100,6 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Logged in user</returns>
         /// <response code="200">Returns the newly created item</response>
         [AllowAnonymous]
-        [AuthAction]
         [HttpPost("log-in-with-email")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
@@ -124,7 +122,6 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Logged in user</returns>
         /// <response code="200">Returns the newly created item</response>
         [AllowAnonymous]
-        [AuthAction]
         [HttpPost("log-in-with-username")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
