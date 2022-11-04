@@ -2,34 +2,31 @@
 {
     public enum ErrorName
     {
-        // Internal server error
+        /// <summary>
+        /// Internal server error
+        /// </summary>
         INTERNAL_SERVER,
 
-        // Main business logic errors
+        /// <summary>
+        /// Main business logic errors
+        /// </summary>
         BAD_REQUEST,
         AUTHENTICATION_FAILED,
         OLD_PASSWORD_NOT_CORRECT,
         EMAIL_ACTIVATION_CODE_NOT_CORRECT,
+        RESET_PASSWORD_CODE_NOT_CORRECT,
 
-
-        // Access Denied and Existance errors
+        /// <summary>
+        /// Access Denied and Existance errors
+        /// </summary>
         ACCESS_DENIED,
-
         USER_DOES_NOT_EXIST_OR_ACCESS_DENIED,
-
         USERNAME_ALREADY_EXISTS,
-
-        EMAIL_EXISTS,
-        EMAIL_DOES_NOT_EXIST_OR_ACCESS_DENIED,
-
+        EMAIL_ADDRESS_EXISTS,
+        EMAIL_ADDRESS_DOES_NOT_EXIST_OR_ACCESS_DENIED,
         ERROR_CODE_DOES_NOT_EXIST_OR_ACCESS_DENIED,
-
         ACCESS_TOKEN_VALUE_DOES_NOT_EXIST_OR_ACCESS_DENIED,
-
         SESSION_ID_DOES_NOT_EXIST_OR_ACCESS_DENIED,
-
-        PAGINATION_POINTER_DOES_NOT_EXIST,
-
         COMMUNITY_DOES_NOT_EXIST,
         COMMUNITY_ALREADY_EXISTS,
         COMMUNITY_MEMBERSHIP_NOT_EXIST,
@@ -44,12 +41,11 @@
         COMMENT_VOTE_DOES_NOT_EXIST,
         POST_VOTE_ALREADY_EXISTS,
         POST_VOTE_DOES_NOT_EXIST,
-
         EMAIL_IS_ALREADY_ACTIVATED,
 
-        //// New
-
-        // Format errors
+        /// <summary>
+        /// Format errors
+        /// </summary>
         REQUEST_CONTENT_TYPE_IS_NOT_VALID,
         REQUEST_BODY_IS_NOT_JSON,
         PASSWORD_MIN_LENGTH,
@@ -58,40 +54,26 @@
         PASSWORD_A_NUMBER,
         PASSWORD_A_LOWERCASE_LETTER,
         PASSWORD_VALID_CHARACTERS,
-
         USERNAME_MIN_LENGTH,
         USERNAME_MAX_LENGTH,
         USERNAME_WRONG_START,
         USERNAME_WRONG_END,
         USERNAME_INVALID_CONSECUTIVE,
         USERNAME_VALID_CHARACTERS,
-
         EMAIL_ADDRESS_NOT_VALID,
-
         ERROR_CLIENT_MESSAGE_NOT_VALID,
-
         ACCESS_TOKEN_VALUE_IS_NOT_VALID,
-
-        PAGINATION_LIMIT_MIN_LIMIT,
-        PAGINATION_LIMIT_MAX_LIMIT,
-        PAGINATION_PAGE_POINTER_NOT_VALID,
-        PAGINATION_OFFSET_OUT_OF_RANGE,
-        PAGINATION_PAGE_OUT_OF_RANGE,
-
         INPUT_SORT_IS_NOT_VALID,
-
         COMMENT_CONTENT_MAX_LENGTH,
         POST_CONTENT_MAX_LENGTH,
         ENCODED_ID_FORMAT_IS_NOT_VALID,
-
         DISPLAY_NAME_FORMAT_IS_NOT_VALID,
         ABOUT_FORMAT_IS_NOT_VALID,
         URL_FORMAT_IS_NOT_VALID,
-        //// New
 
-        // Missing parameter(s) errors
-        FIRST_NAME_IS_MISSING,
-        LAST_NAME_IS_MISSING,
+        /// <summary>
+        /// Missing parameter(s) errors
+        /// </summary>
         USERNAME_IS_MISSING,
         PASSWORD_IS_MISSING,
         EMAIL_ADDRESS_IS_MISSING,
@@ -103,8 +85,7 @@
         ACCESS_TOKEN_VALUE_IS_MISSING,
         SESSION_ID_IS_MISSING,
         PAGINATION_POINTER_IS_MISSING,
-        IS_UPVOTE_IS_MISSING
-
-        //// New
+        IS_UPVOTE_IS_MISSING,
+        RESET_PASSWORD_CODE_IS_MISSING
     }
 }

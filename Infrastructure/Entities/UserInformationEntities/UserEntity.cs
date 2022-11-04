@@ -18,6 +18,7 @@ namespace FireplaceApi.Infrastructure.Entities
         public string AvatarUrl { get; set; }
         public string BannerUrl { get; set; }
         public string PasswordHash { get; set; }
+        public string ResetPasswordCode { get; set; }
         public EmailEntity EmailEntity { get; set; }
         public GoogleUserEntity GoogleUserEntity { get; set; }
         public List<AccessTokenEntity> AccessTokenEntities { get; set; }
@@ -34,13 +35,11 @@ namespace FireplaceApi.Infrastructure.Entities
         public UserEntity(ulong id, string username, string state, DateTime? creationDate = null,
             string displayName = null, string about = null, string avatarUrl = null,
             string bannerUrl = null, DateTime? modifiedDate = null, string passwordHash = null,
-            EmailEntity emailEntity = null, GoogleUserEntity googleUserEntity = null,
-            List<AccessTokenEntity> accessTokenEntities = null,
-            List<SessionEntity> sessionEntities = null,
-            List<CommunityEntity> ownCommunities = null,
+            string resetPasswordCode = null, EmailEntity emailEntity = null,
+            GoogleUserEntity googleUserEntity = null, List<AccessTokenEntity> accessTokenEntities = null,
+            List<SessionEntity> sessionEntities = null, List<CommunityEntity> ownCommunities = null,
             List<CommunityMembershipEntity> joinedCommunities = null,
-            List<PostEntity> postEntities = null,
-            List<PostVoteEntity> postVoteEntities = null,
+            List<PostEntity> postEntities = null, List<PostVoteEntity> postVoteEntities = null,
             List<CommentEntity> commentEntities = null,
             List<CommentVoteEntity> commentVoteEntities = null) : base(id, creationDate, modifiedDate)
         {
@@ -51,6 +50,7 @@ namespace FireplaceApi.Infrastructure.Entities
             AvatarUrl = avatarUrl;
             BannerUrl = bannerUrl;
             PasswordHash = passwordHash;
+            ResetPasswordCode = resetPasswordCode;
             EmailEntity = emailEntity;
             GoogleUserEntity = googleUserEntity;
             AccessTokenEntities = accessTokenEntities;
@@ -64,7 +64,7 @@ namespace FireplaceApi.Infrastructure.Entities
         }
 
         public UserEntity PureCopy() => new UserEntity(Id, Username, State, CreationDate,
-            DisplayName, About, AvatarUrl, BannerUrl, ModifiedDate, PasswordHash);
+            DisplayName, About, AvatarUrl, BannerUrl, ModifiedDate, PasswordHash, ResetPasswordCode);
 
         //public void RemoveLoopReferencing()
         //{

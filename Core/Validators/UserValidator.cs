@@ -21,6 +21,7 @@ namespace FireplaceApi.Core.Validators
         private readonly UserOperator _userOperator;
 
         public UserIdentifier UserIdentifier { get; private set; }
+        public User User { get; private set; }
 
         public UserValidator(ILogger<UserValidator> logger,
             IServiceProvider serviceProvider, UserOperator userOperator)
@@ -91,6 +92,28 @@ namespace FireplaceApi.Core.Validators
             ValidateUsernameFormat(username);
             UserIdentifier = UserIdentifier.OfUsername(username);
             await ValidateUserIdentifierExists(UserIdentifier);
+        }
+
+        public async Task ValidateSendResetPasswordCodeInputParametersAsync(string emailAddress, string resetPasswordWithCodeUrlFormat)
+        {
+            ValidateParameterIsNotMissing(emailAddress, nameof(emailAddress), ErrorName.EMAIL_ADDRESS_IS_MISSING);
+            var emailValidator = _serviceProvider.GetService<EmailValidator>();
+            emailValidator.ValidateEmailAddressFormat(emailAddress);
+            await emailValidator.ValidateEmailIdentifierExistsAsync(EmailIdentifier.OfAddress(emailAddress));
+        }
+
+        public async Task ValidateResetPasswordWithCodeInputParametersAsync(string emailAddress,
+            string resetPasswordCode, Password newPassword)
+        {
+            ValidateParameterIsNotMissing(emailAddress, nameof(emailAddress), ErrorName.EMAIL_ADDRESS_IS_MISSING);
+            ValidateParameterIsNotMissing(resetPasswordCode, nameof(resetPasswordCode), ErrorName.RESET_PASSWORD_CODE_IS_MISSING);
+            ValidateParameterIsNotMissing(newPassword, nameof(newPassword), ErrorName.PASSWORD_IS_MISSING);
+            ValidatePasswordFormat(newPassword);
+            var emailValidator = _serviceProvider.GetService<EmailValidator>();
+            emailValidator.ValidateEmailAddressFormat(emailAddress);
+            var email = await emailValidator.ValidateAndGetEmailAsync(EmailIdentifier.OfAddress(emailAddress));
+            User = email.User;
+            ValidateResetPasswordCodeIsCorrectAsync(User, resetPasswordCode);
         }
 
         public async Task ValidateDeleteUserInputParametersAsync(User requestingUser)
@@ -358,31 +381,13 @@ namespace FireplaceApi.Core.Validators
 
         }
 
-        //public async Task ValidatePassword(string username, string password)
-        //{
-        //    var user = await _userOperator.GetIdentityByUsernameAsync(username);
-        //    if (string.Equals(password, user.Password) == false)
-        //    {
-        //        var serverMessage = $"User {username} authentication failed with password {password}.";
-        //        throw new ApiException(ErrorId.WRONG_BASIC_AUTHENTICATION, serverMessage);
-        //    }
-        //}
-
-        //public void ValidatePasswordHasMinimumLength(string password, string field)
-        //{
-        //    if (password.Length < 8)
-        //    {
-        //        var serverMessage = $"Field {field} => {password} doesn't have minimum length.";
-        //        throw new ApiException(ErrorId.PASSWORD_MINIMUM_LENGTH, serverMessage, field);
-        //    }
-        //}
-
-        //public async Task<bool?> DoesUsernameBelong?ToUser(string username, ulong? userId)
-        //{
-        //    var userEntity = await _userOperator.GetIdentityByUsernameAsync(username);
-        //    if (string.Equals(userEntity.Username, username, StringComparison.OrdinalIgnoreCase))
-        //        return true;
-        //    return false;
-        //}
+        public void ValidateResetPasswordCodeIsCorrectAsync(User user, string resetPasswordCode)
+        {
+            if (resetPasswordCode != user.ResetPasswordCode)
+            {
+                var serverMessage = $"Input reset password code is not correct for user {user.Id}!";
+                throw new ApiException(ErrorName.RESET_PASSWORD_CODE_NOT_CORRECT, serverMessage);
+            }
+        }
     }
 }

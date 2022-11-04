@@ -173,6 +173,42 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
+        /// Send reset password code
+        /// </summary>
+        /// <returns>No content</returns>
+        /// <response code="200">Reset password code successfully sent.</response>
+        [AllowAnonymous]
+        [HttpPost("send-reset-password-code")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> SendResetPasswordCodeAsync(
+            [FromBody] SendResetPasswordCodeInputBodyParameters inputBodyParameters)
+        {
+            var resetPasswordUrl = $"{Configs.Current.Api.BaseUrlPath}/docs" +
+                $"#/User/post_{Tools.Constants.LatestApiVersion}_users_reset_password_with_code";
+            await _userService.SendResetPasswordCodeAsync(inputBodyParameters.EmailAddress, resetPasswordUrl);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Reset password with code
+        /// </summary>
+        /// <returns>No content</returns>
+        /// <response code="200">Password successfully changed.</response>
+        [AllowAnonymous]
+        [HttpPost("reset-password-with-code")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> ResetPasswordWithCodeAsync(
+            [FromBody] ResetPasswordWithCodeInputBodyParameters inputBodyParameters)
+        {
+            var password = Password.OfValue(inputBodyParameters.NewPassword);
+            await _userService.ResetPasswordWithCodeAsync(inputBodyParameters.EmailAddress,
+                inputBodyParameters.ResetPasswordCode, password);
+            return Ok();
+        }
+
+        /// <summary>
         /// Update the requesting user account.
         /// </summary>
         /// <returns>Updated user</returns>

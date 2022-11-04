@@ -65,7 +65,7 @@ namespace FireplaceApi.Core.Validators
             if (await _emailOperator.DoesEmailIdentifierExistAsync(identifier))
             {
                 var serverMessage = $"Requested email already exists! {identifier.ToJson()}";
-                throw new ApiException(ErrorName.EMAIL_EXISTS, serverMessage);
+                throw new ApiException(ErrorName.EMAIL_ADDRESS_EXISTS, serverMessage);
             }
         }
 
@@ -74,8 +74,19 @@ namespace FireplaceApi.Core.Validators
             if (await _emailOperator.DoesEmailIdentifierExistAsync(identifier) == false)
             {
                 var serverMessage = $"Requested email doesn't exist! {identifier.ToJson()}";
-                throw new ApiException(ErrorName.EMAIL_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
+                throw new ApiException(ErrorName.EMAIL_ADDRESS_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
+        }
+
+        public async Task<Email> ValidateAndGetEmailAsync(EmailIdentifier identifier)
+        {
+            var email = await _emailOperator.GetEmailByIdentifierAsync(identifier, true);
+            if (email == null)
+            {
+                var serverMessage = $"Requested email doesn't exist! {identifier.ToJson()}";
+                throw new ApiException(ErrorName.EMAIL_ADDRESS_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
+            }
+            return email;
         }
 
         public async Task ValidateEmailAddressMatchWithPasswordAsync(string emailAddress, Password password)

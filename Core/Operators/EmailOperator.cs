@@ -84,6 +84,13 @@ namespace FireplaceApi.Core.Operators
             return email;
         }
 
+        public async Task SendEmailMessage(string toEmailAddress,
+            string subject, string body)
+        {
+            await _emailGateway.SendEmailMessageAsync(toEmailAddress,
+                subject, body);
+        }
+
         public async Task<Email> PatchEmailByIdentifierAsync(EmailIdentifier identifier, ulong? userId = null,
             string address = null, ActivationStatus? activationStatus = null,
             int? activationCode = null, string activationSubject = null,

@@ -47,7 +47,7 @@ namespace FireplaceApi.Infrastructure.Converters
 
             var userEntity = new UserEntity(user.Id, user.Username, user.State.ToString(),
                 user.CreationDate, user.DisplayName, user.About, user.AvatarUrl, user.BannerUrl,
-                user.ModifiedDate, user.Password?.Hash, emailEntity, googleUserEntity,
+                user.ModifiedDate, user.Password?.Hash, user.ResetPasswordCode, emailEntity, googleUserEntity,
                 accessTokenEntities, sessionEntities);
 
             return userEntity;
@@ -78,8 +78,8 @@ namespace FireplaceApi.Infrastructure.Converters
 
             var user = new User(userEntity.Id, userEntity.Username, userEntity.State.ToEnum<UserState>(),
                 userEntity.CreationDate, userEntity.DisplayName, userEntity.About, userEntity.AvatarUrl,
-                userEntity.BannerUrl, userEntity.ModifiedDate, Password.OfHash(userEntity.PasswordHash), email,
-                googleUser, accessTokens, sessions);
+                userEntity.BannerUrl, userEntity.ModifiedDate, Password.OfHash(userEntity.PasswordHash),
+                userEntity.ResetPasswordCode, email, googleUser, accessTokens, sessions);
 
             return user;
         }

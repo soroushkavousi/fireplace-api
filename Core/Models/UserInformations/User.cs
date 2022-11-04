@@ -14,6 +14,7 @@ namespace FireplaceApi.Core.Models
         public string AvatarUrl { get; set; }
         public string BannerUrl { get; set; }
         public Password Password { get; set; }
+        public string ResetPasswordCode { get; set; }
         public Email Email { get; set; }
         public GoogleUser GoogleUser { get; set; }
         public List<AccessToken> AccessTokens { get; set; }
@@ -21,8 +22,8 @@ namespace FireplaceApi.Core.Models
 
         public User(ulong id, string username, UserState state, DateTime creationDate,
             string displayName, string about, string avatarUrl, string bannerUrl,
-            DateTime? modifiedDate = null, Password password = null, Email email = null,
-            GoogleUser googleUser = null, List<AccessToken> accessTokens = null,
+            DateTime? modifiedDate = null, Password password = null, string resetPasswordCode = null,
+            Email email = null, GoogleUser googleUser = null, List<AccessToken> accessTokens = null,
             List<Session> sessions = null) : base(id, creationDate, modifiedDate)
         {
             Username = username ?? throw new ArgumentNullException(nameof(username));
@@ -32,6 +33,7 @@ namespace FireplaceApi.Core.Models
             AvatarUrl = avatarUrl;
             BannerUrl = bannerUrl;
             Password = password;
+            ResetPasswordCode = resetPasswordCode;
             Email = email;
             GoogleUser = googleUser;
             AccessTokens = accessTokens;
@@ -39,7 +41,7 @@ namespace FireplaceApi.Core.Models
         }
 
         public User PureCopy() => new User(Id, Username, State, CreationDate,
-            DisplayName, About, AvatarUrl, BannerUrl, ModifiedDate, Password);
+            DisplayName, About, AvatarUrl, BannerUrl, ModifiedDate, Password, ResetPasswordCode);
 
         public void RemoveLoopReferencing()
         {

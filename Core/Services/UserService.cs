@@ -81,6 +81,18 @@ namespace FireplaceApi.Core.Services
             return profile;
         }
 
+        public async Task SendResetPasswordCodeAsync(string emailAddress, string resetPasswordWithCodeUrlFormat)
+        {
+            await _userValidator.ValidateSendResetPasswordCodeInputParametersAsync(emailAddress, resetPasswordWithCodeUrlFormat);
+            await _userOperator.SendResetPasswordCode(emailAddress, resetPasswordWithCodeUrlFormat);
+        }
+
+        public async Task ResetPasswordWithCodeAsync(string emailAddress, string resetPasswordCode, Password newPassword)
+        {
+            await _userValidator.ValidateResetPasswordWithCodeInputParametersAsync(emailAddress, resetPasswordCode, newPassword);
+            await _userOperator.ResetPasswordWithCode(_userValidator.User, newPassword);
+        }
+
         public async Task<User> PatchRequestingUserAsync(User requestingUser, string displayName,
             string about, string avatarUrl, string bannerUrl, string username,
             Password oldPassword, Password password, string emailAddress)
