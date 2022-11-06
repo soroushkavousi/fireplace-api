@@ -9,6 +9,7 @@ This project is just a practice on how to design an API for real-world applicati
 Check [**The Swagger UI**](https://api.fireplace.bitiano.com/docs/index.html) of the API
 
 [**How to run a clone?**](#how-to-run-a-clone) 
+ 
  <br/>
 
 
@@ -118,6 +119,7 @@ Check [**The Swagger UI**](https://api.fireplace.bitiano.com/docs/index.html) of
 **15. Id Generation and Encoding**
 
 - Check [Guides/id-generation-and-encoding.md](Guides/id-generation-and-encoding.md)
+
 <br/> 
 
 
@@ -156,6 +158,7 @@ This project has been divided into multiple subprojects to implement a domain-dr
 	- Defines how the data is persisted in databases or other persistent storage
 	- Responsible for connecting to external systems and services
 	- It does not contain business rules or knowledge
+
 <br/>
 
 
@@ -168,19 +171,19 @@ With the ***swagger UI***, you can easily interact with the API and learn it. It
  <br/>
  
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/swagger-top.png" width="90%" />
+  <img src="https://files.fireplace.bitiano.com/api/swagger-top.png" width="85%" />
 </div>
 
  <br/>
  
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/swagger-sample-execution.png" width="90%" />
+  <img src="https://files.fireplace.bitiano.com/api/swagger-sample-execution.png" width="85%" />
 </div>
 
  <br/> 
   
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/various-log-in-sign-up.png" width="90%" />
+  <img src="https://files.fireplace.bitiano.com/api/various-log-in-sign-up.png" width="85%" />
 </div>
 
 
@@ -197,7 +200,7 @@ With the ***swagger UI***, you can easily interact with the API and learn it. It
 </div>
 
 
-<br/>
+<br/>  <br/>
 
 
 
@@ -306,12 +309,12 @@ Note: At this stage, you may have noticed that some errors say there are no conf
 
 **6. Import the initial data (configs & errors) into the database**   
 
-The file [Guides/initial-data.sql](Guides/initial-data.sql) has multiple insert queries to feed the initial data. You have two ways in order to inject the data to the database:
+The file [Guides/db-initial-data.sql](Guides/db-initial-data.sql) has multiple insert queries to feed the initial data. You have two ways in order to inject the data to the database:
 
 Option 1:  Using psql command
 
 ```
-> psql -h localhost -p <port> -U <user> -d <database-name> -f "Guides/initial-data.sql"
+> psql -h localhost -p <port> -U <user> -d <database-name> -f "Guides/db-initial-data.sql"
 ```
 
 Option 2: Running queries directly
