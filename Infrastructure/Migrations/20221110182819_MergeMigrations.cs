@@ -6,8 +6,10 @@ using System;
 
 namespace FireplaceApi.Infrastructure.Migrations
 {
+    /// <inheritdoc />
     public partial class MergeMigrations : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
@@ -87,6 +89,8 @@ namespace FireplaceApi.Infrastructure.Migrations
                     BannerUrl = table.Column<string>(type: "text", nullable: true)
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
                     PasswordHash = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
+                    ResetPasswordCode = table.Column<string>(type: "text", nullable: true)
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
                     CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -625,6 +629,8 @@ namespace FireplaceApi.Infrastructure.Migrations
                 column: "Username",
                 unique: true);
         }
+
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

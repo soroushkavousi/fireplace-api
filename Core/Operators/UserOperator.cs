@@ -32,60 +32,6 @@ namespace FireplaceApi.Core.Operators
             _googleGateway = googleGateway;
         }
 
-        private async Task<User> SignUpWithGoogleAsync(IPAddress ipAddress,
-            GoogleUserToken googleUserToken, string state,
-            string scope, string authUser, string prompt)
-        {
-            var emailOperator = _serviceProvider.GetService<EmailOperator>();
-            var googleUserOperator = _serviceProvider.GetService<GoogleUserOperator>();
-            var username = await GenerateNewUsername();
-            var displayName = googleUserToken.FullName;
-            if (string.IsNullOrWhiteSpace(displayName))
-                displayName = $"{googleUserToken.FirstName} {googleUserToken.LastName}";
-            var user = await CreateUserAsync(username, state: UserState.VERIFIED,
-                displayName: displayName, avatarUrl: googleUserToken.PictureUrl);
-
-            await emailOperator.CreateEmailAsync(user.Id, googleUserToken.GmailAddress,
-                ActivationStatus.COMPLETED);
-
-            var redirectToUserUrl = await googleUserOperator.GetRedirectToUserUrlFromState();
-            var googleUser = await googleUserOperator.CreateGoogleUserAsync(user.Id,
-                googleUserToken, state,
-                authUser, prompt, redirectToUserUrl);
-
-            user = await GetUserByIdentifierAsync(UserIdentifier.OfId(user.Id),
-                true, true, true, false);
-            return user;
-        }
-
-        private async Task<User> AddGoogleInformationToUserAsync(User user,
-            IPAddress ipAddress, GoogleUserToken googleUserToken, string state,
-            string scope, string authUser, string prompt)
-        {
-            var googleUserOperator = _serviceProvider.GetService<GoogleUserOperator>();
-            var redirectToUserUrl = await googleUserOperator.GetRedirectToUserUrlFromState();
-            var googleUser = await googleUserOperator.CreateGoogleUserAsync(user.Id,
-                googleUserToken, state,
-                authUser, prompt, redirectToUserUrl);
-
-            if (user.State != UserState.VERIFIED)
-            {
-                var userOperator = _serviceProvider.GetService<UserOperator>();
-                await userOperator.ApplyUserChanges(user, state: UserState.VERIFIED);
-            }
-
-            if (user.Email.Activation.Status != ActivationStatus.COMPLETED)
-            {
-                var emailOperator = _serviceProvider.GetService<EmailOperator>();
-                await emailOperator.ApplyEmailChangesAsync(user.Email,
-                    activationStatus: ActivationStatus.COMPLETED);
-            }
-
-            user = await GetUserByIdentifierAsync(UserIdentifier.OfId(user.Id),
-                true, true, true, false);
-            return user;
-        }
-
         public async Task<User> LogInWithGoogleAsync(IPAddress ipAddress, string state,
             string code, string scope, string authUser, string prompt)
         {
@@ -132,6 +78,59 @@ namespace FireplaceApi.Core.Operators
             var accessToken = await accessTokenOperator.CreateAccessTokenAsync(userId);
 
             user = await GetUserByIdentifierAsync(UserIdentifier.OfId(userId), true, true, true, false);
+            return user;
+        }
+
+        private async Task<User> AddGoogleInformationToUserAsync(User user,
+            IPAddress ipAddress, GoogleUserToken googleUserToken, string state,
+            string scope, string authUser, string prompt)
+        {
+            var googleUserOperator = _serviceProvider.GetService<GoogleUserOperator>();
+            var redirectToUserUrl = await googleUserOperator.GetRedirectToUserUrlFromState();
+            var googleUser = await googleUserOperator.CreateGoogleUserAsync(user.Id,
+                googleUserToken, state,
+                authUser, prompt, redirectToUserUrl);
+
+            if (user.State != UserState.VERIFIED)
+            {
+                var userOperator = _serviceProvider.GetService<UserOperator>();
+                await userOperator.ApplyUserChanges(user, state: UserState.VERIFIED);
+            }
+
+            if (user.Email.Activation.Status != ActivationStatus.COMPLETED)
+            {
+                var emailOperator = _serviceProvider.GetService<EmailOperator>();
+                await emailOperator.ApplyEmailChangesAsync(user.Email,
+                    activationStatus: ActivationStatus.COMPLETED);
+            }
+
+            user = await GetUserByIdentifierAsync(UserIdentifier.OfId(user.Id),
+                true, true, true, false);
+            return user;
+        }
+
+        private async Task<User> SignUpWithGoogleAsync(IPAddress ipAddress,
+            GoogleUserToken googleUserToken, string state,
+            string scope, string authUser, string prompt)
+        {
+            var emailOperator = _serviceProvider.GetService<EmailOperator>();
+            var googleUserOperator = _serviceProvider.GetService<GoogleUserOperator>();
+            var username = await GenerateNewUsername();
+            var displayName = googleUserToken.FullName;
+            if (string.IsNullOrWhiteSpace(displayName))
+                displayName = $"{googleUserToken.FirstName} {googleUserToken.LastName}";
+            var user = await CreateUserAsync(username, state: UserState.VERIFIED,
+                displayName: displayName, avatarUrl: googleUserToken.PictureUrl);
+
+            await emailOperator.CreateEmailAsync(user.Id, googleUserToken.GmailAddress,
+                ActivationStatus.COMPLETED);
+
+            var redirectToUserUrl = await googleUserOperator.GetRedirectToUserUrlFromState();
+            var googleUser = await googleUserOperator.CreateGoogleUserAsync(user.Id,
+                googleUserToken, state, authUser, prompt, redirectToUserUrl);
+
+            user = await GetUserByIdentifierAsync(UserIdentifier.OfId(user.Id),
+                true, true, true, false);
             return user;
         }
 

@@ -54,7 +54,9 @@ namespace FireplaceApi.Infrastructure.Entities
         {
             modelBuilder.HasCollation(Constants.CaseInsensitiveCollationName,
                 locale: "en-u-ks-primary", provider: "icu", deterministic: false);
+#pragma warning disable CS0618 // Type or member is obsolete
             modelBuilder.UseDefaultColumnCollation(Constants.CaseInsensitiveCollationName);
+#pragma warning restore CS0618 // Type or member is obsolete
 
             modelBuilder.ApplyConfiguration(new CommentEntityConfiguration());
             modelBuilder.ApplyConfiguration(new CommentVoteEntityConfiguration());

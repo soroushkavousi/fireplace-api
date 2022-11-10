@@ -4,7 +4,7 @@
 
 This project is just a practice on how to design an API for real-world applications. It also can be used as a sample. <br/>
 
-**ASP&#46;NET Core version: 6.0**
+ASP&#46;NET Core version: 7.0
 
 Check [**The Swagger UI**](https://api.fireplace.bitiano.com/docs/index.html) of the API
 
@@ -309,12 +309,12 @@ Note: At this stage, you may have noticed that some errors say there are no conf
 
 **6. Import the initial data (configs & errors) into the database**   
 
-The file [Guides/db-initial-data.sql](Guides/db-initial-data.sql) has multiple insert queries to feed the initial data. You have two ways in order to inject the data to the database:
+The file [Guides/db-initial-data.txt](Guides/db-initial-data.txt) has multiple insert queries to feed the initial data. You have two ways in order to inject the data to the database:
 
 Option 1:  Using psql command
 
 ```
-> psql -h localhost -p <port> -U <user> -d <database-name> -f "Guides/db-initial-data.sql"
+> psql -h localhost -p <port> -U <user> -d <database-name> -f "Guides/db-initial-data.txt"
 ```
 
 Option 2: Running queries directly
