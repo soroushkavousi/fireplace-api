@@ -1,6 +1,8 @@
 ﻿using FireplaceApi.Api.Converters;
+using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Services;
+using FireplaceApi.Core.ValueObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +13,7 @@ using System.Threading.Tasks;
 namespace FireplaceApi.Api.Controllers
 {
     [ApiController]
-    [ApiVersion("0.1")]
+    [ApiVersion("1.0")]
     [Route("v{version:apiVersion}/communities")]
     [Produces("application/json")]
     public class CommunityController : ApiController
@@ -29,26 +31,30 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
-        /// List all communities.
+        /// List communities.
         /// </summary>
         /// <returns>List of communities</returns>
-        /// <response code="200">All communities was successfully retrieved.</response>
+        /// <response code="200">The communities was successfully retrieved.</response>
         [AllowAnonymous]
         [HttpGet]
-        [ProducesResponseType(typeof(PageDto<CommunityDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<PageDto<CommunityDto>>> ListCommunitiesAsync(
+        [ProducesResponseType(typeof(QueryResultDto<CommunityDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<QueryResultDto<CommunityDto>>> ListCommunitiesAsync(
             [BindNever][FromHeader] User requestingUser,
             [FromQuery] ListCommunitiesInputQueryParameters inputQueryParameters)
         {
-            //var accessTokenValue = FindAccessTokenValue(inputHeaderParameters, inputCookieParameters);
-            var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
-            var page = await _communityService.ListCommunitiesAsync(requestingUser,
-                paginationInputParameters, inputQueryParameters.Name,
-                inputQueryParameters.Sort);
-            var requestPath = HttpContext.Request.Path;
-            var pageDto = _communityConverter.ConvertToDto(page, requestPath);
-            //SetOutputHeaderParameters(communityDtos.HeaderParameters);
-            return pageDto;
+            var queryResult = new QueryResult<Community>(null, null);
+            if (!inputQueryParameters.Ids.IsNullOrEmpty())
+            {
+                queryResult.Items = await _communityService.ListCommunitiesByIdsAsync(
+                    inputQueryParameters.Ids);
+            }
+            else
+            {
+                queryResult = await _communityService.ListCommunitiesAsync(inputQueryParameters.Name,
+                    inputQueryParameters.Sort);
+            }
+            var queryResultDto = _communityConverter.ConvertToDto(queryResult);
+            return queryResultDto;
         }
 
         /// <summary>

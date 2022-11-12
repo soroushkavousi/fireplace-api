@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace FireplaceApi.Api.Controllers
 {
     [ApiController]
-    [ApiVersion("0.1")]
+    [ApiVersion("1.0")]
     [Route("v{version:apiVersion}/community-memberships")]
     [Produces("application/json")]
     public class CommunityMembershipController : ApiController
@@ -53,9 +53,9 @@ namespace FireplaceApi.Api.Controllers
         /// <response code="200">The community membership was successfully deleted.</response>
         [HttpDelete("/v{version:apiVersion}/communities/{id-or-name}/members/me")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteCommunityMembershipByCommunityIdAsync(
+        public async Task<IActionResult> DeleteCommunityMembershipByCommunityIdentifierAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] DeleteCommunityMembershipByCommunityEncodedIdOrNameInputRouteParameters inputRouteParameters)
+            [FromRoute] DeleteCommunityMembershipByCommunityIdentifierInputRouteParameters inputRouteParameters)
         {
             await _communityMembershipService.DeleteCommunityMembershipAsync(requestingUser,
                 inputRouteParameters.CommunityEncodedIdOrName);

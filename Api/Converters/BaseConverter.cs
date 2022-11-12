@@ -1,32 +1,28 @@
 ﻿using FireplaceApi.Api.Controllers;
 using FireplaceApi.Core.Models;
+using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
 using System.Linq;
 
 namespace FireplaceApi.Api.Converters
 {
     public abstract class BaseConverter<M, DTO>
-        where M : class
+        where M : BaseModel
         where DTO : class
     {
 
         public abstract DTO ConvertToDto(M model);
 
-        public PageDto<DTO> ConvertToDto(Page<M> page, string relativeRequestPath)
+        public QueryResultDto<DTO> ConvertToDto(QueryResult<M> queryResult)
         {
-            if (page == null)
+            if (queryResult == null)
                 return null;
 
-            var listPath = $"{Configs.Current.Api.BaseUrlPath}{relativeRequestPath}";
+            var itemDtos = queryResult.Items?.Select(model => ConvertToDto(model))?.ToList();
+            var moreItemIds = queryResult.MoreItemIds?.Select(id => id.IdEncode())?.ToList();
 
-            var paginationDto = new PaginationDto(page.QueryResultPointer,
-                listPath, page.Number, page.Start, page.End, page.Limit,
-                page.TotalItemsCount, page.TotalPagesCount);
-
-            var itemDtos = page.Items.Select(model => ConvertToDto(model)).ToList();
-
-            var pageDto = new PageDto<DTO>(itemDtos, paginationDto);
-            return pageDto;
+            var queryResultDto = new QueryResultDto<DTO>(itemDtos, moreItemIds);
+            return queryResultDto;
         }
     }
 }

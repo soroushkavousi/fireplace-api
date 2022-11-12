@@ -11,12 +11,12 @@ namespace FireplaceApi.Core.Models
         public EnvironmentName EnvironmentName { get; set; }
         public ApiConfigs Api { get; set; }
         public FileConfigs File { get; set; }
-        public PaginationConfigs Pagination { get; set; }
+        public QueryResultConfigs QueryResult { get; set; }
         public EmailConfigs Email { get; set; }
         public GoogleConfigs Google { get; set; }
 
         public Configs(ulong id, EnvironmentName environmentName, ApiConfigs api,
-            FileConfigs file, PaginationConfigs pagination,
+            FileConfigs file, QueryResultConfigs queryResult,
             EmailConfigs email, GoogleConfigs google, DateTime creationDate,
             DateTime? modifiedDate = null)
             : base(id, creationDate, modifiedDate)
@@ -24,13 +24,13 @@ namespace FireplaceApi.Core.Models
             EnvironmentName = environmentName;
             Api = api ?? throw new ArgumentNullException(nameof(api));
             File = file ?? throw new ArgumentNullException(nameof(file));
-            Pagination = pagination ?? throw new ArgumentNullException(nameof(pagination));
+            QueryResult = queryResult ?? throw new ArgumentNullException(nameof(queryResult));
             Email = email ?? throw new ArgumentNullException(nameof(email));
             Google = google ?? throw new ArgumentNullException(nameof(google));
         }
 
         public Configs PureCopy() => new(Id, EnvironmentName, Api, File,
-            Pagination, Email, Google, CreationDate, ModifiedDate);
+            QueryResult, Email, Google, CreationDate, ModifiedDate);
 
         public class ApiConfigs
         {
@@ -45,11 +45,11 @@ namespace FireplaceApi.Core.Models
             public int GeneratedFileNameLength { get; set; }
         }
 
-        public class PaginationConfigs
+        public class QueryResultConfigs
         {
-            public int TotalItemsCount { get; set; }
-            public int MaximumOfPageItemsCount { get; set; }
-            public int GeneratedPointerLength { get; set; }
+            public int TotalLimit { get; set; }
+            public int ViewLimit { get; set; }
+            public int DepthLimit { get; set; }
         }
 
         public class EmailConfigs
@@ -83,11 +83,11 @@ namespace FireplaceApi.Core.Models
                 BaseUrlPath = "https://files.server.com",
                 GeneratedFileNameLength = 12
             },
-            pagination: new PaginationConfigs
+            queryResult: new QueryResultConfigs
             {
-                TotalItemsCount = 300,
-                MaximumOfPageItemsCount = 30,
-                GeneratedPointerLength = 10
+                TotalLimit = 300,
+                ViewLimit = 30,
+                DepthLimit = 5
             },
             email: new EmailConfigs
             {

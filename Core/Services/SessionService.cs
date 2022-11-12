@@ -1,6 +1,5 @@
 ﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
-using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.Validators;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -33,8 +32,8 @@ namespace FireplaceApi.Core.Services
         {
             await _sessionValidator.ValidateGetSessionByIdInputParametersAsync(requestingUser,
                 encodedId, includeUser);
-            var id = encodedId.IdDecode();
-            var session = await _sessionOperator.GetSessionByIdAsync(id, includeUser.Value);
+            var session = await _sessionOperator.GetSessionByIdAsync(
+                _sessionValidator.SessionId, includeUser.Value);
             return session;
         }
 
@@ -42,8 +41,7 @@ namespace FireplaceApi.Core.Services
         {
             await _sessionValidator.ValidateRevokeSessionByIdInputParametersAsync(
                 requestingUser, encodedId);
-            var id = encodedId.IdDecode();
-            await _sessionOperator.RevokeSessionByIdAsync(id);
+            await _sessionOperator.RevokeSessionByIdAsync(_sessionValidator.SessionId);
         }
     }
 }

@@ -1,16 +1,21 @@
-﻿using System;
+﻿using FireplaceApi.Core.Attributes;
+using System;
 
 namespace FireplaceApi.Core.Models
 {
     public class GoogleUser : BaseModel
     {
         public ulong UserId { get; set; }
+        [Sensitive]
         public string Code { get; set; }
+        [Sensitive]
         public string AccessToken { get; set; }
         public string TokenType { get; set; }
         public long AccessTokenExpiresInSeconds { get; set; }
+        [Sensitive]
         public string RefreshToken { get; set; }
         public string Scope { get; set; }
+        [Sensitive]
         public string IdToken { get; set; }
         public DateTime AccessTokenIssuedTime { get; set; }
         public string GmailAddress { get; set; }

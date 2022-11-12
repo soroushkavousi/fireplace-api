@@ -69,15 +69,28 @@ namespace FireplaceApi.Core.Services
             return user;
         }
 
-        public async Task<User> GetUserByEncodedIdOrUsernameAsync(User requestingUser, string encodedIdOrUsername)
+        public async Task<Profile> GetUserProfileAsync(User requestingUser, string username)
         {
-            var userIdentifier = await _userValidator.ValidateGetUserByEncodedIdOrUsernameInputParametersAsync(
-                requestingUser, encodedIdOrUsername);
+            await _userValidator.ValidateGetUserByUsernameInputParametersAsync(
+                requestingUser, username);
 
-            var user = await _userOperator.GetUserByIdentifierAsync(userIdentifier, false,
-                    false, false, false);
+            var user = await _userOperator.GetUserByIdentifierAsync(_userValidator.UserIdentifier,
+                false, false, false, false);
 
-            return user;
+            var profile = new Profile(user);
+            return profile;
+        }
+
+        public async Task SendResetPasswordCodeAsync(string emailAddress, string resetPasswordWithCodeUrlFormat)
+        {
+            await _userValidator.ValidateSendResetPasswordCodeInputParametersAsync(emailAddress, resetPasswordWithCodeUrlFormat);
+            await _userOperator.SendResetPasswordCode(emailAddress, resetPasswordWithCodeUrlFormat);
+        }
+
+        public async Task ResetPasswordWithCodeAsync(string emailAddress, string resetPasswordCode, Password newPassword)
+        {
+            await _userValidator.ValidateResetPasswordWithCodeInputParametersAsync(emailAddress, resetPasswordCode, newPassword);
+            await _userOperator.ResetPasswordWithCode(_userValidator.User, newPassword);
         }
 
         public async Task<User> PatchRequestingUserAsync(User requestingUser, string displayName,
@@ -95,7 +108,7 @@ namespace FireplaceApi.Core.Services
         public async Task DeleteRequestingUserAsync(User requestingUser)
         {
             await _userValidator.ValidateDeleteUserInputParametersAsync(requestingUser);
-            await _userOperator.DeleteUserByIdentifierAsync(UserIdentifier.OfId(requestingUser.Id));
+            await _userOperator.DeleteUserByIdentifierAsync(_userValidator.UserIdentifier);
         }
     }
 }

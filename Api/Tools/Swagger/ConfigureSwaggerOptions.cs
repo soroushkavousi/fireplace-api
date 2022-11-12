@@ -63,10 +63,11 @@ namespace FireplaceApi.Api.Tools
                 <div>
                     <div>Sample urls:</div>
                     <p style=""margin-left: 40px;""><a href=""{Configs.Current.Api.BaseUrlPath}/communities?name=developers"">{Configs.Current.Api.BaseUrlPath}/communities?name=developers</a></p>
+                    <p style=""margin-left: 40px;""><a href=""{Configs.Current.Api.BaseUrlPath}/{Constants.LatestApiVersion}/communities?name=developers"">{Configs.Current.Api.BaseUrlPath}/{Constants.LatestApiVersion}/communities?name=developers</a></p>
                 </div>";
 
             description_html += $@"
-                <a id=""google-btn"" target=""_blank"" href=""{Configs.Current.Api.BaseUrlPath}/v0.1/users/open-google-log-in-page"">
+                <a id=""google-btn"" target=""_blank"" href=""{Configs.Current.Api.BaseUrlPath}/users/open-google-log-in-page"">
                     <div id=""google-icon-wrapper"">
                         <img id=""google-icon"" src=""https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg""/>
                     </div>

@@ -41,6 +41,11 @@ namespace FireplaceApi.Core.Operators
             return email;
         }
 
+        public async Task ResendActivationCodeAsync(Email email)
+        {
+            await SendActivationCodeAsync(email);
+        }
+
         public async Task<List<Email>> ListEmailsAsync(bool includeUser = false)
         {
             var email = await _emailRepository.ListEmailsAsync(includeUser);
@@ -77,6 +82,13 @@ namespace FireplaceApi.Core.Operators
             email.Activation.Status = ActivationStatus.SENT;
             email = await _emailRepository.UpdateEmailAsync(email);
             return email;
+        }
+
+        public async Task SendEmailMessage(string toEmailAddress,
+            string subject, string body)
+        {
+            await _emailGateway.SendEmailMessageAsync(toEmailAddress,
+                subject, body);
         }
 
         public async Task<Email> PatchEmailByIdentifierAsync(EmailIdentifier identifier, ulong? userId = null,

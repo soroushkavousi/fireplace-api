@@ -10,6 +10,10 @@ namespace FireplaceApi.Api.Extensions
         public static bool IsJson(this string strInput)
         {
             strInput = strInput.Trim();
+
+            if (string.IsNullOrWhiteSpace(strInput))
+                return true;
+
             if ((strInput.StartsWith("{") && strInput.EndsWith("}")) || //For object
                 (strInput.StartsWith("[") && strInput.EndsWith("]"))) //For array
             {

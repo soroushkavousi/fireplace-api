@@ -32,12 +32,6 @@ namespace FireplaceApi.Infrastructure.Entities
         public DbSet<ErrorEntity> ErrorEntities { get; set; }
         public DbSet<FileEntity> FileEntities { get; set; }
 
-        //Each entity has its own QueryResultEntity.
-        public DbSet<CommunityQueryResultEntity> CommunityQueryResultEntities { get; set; }
-        public DbSet<CommunityMembershipQueryResultEntity> CommunityMembershipQueryResultEntities { get; set; }
-        public DbSet<PostQueryResultEntity> PostQueryResultEntities { get; set; }
-        public DbSet<CommentQueryResultEntity> CommentQueryResultEntities { get; set; }
-
         public FireplaceApiDbContext(ILogger<FireplaceApiDbContext> logger, DbContextOptions<FireplaceApiDbContext> options)
             : base(options)
         {
@@ -53,15 +47,16 @@ namespace FireplaceApi.Infrastructure.Entities
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasCollation(Constants.CaseInsensitiveCollationName,
                 locale: "en-u-ks-primary", provider: "icu", deterministic: false);
+#pragma warning disable CS0618 // Type or member is obsolete
             modelBuilder.UseDefaultColumnCollation(Constants.CaseInsensitiveCollationName);
-
-            modelBuilder.Ignore<QueryResultEntity>();
+#pragma warning restore CS0618 // Type or member is obsolete
 
             modelBuilder.ApplyConfiguration(new CommentEntityConfiguration());
             modelBuilder.ApplyConfiguration(new CommentVoteEntityConfiguration());
@@ -81,11 +76,6 @@ namespace FireplaceApi.Infrastructure.Entities
             modelBuilder.ApplyConfiguration(new ConfigsEntityConfiguration());
             modelBuilder.ApplyConfiguration(new ErrorEntityConfiguration());
             modelBuilder.ApplyConfiguration(new FileEntityConfiguration());
-
-            modelBuilder.ApplyConfiguration(new CommunityQueryResultEntityConfiguration());
-            modelBuilder.ApplyConfiguration(new CommunityMembershipQueryResultEntityConfiguration());
-            modelBuilder.ApplyConfiguration(new PostQueryResultEntityConfiguration());
-            modelBuilder.ApplyConfiguration(new CommentQueryResultEntityConfiguration());
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,

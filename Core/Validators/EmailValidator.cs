@@ -26,18 +26,29 @@ namespace FireplaceApi.Core.Validators
             _emailOperator = emailOperator;
         }
 
+        public EmailIdentifier EmailIdentifier { get; private set; }
+        public Email Email { get; private set; }
+
         public async Task ValidateGetRequestingUserEmailInputParametersAsync(User requestingUser)
         {
+            EmailIdentifier = EmailIdentifier.OfUserId(requestingUser.Id);
             await Task.CompletedTask;
         }
 
-        public async Task<Email> ValidateActivateRequestingUserEmailInputParametersAsync(User requestingUser, int? activationCode)
+        public async Task ValidateActivateRequestingUserEmailInputParametersAsync(User requestingUser, int? activationCode)
         {
             ValidateParameterIsNotMissing(activationCode, nameof(activationCode), ErrorName.ACTIVATION_CODE_IS_MISSING);
-            var email = await _emailOperator.GetEmailByIdentifierAsync(EmailIdentifier.OfUserId(requestingUser.Id));
-            ValidateEmailIsNotAlreadyActivated(email);
-            ValidateActivationCodeIsCorrectAsync(email, activationCode.Value);
-            return email;
+            EmailIdentifier = EmailIdentifier.OfUserId(requestingUser.Id);
+            Email = await _emailOperator.GetEmailByIdentifierAsync(EmailIdentifier);
+            ValidateEmailIsNotAlreadyActivated(Email);
+            ValidateActivationCodeIsCorrectAsync(Email, activationCode.Value);
+        }
+
+        public async Task ValidateResendActivationCodeInputParametersAsync(User requestingUser)
+        {
+            EmailIdentifier = EmailIdentifier.OfUserId(requestingUser.Id);
+            Email = await _emailOperator.GetEmailByIdentifierAsync(EmailIdentifier);
+            ValidateEmailIsNotAlreadyActivated(Email);
         }
 
         public void ValidateEmailAddressFormat(string address)
@@ -54,7 +65,7 @@ namespace FireplaceApi.Core.Validators
             if (await _emailOperator.DoesEmailIdentifierExistAsync(identifier))
             {
                 var serverMessage = $"Requested email already exists! {identifier.ToJson()}";
-                throw new ApiException(ErrorName.EMAIL_EXISTS, serverMessage);
+                throw new ApiException(ErrorName.EMAIL_ADDRESS_EXISTS, serverMessage);
             }
         }
 
@@ -63,8 +74,19 @@ namespace FireplaceApi.Core.Validators
             if (await _emailOperator.DoesEmailIdentifierExistAsync(identifier) == false)
             {
                 var serverMessage = $"Requested email doesn't exist! {identifier.ToJson()}";
-                throw new ApiException(ErrorName.EMAIL_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
+                throw new ApiException(ErrorName.EMAIL_ADDRESS_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
             }
+        }
+
+        public async Task<Email> ValidateAndGetEmailAsync(EmailIdentifier identifier)
+        {
+            var email = await _emailOperator.GetEmailByIdentifierAsync(identifier, true);
+            if (email == null)
+            {
+                var serverMessage = $"Requested email doesn't exist! {identifier.ToJson()}";
+                throw new ApiException(ErrorName.EMAIL_ADDRESS_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
+            }
+            return email;
         }
 
         public async Task ValidateEmailAddressMatchWithPasswordAsync(string emailAddress, Password password)
@@ -72,22 +94,22 @@ namespace FireplaceApi.Core.Validators
             var email = await _emailOperator.GetEmailByIdentifierAsync(EmailIdentifier.OfAddress(emailAddress), true);
             if (email == null)
             {
-                var serverMessage = $"Email address {emailAddress} doesn't exist! password: {password.Value}";
+                var serverMessage = $"Email address {emailAddress} doesn't exist! Password Hash: {password.Hash}";
                 throw new ApiException(ErrorName.AUTHENTICATION_FAILED, serverMessage);
             }
 
             if (string.Equals(email.User.Password.Hash, password.Hash) == false)
             {
-                var serverMessage = $"Email address {emailAddress} isn't match with password {password.Value}!";
+                var serverMessage = $"Input password is not correct! Email: {emailAddress}, Password Hash: {password.Hash}";
                 throw new ApiException(ErrorName.AUTHENTICATION_FAILED, serverMessage);
             }
         }
 
         public void ValidateActivationCodeIsCorrectAsync(Email email, int activationCode)
         {
-            if (activationCode != email.Activation.Code && activationCode != 55555)
+            if (activationCode != email.Activation.Code)
             {
-                var serverMessage = $"Input activation code {activationCode} is not correct for email {email.Id}!";
+                var serverMessage = $"Input activation code is not correct for email {email.Id}!";
                 throw new ApiException(ErrorName.EMAIL_ACTIVATION_CODE_NOT_CORRECT, serverMessage);
             }
         }

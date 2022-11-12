@@ -20,6 +20,9 @@ namespace FireplaceApi.Core.Validators
         private readonly IServiceProvider _serviceProvider;
         private readonly UserOperator _userOperator;
 
+        public UserIdentifier UserIdentifier { get; private set; }
+        public User User { get; private set; }
+
         public UserValidator(ILogger<UserValidator> logger,
             IServiceProvider serviceProvider, UserOperator userOperator)
         {
@@ -83,15 +86,39 @@ namespace FireplaceApi.Core.Validators
             await Task.CompletedTask;
         }
 
-        public async Task<UserIdentifier> ValidateGetUserByEncodedIdOrUsernameInputParametersAsync(
-            User requestingUser, string encodedIdOrUsername)
+        public async Task ValidateGetUserByUsernameInputParametersAsync(
+            User requestingUser, string username)
         {
-            var userIdentifier = await ValidateMultipleIdentifiers(encodedIdOrUsername, encodedIdOrUsername);
-            return userIdentifier;
+            ValidateUsernameFormat(username);
+            UserIdentifier = UserIdentifier.OfUsername(username);
+            await ValidateUserIdentifierExists(UserIdentifier);
+        }
+
+        public async Task ValidateSendResetPasswordCodeInputParametersAsync(string emailAddress, string resetPasswordWithCodeUrlFormat)
+        {
+            ValidateParameterIsNotMissing(emailAddress, nameof(emailAddress), ErrorName.EMAIL_ADDRESS_IS_MISSING);
+            var emailValidator = _serviceProvider.GetService<EmailValidator>();
+            emailValidator.ValidateEmailAddressFormat(emailAddress);
+            await emailValidator.ValidateEmailIdentifierExistsAsync(EmailIdentifier.OfAddress(emailAddress));
+        }
+
+        public async Task ValidateResetPasswordWithCodeInputParametersAsync(string emailAddress,
+            string resetPasswordCode, Password newPassword)
+        {
+            ValidateParameterIsNotMissing(emailAddress, nameof(emailAddress), ErrorName.EMAIL_ADDRESS_IS_MISSING);
+            ValidateParameterIsNotMissing(resetPasswordCode, nameof(resetPasswordCode), ErrorName.RESET_PASSWORD_CODE_IS_MISSING);
+            ValidateParameterIsNotMissing(newPassword, nameof(newPassword), ErrorName.PASSWORD_IS_MISSING);
+            ValidatePasswordFormat(newPassword);
+            var emailValidator = _serviceProvider.GetService<EmailValidator>();
+            emailValidator.ValidateEmailAddressFormat(emailAddress);
+            var email = await emailValidator.ValidateAndGetEmailAsync(EmailIdentifier.OfAddress(emailAddress));
+            User = email.User;
+            ValidateResetPasswordCodeIsCorrectAsync(User, resetPasswordCode);
         }
 
         public async Task ValidateDeleteUserInputParametersAsync(User requestingUser)
         {
+            UserIdentifier = UserIdentifier.OfId(requestingUser.Id);
             await Task.CompletedTask;
         }
 
@@ -190,7 +217,7 @@ namespace FireplaceApi.Core.Validators
         {
             if (Equals(requestingUser.Password.Hash, oldPassword.Hash))
             {
-                var serverMessage = $"Old paassword ({oldPassword}) is not correct!";
+                var serverMessage = $"Old paassword is not correct!";
                 throw new ApiException(ErrorName.OLD_PASSWORD_NOT_CORRECT, serverMessage);
             }
         }
@@ -288,32 +315,32 @@ namespace FireplaceApi.Core.Validators
         {
             if (Regexes.PasswordMinLength.IsMatch(password.Value) == false)
             {
-                var serverMessage = $"Password ({password.Value}) doesn't have the minimum length!";
+                var serverMessage = $"Input password doesn't have the minimum length!";
                 throw new ApiException(ErrorName.PASSWORD_MIN_LENGTH, serverMessage);
             }
             if (Regexes.PasswordMaxLength.IsMatch(password.Value) == false)
             {
-                var serverMessage = $"Password ({password.Value}) exceeds the maximum length!";
+                var serverMessage = $"Input password exceeds the maximum length!";
                 throw new ApiException(ErrorName.PASSWORD_MAX_LENGTH, serverMessage);
             }
             if (Regexes.PasswordAnUppercaseLetter.IsMatch(password.Value) == false)
             {
-                var serverMessage = $"Password ({password.Value}) doesn't have an uppercase letter!";
+                var serverMessage = $"Input password doesn't have an uppercase letter!";
                 throw new ApiException(ErrorName.PASSWORD_AN_UPPERCASE_LETTER, serverMessage);
             }
             if (Regexes.PasswordANumber.IsMatch(password.Value) == false)
             {
-                var serverMessage = $"Password ({password.Value}) doesn't have a number!";
+                var serverMessage = $"Input password doesn't have a number!";
                 throw new ApiException(ErrorName.PASSWORD_A_NUMBER, serverMessage);
             }
             if (Regexes.PasswordALowercaseLetter.IsMatch(password.Value) == false)
             {
-                var serverMessage = $"Password ({password.Value}) doesn't have a lowercase letter!";
+                var serverMessage = $"Input password doesn't have a lowercase letter!";
                 throw new ApiException(ErrorName.PASSWORD_A_LOWERCASE_LETTER, serverMessage);
             }
             if (Regexes.PasswordValidCharacters.IsMatch(password.Value) == false)
             {
-                var serverMessage = $"Password ({password.Value}) doesn't have valid characters!";
+                var serverMessage = $"Input password doesn't have valid characters!";
                 throw new ApiException(ErrorName.PASSWORD_VALID_CHARACTERS, serverMessage);
             }
         }
@@ -323,13 +350,13 @@ namespace FireplaceApi.Core.Validators
             var user = await _userOperator.GetUserByIdentifierAsync(UserIdentifier.OfUsername(username));
             if (user == null)
             {
-                var serverMessage = $"Username {username} doesn't exist! password: {password.Value}";
+                var serverMessage = $"Username {username} doesn't exist! Password Hash: {password.Hash}";
                 throw new ApiException(ErrorName.AUTHENTICATION_FAILED, serverMessage);
             }
 
             if (string.Equals(user.Password.Hash, password.Hash) == false)
             {
-                var serverMessage = $"Username {username} isn't match with password {password.Value}!";
+                var serverMessage = $"Input password is not correct! Username: {username}, Password Hash: {password.Hash}";
                 throw new ApiException(ErrorName.AUTHENTICATION_FAILED, serverMessage);
             }
         }
@@ -354,31 +381,13 @@ namespace FireplaceApi.Core.Validators
 
         }
 
-        //public async Task ValidatePassword(string username, string password)
-        //{
-        //    var user = await _userOperator.GetIdentityByUsernameAsync(username);
-        //    if (string.Equals(password, user.Password) == false)
-        //    {
-        //        var serverMessage = $"User {username} authentication failed with password {password}.";
-        //        throw new ApiException(ErrorId.WRONG_BASIC_AUTHENTICATION, serverMessage);
-        //    }
-        //}
-
-        //public void ValidatePasswordHasMinimumLength(string password, string field)
-        //{
-        //    if (password.Length < 8)
-        //    {
-        //        var serverMessage = $"Field {field} => {password} doesn't have minimum length.";
-        //        throw new ApiException(ErrorId.PASSWORD_MINIMUM_LENGTH, serverMessage, field);
-        //    }
-        //}
-
-        //public async Task<bool?> DoesUsernameBelong?ToUser(string username, ulong? userId)
-        //{
-        //    var userEntity = await _userOperator.GetIdentityByUsernameAsync(username);
-        //    if (string.Equals(userEntity.Username, username, StringComparison.OrdinalIgnoreCase))
-        //        return true;
-        //    return false;
-        //}
+        public void ValidateResetPasswordCodeIsCorrectAsync(User user, string resetPasswordCode)
+        {
+            if (resetPasswordCode != user.ResetPasswordCode)
+            {
+                var serverMessage = $"Input reset password code is not correct for user {user.Id}!";
+                throw new ApiException(ErrorName.RESET_PASSWORD_CODE_NOT_CORRECT, serverMessage);
+            }
+        }
     }
 }

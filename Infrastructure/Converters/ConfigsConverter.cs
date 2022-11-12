@@ -25,7 +25,7 @@ namespace FireplaceApi.Infrastructure.Converters
                 return null;
 
             var configsEntityData = new ConfigsEntityData(configs.Api, configs.File,
-                configs.Pagination, configs.Email, configs.Google);
+                configs.QueryResult, configs.Email, configs.Google);
             var configsEntity = new ConfigsEntity(configs.Id, configs.EnvironmentName.ToString(),
                 configsEntityData, configs.CreationDate, configs.ModifiedDate);
 
@@ -38,7 +38,7 @@ namespace FireplaceApi.Infrastructure.Converters
                 return null;
 
             var configs = new Configs(configsEntity.Id, configsEntity.EnvironmentName.ToEnum<EnvironmentName>(),
-                configsEntity.Data.Api, configsEntity.Data.File, configsEntity.Data.Pagination,
+                configsEntity.Data.Api, configsEntity.Data.File, configsEntity.Data.QueryResult,
                 configsEntity.Data.Email, configsEntity.Data.Google, configsEntity.CreationDate,
                 configsEntity.ModifiedDate);
             return configs;

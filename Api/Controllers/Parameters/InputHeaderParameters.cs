@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Core.Extensions;
+﻿using FireplaceApi.Core.Attributes;
+using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Tools;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
@@ -8,6 +9,7 @@ namespace FireplaceApi.Api.Controllers
 {
     public class InputHeaderParameters
     {
+        [Sensitive]
         public string AccessTokenValue { get; set; }
         public IPAddress IpAddress { get; set; }
 

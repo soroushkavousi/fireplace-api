@@ -1,10 +1,42 @@
 ﻿using FireplaceApi.Api.Extensions;
 using FireplaceApi.Api.Tools;
+using FireplaceApi.Core.Attributes;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Api.Controllers
 {
+    [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
+    public class SendResetPasswordCodeInputBodyParameters
+    {
+        [Required]
+        public string EmailAddress { get; set; }
+
+        public static IOpenApiAny Example { get; } = new OpenApiObject
+        {
+            [nameof(EmailAddress).ToSnakeCase()] = EmailDto.PureExample1[nameof(EmailDto.Address).ToSnakeCase()],
+        };
+    }
+
+    [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
+    public class ResetPasswordWithCodeInputBodyParameters
+    {
+        [Required]
+        public string EmailAddress { get; set; }
+        [Required]
+        public string ResetPasswordCode { get; set; }
+        [Required]
+        public string NewPassword { get; set; }
+
+        public static IOpenApiAny Example { get; } = new OpenApiObject
+        {
+            [nameof(EmailAddress).ToSnakeCase()] = EmailDto.PureExample1[nameof(EmailDto.Address).ToSnakeCase()],
+            [nameof(ResetPasswordCode).ToSnakeCase()] = new OpenApiString("6Qw2RsG8aw"),
+            [nameof(NewPassword).ToSnakeCase()] = new OpenApiString("NewPassword"),
+        };
+    }
+
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
     public class PatchUserInputBodyParameters
     {
@@ -13,7 +45,9 @@ namespace FireplaceApi.Api.Controllers
         public string AvatarUrl { get; set; }
         public string BannerUrl { get; set; }
         public string Username { get; set; }
+        [Sensitive]
         public string OldPassword { get; set; }
+        [Sensitive]
         public string Password { get; set; }
         public string EmailAddress { get; set; }
 

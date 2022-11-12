@@ -32,7 +32,25 @@ namespace FireplaceApi.Infrastructure.Repositories
             _communityConverter = communityConverter;
         }
 
-        public async Task<List<Community>> ListCommunitiesAsync(List<ulong> Ids)
+        public async Task<List<Community>> ListCommunitiesAsync(string name, SortType? sort)
+        {
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { name });
+            var sw = Stopwatch.StartNew();
+            var communityEntities = await _communityEntities
+                .AsNoTracking()
+                .Search(
+                    identifier: null,
+                    search: name,
+                    sort: sort ?? SortType.NEW
+                )
+                .Take(Configs.Current.QueryResult.TotalLimit)
+                .ToListAsync();
+
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntities });
+            return communityEntities.Select(e => _communityConverter.ConvertToModel(e)).ToList();
+        }
+
+        public async Task<List<Community>> ListCommunitiesByIdsAsync(List<ulong> Ids)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { Ids });
             var sw = Stopwatch.StartNew();
@@ -48,43 +66,6 @@ namespace FireplaceApi.Infrastructure.Repositories
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntities });
             return communityEntities.Select(e => _communityConverter.ConvertToModel(e)).ToList();
-        }
-
-        public async Task<List<Community>> ListCommunitiesAsync(string name, SortType? sort)
-        {
-            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { name });
-            var sw = Stopwatch.StartNew();
-            var communityEntities = await _communityEntities
-                .AsNoTracking()
-                .Search(
-                    identifier: null,
-                    search: name,
-                    sort: sort ?? SortType.NEW
-                )
-                .Take(Configs.Current.Pagination.TotalItemsCount)
-                .ToListAsync();
-
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntities });
-            return communityEntities.Select(e => _communityConverter.ConvertToModel(e)).ToList();
-        }
-
-        public async Task<List<ulong>> ListCommunityIdsAsync(string name, SortType? sort)
-        {
-            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { name });
-            var sw = Stopwatch.StartNew();
-            var communityEntityIds = await _communityEntities
-                .AsNoTracking()
-                .Search(
-                    identifier: null,
-                    search: name,
-                    sort: sort ?? SortType.NEW
-                )
-                .Take(Configs.Current.Pagination.TotalItemsCount)
-                .Select(e => e.Id)
-                .ToListAsync();
-
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntityIds });
-            return communityEntityIds;
         }
 
         public async Task<Community> GetCommunityByIdentifierAsync(CommunityIdentifier identifier,

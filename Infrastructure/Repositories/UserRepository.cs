@@ -124,7 +124,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 id,
                 username,
                 state,
-                passwordHash = password?.Hash,
+                password,
                 displayName,
                 about,
                 avatarUrl,

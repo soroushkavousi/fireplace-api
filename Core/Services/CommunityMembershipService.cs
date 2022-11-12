@@ -23,22 +23,19 @@ namespace FireplaceApi.Core.Services
         public async Task<CommunityMembership> CreateCommunityMembershipAsync(
             User requestingUser, string encodedCommunityId, string communityName)
         {
-            var communityIdentifier = await _communityMembershipValidator
-                .ValidateCreateCommunityMembershipInputParametersAsync(
+            await _communityMembershipValidator.ValidateCreateCommunityMembershipInputParametersAsync(
                 requestingUser, encodedCommunityId, communityName);
-            return await _communityMembershipOperator
-                .CreateCommunityMembershipAsync(requestingUser,
-                    communityIdentifier);
+            return await _communityMembershipOperator.CreateCommunityMembershipAsync(requestingUser,
+                    _communityMembershipValidator.CommunityIdentitifer);
         }
 
         public async Task DeleteCommunityMembershipAsync(User requestingUser,
             string communityEncodedIdOrName)
         {
-            var communityMembershipIdentifier = await _communityMembershipValidator
-                .ValidateDeleteCommunityMembershipInputParametersAsync(
+            await _communityMembershipValidator.ValidateDeleteCommunityMembershipInputParametersAsync(
                     requestingUser, communityEncodedIdOrName);
-            await _communityMembershipOperator
-                .DeleteCommunityMembershipByIdentifierAsync(communityMembershipIdentifier);
+            await _communityMembershipOperator.DeleteCommunityMembershipByIdentifierAsync(
+                _communityMembershipValidator.CommunityMembershipIdentifier);
         }
     }
 }

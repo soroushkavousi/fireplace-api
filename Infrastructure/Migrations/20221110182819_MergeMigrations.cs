@@ -1,14 +1,15 @@
 ﻿using FireplaceApi.Infrastructure.ValueObjects;
 using Microsoft.EntityFrameworkCore.Migrations;
 using System;
-using System.Collections.Generic;
 
 #nullable disable
 
 namespace FireplaceApi.Infrastructure.Migrations
 {
+    /// <inheritdoc />
     public partial class MergeMigrations : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
@@ -70,8 +71,6 @@ namespace FireplaceApi.Infrastructure.Migrations
                     table.PrimaryKey("PK_FileEntities", x => x.Id);
                 });
 
-
-
             migrationBuilder.CreateTable(
                 name: "UserEntities",
                 columns: table => new
@@ -90,6 +89,8 @@ namespace FireplaceApi.Infrastructure.Migrations
                     BannerUrl = table.Column<string>(type: "text", nullable: true)
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
                     PasswordHash = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
+                    ResetPasswordCode = table.Column<string>(type: "text", nullable: true)
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
                     CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -327,16 +328,21 @@ namespace FireplaceApi.Infrastructure.Migrations
                     AuthorEntityUsername = table.Column<string>(type: "text", nullable: false)
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
                     PostEntityId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    ParentCommentEntityId = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
                     Vote = table.Column<int>(type: "integer", nullable: false),
                     Content = table.Column<string>(type: "text", nullable: false)
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
-                    ParentCommentEntityIds = table.Column<List<decimal>>(type: "numeric[]", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CommentEntities", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CommentEntities_CommentEntities_ParentCommentEntityId",
+                        column: x => x.ParentCommentEntityId,
+                        principalTable: "CommentEntities",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_CommentEntities_PostEntities_PostEntityId",
                         column: x => x.PostEntityId,
@@ -413,86 +419,6 @@ namespace FireplaceApi.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "CommentQueryResultEntities",
-                columns: table => new
-                {
-                    Id = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
-                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    Pointer = table.Column<string>(type: "text", nullable: false)
-                        .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
-                    LastStart = table.Column<int>(type: "integer", nullable: false),
-                    LastEnd = table.Column<int>(type: "integer", nullable: false),
-                    LastLimit = table.Column<int>(type: "integer", nullable: false),
-                    LastPage = table.Column<int>(type: "integer", nullable: false),
-                    ReferenceEntityIds = table.Column<List<decimal>>(type: "numeric[]", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CommentQueryResultEntities", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CommunityMembershipQueryResultEntities",
-                columns: table => new
-                {
-                    Id = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
-                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    Pointer = table.Column<string>(type: "text", nullable: false)
-                        .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
-                    LastStart = table.Column<int>(type: "integer", nullable: false),
-                    LastEnd = table.Column<int>(type: "integer", nullable: false),
-                    LastLimit = table.Column<int>(type: "integer", nullable: false),
-                    LastPage = table.Column<int>(type: "integer", nullable: false),
-                    ReferenceEntityIds = table.Column<List<decimal>>(type: "numeric[]", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CommunityMembershipQueryResultEntities", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CommunityQueryResultEntities",
-                columns: table => new
-                {
-                    Id = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
-                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    Pointer = table.Column<string>(type: "text", nullable: false)
-                        .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
-                    LastStart = table.Column<int>(type: "integer", nullable: false),
-                    LastEnd = table.Column<int>(type: "integer", nullable: false),
-                    LastLimit = table.Column<int>(type: "integer", nullable: false),
-                    LastPage = table.Column<int>(type: "integer", nullable: false),
-                    ReferenceEntityIds = table.Column<List<decimal>>(type: "numeric[]", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CommunityQueryResultEntities", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PostQueryResultEntities",
-                columns: table => new
-                {
-                    Id = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
-                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    Pointer = table.Column<string>(type: "text", nullable: false)
-                        .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
-                    LastStart = table.Column<int>(type: "integer", nullable: false),
-                    LastEnd = table.Column<int>(type: "integer", nullable: false),
-                    LastLimit = table.Column<int>(type: "integer", nullable: false),
-                    LastPage = table.Column<int>(type: "integer", nullable: false),
-                    ReferenceEntityIds = table.Column<List<decimal>>(type: "numeric[]", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PostQueryResultEntities", x => x.Id);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AccessTokenEntities_UserEntityId",
                 table: "AccessTokenEntities",
@@ -520,15 +446,14 @@ namespace FireplaceApi.Infrastructure.Migrations
                 column: "AuthorEntityUsername");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CommentEntities_ParentCommentEntityId",
+                table: "CommentEntities",
+                column: "ParentCommentEntityId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CommentEntities_PostEntityId",
                 table: "CommentEntities",
                 column: "PostEntityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CommentQueryResultEntities_Pointer",
-                table: "CommentQueryResultEntities",
-                column: "Pointer",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_CommentVoteEntities_CommentEntityId",
@@ -600,18 +525,6 @@ namespace FireplaceApi.Infrastructure.Migrations
                 name: "IX_CommunityMembershipEntities_UserEntityUsername",
                 table: "CommunityMembershipEntities",
                 column: "UserEntityUsername");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CommunityMembershipQueryResultEntities_Pointer",
-                table: "CommunityMembershipQueryResultEntities",
-                column: "Pointer",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CommunityQueryResultEntities_Pointer",
-                table: "CommunityQueryResultEntities",
-                column: "Pointer",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ConfigsEntities_EnvironmentName",
@@ -686,12 +599,6 @@ namespace FireplaceApi.Infrastructure.Migrations
                 column: "CommunityEntityName");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PostQueryResultEntities_Pointer",
-                table: "PostQueryResultEntities",
-                column: "Pointer",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PostVoteEntities_PostEntityId",
                 table: "PostVoteEntities",
                 column: "PostEntityId");
@@ -723,25 +630,17 @@ namespace FireplaceApi.Infrastructure.Migrations
                 unique: true);
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "AccessTokenEntities");
 
             migrationBuilder.DropTable(
-                name: "CommentQueryResultEntities");
-
-            migrationBuilder.DropTable(
                 name: "CommentVoteEntities");
 
             migrationBuilder.DropTable(
                 name: "CommunityMembershipEntities");
-
-            migrationBuilder.DropTable(
-                name: "CommunityMembershipQueryResultEntities");
-
-            migrationBuilder.DropTable(
-                name: "CommunityQueryResultEntities");
 
             migrationBuilder.DropTable(
                 name: "ConfigsEntities");
@@ -757,9 +656,6 @@ namespace FireplaceApi.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "GoogleUserEntities");
-
-            migrationBuilder.DropTable(
-                name: "PostQueryResultEntities");
 
             migrationBuilder.DropTable(
                 name: "PostVoteEntities");

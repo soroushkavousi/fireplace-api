@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FireplaceApi.Core.Attributes;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -10,6 +11,7 @@ namespace FireplaceApi.Infrastructure.Entities
     {
         public ulong UserEntityId { get; set; }
         [Required]
+        [Sensitive]
         public string Value { get; set; }
         public UserEntity UserEntity { get; set; }
 

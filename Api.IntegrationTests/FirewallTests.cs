@@ -36,7 +36,7 @@ namespace FireplaceApi.Api.IntegrationTests
             {
                 _logger.LogAppInformation(title: "TEST_START");
 
-                var request = new HttpRequestMessage(HttpMethod.Get, "/v0.1/users/me");
+                var request = new HttpRequestMessage(HttpMethod.Get, "/users/me");
                 var httpClient = _clientPool.CreateGuestHttpClientAsync();
                 var response = await httpClient.SendAsync(request);
                 await _testUtils.AssertResponseIsErrorAsync(ErrorName.AUTHENTICATION_FAILED, response);

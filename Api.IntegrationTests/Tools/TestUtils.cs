@@ -64,7 +64,7 @@ namespace FireplaceApi.Api.IntegrationTests.Tools
         }
 
         public HttpContent MakeRequestContent(object requestContent, string contentType = "application/json")
-            => MakeRequestContent(requestContent.ToJson(), contentType);
+            => MakeRequestContent(requestContent.ToJson(ignoreSensitiveLimit: true), contentType);
 
         public HttpContent MakeRequestContent(string requestContent, string contentType = "application/json")
             => new StringContent(requestContent, Encoding.UTF8, contentType);

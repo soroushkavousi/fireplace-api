@@ -3,6 +3,7 @@ using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Tools;
 using System;
+using System.Collections.Generic;
 
 namespace FireplaceApi.Core.Validators
 {
@@ -26,17 +27,19 @@ namespace FireplaceApi.Core.Validators
             }
         }
 
-        public void ValidateInputEnum<TEnum>(string inputString,
+        public TEnum? ValidateInputEnum<TEnum>(string inputString,
             string enumParameterName, ErrorName errorId) where TEnum : struct
         {
             if (string.IsNullOrWhiteSpace(inputString))
-                return;
+                return null;
 
             if (!Enum.TryParse(inputString, true, out TEnum result))
             {
                 var serverMessage = $"Parameter ({enumParameterName}), which is enum {typeof(TEnum).Name}, has illegal value: {inputString}!";
                 throw new ApiException(errorId, serverMessage);
             }
+
+            return result;
         }
 
         public ulong? ValidateEncodedIdFormat(string encodedId, string parameterName = null,
@@ -60,6 +63,17 @@ namespace FireplaceApi.Core.Validators
                 var serverMessage = $"Invalid url format! ({urlString})!";
                 throw new ApiException(ErrorName.URL_FORMAT_IS_NOT_VALID, serverMessage);
             }
+        }
+
+        public List<ulong> ValidateIdsFormat(string stringOfEncodedIds)
+        {
+            List<ulong> ids = new();
+            var encodedIds = stringOfEncodedIds.Split(',');
+            foreach (var encodedId in encodedIds)
+            {
+                ids.Add(ValidateEncodedIdFormat(encodedId, "ids").Value);
+            }
+            return ids;
         }
 
         //public ulong? ValidateEncodedIdFormatValidIfExists(string encodedId, string parameterName)

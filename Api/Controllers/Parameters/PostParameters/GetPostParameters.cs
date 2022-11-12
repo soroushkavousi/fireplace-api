@@ -10,7 +10,7 @@ namespace FireplaceApi.Api.Controllers
         public string Id { get; set; }
     }
 
-    public class GetPostInputQueryParameters
+    public class GetPostByIdInputQueryParameters
     {
         [FromQuery(Name = "include_author")]
         public bool IncludeAuthor { get; set; } = false;

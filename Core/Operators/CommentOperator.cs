@@ -5,7 +5,6 @@ using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,115 +14,72 @@ namespace FireplaceApi.Core.Operators
     public class CommentOperator
     {
         private readonly ILogger<CommentOperator> _logger;
-        private readonly IServiceProvider _serviceProvider;
         private readonly ICommentRepository _commentRepository;
         private readonly ICommentVoteRepository _commentVoteRepository;
-        private readonly PageOperator _pageOperator;
         private readonly UserOperator _userOperator;
         private readonly PostOperator _postOperator;
 
         public CommentOperator(ILogger<CommentOperator> logger,
-            IServiceProvider serviceProvider, ICommentRepository commentRepository,
+            ICommentRepository commentRepository,
             ICommentVoteRepository commentVoteRepository,
-            PageOperator pageOperator, UserOperator userOperator,
-            PostOperator postOperator)
+            UserOperator userOperator, PostOperator postOperator)
         {
             _logger = logger;
-            _serviceProvider = serviceProvider;
             _commentRepository = commentRepository;
             _commentVoteRepository = commentVoteRepository;
-            _pageOperator = pageOperator;
             _userOperator = userOperator;
             _postOperator = postOperator;
         }
 
-        public async Task<Page<Comment>> ListSelfCommentsAsync(User requestingUser,
-            PaginationInputParameters paginationInputParameters, SortType? sort)
+        public async Task<QueryResult<Comment>> ListPostCommentsAsync(ulong postId,
+            SortType? sort = null, User requestingUser = null)
         {
-            Page<Comment> resultPage = default;
-            if (string.IsNullOrWhiteSpace(paginationInputParameters.Pointer))
-            {
-                var commentIds = await _commentRepository.ListSelfCommentIdsAsync(
-                    requestingUser.Id, sort);
-                resultPage = await _pageOperator.CreatePageWithoutPointerAsync(
-                    ModelName.COMMENT, paginationInputParameters, commentIds,
-                    _commentRepository.ListCommentsAsync, requestingUser);
-            }
-            else
-            {
-                resultPage = await _pageOperator.CreatePageWithPointerAsync(
-                    ModelName.COMMENT, paginationInputParameters,
-                    _commentRepository.ListCommentsAsync, requestingUser);
-            }
-            return resultPage;
+            sort ??= Constants.DefaultSort;
+            var postComments = await _commentRepository.ListPostCommentsAsync(
+                postId, sort, requestingUser);
+
+            var queryResult = CreateQueryResult(postComments);
+            return queryResult;
         }
 
-        public async Task<Page<Comment>> ListPostCommentsAsync(User requestingUser,
-            PaginationInputParameters paginationInputParameters, ulong postId,
-            SortType? sort)
+        public async Task<List<Comment>> ListCommentsByIdsAsync(List<ulong> ids,
+            SortType? sort = null, User requestingUser = null)
         {
-            Page<Comment> resultPage = default;
-            if (string.IsNullOrWhiteSpace(paginationInputParameters.Pointer))
-            {
-                var commentIds = await _commentRepository.ListPostCommentIdsAsync(
-                    postId, sort);
-                resultPage = await _pageOperator.CreatePageWithoutPointerAsync(
-                    ModelName.COMMENT, paginationInputParameters, commentIds,
-                    _commentRepository.ListCommentsAsync, requestingUser);
-            }
-            else
-            {
-                resultPage = await _pageOperator.CreatePageWithPointerAsync(
-                    ModelName.COMMENT, paginationInputParameters,
-                    _commentRepository.ListCommentsAsync, requestingUser);
-            }
-            var childComments = await _commentRepository.ListChildCommentsAsync(
-                    postId, resultPage.ItemIds, requestingUser);
-            SetChilds(resultPage.Items, childComments);
-            return resultPage;
+            sort ??= Constants.DefaultSort;
+            if (ids.IsNullOrEmpty())
+                return null;
+
+            var comments = await _commentRepository.ListCommentsByIdsAsync(
+                ids, sort, requestingUser);
+            return comments;
         }
 
-        private void SetChilds(List<Comment> parentComments,
-            List<Comment> childComments)
+        public async Task<QueryResult<Comment>> ListSelfCommentsAsync(User author,
+            SortType? sort = null)
         {
-            var childrenPerParentId = childComments
-                .GroupBy(cc => cc.ParentCommentIds.Last())
-                .ToDictionary(g => g.Key, g => g.ToList());
-            SetChilds(parentComments, childrenPerParentId);
+            sort ??= Constants.DefaultSort;
+            var selfComments = await _commentRepository.ListSelfCommentsAsync(
+                author, sort);
+
+            var queryResult = CreateQueryResult(selfComments);
+            return queryResult;
         }
 
-        private void SetChilds(List<Comment> parentComments,
-            Dictionary<ulong, List<Comment>> childrenPerParentId)
-        {
-            if (parentComments == null || parentComments.Count == 0)
-                return;
-            foreach (var pc in parentComments)
-            {
-                pc.ChildComments = childrenPerParentId.GetValueOrDefault(pc.Id);
-                SetChilds(pc.ChildComments, childrenPerParentId);
-            }
-        }
-
-        public async Task<List<Comment>> ListChildCommentsAsync(User requestingUser,
+        public async Task<QueryResult<Comment>> ListChildCommentsAsync(User requestingUser,
             ulong parentCommentId)
         {
-            var postId = (await GetCommentByIdAsync(parentCommentId, false,
-                false, null)).PostId;
-            var childComments = await _commentRepository.ListChildCommentsAsync(
-                    postId, parentCommentId, requestingUser);
-            var rootComments = childComments.Where(cc => cc.ParentCommentIds.Last() == parentCommentId).ToList();
-            rootComments.ForEach(rc => childComments.Remove(rc));
-            SetChilds(rootComments, childComments);
-            return rootComments;
+            var parentComment = await _commentRepository.GetCommentByIdAsync(parentCommentId,
+                requestingUser: requestingUser, includeChildComments: true);
+
+            var queryResult = CreateQueryResult(parentComment.ChildComments);
+            return queryResult;
         }
 
-        public async Task<Comment> GetCommentByIdAsync(ulong id,
-            bool includeAuthor, bool includePost, User requestingUser)
+        public async Task<Comment> GetCommentByIdAsync(ulong id, bool includeAuthor,
+            bool includePost, User requestingUser = null)
         {
             var comment = await _commentRepository.GetCommentByIdAsync(
-                id, includeAuthor, includePost, requestingUser);
-            if (comment == null)
-                return comment;
+                id, includeAuthor, includePost, requestingUser: requestingUser);
 
             return comment;
         }
@@ -134,8 +90,7 @@ namespace FireplaceApi.Core.Operators
             var id = await IdGenerator.GenerateNewIdAsync(DoesCommentIdExistAsync);
             var comment = await _commentRepository
                 .CreateCommentAsync(id, requestingUser.Id,
-                    requestingUser.Username, postId, content,
-                    new List<ulong>());
+                    requestingUser.Username, postId, content);
             return comment;
         }
 
@@ -145,12 +100,10 @@ namespace FireplaceApi.Core.Operators
             var parentComment = await _commentRepository
                 .GetCommentByIdAsync(commentId);
             var postId = parentComment.PostId;
-            var parentCommentIds = parentComment.ParentCommentIds.CopyOrDefault();
-            parentCommentIds.Add(parentComment.Id);
             var id = await IdGenerator.GenerateNewIdAsync(DoesCommentIdExistAsync);
             var comment = await _commentRepository
                 .CreateCommentAsync(id, requestingUser.Id, requestingUser.Username,
-                    postId, content, parentCommentIds);
+                    postId, content, commentId);
             return comment;
         }
 
@@ -178,8 +131,8 @@ namespace FireplaceApi.Core.Operators
             var voteChange = commentVote.IsUp ? +2 : -2;
             var comment = await ApplyCommentChangesAsync(commentVote.Comment,
                 null, voteChange: voteChange);
-            comment = await GetCommentByIdAsync(comment.Id,
-                false, false, requestingUser);
+            comment = await GetCommentByIdAsync(comment.Id, false, false,
+                requestingUser);
             return comment;
         }
 
@@ -203,8 +156,8 @@ namespace FireplaceApi.Core.Operators
                 .GetCommentByIdAsync(id);
             comment = await ApplyCommentChangesAsync(comment, content,
                 voteChange);
-            comment = await GetCommentByIdAsync(comment.Id,
-                false, false, requestingUser);
+            comment = await GetCommentByIdAsync(comment.Id, false, false,
+                requestingUser);
             return comment;
         }
 
@@ -244,5 +197,67 @@ namespace FireplaceApi.Core.Operators
                 .UpdateCommentAsync(comment);
             return comment;
         }
+
+        private QueryResult<Comment> CreateQueryResult(List<Comment> totalComments)
+        {
+            var queryResult = new QueryResult<Comment>(totalComments);
+
+            if (queryResult.Items == null)
+                return queryResult;
+
+            foreach (var comment in queryResult.Items)
+            {
+                LimitCommentView(comment, depth: 1);
+            }
+
+            return queryResult;
+        }
+
+        private Comment LimitCommentView(Comment comment, int depth)
+        {
+            if (comment.ChildComments == null)
+                return comment;
+
+            if (depth == Configs.Current.QueryResult.DepthLimit)
+            {
+                comment.MoreChildCommentIds = comment.ChildComments
+                    .Select(c => c.Id)
+                    .ToList();
+
+                comment.ChildComments = null;
+                return comment;
+            }
+
+            var queryResult = new QueryResult<Comment>(comment.ChildComments);
+            comment.ChildComments = queryResult.Items;
+            comment.MoreChildCommentIds = queryResult.MoreItemIds;
+
+            comment.ChildComments = comment.ChildComments
+                .Select(cc => LimitCommentView(cc, depth: depth + 1))
+                .ToList();
+
+            return comment;
+        }
+
+        //private void SetChilds(List<Comment> parentComments,
+        //    List<Comment> childComments)
+        //{
+        //    var childrenPerParentId = childComments
+        //        .GroupBy(cc => cc.ParentCommentIds.Last())
+        //        .ToDictionary(g => g.Key, g => g.ToList());
+        //    SetChilds(parentComments, childrenPerParentId);
+        //}
+
+        //private void SetChilds(List<Comment> parentComments,
+        //    Dictionary<ulong, List<Comment>> childrenPerParentId)
+        //{
+        //    if (parentComments == null || parentComments.Count == 0)
+        //        return;
+        //    foreach (var pc in parentComments)
+        //    {
+        //        pc.ChildComments = childrenPerParentId.GetValueOrDefault(pc.Id);
+        //        SetChilds(pc.ChildComments, childrenPerParentId);
+        //    }
+        //}
     }
 }

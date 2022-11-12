@@ -32,13 +32,83 @@ namespace FireplaceApi.Infrastructure.Repositories
             _postConverter = postConverter;
         }
 
-        public async Task<List<Post>> ListPostsAsync(List<ulong> Ids,
+        public async Task<List<Post>> ListCommunityPostsAsync(CommunityIdentifier communityIdentifier,
+            SortType? sort = null, User requestingUser = null)
+        {
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
+            {
+                communityIdentifier,
+                sort,
+                requestingUserId = requestingUser?.Id
+            });
+            var sw = Stopwatch.StartNew();
+            var postEntities = await _postEntities
+                .AsNoTracking()
+                .Search(
+                    authorId: null,
+                    self: null,
+                    joined: null,
+                    communityIdentifier: communityIdentifier,
+                    search: null,
+                    sort: sort
+                )
+                .Include(
+                    authorEntity: false,
+                    communityEntity: false,
+                    requestingUser: requestingUser
+                )
+                .Take(Configs.Current.QueryResult.TotalLimit)
+                .ToListAsync();
+
+            if (requestingUser != null)
+                postEntities.ForEach(e => e.CheckRequestingUserVote(requestingUser));
+
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntities });
+            return postEntities.Select(e => _postConverter.ConvertToModel(e)).ToList();
+        }
+
+        public async Task<List<Post>> ListPostsAsync(string search, SortType? sort,
+            User requestingUser = null)
+        {
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
+            {
+                search,
+                sort,
+                requestingUser = requestingUser?.Id
+            });
+            var sw = Stopwatch.StartNew();
+            var postEntities = await _postEntities
+                .AsNoTracking()
+                .Search(
+                    authorId: null,
+                    self: null,
+                    joined: null,
+                    communityIdentifier: null,
+                    search: search,
+                    sort: sort
+                )
+                .Include(
+                    authorEntity: false,
+                    communityEntity: true,
+                    requestingUser: requestingUser
+                )
+                .Take(Configs.Current.QueryResult.TotalLimit)
+                .ToListAsync();
+
+            if (requestingUser != null)
+                postEntities.ForEach(e => e.CheckRequestingUserVote(requestingUser));
+
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntities });
+            return postEntities.Select(e => _postConverter.ConvertToModel(e)).ToList();
+        }
+
+        public async Task<List<Post>> ListPostsByIdsAsync(List<ulong> Ids,
             User requestingUser = null)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
                 Ids,
-                requestingUser = requestingUser != null
+                requestingUser = requestingUser?.Id
             });
             var sw = Stopwatch.StartNew();
             var postEntities = await _postEntities
@@ -56,77 +126,44 @@ namespace FireplaceApi.Infrastructure.Repositories
             postEntities = new List<PostEntity>();
             Ids.ForEach(id => postEntities.Add(postEntityDictionary[id]));
 
+            if (requestingUser != null)
+                postEntities.ForEach(e => e.CheckRequestingUserVote(requestingUser));
+
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntities });
             return postEntities.Select(e => _postConverter.ConvertToModel(e)).ToList();
         }
 
-        public async Task<List<Post>> ListPostsAsync(ulong? authorId,
-            bool? self, bool? joined, CommunityIdentifier communityIdentifier,
-            string search, SortType? sort,
-            User requestingUser)
+        public async Task<List<Post>> ListSelfPostsAsync(User author,
+            SortType? sort)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
-                authorId,
-                self,
-                joined,
-                communityIdentifier,
-                search,
+                authorId = author.Id,
                 sort
             });
             var sw = Stopwatch.StartNew();
             var postEntities = await _postEntities
                 .AsNoTracking()
                 .Search(
-                    authorId: authorId,
-                    self: self,
-                    joined: joined,
-                    communityIdentifier: communityIdentifier,
-                    search: search,
+                    authorId: author.Id,
+                    self: null,
+                    joined: null,
+                    communityIdentifier: null,
+                    search: null,
                     sort: sort
                 )
                 .Include(
                     authorEntity: false,
                     communityEntity: true,
-                    requestingUser: requestingUser
+                    requestingUser: author
                 )
-                .Take(Configs.Current.Pagination.TotalItemsCount)
+                .Take(Configs.Current.QueryResult.TotalLimit)
                 .ToListAsync();
+
+            postEntities.ForEach(e => e.CheckRequestingUserVote(author));
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntities });
             return postEntities.Select(e => _postConverter.ConvertToModel(e)).ToList();
-        }
-
-        public async Task<List<ulong>> ListPostIdsAsync(ulong? authorId,
-            bool? self, bool? joined, CommunityIdentifier communityIdentifier,
-            string search, SortType? sort)
-        {
-            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
-            {
-                authorId,
-                self,
-                joined,
-                communityIdentifier,
-                search,
-                sort
-            });
-            var sw = Stopwatch.StartNew();
-            var postEntityIds = await _postEntities
-                .AsNoTracking()
-                .Search(
-                    authorId: authorId,
-                    self: self,
-                    joined: joined,
-                    communityIdentifier: communityIdentifier,
-                    search: search,
-                    sort: sort
-                )
-                .Take(Configs.Current.Pagination.TotalItemsCount)
-                .Select(e => e.Id)
-                .ToListAsync();
-
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntityIds });
-            return postEntityIds;
         }
 
         public async Task<Post> GetPostByIdAsync(ulong id,
@@ -150,6 +187,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                     requestingUser: requestingUser
                 )
                 .SingleOrDefaultAsync();
+
+            if (requestingUser != null)
+                postEntity.CheckRequestingUserVote(requestingUser);
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
             return _postConverter.ConvertToModel(postEntity);
@@ -284,7 +324,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 switch (sort)
                 {
                     case SortType.TOP:
-                        q = q.OrderBy(e => e.Vote);
+                        q = q.OrderByDescending(e => e.Vote);
                         break;
                     case SortType.NEW:
                         q = q.OrderByDescending(e => e.CreationDate);

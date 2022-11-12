@@ -1,9 +1,7 @@
-﻿using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Identifiers;
+﻿using FireplaceApi.Core.Identifiers;
 using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
-using FireplaceApi.Core.ValueObjects;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -15,41 +13,18 @@ namespace FireplaceApi.Core.Operators
         private readonly ILogger<CommunityMembershipOperator> _logger;
         private readonly IServiceProvider _serviceProvider;
         private readonly ICommunityMembershipRepository _communityMembershipRepository;
-        private readonly PageOperator _pageOperator;
         private readonly UserOperator _userOperator;
         private readonly CommunityOperator _communityOperator;
 
         public CommunityMembershipOperator(ILogger<CommunityMembershipOperator> logger,
             IServiceProvider serviceProvider, ICommunityMembershipRepository communityMembershipRepository,
-            PageOperator pageOperator, UserOperator userOperator, CommunityOperator communityOperator)
+            UserOperator userOperator, CommunityOperator communityOperator)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
             _communityMembershipRepository = communityMembershipRepository;
-            _pageOperator = pageOperator;
             _userOperator = userOperator;
             _communityOperator = communityOperator;
-        }
-
-        public async Task<Page<CommunityMembership>> ListCommunityMembershipsAsync(User requestingUser,
-            PaginationInputParameters paginationInputParameters)
-        {
-            Page<CommunityMembership> resultPage = default;
-            if (string.IsNullOrWhiteSpace(paginationInputParameters.Pointer))
-            {
-                var communityMembershipIds = await _communityMembershipRepository
-                    .ListCommunityMembershipIdsAsync(UserIdentifier.OfId(requestingUser.Id));
-                resultPage = await _pageOperator.CreatePageWithoutPointerAsync(
-                    ModelName.COMMUNITY_MEMBERSHIP, paginationInputParameters, communityMembershipIds,
-                    _communityMembershipRepository.ListCommunityMembershipsAsync);
-            }
-            else
-            {
-                resultPage = await _pageOperator.CreatePageWithPointerAsync(
-                    ModelName.COMMUNITY_MEMBERSHIP, paginationInputParameters,
-                    _communityMembershipRepository.ListCommunityMembershipsAsync);
-            }
-            return resultPage;
         }
 
         public async Task<CommunityMembership> GetCommunityMembershipByIdentifierAsync(

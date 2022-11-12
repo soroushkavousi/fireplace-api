@@ -113,6 +113,7 @@ namespace FireplaceApi.Api
                 options.Filters.Add(typeof(RequestingUserInjectorAttribute));
                 options.Filters.Add(typeof(InputHeaderParametersInjectorAttribute));
                 options.Filters.Add(typeof(InputCookieParametersInjectorAttribute));
+                options.Filters.Add(typeof(ActionLoggingAttribute));
             }).AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = SnakeCaseNamingPolicy.Instance;
@@ -126,6 +127,8 @@ namespace FireplaceApi.Api
 
             builder.Services.AddApiVersioning(options =>
             {
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
                 options.ReportApiVersions = true;
             });
 
@@ -152,7 +155,8 @@ namespace FireplaceApi.Api
                 options.AddSecurityDefinition("Bearer",
                     new OpenApiSecurityScheme
                     {
-                        Description = "Authorization header using the Bearer scheme.",
+                        Description = "Authorization header using the Bearer scheme." +
+                            " <br/> <br/> Just put your **access token** as the value. <br/>",
                         Type = SecuritySchemeType.Http,
                         Scheme = "bearer",
                         In = ParameterLocation.Header,
@@ -209,7 +213,7 @@ namespace FireplaceApi.Api
             app.UseStaticFiles();
 
             app.UseRewriter(new RewriteOptions()
-                .AddRewrite(@"^(?!v\d\.)(?!docs)(?!swagger)(.*)", "v0.1/$1", false));
+                .AddRewrite(@"^(?!v\d)(?!docs)(?!swagger)(.*)", $"{Constants.LatestApiVersion}/$1", false));
             app.UseRouting();
 
             app.UseSwagger(options =>
@@ -221,13 +225,7 @@ namespace FireplaceApi.Api
                 options.DocumentTitle = "Fireplace Api Docs";
                 options.EnableDeepLinking();
                 options.RoutePrefix = "docs";
-                options.SwaggerEndpoint($"/docs/v0.1/swagger.json", "V0.1");
-                //Todo
-                // build a swagger endpoint for each discovered API version
-                //foreach (var description in app. provider.ApiVersionDescriptions.OrderByDescending(x => x.ApiVersion).ToList())
-                //{
-                //    options.SwaggerEndpoint($"/docs/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
-                //}
+                options.SwaggerEndpoint($"/docs/{Constants.LatestApiVersion}/swagger.json", Constants.LatestApiVersion.ToUpper());
                 options.DocExpansion(DocExpansion.List);
                 options.DisplayRequestDuration();
                 options.InjectStylesheet("https://fonts.googleapis.com/css?family=Roboto");
@@ -237,7 +235,6 @@ namespace FireplaceApi.Api
                 options.InjectJavascript("/swagger-ui/custom-swagger-ui.js");
             });
 
-            app.UseRequestResponseLoggingMiddleware();
             app.UseExceptionMiddleware();
             app.UseFirewallMiddleware();
             app.MapControllers();

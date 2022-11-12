@@ -117,7 +117,7 @@ namespace FireplaceApi.Core.Extensions
 
             if (parameters != null)
             {
-                logMessage += $" | {parameters.ToJson(secureSensitive: true)}";
+                logMessage += $" | {parameters.ToJson()}";
             }
 
             //logMessage = logMessage.EscapeCurlyBrackets();

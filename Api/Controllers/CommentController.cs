@@ -1,19 +1,19 @@
 ﻿using FireplaceApi.Api.Converters;
+using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Services;
+using FireplaceApi.Core.ValueObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Api.Controllers
 {
     [ApiController]
-    [ApiVersion("0.1")]
+    [ApiVersion("1.0")]
     [Route("v{version:apiVersion}/comments")]
     [Produces("application/json")]
     public class CommentController : ApiController
@@ -32,43 +32,62 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
-        /// List self comments.
-        /// </summary>
-        /// <returns>List of self comments</returns>
-        /// <response code="200">Self comments was successfully retrieved.</response>
-        [HttpGet]
-        [ProducesResponseType(typeof(PageDto<CommentDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<PageDto<CommentDto>>> ListSelfCommentsAsync(
-            [BindNever][FromHeader] User requestingUser,
-            [FromQuery] ListSelfCommentsInputQueryParameters inputQueryParameters)
-        {
-            var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
-            var page = await _commentService.ListSelfCommentsAsync(requestingUser,
-                paginationInputParameters, inputQueryParameters.Sort);
-            var requestPath = HttpContext.Request.Path;
-            var pageDto = _commentConverter.ConvertToDto(page, requestPath);
-            return pageDto;
-        }
-
-        /// <summary>
         /// List post comments.
         /// </summary>
         /// <returns>List of post comments</returns>
         /// <response code="200">Post comments was successfully retrieved.</response>
-        [AllowAnonymous]
         [HttpGet("/v{version:apiVersion}/posts/{id}/comments")]
-        [ProducesResponseType(typeof(PageDto<CommentDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<PageDto<CommentDto>>> ListPostCommentsAsync(
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(QueryResultDto<CommentDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<QueryResultDto<CommentDto>>> ListPostCommentsAsync(
             [BindNever][FromHeader] User requestingUser,
             [FromRoute] ListPostCommentsInputRouteParameters inputRouteParameters,
             [FromQuery] ListPostCommentsInputQueryParameters inputQueryParameters)
         {
-            var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
-            var page = await _commentService.ListPostCommentsAsync(requestingUser,
-                paginationInputParameters, inputRouteParameters.PostId, inputQueryParameters.Sort);
-            var requestPath = HttpContext.Request.Path;
-            var pageDto = _commentConverter.ConvertToDto(page, requestPath);
-            return pageDto;
+            var queryResult = await _commentService.ListPostCommentsAsync(
+                inputRouteParameters.PostId, inputQueryParameters.Sort, requestingUser);
+            var queryResultDto = _commentConverter.ConvertToDto(queryResult);
+            return queryResultDto;
+        }
+
+        /// <summary>
+        /// Search for comments.
+        /// </summary>
+        /// <returns>List of comments</returns>
+        /// <response code="200">The comments was successfully retrieved.</response>
+        [AllowAnonymous]
+        [HttpGet]
+        [ProducesResponseType(typeof(QueryResultDto<CommentDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<QueryResultDto<CommentDto>>> ListCommentsAsync(
+            [BindNever][FromHeader] User requestingUser,
+            [FromQuery] ListCommentsInputQueryParameters inputQueryParameters)
+        {
+            var queryResult = new QueryResult<Comment>(null, null);
+            if (!inputQueryParameters.Ids.IsNullOrEmpty())
+            {
+                queryResult.Items = await _commentService.ListCommentsByIdsAsync(
+                    inputQueryParameters.Ids, inputQueryParameters.Sort, requestingUser);
+            }
+
+            var queryResultDto = _commentConverter.ConvertToDto(queryResult);
+            return queryResultDto;
+        }
+
+        /// <summary>
+        /// List self comments.
+        /// </summary>
+        /// <returns>List of self comments</returns>
+        /// <response code="200">The comments was successfully retrieved.</response>
+        [HttpGet("me")]
+        [ProducesResponseType(typeof(QueryResultDto<CommentDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<QueryResultDto<CommentDto>>> ListSelfCommentsAsync(
+            [BindNever][FromHeader] User requestingUser,
+            [FromQuery] ListSelfCommentsInputQueryParameters inputQueryParameters)
+        {
+            var queryResult = await _commentService.ListSelfCommentsAsync(requestingUser,
+                inputQueryParameters.Sort);
+            var queryResultDto = _commentConverter.ConvertToDto(queryResult);
+            return queryResultDto;
         }
 
         /// <summary>
@@ -77,16 +96,16 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>List of child comments</returns>
         /// <response code="200">Child comments was successfully retrieved.</response>
         [AllowAnonymous]
-        [HttpGet("{id}/children")]
-        [ProducesResponseType(typeof(List<CommentDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<CommentDto>>> ListChildCommentsAsync(
+        [HttpGet("{id}/comments")]
+        [ProducesResponseType(typeof(QueryResultDto<CommentDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<QueryResultDto<CommentDto>>> ListChildCommentsAsync(
             [BindNever][FromHeader] User requestingUser,
             [FromRoute] ListChildCommentsInputRouteParameters inputRouteParameters)
         {
-            var comments = await _commentService.ListChildCommentsAsync(requestingUser,
-                inputRouteParameters.ParentId);
-            var commentDtos = comments.Select(c => _commentConverter.ConvertToDto(c)).ToList();
-            return commentDtos;
+            var queryResult = await _commentService.ListChildCommentsAsync(
+                inputRouteParameters.ParentId, requestingUser);
+            var queryResultDto = _commentConverter.ConvertToDto(queryResult);
+            return queryResultDto;
         }
 
         /// <summary>
@@ -102,9 +121,9 @@ namespace FireplaceApi.Api.Controllers
             [FromRoute] GetCommentByIdInputRouteParameters inputRouteParameters,
             [FromQuery] GetCommentInputQueryParameters inputQueryParameters)
         {
-            var comment = await _commentService
-                .GetCommentByIdAsync(requestingUser, inputRouteParameters.Id,
-                    inputQueryParameters.IncludeAuthor, inputQueryParameters.IncludePost);
+            var comment = await _commentService.GetCommentByIdAsync(inputRouteParameters.Id,
+                    inputQueryParameters.IncludeAuthor, inputQueryParameters.IncludePost,
+                    requestingUser);
             var commentDto = _commentConverter.ConvertToDto(comment);
             return commentDto;
         }
@@ -161,7 +180,6 @@ namespace FireplaceApi.Api.Controllers
             [BindNever][FromHeader] User requestingUser,
             [FromRoute] VoteCommentInputRouteParameters inputRouteParameters,
             [FromBody] VoteCommentInputBodyParameters inputBodyParameters)
-
         {
             var comment = await _commentService.VoteCommentAsync(
                 requestingUser, inputRouteParameters.Id, inputBodyParameters.IsUpvote);

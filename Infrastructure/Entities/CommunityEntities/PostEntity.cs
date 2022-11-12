@@ -1,8 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -25,13 +29,15 @@ namespace FireplaceApi.Infrastructure.Entities
         public CommunityEntity CommunityEntity { get; set; }
         public List<PostVoteEntity> PostVoteEntities { get; set; }
         public List<CommentEntity> CommentEntities { get; set; }
+        [NotMapped]
+        public VoteType RequestingUserVote { get; set; }
 
         private PostEntity() : base() { }
 
         public PostEntity(ulong id, ulong authorEntityId, string authorEntityUsername,
-            ulong communityEntityId, string communityEntityName,
-            string content, DateTime? creationDate = null,
-            DateTime? modifiedDate = null, int vote = 0,
+            ulong communityEntityId, string communityEntityName, string content,
+            int vote = 0, VoteType requestingUserVote = VoteType.NEUTRAL,
+            DateTime? creationDate = null, DateTime? modifiedDate = null,
             UserEntity author = null, CommunityEntity communityEntity = null,
             List<PostVoteEntity> postVoteEntities = null,
             List<CommentEntity> commentEntities = null) : base(id, creationDate, modifiedDate)
@@ -42,15 +48,37 @@ namespace FireplaceApi.Infrastructure.Entities
             CommunityEntityName = communityEntityName;
             Content = content ?? throw new ArgumentNullException(nameof(content));
             Vote = vote;
+            RequestingUserVote = requestingUserVote;
             AuthorEntity = author;
             CommunityEntity = communityEntity;
             PostVoteEntities = postVoteEntities;
             CommentEntities = commentEntities;
         }
 
+        public void CheckRequestingUserVote(User requestingUser)
+        {
+            if (requestingUser == null)
+                return;
+
+            var requestingUserVote = VoteType.NEUTRAL;
+            if (PostVoteEntities != null)
+            {
+                var requestingUserVoteEntity = PostVoteEntities
+                    .SingleOrDefault(cve => cve.VoterEntityId == requestingUser.Id);
+                if (requestingUserVoteEntity != null)
+                {
+                    if (requestingUserVoteEntity.IsUp)
+                        requestingUserVote = VoteType.UPVOTE;
+                    else
+                        requestingUserVote = VoteType.DOWNVOTE;
+                }
+            }
+            RequestingUserVote = requestingUserVote;
+        }
+
         public PostEntity PureCopy() => new PostEntity(Id, AuthorEntityId,
             AuthorEntityUsername, CommunityEntityId, CommunityEntityName,
-            Content, CreationDate, ModifiedDate, Vote);
+            Content, Vote, RequestingUserVote, CreationDate, ModifiedDate);
     }
 
     public class PostEntityConfiguration : IEntityTypeConfiguration<PostEntity>

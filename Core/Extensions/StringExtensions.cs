@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace FireplaceApi.Core.Extensions
@@ -149,25 +151,14 @@ namespace FireplaceApi.Core.Extensions
             return Path.GetFileNameWithoutExtension(path);
         }
 
-        // Todo
         public static string ToHash(this string content)
         {
-            var hash = content;
-            return hash;
-        }
-
-        // Todo
-        public static string Encrypt(this string content)
-        {
-            var encryptedContent = content;
-            return encryptedContent;
-        }
-
-        // Todo
-        public static string Decrypt(this string encryptedContent)
-        {
-            var content = encryptedContent;
-            return content;
+            using HashAlgorithm algorithm = SHA256.Create();
+            var hashBytes = algorithm.ComputeHash(Encoding.UTF8.GetBytes(content));
+            var hash = new StringBuilder();
+            foreach (byte b in hashBytes)
+                hash.Append(b.ToString("X2"));
+            return hash.ToString();
         }
     }
 }

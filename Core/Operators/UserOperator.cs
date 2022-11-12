@@ -5,6 +5,7 @@ using FireplaceApi.Core.Interfaces;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Tools;
 using FireplaceApi.Core.ValueObjects;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -29,60 +30,6 @@ namespace FireplaceApi.Core.Operators
             _serviceProvider = serviceProvider;
             _userRepository = userRepository;
             _googleGateway = googleGateway;
-        }
-
-        private async Task<User> SignUpWithGoogleAsync(IPAddress ipAddress,
-            GoogleUserToken googleUserToken, string state,
-            string scope, string authUser, string prompt)
-        {
-            var emailOperator = _serviceProvider.GetService<EmailOperator>();
-            var googleUserOperator = _serviceProvider.GetService<GoogleUserOperator>();
-            var username = await GenerateNewUsername();
-            var displayName = googleUserToken.FullName;
-            if (string.IsNullOrWhiteSpace(displayName))
-                displayName = $"{googleUserToken.FirstName} {googleUserToken.LastName}";
-            var user = await CreateUserAsync(username, state: UserState.VERIFIED,
-                displayName: displayName, avatarUrl: googleUserToken.PictureUrl);
-
-            await emailOperator.CreateEmailAsync(user.Id, googleUserToken.GmailAddress,
-                ActivationStatus.COMPLETED);
-
-            var redirectToUserUrl = await googleUserOperator.GetRedirectToUserUrlFromState();
-            var googleUser = await googleUserOperator.CreateGoogleUserAsync(user.Id,
-                googleUserToken, state,
-                authUser, prompt, redirectToUserUrl);
-
-            user = await GetUserByIdentifierAsync(UserIdentifier.OfId(user.Id),
-                true, true, true, false);
-            return user;
-        }
-
-        private async Task<User> AddGoogleInformationToUserAsync(User user,
-            IPAddress ipAddress, GoogleUserToken googleUserToken, string state,
-            string scope, string authUser, string prompt)
-        {
-            var googleUserOperator = _serviceProvider.GetService<GoogleUserOperator>();
-            var redirectToUserUrl = await googleUserOperator.GetRedirectToUserUrlFromState();
-            var googleUser = await googleUserOperator.CreateGoogleUserAsync(user.Id,
-                googleUserToken, state,
-                authUser, prompt, redirectToUserUrl);
-
-            if (user.State != UserState.VERIFIED)
-            {
-                var userOperator = _serviceProvider.GetService<UserOperator>();
-                await userOperator.ApplyUserChanges(user, state: UserState.VERIFIED);
-            }
-
-            if (user.Email.Activation.Status != ActivationStatus.COMPLETED)
-            {
-                var emailOperator = _serviceProvider.GetService<EmailOperator>();
-                await emailOperator.ApplyEmailChangesAsync(user.Email,
-                    activationStatus: ActivationStatus.COMPLETED);
-            }
-
-            user = await GetUserByIdentifierAsync(UserIdentifier.OfId(user.Id),
-                true, true, true, false);
-            return user;
         }
 
         public async Task<User> LogInWithGoogleAsync(IPAddress ipAddress, string state,
@@ -131,6 +78,59 @@ namespace FireplaceApi.Core.Operators
             var accessToken = await accessTokenOperator.CreateAccessTokenAsync(userId);
 
             user = await GetUserByIdentifierAsync(UserIdentifier.OfId(userId), true, true, true, false);
+            return user;
+        }
+
+        private async Task<User> AddGoogleInformationToUserAsync(User user,
+            IPAddress ipAddress, GoogleUserToken googleUserToken, string state,
+            string scope, string authUser, string prompt)
+        {
+            var googleUserOperator = _serviceProvider.GetService<GoogleUserOperator>();
+            var redirectToUserUrl = await googleUserOperator.GetRedirectToUserUrlFromState();
+            var googleUser = await googleUserOperator.CreateGoogleUserAsync(user.Id,
+                googleUserToken, state,
+                authUser, prompt, redirectToUserUrl);
+
+            if (user.State != UserState.VERIFIED)
+            {
+                var userOperator = _serviceProvider.GetService<UserOperator>();
+                await userOperator.ApplyUserChanges(user, state: UserState.VERIFIED);
+            }
+
+            if (user.Email.Activation.Status != ActivationStatus.COMPLETED)
+            {
+                var emailOperator = _serviceProvider.GetService<EmailOperator>();
+                await emailOperator.ApplyEmailChangesAsync(user.Email,
+                    activationStatus: ActivationStatus.COMPLETED);
+            }
+
+            user = await GetUserByIdentifierAsync(UserIdentifier.OfId(user.Id),
+                true, true, true, false);
+            return user;
+        }
+
+        private async Task<User> SignUpWithGoogleAsync(IPAddress ipAddress,
+            GoogleUserToken googleUserToken, string state,
+            string scope, string authUser, string prompt)
+        {
+            var emailOperator = _serviceProvider.GetService<EmailOperator>();
+            var googleUserOperator = _serviceProvider.GetService<GoogleUserOperator>();
+            var username = await GenerateNewUsername();
+            var displayName = googleUserToken.FullName;
+            if (string.IsNullOrWhiteSpace(displayName))
+                displayName = $"{googleUserToken.FirstName} {googleUserToken.LastName}";
+            var user = await CreateUserAsync(username, state: UserState.VERIFIED,
+                displayName: displayName, avatarUrl: googleUserToken.PictureUrl);
+
+            await emailOperator.CreateEmailAsync(user.Id, googleUserToken.GmailAddress,
+                ActivationStatus.COMPLETED);
+
+            var redirectToUserUrl = await googleUserOperator.GetRedirectToUserUrlFromState();
+            var googleUser = await googleUserOperator.CreateGoogleUserAsync(user.Id,
+                googleUserToken, state, authUser, prompt, redirectToUserUrl);
+
+            user = await GetUserByIdentifierAsync(UserIdentifier.OfId(user.Id),
+                true, true, true, false);
             return user;
         }
 
@@ -256,6 +256,35 @@ namespace FireplaceApi.Core.Operators
             return user;
         }
 
+        public async Task SendResetPasswordCode(string emailAddress, string resetPasswordUrl)
+        {
+            var emailOperator = _serviceProvider.GetService<EmailOperator>();
+            var email = await emailOperator.GetEmailByIdentifierAsync(EmailIdentifier.OfAddress(emailAddress), true);
+            var user = email.User;
+            var resetPasswordCode = GenerateNewResetPasswordCode();
+            user = await ApplyUserChanges(user, resetPasswordCode: resetPasswordCode);
+            var queryParameters = new Dictionary<string, string>()
+            {
+                { "code", resetPasswordCode },
+                { "email", email.Address },
+            };
+            var resetPasswordUrlWithQueryParameters = QueryHelpers.AddQueryString(resetPasswordUrl, queryParameters);
+            var emailSubject = "Fireplace Reset Password";
+            var emailMessage = $"<h4>Hello {user.Username},</h4>" +
+                $"A request has been received to reset the password for your account.<br/>" +
+                $"Use the following code and link to change your password.<br/>" +
+                $"<br/><b>Code: {resetPasswordCode}</b><br/>" +
+                $"<b>Go to <a href=\"{resetPasswordUrlWithQueryParameters}\" target=\"_blank\">Reset Password</a></b><br/>" +
+                $"<br/>Best Regards,<br/>" +
+                $"The Fireplace Team";
+            _ = emailOperator.SendEmailMessage(emailAddress, emailSubject, emailMessage);
+        }
+
+        public async Task ResetPasswordWithCode(User user, Password password)
+        {
+            await ApplyUserChanges(user, password: password);
+        }
+
         public async Task<User> PatchUserByIdentifierAsync(UserIdentifier userIdentifier,
             string displayName = null, string about = null, string avatarUrl = null,
             string bannerUrl = null, string username = null, Password password = null,
@@ -292,10 +321,15 @@ namespace FireplaceApi.Core.Operators
             return newUsername;
         }
 
+        public string GenerateNewResetPasswordCode()
+        {
+            return Utils.GenerateRandomString(10, uppercase: true, special: false);
+        }
+
         public async Task<User> ApplyUserChanges(User user, string displayName = null,
             string about = null, string avatarUrl = null, string bannerUrl = null,
             string username = null, Password password = null, string emailAddress = null,
-            UserState? state = null)
+            UserState? state = null, string resetPasswordCode = null)
         {
             var foundAnyChange = false;
             if (displayName != null)
@@ -337,6 +371,12 @@ namespace FireplaceApi.Core.Operators
             if (state != null)
             {
                 user.State = state.Value;
+                foundAnyChange = true;
+            }
+
+            if (resetPasswordCode != null)
+            {
+                user.ResetPasswordCode = resetPasswordCode;
                 foundAnyChange = true;
             }
 

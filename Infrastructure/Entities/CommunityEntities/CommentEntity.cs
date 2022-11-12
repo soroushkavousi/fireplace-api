@@ -1,8 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FireplaceApi.Core.Enums;
+using FireplaceApi.Core.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
@@ -15,37 +19,73 @@ namespace FireplaceApi.Infrastructure.Entities
         [Required]
         public string AuthorEntityUsername { get; set; }
         public ulong PostEntityId { get; set; }
+        public ulong? ParentCommentEntityId { get; set; }
         public int Vote { get; set; }
         [Required]
         public string Content { get; set; }
-        public List<decimal> ParentCommentEntityIds { get; set; }
         public UserEntity AuthorEntity { get; set; }
         public PostEntity PostEntity { get; set; }
-        public List<CommentVoteEntity> CommentVoteEntities { get; set; }
+        public CommentEntity ParentCommentEntity { get; set; }
+        public List<CommentEntity> ChildCommentEntities { get; set; }
+        public virtual List<CommentVoteEntity> CommentVoteEntities { get; set; }
+        [NotMapped]
+        public VoteType RequestingUserVote { get; set; }
 
         private CommentEntity() : base() { }
 
         public CommentEntity(ulong id, ulong authorEntityId, string authorEntityUsername,
-            ulong postEntityId, string content, List<decimal> parentCommentEntityIds = null,
+            ulong postEntityId, string content, ulong? parentCommentEntityId = null,
+            int vote = 0, VoteType requestingUserVote = VoteType.NEUTRAL,
             DateTime? creationDate = null, DateTime? modifiedDate = null,
-            int vote = 0, UserEntity authorEntity = null,
-            PostEntity postEntity = null, List<CommentVoteEntity> commentVoteEntities = null)
+            UserEntity authorEntity = null, PostEntity postEntity = null,
+            CommentEntity parentCommentEntity = null,
+            List<CommentEntity> childCommentEntities = null,
+            List<CommentVoteEntity> commentVoteEntities = null)
             : base(id, creationDate, modifiedDate)
         {
             AuthorEntityId = authorEntityId;
             AuthorEntityUsername = authorEntityUsername;
             PostEntityId = postEntityId;
-            Content = content ?? throw new ArgumentNullException(nameof(content));
-            ParentCommentEntityIds = parentCommentEntityIds;
+            ParentCommentEntityId = parentCommentEntityId;
             Vote = vote;
+            RequestingUserVote = requestingUserVote;
+            Content = content ?? throw new ArgumentNullException(nameof(content));
             AuthorEntity = authorEntity;
             PostEntity = postEntity;
+            ParentCommentEntity = parentCommentEntity;
+            ChildCommentEntities = childCommentEntities;
             CommentVoteEntities = commentVoteEntities;
         }
 
-        public CommentEntity PureCopy() => new CommentEntity(Id, AuthorEntityId,
-            AuthorEntityUsername, PostEntityId, Content, ParentCommentEntityIds,
-            CreationDate, ModifiedDate, Vote);
+        public void CheckRequestingUserVote(User requestingUser)
+        {
+            if (requestingUser == null)
+                return;
+
+            var requestingUserVote = VoteType.NEUTRAL;
+            if (CommentVoteEntities != null)
+            {
+                var requestingUserVoteEntity = CommentVoteEntities
+                    .SingleOrDefault(cve => cve.VoterEntityId == requestingUser.Id);
+                if (requestingUserVoteEntity != null)
+                {
+                    if (requestingUserVoteEntity.IsUp)
+                        requestingUserVote = VoteType.UPVOTE;
+                    else
+                        requestingUserVote = VoteType.DOWNVOTE;
+                }
+            }
+            RequestingUserVote = requestingUserVote;
+
+            if (ChildCommentEntities == null)
+                return;
+
+            ChildCommentEntities.ForEach(cce => cce.CheckRequestingUserVote(requestingUser));
+        }
+
+        public CommentEntity PureCopy() => new(Id, AuthorEntityId,
+            AuthorEntityUsername, PostEntityId, Content, ParentCommentEntityId, Vote,
+            RequestingUserVote, CreationDate, ModifiedDate, childCommentEntities: ChildCommentEntities);
     }
 
     public class CommentEntityConfiguration : IEntityTypeConfiguration<CommentEntity>
@@ -69,6 +109,13 @@ namespace FireplaceApi.Infrastructure.Entities
                 .HasForeignKey(d => d.PostEntityId)
                 .HasPrincipalKey(p => p.Id)
                 .IsRequired();
+
+            modelBuilder
+                .HasOne(d => d.ParentCommentEntity)
+                .WithMany(p => p.ChildCommentEntities)
+                .HasForeignKey(d => d.ParentCommentEntityId)
+                .HasPrincipalKey(p => p.Id)
+                .IsRequired(false);
         }
     }
 }

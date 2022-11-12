@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace FireplaceApi.Api.Controllers
 {
     [ApiController]
-    [ApiVersion("0.1")]
+    [ApiVersion("1.0")]
     [Route("v{version:apiVersion}/users")]
     [Produces("application/json")]
     public class UserController : ApiController
@@ -53,7 +53,6 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Created user</returns>
         /// <response code="200">Returns the newly created item</response>
         [AllowAnonymous]
-        [AuthAction]
         [HttpPost("sign-up-with-email")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
@@ -76,7 +75,7 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Created user</returns>
         /// <response code="200">Returns the newly created item</response>
         [AllowAnonymous]
-        [AuthAction]
+        [ProducesCsrfToken]
         [HttpGet("log-in-with-google")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> LogInWithGoogleAsync(
@@ -101,7 +100,6 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Logged in user</returns>
         /// <response code="200">Returns the newly created item</response>
         [AllowAnonymous]
-        [AuthAction]
         [HttpPost("log-in-with-email")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
@@ -124,7 +122,6 @@ namespace FireplaceApi.Api.Controllers
         /// <returns>Logged in user</returns>
         /// <response code="200">Returns the newly created item</response>
         [AllowAnonymous]
-        [AuthAction]
         [HttpPost("log-in-with-username")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
@@ -159,20 +156,56 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
-        /// Get a single user by id or username.
+        /// Get the profile of a user
         /// </summary>
-        /// <returns>Requested user</returns>
-        /// <response code="200">The user was successfully retrieved.</response>
-        [HttpGet("{id-or-username}")]
-        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<UserDto>> GetUserByEncodedIdOrUsernameAsync(
+        /// <returns>Requested user profile</returns>
+        /// <response code="200">The user profile was successfully retrieved.</response>
+        [HttpGet("{username}")]
+        [ProducesResponseType(typeof(ProfileDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<ProfileDto>> GetUserProfileAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] GetUserByEncodedIdOrUsernameInputRouteParameters inputRouteParameters)
+            [FromRoute] GetUserProfileInputRouteParameters inputRouteParameters)
         {
-            var user = await _userService.GetUserByEncodedIdOrUsernameAsync(requestingUser,
-                inputRouteParameters.EncodedIdOrUsername);
-            var userDto = _userConverter.ConvertToDto(user);
-            return userDto;
+            var profile = await _userService.GetUserProfileAsync(requestingUser,
+                inputRouteParameters.Username);
+            var profileDto = _userConverter.ConvertToDto(profile);
+            return profileDto;
+        }
+
+        /// <summary>
+        /// Send reset password code
+        /// </summary>
+        /// <returns>No content</returns>
+        /// <response code="200">Reset password code successfully sent.</response>
+        [AllowAnonymous]
+        [HttpPost("send-reset-password-code")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> SendResetPasswordCodeAsync(
+            [FromBody] SendResetPasswordCodeInputBodyParameters inputBodyParameters)
+        {
+            var resetPasswordUrl = $"{Configs.Current.Api.BaseUrlPath}/docs" +
+                $"#/User/post_{Tools.Constants.LatestApiVersion}_users_reset_password_with_code";
+            await _userService.SendResetPasswordCodeAsync(inputBodyParameters.EmailAddress, resetPasswordUrl);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Reset password with code
+        /// </summary>
+        /// <returns>No content</returns>
+        /// <response code="200">Password successfully changed.</response>
+        [AllowAnonymous]
+        [HttpPost("reset-password-with-code")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> ResetPasswordWithCodeAsync(
+            [FromBody] ResetPasswordWithCodeInputBodyParameters inputBodyParameters)
+        {
+            var password = Password.OfValue(inputBodyParameters.NewPassword);
+            await _userService.ResetPasswordWithCodeAsync(inputBodyParameters.EmailAddress,
+                inputBodyParameters.ResetPasswordCode, password);
+            return Ok();
         }
 
         /// <summary>

@@ -40,8 +40,8 @@ namespace FireplaceApi.Api.IntegrationTests
 
                 var narutoUser = await _clientPool.CreateNarutoUserAsync();
                 var communityName = "test-community-name";
-                var createdCommunity = await CreateCommunity(narutoUser, communityName);
-                var retrievedCommunity = await GetCommunity(narutoUser, communityName);
+                var createdCommunity = await CreateCommunityAsync(_testUtils, narutoUser, communityName);
+                var retrievedCommunity = await GetCommunityAsync(narutoUser, communityName);
                 Assert.Equal(createdCommunity.Id, retrievedCommunity.Id);
 
                 _logger.LogAppInformation(title: "TEST_END", sw: sw);
@@ -62,11 +62,11 @@ namespace FireplaceApi.Api.IntegrationTests
                 _logger.LogAppInformation(title: "TEST_START");
 
                 var narutoUser = await _clientPool.CreateNarutoUserAsync();
-                var backendDevelopersCommunity = await CreateCommunity(narutoUser, "backend-developers");
-                var gamersCommunity = await CreateCommunity(narutoUser, "gamers");
-                var communityPages = await ListCommunities(narutoUser, "dev");
-                Assert.Single(communityPages.Items);
-                Assert.Equal(backendDevelopersCommunity.Name, communityPages.Items[0].Name);
+                var backendDevelopersCommunity = await CreateCommunityAsync(_testUtils, narutoUser, "backend-developers");
+                var gamersCommunity = await CreateCommunityAsync(_testUtils, narutoUser, "gamers");
+                var communityQueryResult = await ListCommunitiesAsync(narutoUser, "dev");
+                Assert.Single(communityQueryResult.Items);
+                Assert.Equal(backendDevelopersCommunity.Name, communityQueryResult.Items[0].Name);
 
                 _logger.LogAppInformation(title: "TEST_END", sw: sw);
             }
@@ -77,11 +77,11 @@ namespace FireplaceApi.Api.IntegrationTests
             }
         }
 
-        private async Task<CommunityDto> CreateCommunity(TestUser user, string communityName)
+        public static async Task<CommunityDto> CreateCommunityAsync(TestUtils testUtils, TestUser user, string communityName)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, "/communities")
             {
-                Content = _testUtils.MakeRequestContent(new
+                Content = testUtils.MakeRequestContent(new
                 {
                     name = communityName
                 })
@@ -94,7 +94,7 @@ namespace FireplaceApi.Api.IntegrationTests
             return createdCommunity;
         }
 
-        private async Task<CommunityDto> GetCommunity(TestUser user, string communityName)
+        public static async Task<CommunityDto> GetCommunityAsync(TestUser user, string communityName)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"/communities/{communityName}");
             var response = await user.SendRequestAsync(request);
@@ -105,7 +105,7 @@ namespace FireplaceApi.Api.IntegrationTests
             return retrievedCommunity;
         }
 
-        private async Task<PageDto<CommunityDto>> ListCommunities(TestUser user, string communityName)
+        public static async Task<QueryResultDto<CommunityDto>> ListCommunitiesAsync(TestUser user, string communityName)
         {
             var baseUrl = $"/communities";
             var queryParameters = new Dictionary<string, string>()
@@ -117,8 +117,8 @@ namespace FireplaceApi.Api.IntegrationTests
             var response = await user.SendRequestAsync(request);
             response.EnsureSuccessStatusCode();
             var responseBody = await response.Content.ReadAsStringAsync();
-            var communityPages = responseBody.FromJson<PageDto<CommunityDto>>();
-            return communityPages;
+            var queryResult = responseBody.FromJson<QueryResultDto<CommunityDto>>();
+            return queryResult;
         }
     }
 }

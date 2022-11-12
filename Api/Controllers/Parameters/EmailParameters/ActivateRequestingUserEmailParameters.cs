@@ -17,4 +17,13 @@ namespace FireplaceApi.Api.Controllers
             [nameof(ActivationCode).ToSnakeCase()] = new OpenApiLong(11111),
         };
     }
+
+    [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
+    public class ResendActivationCodeAsyncInputBodyParameters
+    {
+        public static IOpenApiAny Example { get; } = new OpenApiObject
+        {
+
+        };
+    }
 }

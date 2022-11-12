@@ -1,6 +1,8 @@
 ﻿using FireplaceApi.Api.Converters;
+using FireplaceApi.Core.Extensions;
 using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Services;
+using FireplaceApi.Core.ValueObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +13,7 @@ using System.Threading.Tasks;
 namespace FireplaceApi.Api.Controllers
 {
     [ApiController]
-    [ApiVersion("0.1")]
+    [ApiVersion("1.0")]
     [Route("v{version:apiVersion}/posts")]
     [Produces("application/json")]
     public class PostController : ApiController
@@ -30,28 +32,67 @@ namespace FireplaceApi.Api.Controllers
         }
 
         /// <summary>
-        /// List all posts.
+        /// List community posts.
+        /// </summary>
+        /// <returns>List of community posts</returns>
+        /// <response code="200">Community posts was successfully retrieved.</response>
+        [HttpGet("/v{version:apiVersion}/communities/{id-or-name}/posts")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(QueryResultDto<PostDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<QueryResultDto<PostDto>>> ListCommunityPostsAsync(
+            [BindNever][FromHeader] User requestingUser,
+            [FromRoute] ListCommunityPostsInputRouteParameters inputRouteParameters,
+            [FromQuery] ListCommunityPostsInputQueryParameters inputQueryParameters)
+        {
+            var queryResult = await _postService.ListCommunityPostsAsync(
+                inputRouteParameters.CommunityIdOrName, inputQueryParameters.Sort, requestingUser);
+            var queryResultDto = _postConverter.ConvertToDto(queryResult);
+            return queryResultDto;
+        }
+
+
+        /// <summary>
+        /// Search for posts.
         /// </summary>
         /// <returns>List of posts</returns>
         /// <response code="200">All posts was successfully retrieved.</response>
         [AllowAnonymous]
         [HttpGet]
-        [ProducesResponseType(typeof(PageDto<PostDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<PageDto<PostDto>>> ListPostsAsync(
+        [ProducesResponseType(typeof(QueryResultDto<PostDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<QueryResultDto<PostDto>>> ListPostsAsync(
             [BindNever][FromHeader] User requestingUser,
             [FromQuery] ListPostsInputQueryParameters inputQueryParameters)
         {
-            //var accessTokenValue = FindAccessTokenValue(inputHeaderParameters, inputCookieParameters);
-            var paginationInputParameters = PageConverter.ConvertToModel(inputQueryParameters);
-            var page = await _postService.ListPostsAsync(requestingUser,
-                paginationInputParameters, inputQueryParameters.Self,
-                inputQueryParameters.Joined, inputQueryParameters.CommunityId,
-                inputQueryParameters.CommunityName, inputQueryParameters.Search,
+            var queryResult = new QueryResult<Post>(null, null);
+            if (!inputQueryParameters.Ids.IsNullOrEmpty())
+            {
+                queryResult.Items = await _postService.ListPostsByIdsAsync(
+                    inputQueryParameters.Ids, requestingUser);
+            }
+            else
+            {
+                queryResult = await _postService.ListPostsAsync(inputQueryParameters.Search,
+                    inputQueryParameters.Sort, requestingUser);
+            }
+            var queryResultDto = _postConverter.ConvertToDto(queryResult);
+            return queryResultDto;
+        }
+
+        /// <summary>
+        /// List self posts.
+        /// </summary>
+        /// <returns>List of posts</returns>
+        /// <response code="200">The posts was successfully retrieved.</response>
+        [HttpGet("me")]
+        [ProducesResponseType(typeof(QueryResultDto<PostDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<QueryResultDto<PostDto>>> ListSelfPostsAsync(
+            [BindNever][FromHeader] User requestingUser,
+            [FromQuery] ListSelfPostsInputQueryParameters inputQueryParameters)
+        {
+            var queryResult = await _postService.ListSelfPostsAsync(requestingUser,
                 inputQueryParameters.Sort);
-            var requestPath = HttpContext.Request.Path;
-            var pageDto = _postConverter.ConvertToDto(page, requestPath);
-            //SetOutputHeaderParameters(postDtos.HeaderParameters);
-            return pageDto;
+            var queryResultDto = _postConverter.ConvertToDto(queryResult);
+            return queryResultDto;
         }
 
         /// <summary>
@@ -65,7 +106,7 @@ namespace FireplaceApi.Api.Controllers
         public async Task<ActionResult<PostDto>> GetPostByIdAsync(
             [BindNever][FromHeader] User requestingUser,
             [FromRoute] GetPostByIdInputRouteParameters inputRouteParameters,
-            [FromQuery] GetPostInputQueryParameters inputQueryParameters)
+            [FromQuery] GetPostByIdInputQueryParameters inputQueryParameters)
         {
             var post = await _postService
                 .GetPostByIdAsync(requestingUser, inputRouteParameters.Id,
@@ -79,16 +120,16 @@ namespace FireplaceApi.Api.Controllers
         /// </summary>
         /// <returns>Created post</returns>
         /// <response code="200">Returns the newly created item</response>
-        [HttpPost]
+        [HttpPost("/v{version:apiVersion}/communities/{id-or-name}/posts")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<PostDto>> CreatePostAsync(
             [BindNever][FromHeader] User requestingUser,
+            [FromRoute] CreatePostInputRouteParameters inputRouteParameters,
             [FromBody] CreatePostInputBodyParameters inputBodyParameters)
         {
-            var post = await _postService.CreatePostAsync(
-                requestingUser, inputBodyParameters.CommunityId,
-                inputBodyParameters.CommunityName, inputBodyParameters.Content);
+            var post = await _postService.CreatePostAsync(requestingUser,
+                inputRouteParameters.CommunityIdOrName, inputBodyParameters.Content);
             var postDto = _postConverter.ConvertToDto(post);
             return postDto;
         }

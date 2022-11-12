@@ -1,24 +1,21 @@
 ﻿using FireplaceApi.Core.Models;
 using FireplaceApi.Infrastructure.Entities;
-using FireplaceApi.Infrastructure.Extensions;
 using Microsoft.Extensions.Logging;
-using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FireplaceApi.Infrastructure.Converters
 {
     public class CommentConverter
     {
         private readonly ILogger<CommentConverter> _logger;
-        private readonly IServiceProvider _serviceProvider;
         private readonly UserConverter _authorConverter;
         private readonly PostConverter _postConverter;
 
         public CommentConverter(ILogger<CommentConverter> logger,
-            IServiceProvider serviceProvider, UserConverter authorConverter,
-            PostConverter postConverter)
+            UserConverter authorConverter, PostConverter postConverter)
         {
             _logger = logger;
-            _serviceProvider = serviceProvider;
             _authorConverter = authorConverter;
             _postConverter = postConverter;
         }
@@ -40,12 +37,23 @@ namespace FireplaceApi.Infrastructure.Converters
                 postEntity = _postConverter
                     .ConvertToEntity(comment.Post.PureCopy());
 
+            CommentEntity parentCommentEntity = null;
+            if (comment.ParentComment != null)
+                parentCommentEntity =
+                    ConvertToEntity(comment.ParentComment.PureCopy());
+
+            List<CommentEntity> childCommentEntities = null;
+            if (comment.ChildComments != null)
+                childCommentEntities = comment.ChildComments
+                    .Select(cc => ConvertToEntity(cc.PureCopy())).ToList();
+
             var commentEntity = new CommentEntity(
-                comment.Id, comment.AuthorId,
-                comment.AuthorUsername, comment.PostId,
-                comment.Content, comment.ParentCommentIds.ToDecimals(),
+                comment.Id, comment.AuthorId, comment.AuthorUsername,
+                comment.PostId, comment.Content, comment.ParentCommentId,
+                comment.Vote, comment.RequestingUserVote,
                 comment.CreationDate, comment.ModifiedDate,
-                comment.Vote, authorEntity, postEntity);
+                authorEntity, postEntity, parentCommentEntity,
+                childCommentEntities);
 
             return commentEntity;
         }
@@ -64,23 +72,22 @@ namespace FireplaceApi.Infrastructure.Converters
                 post = _postConverter
                     .ConvertToModel(commentEntity.PostEntity.PureCopy());
 
-            int requestingUserVote = 0;
-            if (commentEntity.CommentVoteEntities != null
-                && commentEntity.CommentVoteEntities.Count == 1)
-            {
-                var voteEntity = commentEntity.CommentVoteEntities[0];
-                if (voteEntity.IsUp)
-                    requestingUserVote = 1;
-                else
-                    requestingUserVote = -1;
-            }
+            Comment parentComment = null;
+            if (commentEntity.ParentCommentEntity != null)
+                parentComment = ConvertToModel(
+                    commentEntity.ParentCommentEntity.PureCopy());
+
+            List<Comment> childComments = null;
+            if (commentEntity.ChildCommentEntities != null)
+                childComments = commentEntity.ChildCommentEntities
+                    .Select(cc => ConvertToModel(cc.PureCopy())).ToList();
 
             var comment = new Comment(commentEntity.Id,
                 commentEntity.AuthorEntityId, commentEntity.AuthorEntityUsername,
                 commentEntity.PostEntityId, commentEntity.Vote,
-                requestingUserVote, commentEntity.Content,
-                commentEntity.CreationDate, commentEntity.ParentCommentEntityIds.ToUlongs(),
-                commentEntity.ModifiedDate, author, post);
+                commentEntity.RequestingUserVote, commentEntity.Content,
+                commentEntity.CreationDate, commentEntity.ParentCommentEntityId,
+                commentEntity.ModifiedDate, author, post, parentComment, childComments);
 
             return comment;
         }

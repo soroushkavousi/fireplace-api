@@ -17,7 +17,6 @@ namespace FireplaceApi.Api.Tools
     {
         private readonly ILogger<TypeExampleProvider> _logger;
         private readonly IServiceProvider _serviceProvider;
-        //private Dictionary<string, IOpenApiAny> _example;
 
         public TypeExampleProvider(ILogger<TypeExampleProvider> logger, IServiceProvider serviceProvider)
         {
@@ -39,7 +38,6 @@ namespace FireplaceApi.Api.Tools
         public static async Task<OpenApiObject> FillErrorExampleFromName<T>(OpenApiObject errorExample,
             IServiceProvider serviceProvider, ILogger<T> logger)
         {
-            //var errorService = _serviceProvider.GetService<ErrorService>();
             var name = errorExample["name"].To<OpenApiString>().Value.ToEnum<ErrorName>();
             Error error = null;
             using (var scope = serviceProvider.CreateScope())
@@ -65,7 +63,6 @@ namespace FireplaceApi.Api.Tools
             errorExample.Remove("name");
             errorExample["code"] = new OpenApiInteger(error.Code);
             errorExample["message"] = new OpenApiString(error.ClientMessage);
-            //example["http_status_code"] = new OpenApiInteger(error.HttpStatusCode);
             return errorExample;
         }
     }

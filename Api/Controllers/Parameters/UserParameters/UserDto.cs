@@ -1,5 +1,6 @@
 ﻿using FireplaceApi.Api.Extensions;
 using FireplaceApi.Api.Tools;
+using FireplaceApi.Core.Attributes;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -23,6 +24,7 @@ namespace FireplaceApi.Api.Controllers
         public string About { get; set; }
         public string AvatarUrl { get; set; }
         public string BannerUrl { get; set; }
+        [Sensitive]
         public string AccessToken { get; set; }
         public EmailDto Email { get; set; }
         public List<SessionDto> Sessions { get; set; }
@@ -35,8 +37,8 @@ namespace FireplaceApi.Api.Controllers
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(DisplayName).ToSnakeCase()] = new OpenApiString("Eren Yeager"),
             [nameof(About).ToSnakeCase()] = new OpenApiString("ABOUT ME!"),
-            [nameof(AvatarUrl).ToSnakeCase()] = new OpenApiString("https://.../avatar.png"),
-            [nameof(BannerUrl).ToSnakeCase()] = new OpenApiString("https://.../banner.png"),
+            [nameof(AvatarUrl).ToSnakeCase()] = new OpenApiString("https://files.server.com/avatar.png"),
+            [nameof(BannerUrl).ToSnakeCase()] = new OpenApiString("https://files.server.com/banner.png"),
             [nameof(AccessToken).ToSnakeCase()] = new OpenApiNull(),
             [nameof(Email).ToSnakeCase()] = new OpenApiNull(),
             [nameof(Sessions).ToSnakeCase()] = new OpenApiNull(),
@@ -49,8 +51,8 @@ namespace FireplaceApi.Api.Controllers
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
             [nameof(DisplayName).ToSnakeCase()] = new OpenApiString("Lelouch Lamperouge"),
             [nameof(About).ToSnakeCase()] = new OpenApiString("ABOUT ME!"),
-            [nameof(AvatarUrl).ToSnakeCase()] = new OpenApiString("https://.../avatar.png"),
-            [nameof(BannerUrl).ToSnakeCase()] = new OpenApiString("https://.../banner.png"),
+            [nameof(AvatarUrl).ToSnakeCase()] = new OpenApiString("https://files.server.com/avatar.png"),
+            [nameof(BannerUrl).ToSnakeCase()] = new OpenApiString("https://files.server.com/banner.png"),
             [nameof(AccessToken).ToSnakeCase()] = new OpenApiNull(),
             [nameof(Email).ToSnakeCase()] = new OpenApiNull(),
             [nameof(Sessions).ToSnakeCase()] = new OpenApiNull(),
@@ -103,7 +105,6 @@ namespace FireplaceApi.Api.Controllers
             [nameof(UserController.LogInWithEmailAsync)] = Example1,
             [nameof(UserController.LogInWithUsernameAsync)] = Example1,
             [nameof(UserController.GetRequestingUserAsync)] = Example1,
-            [nameof(UserController.GetUserByEncodedIdOrUsernameAsync)] = Example1,
             [nameof(UserController.PatchRequestingUserAsync)] = Example1,
             [nameof(UserController.DeleteRequestingUserAsync)] = new OpenApiNull(),
         };

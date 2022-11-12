@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Api.Extensions;
 using FireplaceApi.Api.Interfaces;
 using FireplaceApi.Api.Tools;
+using FireplaceApi.Core.Attributes;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
@@ -14,6 +15,7 @@ namespace FireplaceApi.Api.Controllers
         [Required]
         public string EmailAddress { get; set; }
         [Required]
+        [Sensitive]
         public string Password { get; set; }
 
         public static IOpenApiAny Example { get; } = new OpenApiObject
@@ -26,6 +28,7 @@ namespace FireplaceApi.Api.Controllers
     public class LogInWithEmailOutputCookieParameters : IOutputCookieParameters
     {
         [Required]
+        [Sensitive]
         public string AccessToken { get; set; }
 
         public LogInWithEmailOutputCookieParameters(string accessToken)

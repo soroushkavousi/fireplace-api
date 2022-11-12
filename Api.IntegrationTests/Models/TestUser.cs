@@ -11,7 +11,7 @@ namespace FireplaceApi.Api.IntegrationTests.Models
 
         public TestUser(User user, HttpClient httpClient) : base(user.Id, user.Username, user.State, user.CreationDate,
                 user.DisplayName, user.About, user.AvatarUrl, user.BannerUrl, user.ModifiedDate,
-                user.Password, user.Email, user.GoogleUser, user.AccessTokens, user.Sessions)
+                user.Password, user.ResetPasswordCode, user.Email, user.GoogleUser, user.AccessTokens, user.Sessions)
         {
             HttpClient = httpClient;
         }

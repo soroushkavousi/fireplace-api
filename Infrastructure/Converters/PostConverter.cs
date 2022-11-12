@@ -42,8 +42,9 @@ namespace FireplaceApi.Infrastructure.Converters
             var postEntity = new PostEntity(post.Id, post.AuthorId,
                 post.AuthorUsername, post.CommunityId,
                 post.CommunityName, post.Content,
+                post.Vote, post.RequestingUserVote,
                 post.CreationDate, post.ModifiedDate,
-                post.Vote, authorEntity, communityEntity);
+                authorEntity, communityEntity);
 
             return postEntity;
         }
@@ -62,21 +63,10 @@ namespace FireplaceApi.Infrastructure.Converters
                 community = _communityConverter
                     .ConvertToModel(postEntity.CommunityEntity.PureCopy());
 
-            int requestingUserVote = 0;
-            if (postEntity.PostVoteEntities != null
-                && postEntity.PostVoteEntities.Count == 1)
-            {
-                var voteEntity = postEntity.PostVoteEntities[0];
-                if (voteEntity.IsUp)
-                    requestingUserVote = 1;
-                else
-                    requestingUserVote = -1;
-            }
-
             var post = new Post(postEntity.Id,
                 postEntity.AuthorEntityId, postEntity.AuthorEntityUsername,
                 postEntity.CommunityEntityId, postEntity.CommunityEntityName,
-                postEntity.Vote, requestingUserVote,
+                postEntity.Vote, postEntity.RequestingUserVote,
                 postEntity.Content, postEntity.CreationDate,
                 postEntity.ModifiedDate, author, community);
 

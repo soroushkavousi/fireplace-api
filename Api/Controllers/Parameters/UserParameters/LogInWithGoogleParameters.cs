@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Api.Extensions;
 using FireplaceApi.Api.Interfaces;
 using FireplaceApi.Api.Tools;
+using FireplaceApi.Core.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
@@ -18,6 +19,7 @@ namespace FireplaceApi.Api.Controllers
 
         [Required]
         [FromQuery(Name = "code")]
+        [Sensitive]
         public string Code { get; set; }
 
         [Required]
@@ -50,6 +52,7 @@ namespace FireplaceApi.Api.Controllers
     public class LogInWithGoogleOutputCookieParameters : IOutputCookieParameters
     {
         [Required]
+        [Sensitive]
         public string AccessToken { get; set; }
 
         public LogInWithGoogleOutputCookieParameters(string accessToken)
