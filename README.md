@@ -1,127 +1,19 @@
-# Introduction
 
-**Fireplace API** is a web API project developed with the ASP&#46;NET Core framework. It is like a simple version of Reddit API, which has communities, posts, and nested comments.
+# Welcome to Fireplace API
 
-This project is just a practice on how to design an API for real-world applications. It also can be used as a sample. <br/>
+Fireplace API is a **Reddit API clone** that has communities, posts, and nested comments. This project is just an individual effort to create a real-world Web API with some advanced features.
 
-ASP&#46;NET Core version: 7.0
+The API is developed via ASP&#46;NET Core framework and has many features such as DDD structure, Swagger UI, Integration Testing, various Sign Up Methods, Error Handling, Logging System, Security Features, CICD, and Docker Deployment. <br/>
 
-Check [**The Swagger UI**](https://api.fireplace.bitiano.com/docs/index.html) of the API
-
-[**How to run a clone?**](#how-to-run-a-clone) 
+\- ASP&#46;NET Core version: 7.0 <br/>
+ 
+\- Following Sections:
+- [**The DDD Architecture**](#the-ddd-architecture) 
+- [**The Swagger**](#the-swagger) 
+- [**Summary**](#summary) 
+- [**How to run a clone**](#how-to-run-a-clone) 
  
  <br/>
-
-
-# Highlights
-
-**1. The DDD Architecture**
-	
-- Layers as subprojects: API, Core, Infrastructure
-- API: Web Interface
-- Core: Business rules & logic
-- Infrastructure: Data persistence & third-party projects
-	
-**2. The Swagger**
-
-- Check [The Swagger UI](https://api.fireplace.bitiano.com/docs/index.html)
-- Has the list of API actions to view or run
-- Has examples of possible responses for each action
-- Supports Bearer Authentication
-- Has a custom Google Sign-In button
-- Automatically save cookies after login
-- Automatically use CSRF token
-- Has customization with [custom-swagger-ui.css](Api/wwwroot/swagger-ui/custom-swagger-ui.css) & [custom-swagger-ui.js](Api/wwwroot/swagger-ui/custom-swagger-ui.js)
-
-**3. CICD with GitHub Action**
-
-- Check [The CICD.yml](.github/workflows/CICD.yml)
-- Has three steps: Test, Build, Deploy
-- At the build stage, a docker image will be created and pushed to Docker Hub
-- At the Deploy stage, the image will be run in a VPS with docker-compose
-
-**4. Docker & Docker Compose** 
-
-- Check [The Dockerfile](Dockerfile) (For building)
-- Check [The docker-compose.yml](docker-compose.yml) (For deploying)
-
-**5. Integration Testing**
-
-- With [xUnit](https://xunit.net/)
-- Parallelism for each test class
-- Each test class has it's own database clone
-- Each test function is independent 
-
-**7. Database**
-
-- With [PostgreSQL](https://www.postgresql.org/)
-- Has a repository for each entity
-- Use Fluent API
-- Use ulong Id
-- Use case-insensitive collation
-- Each entity inherits from a base class which has Id, CreationDate, and ModifiedDate
-
-**8. Pagination vs Query Result**
-
-- After implementing both stateful & stateless paginations, I decided to remove them!
-	- Stateful paginations need a considerable amount of server resources!
-	- Stateless paginations can produce duplicate data and even miss some data for different sorts! 
-- Use Query Result instead of Pagination
-	- The idea is to send a list of the remaining ids for each query
-	- Query result is a collection of items and more item ids
-	- Also nested comments have child comment and more child comment ids
-	
-
-**9. Supports nested comments**
-
-- Each comment has a field for its replied comments
-- Can get post comments along with their replies for a specific sort with the structure
-
-**10. Prevents CSRF attacks**
-
-- The token will be refreshed for every unsafe HTTP method call
-- The token should be equal in both cookies and headers
-
-**11. Error Handling**
-
-- Returning error is a JSON of error code and error client message
-- Error client messages are in the database, which can be found by error name (Enum), not error code, because of readability and flexibility
-- Error codes can be changed freely in the database without changing the production codes
-- Exception middleware catches ApiException, which contains the error name and the error server message
-- Server Message is for logging, and Client Message is for users
-
-**12. Has logging system**
-
-- Use [NLog](https://nlog-project.org/)
-- Check [The nlog.config](Api/Tools/NLog/nlog.config)
-- Check [The LogExtensions.cs](Core/Extensions/LogExtensions.cs)
-- Has Sensitive Data Masking
-- Log directory path can be specified in the environment variables
-- Each log line has Request Info, Process Info, Code Location, Log Time, Execution Time, Parameters Involved, Title, Message, and Exception
-- Each part of a log line has its padding and reserved space
-
-
-**13. Sign up and Log in methods**
-
- - Use Bearer Scheme
- - Sign Up: Google Sign-in, Email
- - Log In: Google Sign-in, Email, Username
- - Can specify the access token in both cookies and headers
- - Use [Gmail API](https://developers.google.com/gmail/api) for sending emails
-
-
-**14. Supports user sessions**
-
-- Can get the list of sessions and revoke them
-- Currently, sessions only have IP, but I should also add the user-agent and the country of the IP
-
-
-**15. Id Generation and Encoding**
-
-- Check [Guides/id-generation-and-encoding.md](Guides/id-generation-and-encoding.md)
-
-<br/> 
-
 
 # The DDD Architecture
 
@@ -186,6 +78,12 @@ With the ***swagger UI***, you can easily interact with the API and learn it. It
   <img src="https://files.fireplace.bitiano.com/api/various-log-in-sign-up.png" width="85%" />
 </div>
 
+ <br/> 
+  
+<div align="center">
+  <img src="https://files.fireplace.bitiano.com/api/comment-routes.png" width="85%" />
+</div>
+
 
  <br/>
  
@@ -199,8 +97,129 @@ With the ***swagger UI***, you can easily interact with the API and learn it. It
   <img src="https://files.fireplace.bitiano.com/api/response-bad-request.png" width="60%" />
 </div>
 
+ <br/>
+ 
+<div align="center">
+  <img src="https://files.fireplace.bitiano.com/api/create-a-post-request.png" width="85%" />
+</div>
+
 
 <br/>  <br/>
+
+
+
+# Summary
+
+**1. The DDD Architecture**
+	
+- Layers as subprojects: API, Core, Infrastructure
+- API: Web Interface
+- Core: Business rules & logic
+- Infrastructure: Data persistence & third-party projects
+	
+**2. The Swagger**
+
+- Check [The Swagger UI](https://api.fireplace.bitiano.com/docs/index.html)
+- Has the list of API actions to view or run
+- Has examples of possible responses for each action
+- Supports Bearer Authentication
+- Has a custom Google Sign-In button
+- Automatically save cookies after login
+- Automatically use the CSRF token
+- Has customization with [custom-swagger-ui.css](Api/wwwroot/swagger-ui/custom-swagger-ui.css) & [custom-swagger-ui.js](Api/wwwroot/swagger-ui/custom-swagger-ui.js)
+
+**3. CICD with GitHub Action**
+
+- Check [The CICD.yml](.github/workflows/CICD.yml)
+- Has three steps: Test, Build, and Deploy
+- At the test stage, integration tests will be run.
+- At the build stage, a docker image will be created and pushed to Docker Hub
+- At the Deploy stage, the image will be run in a VPS with docker-compose
+
+**4. Docker & Docker Compose** 
+
+- Check [The Dockerfile](Dockerfile) (For building)
+- Check [The docker-compose.yml](docker-compose.yml) (For deploying)
+
+**5. Integration Testing**
+
+- With [xUnit](https://xunit.net/)
+- Parallelism for each test class
+- Each test class has its own database clone
+- Each test function is independent 
+
+**7. Database**
+
+- With [PostgreSQL](https://www.postgresql.org/)
+- Has a repository for each entity
+- Use Fluent API
+- Use ulong Id
+- Use case-insensitive collation
+- Each entity inherits from a base class that has Id, CreationDate, and ModifiedDate
+
+**8. Pagination vs Query Result**
+
+- After implementing both stateful & stateless paginations, I decided to remove them!
+	- Stateful paginations need a considerable amount of server resources to be run!
+	- Stateless paginations can produce duplicate data and even miss some data of different sorts! 
+- Use Query Result instead of Pagination
+	- The idea is to send a list of the remaining ids for each query
+	- Query result is a collection of items and more item ids
+	- Also nested comments have child comments and more child comment ids
+	
+
+**9. Supports nested comments**
+
+- Each comment has a field for its replied comments
+- Can get post comments along with their replies for a specific sort with the structure
+
+**10. Prevents CSRF attacks**
+
+- The token will be refreshed for every unsafe HTTP method call
+- The token should be equal in both cookies and headers
+
+**11. Error Handling**
+
+- Returning error is a JSON of error code and error client message
+- Error client messages are in the database, which can be found by error name (Enum), not error code, because of readability and flexibility
+- Error codes can be changed freely in the database without changing the production codes
+- Exception middleware catches ApiException, which contains the error name and the error server message
+- Server Message is for logging, and Client Message is for users
+
+**12. Has logging system**
+
+- Use [NLog](https://nlog-project.org/)
+- Check [The nlog.config](Api/Tools/NLog/nlog.config)
+- Check [The LogExtensions.cs](Core/Extensions/LogExtensions.cs)
+- Has Sensitive Data Masking
+- Log directory path can be specified in the environment variables
+- Each log line has Request Info, Process Info, Code Location, Log Time, Execution Time, Parameters Involved, Title, Message, and Exception
+- Each part of a log line has its padding and reserved space
+
+
+**13. Sign up and Log in methods**
+
+ - Use Bearer Scheme
+ - Sign Up: Google Sign-in, Email
+ - Log In: Google Sign-in, Email, Username
+ - Can specify the access token in both cookies and headers
+ - Use [Gmail API](https://developers.google.com/gmail/api) for sending emails
+
+
+**14. Supports user sessions**
+
+- Can get the list of sessions and revoke them
+- Currently, sessions only have IP, but I should also add the user-agent and the country of the IP
+
+
+**15. Id Generation and Encoding**
+
+- Check [Guides/id-generation-and-encoding.md](Guides/id-generation-and-encoding.md)
+
+<br/> 
+
+
+
 
 
 
@@ -309,7 +328,7 @@ Note: At this stage, you may have noticed that some errors say there are no conf
 
 **6. Import the initial data (configs & errors) into the database**   
 
-The file [Guides/db-initial-data.txt](Guides/db-initial-data.txt) has multiple insert queries to feed the initial data. You have two ways in order to inject the data to the database:
+The file [Guides/db-initial-data.txt](Guides/db-initial-data.txt) has multiple insert queries to feed the initial data. You have two ways to inject the data into the database:
 
 Option 1:  Using psql command
 
@@ -319,7 +338,7 @@ Option 1:  Using psql command
 
 Option 2: Running queries directly
 
-You can easily run queries directly by copying the file content .
+You can easily run queries directly by copying the file content.
 
 
 <br/>
