@@ -46,8 +46,8 @@ namespace FireplaceApi.Api.Tools
 
             description_html += @"
                 <div>
-                    <p><strong><i>Welcome</i></strong>! Fireplace is a discussion application with communities, posts, and comments, just like Reddit.</p>
-                    <p>This project, Fireplace API, provides an API for Fireplace, and it aims to be a real-world example of web API concepts with the ASP.NET Core framework. </p>
+                    <p><strong><i>Welcome</i></strong>! Fireplace API is a Reddit API clone that has communities, posts, and nested comments.</p>
+                    <p>This project is just an individual effort to create a real-world Web API with ASP.NET Core framework. </p>
                     <br/>
                     <strong><i>Note:</i></strong> 
                     <p>
