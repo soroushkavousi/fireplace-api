@@ -38,7 +38,13 @@ namespace FireplaceApi.Api.Controllers
 
         private IPAddress ExtractIPAddress(HttpContext httpContext)
         {
-            return httpContext.Connection.RemoteIpAddress;
+            var xForwardedForStringValues = httpContext.Request.Headers.GetValue(Tools.Constants.X_FORWARDED_FOR);
+            if (xForwardedForStringValues == default(StringValues) || xForwardedForStringValues.Count == 0)
+                return httpContext.Connection.RemoteIpAddress;
+
+            var ipAddressString = xForwardedForStringValues[0].To<string>();
+            var ipAddress = IPAddress.Parse(ipAddressString);
+            return ipAddress;
         }
     }
 }
