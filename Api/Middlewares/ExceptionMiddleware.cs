@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Api.Converters;
+using FireplaceApi.Api.Tools;
 using FireplaceApi.Core.Enums;
 using FireplaceApi.Core.Exceptions;
 using FireplaceApi.Core.Extensions;
@@ -40,6 +41,7 @@ namespace FireplaceApi.Api.Middlewares
                     _ => new ApiException(Error.InternalServerError.Name, Error.InternalServerError.ClientMessage, systemException: ex),
                 };
                 var error = await CreateErrorAsync(apiException, errorOperator);
+                httpContext.Items[Constants.ErrorKey] = error;
                 await ReportError(error, errorConverter, httpContext);
             }
             _logger.LogAppTrace(sw: sw, title: "EXCEPTION_MIDDLEWARE");
