@@ -45,8 +45,9 @@ namespace FireplaceApi.Infrastructure.Repositories
             postEntities = new List<PostVoteEntity>();
             Ids.ForEach(id => postEntities.Add(postEntityDictionary[id]));
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntities });
-            return postEntities.Select(e => _postVoteConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { postEntities = postEntities.Select(e => e.Id) });
+            return postEntities.Select(_postVoteConverter.ConvertToModel).ToList();
         }
 
         public async Task<PostVote> GetPostVoteByIdAsync(ulong id,

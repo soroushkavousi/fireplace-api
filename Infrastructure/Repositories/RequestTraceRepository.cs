@@ -72,8 +72,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Take(Configs.Current.QueryResult.TotalLimit)
                 .ToListAsync();
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { requestTraceEntities });
-            return requestTraceEntities.Select(e => _requestTraceConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { requestTraceEntities = requestTraceEntities.Select(e => e.Id) });
+            return requestTraceEntities.Select(_requestTraceConverter.ConvertToModel).ToList();
         }
 
         public async Task<RequestTrace> GetRequestTraceByIdAsync(ulong id)

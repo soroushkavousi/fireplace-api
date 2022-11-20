@@ -55,8 +55,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { sessionEntities });
-            return sessionEntities.Select(e => _sessionConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { sessionEntities = sessionEntities.Select(e => e.Id) });
+            return sessionEntities.Select(_sessionConverter.ConvertToModel).ToList();
         }
 
         public async Task<Session> GetSessionByIdAsync(ulong id, bool includeUser = false)
