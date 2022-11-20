@@ -85,6 +85,9 @@ namespace FireplaceApi.Core.Tools
 
         public async Task ValidateLimitationOfIPRequestCounts(IPAddress ip)
         {
+            if (ip.IsLocalIpAddress())
+                return;
+
             var fromDate = DateTime.UtcNow.AddMinutes(-Configs.Current.Api.RequestLimitionPeriodInMinutes);
             var requestCountPerIP = await _requestTraceOperator.CountRequestTracesAsync(ip: ip, fromDate: fromDate,
                 withAction: true);
