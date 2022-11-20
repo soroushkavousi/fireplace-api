@@ -1,6 +1,7 @@
 ﻿using NLog;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace FireplaceApi.Core.Extensions
 {
@@ -28,5 +29,7 @@ namespace FireplaceApi.Core.Extensions
             var copy = new List<T>(list);
             return copy;
         }
+
+        public static bool IsLocalIpAddress(this IPAddress ip) => ip.ToString().IsLocalIpAddress();
     }
 }
