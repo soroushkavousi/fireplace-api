@@ -192,6 +192,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 }
             }
 
+            q = q.OrderByDescending(e => e.CreationDate);
+
             return q;
         }
     }

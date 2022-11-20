@@ -33,9 +33,11 @@ namespace FireplaceApi.Infrastructure.Repositories
             _requestTraceConverter = requestTraceConverter;
         }
 
-        public async Task<List<RequestTrace>> ListRequestTracesAsync(string method,
-            string action, string url, IPAddress ip, string country, string userAgentSearch,
-            ulong? userId, int? statusCode, long? fromDuration, ErrorName? errorName, DateTime? fromDate)
+        public async Task<List<RequestTrace>> ListRequestTracesAsync(string method = null,
+            string action = null, string url = null, IPAddress ip = null, string country = null,
+            string userAgentSearch = null, ulong? userId = null, int? statusCode = null,
+            long? fromDuration = null, ErrorName? errorName = null, DateTime? fromDate = null,
+            bool? withAction = null)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT",
                 parameters: new
@@ -50,7 +52,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                     statusCode,
                     fromDuration,
                     errorName,
-                    fromDate
+                    fromDate,
+                    withAction
                 });
             var sw = Stopwatch.StartNew();
 
@@ -67,7 +70,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                     statusCode: statusCode,
                     fromDuration: fromDuration,
                     errorName: errorName,
-                    fromDate: fromDate
+                    fromDate: fromDate,
+                    withAction: withAction
                 )
                 .Take(Configs.Current.QueryResult.TotalLimit)
                 .ToListAsync();
@@ -75,6 +79,52 @@ namespace FireplaceApi.Infrastructure.Repositories
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
                 parameters: new { requestTraceEntities = requestTraceEntities.Select(e => e.Id) });
             return requestTraceEntities.Select(_requestTraceConverter.ConvertToModel).ToList();
+        }
+
+        public async Task<int> CountRequestTracesAsync(string method = null,
+            string action = null, string url = null, IPAddress ip = null, string country = null,
+            string userAgentSearch = null, ulong? userId = null, int? statusCode = null,
+            long? fromDuration = null, ErrorName? errorName = null, DateTime? fromDate = null,
+            bool? withAction = null)
+        {
+            _logger.LogAppInformation(title: "DATABASE_INPUT",
+                parameters: new
+                {
+                    method,
+                    action,
+                    url,
+                    ip = ip?.ToString(),
+                    country,
+                    userAgentSearch,
+                    userId,
+                    statusCode,
+                    fromDuration,
+                    errorName,
+                    fromDate,
+                    withAction
+                });
+            var sw = Stopwatch.StartNew();
+
+            var count = await _requestTraceEntities
+                .AsNoTracking()
+                .Search(
+                    method: method,
+                    action: action,
+                    url: url,
+                    ip: ip,
+                    country: country,
+                    userAgentSearch: userAgentSearch,
+                    userId: userId,
+                    statusCode: statusCode,
+                    fromDuration: fromDuration,
+                    errorName: errorName,
+                    fromDate: fromDate,
+                    withAction: withAction
+                )
+                .CountAsync();
+
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { count });
+            return count;
         }
 
         public async Task<RequestTrace> GetRequestTraceByIdAsync(ulong id)
@@ -176,7 +226,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public static IQueryable<RequestTraceEntity> Search(
             [NotNull] this IQueryable<RequestTraceEntity> q, string method,
             string action, string url, IPAddress ip, string country, string userAgentSearch, ulong? userId,
-            int? statusCode, long? fromDuration, ErrorName? errorName, DateTime? fromDate)
+            int? statusCode, long? fromDuration, ErrorName? errorName, DateTime? fromDate, bool? withAction)
         {
             if (method != null)
                 q = q.Where(e => e.Method == method);
@@ -211,6 +261,16 @@ namespace FireplaceApi.Infrastructure.Repositories
 
             if (fromDate != null)
                 q = q.Where(e => e.CreationDate > fromDate);
+
+            if (withAction.HasValue)
+            {
+                if (withAction.Value)
+                    q = q.Where(e => !string.IsNullOrWhiteSpace(e.Action));
+                else
+                    q = q.Where(e => string.IsNullOrWhiteSpace(e.Action));
+            }
+
+            q = q.OrderByDescending(e => e.CreationDate);
 
             return q;
         }

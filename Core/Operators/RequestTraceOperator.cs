@@ -30,14 +30,28 @@ namespace FireplaceApi.Core.Operators
             return "TBD";
         }
 
-        public async Task<List<RequestTrace>> ListRequestTracesAsync(string method,
-            string action, string url, IPAddress ip, string country, string userAgentSearch, ulong? userId,
-            int? statusCode, long? fromDuration, ErrorName? errorName, DateTime? fromDate)
+        public async Task<List<RequestTrace>> ListRequestTracesAsync(string method = null,
+            string action = null, string url = null, IPAddress ip = null, string country = null,
+            string userAgentSearch = null, ulong? userId = null, int? statusCode = null,
+            long? fromDuration = null, ErrorName? errorName = null, DateTime? fromDate = null,
+            bool? withAction = null)
         {
-            var requestTrace = await _requestTraceRepository
+            var requestTraces = await _requestTraceRepository
                 .ListRequestTracesAsync(method, action, url, ip, country, userAgentSearch,
-                userId, statusCode, fromDuration, errorName, fromDate);
-            return requestTrace;
+                userId, statusCode, fromDuration, errorName, fromDate, withAction);
+            return requestTraces;
+        }
+
+        public async Task<int> CountRequestTracesAsync(string method = null,
+            string action = null, string url = null, IPAddress ip = null, string country = null,
+            string userAgentSearch = null, ulong? userId = null, int? statusCode = null,
+            long? fromDuration = null, ErrorName? errorName = null, DateTime? fromDate = null,
+            bool? withAction = null)
+        {
+            var count = await _requestTraceRepository
+                .CountRequestTracesAsync(method, action, url, ip, country, userAgentSearch,
+                userId, statusCode, fromDuration, errorName, fromDate, withAction);
+            return count;
         }
 
         public async Task<RequestTrace> GetRequestTraceByIdAsync(ulong id)

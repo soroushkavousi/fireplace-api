@@ -36,6 +36,8 @@ namespace FireplaceApi.Core.Models
         {
             public string BaseUrlPath { get; set; }
             public int CookieMaxAgeInDays { get; set; }
+            public int RequestLimitionPeriodInMinutes { get; set; }
+            public int MaxRequestPerIP { get; set; }
         }
 
         public class FileConfigs
@@ -75,7 +77,9 @@ namespace FireplaceApi.Core.Models
             api: new ApiConfigs
             {
                 BaseUrlPath = "https://api.server.com",
-                CookieMaxAgeInDays = 30
+                CookieMaxAgeInDays = 30,
+                RequestLimitionPeriodInMinutes = 60,
+                MaxRequestPerIP = 50,
             },
             file: new FileConfigs
             {
