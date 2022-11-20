@@ -15,6 +15,7 @@
         OLD_PASSWORD_NOT_CORRECT,
         EMAIL_ACTIVATION_CODE_NOT_CORRECT,
         RESET_PASSWORD_CODE_NOT_CORRECT,
+        MAX_REQUEST_LIMIT,
 
         /// <summary>
         /// Access Denied and Existance errors

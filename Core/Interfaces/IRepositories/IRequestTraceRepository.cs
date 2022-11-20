@@ -9,9 +9,16 @@ namespace FireplaceApi.Core.Interfaces
 {
     public interface IRequestTraceRepository
     {
-        public Task<List<RequestTrace>> ListRequestTracesAsync(string method,
-            string action, string url, IPAddress ip, string country, string userAgentSearch,
-            ulong? userId, int? statusCode, long? fromDuration, ErrorName? errorName, DateTime? fromDate);
+        public Task<List<RequestTrace>> ListRequestTracesAsync(string method = null,
+            string action = null, string url = null, IPAddress ip = null, string country = null,
+            string userAgentSearch = null, ulong? userId = null, int? statusCode = null,
+            long? fromDuration = null, ErrorName? errorName = null, DateTime? fromDate = null,
+            bool? withAction = null);
+        public Task<int> CountRequestTracesAsync(string method = null,
+            string action = null, string url = null, IPAddress ip = null, string country = null,
+            string userAgentSearch = null, ulong? userId = null, int? statusCode = null,
+            long? fromDuration = null, ErrorName? errorName = null, DateTime? fromDate = null,
+            bool? withAction = null);
         public Task<RequestTrace> GetRequestTraceByIdAsync(ulong id);
         public Task<RequestTrace> CreateRequestTraceAsync(ulong id, string method,
             string url, IPAddress ip, string country, string userAgent, ulong? userId,

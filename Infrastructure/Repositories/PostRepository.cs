@@ -325,21 +325,16 @@ namespace FireplaceApi.Infrastructure.Repositories
 
             if (sort.HasValue)
             {
-                switch (sort)
+                q = sort switch
                 {
-                    case SortType.TOP:
-                        q = q.OrderByDescending(e => e.Vote);
-                        break;
-                    case SortType.NEW:
-                        q = q.OrderByDescending(e => e.CreationDate);
-                        break;
-                    case SortType.OLD:
-                        q = q.OrderBy(e => e.CreationDate);
-                        break;
-                    default:
-                        break;
-                }
+                    SortType.TOP => q.OrderByDescending(e => e.Vote),
+                    SortType.NEW => q.OrderByDescending(e => e.CreationDate),
+                    SortType.OLD => q.OrderBy(e => e.CreationDate),
+                    _ => q.OrderByDescending(e => e.Vote),
+                };
             }
+            else
+                q = q.OrderByDescending(e => e.Vote);
 
             if (joined.HasValue)
                 q = q.Where(
