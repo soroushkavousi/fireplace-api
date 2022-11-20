@@ -43,8 +43,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { fileEntities });
-            return fileEntities.Select(e => _fileConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { fileEntities = fileEntities.Select(e => e.Id) });
+            return fileEntities.Select(_fileConverter.ConvertToModel).ToList();
         }
 
         public async Task<File> GetFileByIdAsync(ulong id)

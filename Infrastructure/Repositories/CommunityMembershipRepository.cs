@@ -8,7 +8,6 @@ using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -30,69 +29,6 @@ namespace FireplaceApi.Infrastructure.Repositories
             _dbContext = dbContext;
             _communityMembershipEntities = dbContext.CommunityMembershipEntities;
             _communityMembershipConverter = communityMembershipConverter;
-        }
-
-        public async Task<List<CommunityMembership>> ListCommunityMembershipsAsync(List<ulong> Ids)
-        {
-            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { Ids });
-            var sw = Stopwatch.StartNew();
-            var communityMembershipEntities = await _communityMembershipEntities
-                .AsNoTracking()
-                .Where(e => Ids.Contains(e.Id))
-                .ToListAsync();
-
-            var communityMembershipEntityDictionary = new Dictionary<ulong, CommunityMembershipEntity>();
-            communityMembershipEntities.ForEach(e => communityMembershipEntityDictionary[e.Id] = e);
-            communityMembershipEntities = new List<CommunityMembershipEntity>();
-            Ids.ForEach(id => communityMembershipEntities.Add(communityMembershipEntityDictionary[id]));
-
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityMembershipEntities });
-            return communityMembershipEntities.Select(e => _communityMembershipConverter.ConvertToModel(e)).ToList();
-        }
-
-        public async Task<List<CommunityMembership>> ListCommunityMembershipsAsync(UserIdentifier userIdentifier)
-        {
-            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { userIdentifier });
-            var sw = Stopwatch.StartNew();
-            var communityMembershipEntities = await _communityMembershipEntities
-                .AsNoTracking()
-                .Search(
-                    identifier: null,
-                    userIdentifier: userIdentifier,
-                    communityIdentifier: null
-                )
-                .Include(
-                    userEntity: false,
-                    communityEntity: false
-                )
-                .Take(Configs.Current.QueryResult.TotalLimit)
-                .ToListAsync();
-
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityMembershipEntities });
-            return communityMembershipEntities.Select(e => _communityMembershipConverter.ConvertToModel(e)).ToList();
-        }
-
-        public async Task<List<ulong>> ListCommunityMembershipIdsAsync(UserIdentifier userIdentifier)
-        {
-            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { userIdentifier });
-            var sw = Stopwatch.StartNew();
-            var communityMembershipEntityIds = await _communityMembershipEntities
-                .AsNoTracking()
-                .Search(
-                    identifier: null,
-                    userIdentifier: userIdentifier,
-                    communityIdentifier: null
-                )
-                .Include(
-                    userEntity: false,
-                    communityEntity: false
-                )
-                .Take(Configs.Current.QueryResult.TotalLimit)
-                .Select(e => e.Id)
-                .ToListAsync();
-
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityMembershipEntityIds });
-            return communityMembershipEntityIds;
         }
 
         public async Task<CommunityMembership> GetCommunityMembershipByIdentifierAsync(

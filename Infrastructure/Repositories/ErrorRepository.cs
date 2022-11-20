@@ -42,8 +42,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .OrderBy(e => e.Code)
                 .ToListAsync();
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { errorEntites });
-            return errorEntites.Select(e => _errorConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { errorEntites = errorEntites.Select(e => e.Id) });
+            return errorEntites.Select(_errorConverter.ConvertToModel).ToList();
         }
 
         public async Task<Error> GetErrorByNameAsync(ErrorName name)

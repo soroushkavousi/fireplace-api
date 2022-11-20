@@ -45,8 +45,9 @@ namespace FireplaceApi.Infrastructure.Repositories
             commentEntities = new List<CommentVoteEntity>();
             Ids.ForEach(id => commentEntities.Add(commentEntityDictionary[id]));
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntities });
-            return commentEntities.Select(e => _commentVoteConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { commentEntities = commentEntities.Select(e => e.Id) });
+            return commentEntities.Select(_commentVoteConverter.ConvertToModel).ToList();
         }
 
         public async Task<CommentVote> GetCommentVoteByIdAsync(ulong id,

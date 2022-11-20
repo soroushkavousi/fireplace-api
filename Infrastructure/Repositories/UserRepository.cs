@@ -51,8 +51,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .ToListAsync();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
-                parameters: new { userEntities });
-            return userEntities.Select(e => _userConverter.ConvertToModel(e)).ToList();
+                parameters: new { userEntities = userEntities.Select(e => e.Id) });
+            return userEntities.Select(_userConverter.ConvertToModel).ToList();
         }
 
         public async Task<User> GetUserByIdentifierAsync(UserIdentifier identifier,

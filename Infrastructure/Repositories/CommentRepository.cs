@@ -66,8 +66,9 @@ namespace FireplaceApi.Infrastructure.Repositories
             if (requestingUser != null)
                 commentEntities.ForEach(e => e.CheckRequestingUserVote(requestingUser));
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntities });
-            return commentEntities.Select(e => _commentConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { commentEntities = commentEntities.Select(e => e.Id) });
+            return commentEntities.Select(_commentConverter.ConvertToModel).ToList();
         }
 
         public async Task<List<Comment>> ListCommentsByIdsAsync(List<ulong> Ids,
@@ -102,8 +103,9 @@ namespace FireplaceApi.Infrastructure.Repositories
             commentEntities = new List<CommentEntity>();
             Ids.ForEach(id => commentEntities.Add(commentEntityDictionary[id]));
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntities });
-            return commentEntities.Select(e => _commentConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { commentEntities = commentEntities.Select(e => e.Id) });
+            return commentEntities.Select(_commentConverter.ConvertToModel).ToList();
         }
 
         public async Task<List<Comment>> ListSelfCommentsAsync(User author,
@@ -137,8 +139,9 @@ namespace FireplaceApi.Infrastructure.Repositories
 
             commentEntities.ForEach(e => e.CheckRequestingUserVote(author));
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntities });
-            return commentEntities.Select(e => _commentConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { commentEntities = commentEntities.Select(e => e.Id) });
+            return commentEntities.Select(_commentConverter.ConvertToModel).ToList();
         }
 
         public async Task<Comment> GetCommentByIdAsync(ulong id,

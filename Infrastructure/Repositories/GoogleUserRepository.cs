@@ -44,8 +44,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntities });
-            return googleUserEntities.Select(e => _googleUserConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { googleUserEntities = googleUserEntities.Select(e => e.Id) });
+            return googleUserEntities.Select(_googleUserConverter.ConvertToModel).ToList();
         }
 
         public async Task<GoogleUser> GetGoogleUserByIdAsync(ulong id, bool includeUser = false)
