@@ -25,7 +25,7 @@ This project has been divided into multiple subprojects to implement a domain-dr
 - Integration Tests
 
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/the-architecture.png" />
+  <img src="https://files.fireplace.bitiano.com/api/the-architecture.png?" />
 </div>
 
 ### Layers:
@@ -63,44 +63,44 @@ With the ***swagger UI***, you can easily interact with the API and learn it. It
  <br/>
  
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/swagger-top.png" width="85%" />
+  <img src="https://files.fireplace.bitiano.com/api/swagger-top.png?" width="85%" />
 </div>
 
  <br/>
  
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/swagger-sample-execution.png" width="85%" />
+  <img src="https://files.fireplace.bitiano.com/api/swagger-sample-execution.png?" width="85%" />
 </div>
 
  <br/> 
   
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/various-log-in-sign-up.png" width="85%" />
+  <img src="https://files.fireplace.bitiano.com/api/various-log-in-sign-up.png?" width="85%" />
 </div>
 
  <br/> 
   
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/comment-routes.png" width="85%" />
+  <img src="https://files.fireplace.bitiano.com/api/comment-routes.png?" width="85%" />
 </div>
 
 
  <br/>
  
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/response-list-communities.png" width="85%" />
+  <img src="https://files.fireplace.bitiano.com/api/response-list-communities.png?" width="85%" />
 </div>
 
  <br/>
  
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/response-bad-request.png" width="60%" />
+  <img src="https://files.fireplace.bitiano.com/api/response-bad-request.png?" width="60%" />
 </div>
 
  <br/>
  
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/create-a-post-request.png" width="85%" />
+  <img src="https://files.fireplace.bitiano.com/api/create-a-post-request.png?" width="85%" />
 </div>
 
 
@@ -206,13 +206,19 @@ With the ***swagger UI***, you can easily interact with the API and learn it. It
  - Use [Gmail API](https://developers.google.com/gmail/api) for sending emails
 
 
-**14. Supports user sessions**
+**14. Request Tracing & API Request Rate Limit**
+
+- Request details will be stored in the database
+	- Method, Action, URL, IP, User Agent, User ID, Duration, Status Code, Error Name, Request Time, …
+- Currently, only allow a few API calls per one hour
+
+**15. Supports user sessions**
 
 - Can get the list of sessions and revoke them
 - Currently, sessions only have IP, but I should also add the user-agent and the country of the IP
 
 
-**15. Id Generation and Encoding**
+**16. Id Generation and Encoding**
 
 - Check [Guides/id-generation-and-encoding.md](Guides/id-generation-and-encoding.md)
 
