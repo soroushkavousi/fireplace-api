@@ -43,8 +43,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { accessTokenEntities });
-            return accessTokenEntities.Select(e => _accessTokenConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { accessTokenEntities = accessTokenEntities.Select(e => e.Id) });
+            return accessTokenEntities.Select(_accessTokenConverter.ConvertToModel).ToList();
         }
 
         public async Task<AccessToken> GetAccessTokenByIdAsync(ulong id, bool includeUser = false)

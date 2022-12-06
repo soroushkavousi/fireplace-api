@@ -45,8 +45,9 @@ namespace FireplaceApi.Infrastructure.Repositories
             commentEntities = new List<CommentVoteEntity>();
             Ids.ForEach(id => commentEntities.Add(commentEntityDictionary[id]));
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntities });
-            return commentEntities.Select(e => _commentVoteConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { commentEntities = commentEntities.Select(e => e.Id) });
+            return commentEntities.Select(_commentVoteConverter.ConvertToModel).ToList();
         }
 
         public async Task<CommentVote> GetCommentVoteByIdAsync(ulong id,
@@ -211,21 +212,16 @@ namespace FireplaceApi.Infrastructure.Repositories
 
             if (sort.HasValue)
             {
-                switch (sort)
+                q = sort switch
                 {
-                    case SortType.TOP:
-                        q = q.OrderByDescending(e => e.IsUp);
-                        break;
-                    case SortType.NEW:
-                        q = q.OrderByDescending(e => e.CreationDate);
-                        break;
-                    case SortType.OLD:
-                        q = q.OrderBy(e => e.CreationDate);
-                        break;
-                    default:
-                        break;
-                }
+                    SortType.TOP => q.OrderByDescending(e => e.IsUp),
+                    SortType.NEW => q.OrderByDescending(e => e.CreationDate),
+                    SortType.OLD => q.OrderBy(e => e.CreationDate),
+                    _ => q.OrderByDescending(e => e.CreationDate),
+                };
             }
+            else
+                q = q.OrderByDescending(e => e.CreationDate);
 
             return q;
         }

@@ -63,8 +63,9 @@ namespace FireplaceApi.Infrastructure.Repositories
             if (requestingUser != null)
                 postEntities.ForEach(e => e.CheckRequestingUserVote(requestingUser));
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntities });
-            return postEntities.Select(e => _postConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { postEntities = postEntities.Select(e => e.Id) });
+            return postEntities.Select(_postConverter.ConvertToModel).ToList();
         }
 
         public async Task<List<Post>> ListPostsAsync(string search, SortType? sort,
@@ -98,8 +99,9 @@ namespace FireplaceApi.Infrastructure.Repositories
             if (requestingUser != null)
                 postEntities.ForEach(e => e.CheckRequestingUserVote(requestingUser));
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntities });
-            return postEntities.Select(e => _postConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { postEntities = postEntities.Select(e => e.Id) });
+            return postEntities.Select(_postConverter.ConvertToModel).ToList();
         }
 
         public async Task<List<Post>> ListPostsByIdsAsync(List<ulong> Ids,
@@ -129,8 +131,9 @@ namespace FireplaceApi.Infrastructure.Repositories
             if (requestingUser != null)
                 postEntities.ForEach(e => e.CheckRequestingUserVote(requestingUser));
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntities });
-            return postEntities.Select(e => _postConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { postEntities = postEntities.Select(e => e.Id) });
+            return postEntities.Select(_postConverter.ConvertToModel).ToList();
         }
 
         public async Task<List<Post>> ListSelfPostsAsync(User author,
@@ -162,8 +165,9 @@ namespace FireplaceApi.Infrastructure.Repositories
 
             postEntities.ForEach(e => e.CheckRequestingUserVote(author));
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntities });
-            return postEntities.Select(e => _postConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { postEntities = postEntities.Select(e => e.Id) });
+            return postEntities.Select(_postConverter.ConvertToModel).ToList();
         }
 
         public async Task<Post> GetPostByIdAsync(ulong id,
@@ -321,21 +325,16 @@ namespace FireplaceApi.Infrastructure.Repositories
 
             if (sort.HasValue)
             {
-                switch (sort)
+                q = sort switch
                 {
-                    case SortType.TOP:
-                        q = q.OrderByDescending(e => e.Vote);
-                        break;
-                    case SortType.NEW:
-                        q = q.OrderByDescending(e => e.CreationDate);
-                        break;
-                    case SortType.OLD:
-                        q = q.OrderBy(e => e.CreationDate);
-                        break;
-                    default:
-                        break;
-                }
+                    SortType.TOP => q.OrderByDescending(e => e.Vote),
+                    SortType.NEW => q.OrderByDescending(e => e.CreationDate),
+                    SortType.OLD => q.OrderBy(e => e.CreationDate),
+                    _ => q.OrderByDescending(e => e.Vote),
+                };
             }
+            else
+                q = q.OrderByDescending(e => e.Vote);
 
             if (joined.HasValue)
                 q = q.Where(

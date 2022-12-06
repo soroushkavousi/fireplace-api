@@ -189,6 +189,7 @@ namespace FireplaceApi.Api.IntegrationTests
         {
             var sw = Stopwatch.StartNew();
             _dbContext.Database.ExecuteSqlRaw(@"TRUNCATE TABLE public.""UserEntities"" CASCADE;");
+            _dbContext.Database.ExecuteSqlRaw(@"TRUNCATE TABLE public.""RequestTraceEntities"" CASCADE;");
             _logger.LogAppTrace($"Database [{_databaseName}] cleaned successfully.", sw);
         }
 

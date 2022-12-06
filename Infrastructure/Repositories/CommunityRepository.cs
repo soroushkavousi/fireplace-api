@@ -46,8 +46,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Take(Configs.Current.QueryResult.TotalLimit)
                 .ToListAsync();
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntities });
-            return communityEntities.Select(e => _communityConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { communityEntities = communityEntities.Select(e => e.Id) });
+            return communityEntities.Select(_communityConverter.ConvertToModel).ToList();
         }
 
         public async Task<List<Community>> ListCommunitiesByIdsAsync(List<ulong> Ids)
@@ -64,8 +65,9 @@ namespace FireplaceApi.Infrastructure.Repositories
             communityEntities = new List<CommunityEntity>();
             Ids.ForEach(id => communityEntities.Add(communityEntityDictionary[id]));
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntities });
-            return communityEntities.Select(e => _communityConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { communityEntities = communityEntities.Select(e => e.Id) });
+            return communityEntities.Select(_communityConverter.ConvertToModel).ToList();
         }
 
         public async Task<Community> GetCommunityByIdentifierAsync(CommunityIdentifier identifier,
@@ -259,18 +261,15 @@ namespace FireplaceApi.Infrastructure.Repositories
 
             if (sort.HasValue)
             {
-                switch (sort)
+                q = sort switch
                 {
-                    case SortType.NEW:
-                        q = q.OrderByDescending(e => e.CreationDate);
-                        break;
-                    case SortType.OLD:
-                        q = q.OrderBy(e => e.CreationDate);
-                        break;
-                    default:
-                        break;
-                }
+                    SortType.NEW => q.OrderByDescending(e => e.CreationDate),
+                    SortType.OLD => q.OrderBy(e => e.CreationDate),
+                    _ => q.OrderByDescending(e => e.CreationDate),
+                };
             }
+            else
+                q = q.OrderByDescending(e => e.CreationDate);
 
             return q;
         }

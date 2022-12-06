@@ -32,6 +32,8 @@ namespace FireplaceApi.Infrastructure.Entities
         public DbSet<ErrorEntity> ErrorEntities { get; set; }
         public DbSet<FileEntity> FileEntities { get; set; }
 
+        public DbSet<RequestTraceEntity> RequestTraceEntities { get; set; }
+
         public FireplaceApiDbContext(ILogger<FireplaceApiDbContext> logger, DbContextOptions<FireplaceApiDbContext> options)
             : base(options)
         {
@@ -76,6 +78,8 @@ namespace FireplaceApi.Infrastructure.Entities
             modelBuilder.ApplyConfiguration(new ConfigsEntityConfiguration());
             modelBuilder.ApplyConfiguration(new ErrorEntityConfiguration());
             modelBuilder.ApplyConfiguration(new FileEntityConfiguration());
+
+            modelBuilder.ApplyConfiguration(new RequestTraceEntityConfiguration());
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,

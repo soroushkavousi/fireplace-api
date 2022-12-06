@@ -45,8 +45,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .ToListAsync();
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { emailEntities });
-            return emailEntities.Select(e => _emailConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { emailEntities = emailEntities.Select(e => e.Id) });
+            return emailEntities.Select(_emailConverter.ConvertToModel).ToList();
         }
 
         public async Task<Email> GetEmailByIdentifierAsync(EmailIdentifier identifier, bool includeUser = false)

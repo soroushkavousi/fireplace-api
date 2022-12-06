@@ -13,5 +13,6 @@
         public static string X_FORWARDED_FOR { get; } = "X-Forwarded-For";
         public static string CsrfTokenKey { get; } = "X-CSRF-TOKEN";
         public static string SetCookieHeaderKey { get; } = "Set-Cookie";
+        public static string ErrorKey { get; } = "Error";
     }
 }

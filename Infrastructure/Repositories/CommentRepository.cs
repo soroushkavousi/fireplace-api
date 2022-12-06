@@ -66,8 +66,9 @@ namespace FireplaceApi.Infrastructure.Repositories
             if (requestingUser != null)
                 commentEntities.ForEach(e => e.CheckRequestingUserVote(requestingUser));
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntities });
-            return commentEntities.Select(e => _commentConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { commentEntities = commentEntities.Select(e => e.Id) });
+            return commentEntities.Select(_commentConverter.ConvertToModel).ToList();
         }
 
         public async Task<List<Comment>> ListCommentsByIdsAsync(List<ulong> Ids,
@@ -102,8 +103,9 @@ namespace FireplaceApi.Infrastructure.Repositories
             commentEntities = new List<CommentEntity>();
             Ids.ForEach(id => commentEntities.Add(commentEntityDictionary[id]));
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntities });
-            return commentEntities.Select(e => _commentConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { commentEntities = commentEntities.Select(e => e.Id) });
+            return commentEntities.Select(_commentConverter.ConvertToModel).ToList();
         }
 
         public async Task<List<Comment>> ListSelfCommentsAsync(User author,
@@ -137,8 +139,9 @@ namespace FireplaceApi.Infrastructure.Repositories
 
             commentEntities.ForEach(e => e.CheckRequestingUserVote(author));
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntities });
-            return commentEntities.Select(e => _commentConverter.ConvertToModel(e)).ToList();
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { commentEntities = commentEntities.Select(e => e.Id) });
+            return commentEntities.Select(_commentConverter.ConvertToModel).ToList();
         }
 
         public async Task<Comment> GetCommentByIdAsync(ulong id,
@@ -288,11 +291,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                         default:
                             break;
                     }
-                    System.Console.WriteLine($"i: {i}");
 
                     for (int j = 0; j < i; j++)
                     {
-                        System.Console.WriteLine($"j: {j}");
                         switch (sort)
                         {
                             case SortType.TOP:
@@ -353,21 +354,16 @@ namespace FireplaceApi.Infrastructure.Repositories
 
             if (sort.HasValue)
             {
-                switch (sort)
+                q = sort switch
                 {
-                    case SortType.TOP:
-                        q = q.OrderByDescending(e => e.Vote);
-                        break;
-                    case SortType.NEW:
-                        q = q.OrderByDescending(e => e.CreationDate);
-                        break;
-                    case SortType.OLD:
-                        q = q.OrderBy(e => e.CreationDate);
-                        break;
-                    default:
-                        break;
-                }
+                    SortType.TOP => q.OrderByDescending(e => e.Vote),
+                    SortType.NEW => q.OrderByDescending(e => e.CreationDate),
+                    SortType.OLD => q.OrderBy(e => e.CreationDate),
+                    _ => q.OrderByDescending(e => e.Vote),
+                };
             }
+            else
+                q = q.OrderByDescending(e => e.Vote);
 
             return q;
         }

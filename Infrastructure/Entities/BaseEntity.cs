@@ -39,7 +39,7 @@ namespace FireplaceApi.Infrastructure.Entities
 
             modelBuilder
                .Property(e => e.CreationDate)
-               .HasDefaultValueSql("NOW()");
+               .HasDefaultValueSql("now() at time zone 'utc'");
         }
     }
 }

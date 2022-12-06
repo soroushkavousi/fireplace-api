@@ -36,7 +36,20 @@ namespace FireplaceApi.Api.Extensions
 
         public static User GetRequestingUser(this HttpContext httpContext)
         {
-            return httpContext.Items[Constants.RequestingUserKey].To<User>();
+            User user = null;
+            var hasUser = httpContext.Items.TryGetValue(Constants.RequestingUserKey, out var userObject);
+            if (hasUser)
+                user = userObject.To<User>();
+            return user;
+        }
+
+        public static Error GetError(this HttpContext httpContext)
+        {
+            Error error = null;
+            var hasError = httpContext.Items.TryGetValue(Constants.ErrorKey, out var errorObject);
+            if (hasError)
+                error = errorObject.To<Error>();
+            return error;
         }
 
         public static async Task<string> ReadRequestBodyAsync(this HttpRequest request)

@@ -5,6 +5,7 @@ using FireplaceApi.Core.Models;
 using FireplaceApi.Core.Operators;
 using FireplaceApi.Core.Validators;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
@@ -17,23 +18,24 @@ namespace FireplaceApi.Core.Tools
         private readonly AccessTokenOperator _accessTokenOperator;
         private readonly SessionOperator _sessionOperator;
         private readonly AccessTokenValidator _accessTokenValidator;
+        private readonly RequestTraceOperator _requestTraceOperator;
 
-        public Firewall(ILogger<Firewall> logger,
-            AccessTokenOperator accessTokenOperator,
-            SessionOperator sessionOperator, AccessTokenValidator accessTokenValidator)
+        public Firewall(ILogger<Firewall> logger, AccessTokenOperator accessTokenOperator,
+            SessionOperator sessionOperator, AccessTokenValidator accessTokenValidator,
+            RequestTraceOperator requestTraceOperator)
         {
             _logger = logger;
             _accessTokenOperator = accessTokenOperator;
             _sessionOperator = sessionOperator;
             _accessTokenValidator = accessTokenValidator;
+            _requestTraceOperator = requestTraceOperator;
         }
 
         public async Task<User> CheckUser(User requestingUser, IPAddress ipAddress)
         {
             var sw = Stopwatch.StartNew();
             await ValidateSessionAsync(requestingUser.Id, ipAddress);
-            await ValidateLimitationOfUserRequestCounts(requestingUser.Id);
-            await ValidateLimitationOfIpRequestCounts(ipAddress);
+            await ValidateLimitationOfIPRequestCounts(ipAddress);
             _logger.LogAppTrace($"User {requestingUser.Id} doesn't have any problem to continue. ",
                 sw: sw, parameters: new { requestingUser });
             return requestingUser;
@@ -42,7 +44,7 @@ namespace FireplaceApi.Core.Tools
         public async Task CheckGuest(IPAddress ipAddress)
         {
             var sw = Stopwatch.StartNew();
-            await ValidateLimitationOfIpRequestCounts(ipAddress);
+            await ValidateLimitationOfIPRequestCounts(ipAddress);
             _logger.LogAppTrace($"Guest doesn't have any problem to continue. {ipAddress}", sw);
         }
 
@@ -81,14 +83,20 @@ namespace FireplaceApi.Core.Tools
             return session;
         }
 
-        public async Task ValidateLimitationOfUserRequestCounts(ulong userId)
+        public async Task ValidateLimitationOfIPRequestCounts(IPAddress ip)
         {
-            await Task.CompletedTask;
-        }
+            if (ip.IsLocalIpAddress())
+                return;
 
-        public async Task ValidateLimitationOfIpRequestCounts(IPAddress ipAddress)
-        {
-            await Task.CompletedTask;
+            var fromDate = DateTime.UtcNow.AddMinutes(-Configs.Current.Api.RequestLimitionPeriodInMinutes);
+            var requestCountPerIP = await _requestTraceOperator.CountRequestTracesAsync(ip: ip, fromDate: fromDate,
+                withAction: true);
+            if (requestCountPerIP > Configs.Current.Api.MaxRequestPerIP)
+            {
+                var message = $"Max request limit reached for ip {ip}! request count: {requestCountPerIP}";
+                _logger.LogAppWarning(title: "REQUEST_LIMIT", parameters: new { fromDate, DateTime.UtcNow, ip, requestCountPerIP, Configs.Current.Api.MaxRequestPerIP });
+                throw new ApiException(ErrorName.MAX_REQUEST_LIMIT, message);
+            }
         }
     }
 }

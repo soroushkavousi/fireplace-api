@@ -193,7 +193,7 @@ namespace FireplaceApi.Api
         {
             var app = builder.Build();
 
-            app.UseRequestDurationMiddleware();
+            app.UseRequestTracerMiddleware();
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
