@@ -9,10 +9,16 @@ The API is developed via ASP&#46;NET Core framework and has many features such a
  
 \- Following Sections:
 - [**The DDD Architecture**](#the-ddd-architecture) 
-- [**The Swagger**](#the-swagger) 
 - [**Summary**](#summary) 
+- [**The Swagger**](#the-swagger) 
 - [**How to run a clone**](#how-to-run-a-clone) 
  
+ <br/> 
+ 
+<div align="center">
+  <img src="https://files.fireplace.bitiano.com/api/swagger-top.png?" width="85%" />
+</div>
+
  <br/>
 
 # The DDD Architecture
@@ -51,61 +57,7 @@ This project has been divided into multiple subprojects to implement a domain-dr
 	- Responsible for connecting to external systems and services
 	- It does not contain business rules or knowledge
 
-<br/>
-
-
-# The Swagger
-
-With the ***swagger UI***, you can easily interact with the API and learn it. It shows all routes, inputs, outputs, models, and errors. It also generates a _[swagger.json](https://api.fireplace.bitiano.com/docs/v1/swagger.json)_ which describes the schema of the API that can be imported into your app.
-
-[Check the **Swagger UI** website](https://api.fireplace.bitiano.com/docs/index.html)
-
- <br/>
- 
-<div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/swagger-top.png?" width="85%" />
-</div>
-
- <br/>
- 
-<div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/swagger-sample-execution.png?" width="85%" />
-</div>
-
- <br/> 
-  
-<div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/various-log-in-sign-up.png?" width="85%" />
-</div>
-
- <br/> 
-  
-<div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/comment-routes.png?" width="85%" />
-</div>
-
-
- <br/>
- 
-<div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/response-list-communities.png?" width="85%" />
-</div>
-
- <br/>
- 
-<div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/response-bad-request.png?" width="60%" />
-</div>
-
- <br/>
- 
-<div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/create-a-post-request.png?" width="85%" />
-</div>
-
-
-<br/>  <br/>
-
+<br/> <br/> 
 
 
 # Summary
@@ -222,7 +174,63 @@ With the ***swagger UI***, you can easily interact with the API and learn it. It
 
 - Check [Guides/id-generation-and-encoding.md](Guides/id-generation-and-encoding.md)
 
-<br/> 
+
+<br/> <br/> 
+
+
+# The Swagger
+
+With the ***swagger UI***, you can easily interact with the API and learn it. It shows all routes, inputs, outputs, models, and errors. It also generates a _[swagger.json](https://api.fireplace.bitiano.com/docs/v1/swagger.json)_ which describes the schema of the API that can be imported into your app.
+
+[Check the **Swagger UI** website](https://api.fireplace.bitiano.com/docs/index.html)
+
+ <br/>
+ 
+<div align="center">
+  <img src="https://files.fireplace.bitiano.com/api/swagger-top.png?" width="85%" />
+</div>
+
+ <br/>
+ 
+<div align="center">
+  <img src="https://files.fireplace.bitiano.com/api/swagger-sample-execution.png?" width="85%" />
+</div>
+
+ <br/> 
+  
+<div align="center">
+  <img src="https://files.fireplace.bitiano.com/api/various-log-in-sign-up.png?" width="85%" />
+</div>
+
+ <br/> 
+  
+<div align="center">
+  <img src="https://files.fireplace.bitiano.com/api/comment-routes.png?" width="85%" />
+</div>
+
+
+ <br/>
+ 
+<div align="center">
+  <img src="https://files.fireplace.bitiano.com/api/response-list-communities.png?" width="85%" />
+</div>
+
+ <br/>
+ 
+<div align="center">
+  <img src="https://files.fireplace.bitiano.com/api/response-bad-request.png?" width="60%" />
+</div>
+
+ <br/>
+ 
+<div align="center">
+  <img src="https://files.fireplace.bitiano.com/api/create-a-post-request.png?" width="85%" />
+</div>
+
+
+<br/>  <br/>
+
+
 
 
 
