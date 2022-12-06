@@ -291,11 +291,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                         default:
                             break;
                     }
-                    System.Console.WriteLine($"i: {i}");
 
                     for (int j = 0; j < i; j++)
                     {
-                        System.Console.WriteLine($"j: {j}");
                         switch (sort)
                         {
                             case SortType.TOP:

@@ -48,7 +48,7 @@ namespace FireplaceApi.Api.IntegrationTests
                 var postContent = "Sample Post Content";
                 var createdPost = await PostTests.CreatePostAsync(_testUtils, narutoUser, animeCommunityName, postContent);
                 var comments = new List<CommentDto>();
-                for (int i = 0; i < 50; i++)
+                for (int i = 0; i < Configs.Current.QueryResult.ViewLimit + 4; i++)
                 {
                     var comment = await ReplyToPostAsync(narutoUser, createdPost.Id, $"comment {i}");
                     comments.Add(comment);
@@ -58,7 +58,7 @@ namespace FireplaceApi.Api.IntegrationTests
                 comment10 = await VoteCommentAsync(_testUtils, narutoUser, comment10.Id);
 
                 var comment10Childs = new List<CommentDto>();
-                for (int i = 0; i < 30; i++)
+                for (int i = 0; i < Configs.Current.QueryResult.ViewLimit + 6; i++)
                 {
                     var comment = await ReplyToCommentAsync(_testUtils, narutoUser, comment10.Id, $"comment 10, {i}");
                     comment10Childs.Add(comment);
