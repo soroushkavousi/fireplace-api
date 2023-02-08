@@ -1,18 +1,18 @@
-
 # Welcome to Fireplace API
 
 Fireplace API is a **Reddit API clone** that has communities, posts, and nested comments. This project is just an individual effort to create a real-world Web API with some advanced features.
 
-The API is developed via ASP&#46;NET Core framework and has many features such as DDD structure, Swagger UI, Integration Testing, various Sign Up Methods, Error Handling, Logging System, Security Features, CICD, and Docker Deployment. <br/>
+The API is developed via ASP&#46;NET Core framework and has many features such as DDD structure, Swagger UI, Integration Testing, various Sign-Up Methods, Error Handling, Logging System, Security Features, CICD, and Docker Deployment. <br/>
 
-\- ASP&#46;NET Core version: 7.0 <br/>
- 
+Stack: ASP&#46;NET Core (7.0), PostgreSQL, Swagger, Nginx, CICD, Docker, GitHub Actions, Google OAuth 2.0, Gmail API, NLog, xUnit <br/>
+
 \- Following Sections:
-- [**The DDD Architecture**](#the-ddd-architecture) 
-- [**Summary**](#summary) 
-- [**The Swagger**](#the-swagger) 
-- [**How to run a clone**](#how-to-run-a-clone) 
- 
+
+- [**The DDD Architecture**](#the-ddd-architecture)
+- [**Summary**](#summary)
+- [**The Swagger**](#the-swagger)
+- [**How to run a clone**](#how-to-run-a-clone)
+
  <br/> 
  
 <div align="center">
@@ -36,39 +36,39 @@ This project has been divided into multiple subprojects to implement a domain-dr
 
 ### Layers:
 
-*According to Eric Evans's book [Domain Driven Design](https://domainlanguage.com/ddd/)*
+_According to Eric Evans's book [Domain Driven Design](https://domainlanguage.com/ddd/)_
 
 > The DDD patterns help you understand the complexity of the domain.
 
 - #### The API Layer (Application Layer)
-	- Defines the jobs the software is supposed to do
-	- It interacts with the application layers of other systems
-	- It does not contain business rules or knowledge
-	- Must not directly depend on any infrastructure framework.
+
+  - Defines the jobs the software is supposed to do
+  - It interacts with the application layers of other systems
+  - It does not contain business rules or knowledge
+  - Must not directly depend on any infrastructure framework.
 
 - #### The Core Layer (Domain Model Layer)
 
-	 - The heart of business software 
-	 - Responsible for representing concepts of the business, information about the business situation, and business rules. 
-	 -  Must completely ignore data persistence details.
+  - The heart of business software
+  - Responsible for representing concepts of the business, information about the business situation, and business rules.
+  - Must completely ignore data persistence details.
 
 - #### The Infrastructure Layer
-	- Defines how the data is persisted in databases or other persistent storage
-	- Responsible for connecting to external systems and services
-	- It does not contain business rules or knowledge
+  - Defines how the data is persisted in databases or other persistent storage
+  - Responsible for connecting to external systems and services
+  - It does not contain business rules or knowledge
 
-<br/> <br/> 
-
+<br/> <br/>
 
 # Summary
 
 **1. The DDD Architecture**
-	
+
 - Layers as subprojects: API, Core, Infrastructure
 - API: Web Interface
 - Core: Business rules & logic
 - Infrastructure: Data persistence & third-party projects
-	
+
 **2. The Swagger**
 
 - Check [The Swagger UI](https://api.fireplace.bitiano.com/docs/index.html)
@@ -86,9 +86,9 @@ This project has been divided into multiple subprojects to implement a domain-dr
 - Has three steps: Test, Build, and Deploy
 - At the test stage, integration tests will be run.
 - At the build stage, a docker image will be created and pushed to Docker Hub
-- At the Deploy stage, the image will be run in a VPS with docker-compose
+- At the deploy stage, the image will be run in a VPS with docker-compose
 
-**4. Docker & Docker Compose** 
+**4. Docker & Docker Compose**
 
 - Check [The Dockerfile](Dockerfile) (For building)
 - Check [The docker-compose.yml](docker-compose.yml) (For deploying)
@@ -98,7 +98,7 @@ This project has been divided into multiple subprojects to implement a domain-dr
 - With [xUnit](https://xunit.net/)
 - Parallelism for each test class
 - Each test class has its own database clone
-- Each test function is independent 
+- Each test function is independent
 
 **7. Database**
 
@@ -112,13 +112,12 @@ This project has been divided into multiple subprojects to implement a domain-dr
 **8. Pagination vs Query Result**
 
 - After implementing both stateful & stateless paginations, I decided to remove them!
-	- Stateful paginations need a considerable amount of server resources to be run!
-	- Stateless paginations can produce duplicate data and even miss some data of different sorts! 
+  - Stateful paginations need a considerable amount of server resources to be run!
+  - Stateless paginations can produce duplicate data and even miss some data of different sorts!
 - Use Query Result instead of Pagination
-	- The idea is to send a list of the remaining ids for each query
-	- Query result is a collection of items and more item ids
-	- Also nested comments have child comments and more child comment ids
-	
+  - The idea is to send a list of the remaining ids for each query
+  - Query result is a collection of items and more item ids
+  - Also nested comments have child comments and more child comment ids
 
 **9. Supports nested comments**
 
@@ -148,20 +147,18 @@ This project has been divided into multiple subprojects to implement a domain-dr
 - Each log line has Request Info, Process Info, Code Location, Log Time, Execution Time, Parameters Involved, Title, Message, and Exception
 - Each part of a log line has its padding and reserved space
 
-
 **13. Sign up and Log in methods**
 
- - Use Bearer Scheme
- - Sign Up: Google Sign-in, Email
- - Log In: Google Sign-in, Email, Username
- - Can specify the access token in both cookies and headers
- - Use [Gmail API](https://developers.google.com/gmail/api) for sending emails
-
+- Use Bearer Scheme
+- Sign Up: Google Sign-in, Email
+- Log In: Google Sign-in, Email, Username
+- Can specify the access token in both cookies and headers
+- Use [Gmail API](https://developers.google.com/gmail/api) for sending emails
 
 **14. Request Tracing & API Request Rate Limit**
 
 - Request details will be stored in the database
-	- Method, Action, URL, IP, User Agent, User ID, Duration, Status Code, Error Name, Request Time, …
+  - Method, Action, URL, IP, User Agent, User ID, Duration, Status Code, Error Name, Request Time, …
 - Currently, only allow a few API calls per one hour
 
 **15. Supports user sessions**
@@ -169,18 +166,15 @@ This project has been divided into multiple subprojects to implement a domain-dr
 - Can get the list of sessions and revoke them
 - Currently, sessions only have IP, but I should also add the user-agent and the country of the IP
 
-
 **16. Id Generation and Encoding**
 
 - Check [Guides/id-generation-and-encoding.md](Guides/id-generation-and-encoding.md)
 
-
-<br/> <br/> 
-
+<br/> <br/>
 
 # The Swagger
 
-With the ***swagger UI***, you can easily interact with the API and learn it. It shows all routes, inputs, outputs, models, and errors. It also generates a _[swagger.json](https://api.fireplace.bitiano.com/docs/v1/swagger.json)_ which describes the schema of the API that can be imported into your app.
+With the **_swagger UI_**, you can easily interact with the API and learn it. It shows all routes, inputs, outputs, models, and errors. It also generates a _[swagger.json](https://api.fireplace.bitiano.com/docs/v1/swagger.json)_, which describes the schema of the API that can be imported into your app.
 
 [Check the **Swagger UI** website](https://api.fireplace.bitiano.com/docs/index.html)
 
@@ -208,7 +202,6 @@ With the ***swagger UI***, you can easily interact with the API and learn it. It
   <img src="https://files.fireplace.bitiano.com/api/comment-routes.png?" width="85%" />
 </div>
 
-
  <br/>
  
 <div align="center">
@@ -227,21 +220,14 @@ With the ***swagger UI***, you can easily interact with the API and learn it. It
   <img src="https://files.fireplace.bitiano.com/api/create-a-post-request.png?" width="85%" />
 </div>
 
-
-<br/>  <br/>
-
-
-
-
-
-
-
+<br/> <br/>
 
 # How to run a clone
 
 **1. Create an empty PostgreSQL database & get its connection string**
 
 The connection string should be something like this:
+
 ```
 Host=<server-address>;Port=1234;Username=<username>;Password=<password>;Database=<database-name>;Include Error Detail=true;Log Parameters=true;
 ```
@@ -261,30 +247,28 @@ Host=<server-address>;Port=1234;Username=<username>;Password=<password>;Database
 
 <br/>
 
-| Environment Key | Value | Default | Required | 
-|--|:--:|:--:|:--:|
-| FIREPLACE_API_CONNECTION_STRING| &#60;connection-string> | - |  &#10004;|
-| FIREPLACE_API_LOG_DIRECTORY| path/to/logs | Project Root | &#10006;|
-| ASPNETCORE_ENVIRONMENT | 'Development' or 'Production' | 'Development'|  &#10006;
-
-
+| Environment Key                 |             Value             |    Default    | Required |
+| ------------------------------- | :---------------------------: | :-----------: | :------: |
+| FIREPLACE_API_CONNECTION_STRING |    &#60;connection-string>    |       -       | &#10004; |
+| FIREPLACE_API_LOG_DIRECTORY     |         path/to/logs          | Project Root  | &#10006; |
+| ASPNETCORE_ENVIRONMENT          | 'Development' or 'Production' | 'Development' | &#10006; |
 
 <br/>
 
 - **How to set?**
-<br/>
+  <br/>
 
 Option 1: Directly in shell
 
 ```
-linux: 
+Linux:
 > export ASPNETCORE_ENVIRONMENT='Development'
 > export FIREPLACE_API_LOG_DIRECTORY='path/to/logs'
 > export FIREPLACE_API_CONNECTION_STRING='<connection-string>'
 ```
 
 ```
-windows powershell: 
+Windows powershell:
 > $env:ASPNETCORE_ENVIRONMENT = 'Development'
 > $env:FIREPLACE_API_LOG_DIRECTORY = 'path/to/logs'
 > $env:FIREPLACE_API_CONNECTION_STRING = '<connection-string>'
@@ -325,7 +309,6 @@ Note: In this project, the file 'launchSettings.json' will not be pushed to the 
 ```
 
 <br/>
-   
 
 **5. Run the projects**
 
@@ -334,17 +317,17 @@ Note: In this project, the file 'launchSettings.json' will not be pushed to the 
 ```
 
 Now you can check the docs:
- http://localhost:5000/docs
+http://localhost:5000/docs
 
 Note: At this stage, you may have noticed that some errors say there are no configs or errors in the database! So we are going to fix them.
 
 <br/>
 
-**6. Import the initial data (configs & errors) into the database**   
+**6. Import the initial data (configs & errors) into the database**
 
 The file [Guides/db-initial-data.txt](Guides/db-initial-data.txt) has multiple insert queries to feed the initial data. You have two ways to inject the data into the database:
 
-Option 1:  Using psql command
+Option 1: Using psql command
 
 ```
 > psql -h localhost -p <port> -U <user> -d <database-name> -f "Guides/db-initial-data.txt"
@@ -354,9 +337,7 @@ Option 2: Running queries directly
 
 You can easily run queries directly by copying the file content.
 
-
 <br/>
-
 
 **7. Test the project**
 
@@ -371,4 +352,3 @@ Congratulations, you have almost run a clone.
 **8. Customize the configs data**
 
 Global variables and sensitive data are stored in a table in the database. You fed sample config data at step 6, but you need to alter it with your project specifications. For instance, generate and set your own google client-id and client-secret to use Google OAuth 2.0.
-
