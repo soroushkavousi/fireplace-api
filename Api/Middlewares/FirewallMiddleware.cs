@@ -35,7 +35,9 @@ namespace FireplaceApi.Api.Middlewares
         {
             var sw = Stopwatch.StartNew();
             var isUserEndpoint = httpContext.GetActionAttribute<IAllowAnonymous>() == null;
-            ValidateCsrfToken(httpContext, isUserEndpoint);
+            var requestPath = httpContext.Request.Path.Value;
+            if (!requestPath.Contains("graphql"))
+                ValidateCsrfToken(httpContext, isUserEndpoint);
             await ControlRequestBody(httpContext, firewall);
 
             var inputHeaderParameters = httpContext.GetInputHeaderParameters();
@@ -56,14 +58,17 @@ namespace FireplaceApi.Api.Middlewares
                 }
             }
 
-            if (isUserEndpoint || requestingUser != null)
+            if (!requestPath.Contains("graphql"))
             {
-                firewall.ValidateRequestingUserExists(requestingUser, accessTokenValue);
-                await firewall.CheckUser(requestingUser, ipAddress);
-            }
-            else
-            {
-                await firewall.CheckGuest(ipAddress);
+                if (isUserEndpoint || requestingUser != null)
+                {
+                    firewall.ValidateRequestingUserExists(requestingUser, accessTokenValue);
+                    await firewall.CheckUser(requestingUser, ipAddress);
+                }
+                else
+                {
+                    await firewall.CheckGuest(ipAddress);
+                }
             }
 
             GenerateAndSetCsrfTokenAsCookie(httpContext, antiforgery);

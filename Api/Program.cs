@@ -187,6 +187,10 @@ namespace FireplaceApi.Api
 
             builder.Services.AddHostedService<StatusCheckerService>();
             builder.Services.AddHostedService<ConfigLoaderService>();
+
+            builder.Services.AddGraphQLServer()
+                .UseGraphQLPipeline()
+                .AddGraphQLResolvers();
         }
 
         private WebApplication CreateApp(WebApplicationBuilder builder)
@@ -213,7 +217,7 @@ namespace FireplaceApi.Api
             app.UseStaticFiles();
 
             app.UseRewriter(new RewriteOptions()
-                .AddRewrite(@"^(?!v\d)(?!docs)(?!swagger)(.*)", $"{Constants.LatestApiVersion}/$1", false));
+                .AddRewrite(@"^(?!v\d)(?!docs)(?!graphql)(?!swagger)(.*)", $"{Constants.LatestApiVersion}/$1", false));
             app.UseRouting();
 
             app.UseSwagger(options =>
@@ -238,6 +242,7 @@ namespace FireplaceApi.Api
             app.UseExceptionMiddleware();
             app.UseFirewallMiddleware();
             app.MapControllers();
+            app.MapGraphQL();
             return app;
         }
     }
