@@ -1,0 +1,33 @@
+﻿using FireplaceApi.Domain.Interfaces;
+
+namespace FireplaceApi.Domain.Identifiers
+{
+    public abstract class CommunityIdentifier
+    {
+        public static CommunityIdIdentifier OfId(ulong id)
+            => new CommunityIdIdentifier(id);
+
+        public static CommunityNameIdentifier OfName(string name)
+            => new CommunityNameIdentifier(name);
+    }
+
+    public class CommunityIdIdentifier : CommunityIdentifier, IIdIdentifier
+    {
+        public ulong Id { get; set; }
+
+        internal CommunityIdIdentifier(ulong id)
+        {
+            Id = id;
+        }
+    }
+
+    public class CommunityNameIdentifier : CommunityIdentifier
+    {
+        public string Name { get; set; }
+
+        internal CommunityNameIdentifier(string name)
+        {
+            Name = name;
+        }
+    }
+}

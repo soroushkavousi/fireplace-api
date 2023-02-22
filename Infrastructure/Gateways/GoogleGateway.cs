@@ -1,8 +1,8 @@
-﻿using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Interfaces;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.ValueObjects;
+﻿using FireplaceApi.Domain.Exceptions;
+using FireplaceApi.Domain.Extensions;
+using FireplaceApi.Domain.Interfaces;
+using FireplaceApi.Domain.Models;
+using FireplaceApi.Domain.ValueObjects;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Microsoft.AspNetCore.WebUtilities;
@@ -85,7 +85,7 @@ namespace FireplaceApi.Infrastructure.Gateways
             {
                 _logger.LogAppError($"Problem", sw, ex: ex);
                 var errorServerMessage = $"Can't exchange user code for access token! User code: {code}";
-                throw new ApiException(Core.Enums.ErrorName.INTERNAL_SERVER, errorServerMessage);
+                throw new ApiException(Domain.Enums.ErrorName.INTERNAL_SERVER, errorServerMessage);
             }
         }
 
