@@ -25,13 +25,13 @@ Stack: ASP&#46;NET Core (7.0), PostgreSQL, Swagger, Nginx, CICD, Docker, GitHub 
 
 This project has been divided into multiple subprojects to implement a domain-driven design structure:
 
-- API
-- Core
+- Application
+- Domain
 - Infrastructure
 - Integration Tests
 
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/the-architecture.png?" />
+  <img src="https://files.fireplace.bitiano.com/api/the-architecture.png" />
 </div>
 
 ### Layers:
@@ -40,14 +40,14 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 
 > The DDD patterns help you understand the complexity of the domain.
 
-- #### The API Layer (Application Layer)
+- #### The Application Layer
 
   - Defines the jobs the software is supposed to do
   - It interacts with the application layers of other systems
   - It does not contain business rules or knowledge
   - Must not directly depend on any infrastructure framework.
 
-- #### The Core Layer (Domain Model Layer)
+- #### The Domain Layer
 
   - The heart of business software
   - Responsible for representing concepts of the business, information about the business situation, and business rules.
@@ -64,9 +64,9 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 
 **1. The DDD Architecture**
 
-- Layers as subprojects: API, Core, Infrastructure
-- API: Web Interface
-- Core: Business rules & logic
+- Layers as subprojects: Application, Domain, Infrastructure
+- API: UI interface
+- Domain: Business rules & logic
 - Infrastructure: Data persistence & third-party projects
 
 **2. The Swagger**
@@ -78,7 +78,7 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 - Has a custom Google Sign-In button
 - Automatically save cookies after login
 - Automatically use the CSRF token
-- Has customization with [custom-swagger-ui.css](Api/wwwroot/swagger-ui/custom-swagger-ui.css) & [custom-swagger-ui.js](Api/wwwroot/swagger-ui/custom-swagger-ui.js)
+- Has customization with [custom-swagger-ui.css](Application/wwwroot/swagger-ui/custom-swagger-ui.css) & [custom-swagger-ui.js](Application/wwwroot/swagger-ui/custom-swagger-ui.js)
 
 **3. CICD with GitHub Action**
 
@@ -140,8 +140,8 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 **12. Has logging system**
 
 - Use [NLog](https://nlog-project.org/)
-- Check [The nlog.config](Api/Tools/NLog/nlog.config)
-- Check [The LogExtensions.cs](Core/Extensions/LogExtensions.cs)
+- Check [The nlog.config](Application/Tools/NLog/nlog.config)
+- Check [The LogExtensions.cs](Domain/Extensions/LogExtensions.cs)
 - Has Sensitive Data Masking
 - Log directory path can be specified in the environment variables
 - Each log line has Request Info, Process Info, Code Location, Log Time, Execution Time, Parameters Involved, Title, Message, and Exception
@@ -296,7 +296,7 @@ Option 2: Via launchSettings.json
 }
 ```
 
-Copy the json to a file at this path: `Api\Properties\launchSettings.json`
+Copy the json to a file at this path: `Application\Properties\launchSettings.json`
 
 Note: In this project, the file 'launchSettings.json' will not be pushed to the git repository because it is placed in the .gitignore file. You can freely customize envrionment variables in it.
 
@@ -305,7 +305,7 @@ Note: In this project, the file 'launchSettings.json' will not be pushed to the 
 **4. Apply the database migrations**
 
 ```
-> dotnet ef database update --startup-project Api --project Infrastructure
+> dotnet ef database update --startup-project Application --project Infrastructure
 ```
 
 <br/>
@@ -313,7 +313,7 @@ Note: In this project, the file 'launchSettings.json' will not be pushed to the 
 **5. Run the projects**
 
 ```
-> dotnet run --project Api
+> dotnet run --project Application
 ```
 
 Now you can check the docs:
