@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace FireplaceApi.Domain.Validators
 {
-    public class CoreValidator
+    public class BaseValidator
     {
         public void ValidateParameterIsNotMissing(string parameter, string parameterName, ErrorName errorId)
         {

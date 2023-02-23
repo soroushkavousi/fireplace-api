@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Domain.Validators
 {
-    public class CommunityMembershipValidator : CoreValidator
+    public class CommunityMembershipValidator : BaseValidator
     {
         private readonly ILogger<CommunityMembershipValidator> _logger;
         private readonly IServiceProvider _serviceProvider;

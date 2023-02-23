@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Domain.Validators
 {
-    public class ErrorValidator : CoreValidator
+    public class ErrorValidator : BaseValidator
     {
         private readonly ILogger<ErrorValidator> _logger;
         private readonly IServiceProvider _serviceProvider;

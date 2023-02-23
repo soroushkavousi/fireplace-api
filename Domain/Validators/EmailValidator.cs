@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Domain.Validators
 {
-    public class EmailValidator : CoreValidator
+    public class EmailValidator : BaseValidator
     {
         private readonly ILogger<EmailValidator> _logger;
         private readonly IServiceProvider _serviceProvider;
