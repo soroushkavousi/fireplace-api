@@ -9,6 +9,7 @@ namespace FireplaceApi.Domain.Tools
         public static Regex PasswordMaxLength { get; } = PasswordMaxLengthRegex();
         public static Regex PasswordAnUppercaseLetter { get; } = PasswordAnUppercaseLetterRegex();
         public static Regex PasswordALowercaseLetter { get; } = PasswordALowercaseLetterRegex();
+        public static Regex PasswordASpecialLetter { get; } = PasswordASpecialLetterRegex();
         public static Regex PasswordValidCharacters { get; } = PasswordValidCharactersRegex();
         public static Regex PasswordANumber { get; } = PasswordANumberRegex();
         public static Regex MobileNumber { get; } = MobileNumberRegex();
@@ -43,7 +44,10 @@ namespace FireplaceApi.Domain.Tools
         [GeneratedRegex("[a-z]")]
         private static partial Regex PasswordALowercaseLetterRegex();
 
-        [GeneratedRegex("^[A-Za-z\\d!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~]+$")]
+        [GeneratedRegex("[!#$%&'()*+,.:;<=>?@^_`{|}~\\+\\-\\\"\\\\\\/\\[\\]]")]
+        private static partial Regex PasswordASpecialLetterRegex();
+
+        [GeneratedRegex("^[A-Za-z\\d!#$%&'()*+,.:;<=>?@^_`{|}~\\+\\-\\\"\\\\\\/\\[\\]]+$")]
         private static partial Regex PasswordValidCharactersRegex();
 
         [GeneratedRegex("\\d")]

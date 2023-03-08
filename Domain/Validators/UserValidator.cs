@@ -135,7 +135,7 @@ namespace FireplaceApi.Domain.Validators
 
         public void ValidateInputPasswordIsCorrectForRequestingUser(User requestingUser, Password password)
         {
-            if (Equals(requestingUser.Password.Hash, password.Hash))
+            if (!Equals(requestingUser.Password.Hash, password.Hash))
                 throw new PasswordInvalidValueException(password.Value, "The password is not correct!");
         }
 
@@ -218,14 +218,17 @@ namespace FireplaceApi.Domain.Validators
             if (Regexes.PasswordMaxLength.IsMatch(passwordValue) == false)
                 return "Input password exceeds the maximum length!";
 
+            if (Regexes.PasswordALowercaseLetter.IsMatch(passwordValue) == false)
+                return "Input password doesn't have a lowercase letter!";
+
             if (Regexes.PasswordAnUppercaseLetter.IsMatch(passwordValue) == false)
                 return "Input password doesn't have an uppercase letter!";
 
             if (Regexes.PasswordANumber.IsMatch(passwordValue) == false)
                 return "Input password doesn't have a number!";
 
-            if (Regexes.PasswordALowercaseLetter.IsMatch(passwordValue) == false)
-                return "Input password doesn't have a lowercase letter!";
+            if (Regexes.PasswordASpecialLetter.IsMatch(passwordValue) == false)
+                return "Input password doesn't have a special character!";
 
             if (Regexes.PasswordValidCharacters.IsMatch(passwordValue) == false)
                 return "Input password doesn't have valid characters!";
