@@ -1,7 +1,5 @@
-﻿using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Extensions;
+﻿using FireplaceApi.Application.Extensions;
 using FireplaceApi.Application.Tools;
-using FireplaceApi.Domain.Enums;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;

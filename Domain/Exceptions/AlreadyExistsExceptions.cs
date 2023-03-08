@@ -80,4 +80,17 @@ namespace FireplaceApi.Domain.Exceptions
             )
         { }
     }
+
+    public class PasswordAlreadyExistException : ApiException
+    {
+        public PasswordAlreadyExistException(ulong userId, string passwordHash)
+            : base(
+                errorType: ErrorType.ALREADY_EXISTS,
+                errorField: FieldName.PASSWORD,
+                errorServerMessage: "The user already has a password!",
+                parameters: new { userId, passwordHash },
+                systemException: null
+            )
+        { }
+    }
 }

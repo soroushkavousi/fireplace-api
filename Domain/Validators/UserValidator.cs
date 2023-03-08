@@ -66,7 +66,7 @@ namespace FireplaceApi.Domain.Validators
             await ValidateUsernameMatchWithPasswordAsync(username, password);
         }
 
-        public async Task ValidateRequestingUserInputParametersAsync(User requestingUser,
+        public async Task ValidateGetRequestingUserInputParametersAsync(User requestingUser,
             bool? includeEmail, bool? includeSessions)
         {
             await Task.CompletedTask;
@@ -76,6 +76,13 @@ namespace FireplaceApi.Domain.Validators
             User requestingUser, UserIdentifier identifier)
         {
             await ValidateUserIdentifierExists(identifier);
+        }
+
+        public async Task ValidateCreateRequestingUserPasswordInputParametersAsync(User user,
+            Password password)
+        {
+            ValidateUserPasswordNotExist(user);
+            await Task.CompletedTask;
         }
 
         public async Task ValidateSendResetPasswordCodeInputParametersAsync(string emailAddress, string resetPasswordWithCodeUrlFormat)
@@ -101,8 +108,7 @@ namespace FireplaceApi.Domain.Validators
         }
 
         public async Task ValidatePatchUserInputParametersAsync(User user, string displayName,
-            string about, string avatarUrl, string bannerUrl, string username,
-            Password password, Password newPassword, string emailAddress)
+            string about, string avatarUrl, string bannerUrl, string username, string emailAddress)
         {
             if (username != null)
             {
@@ -114,11 +120,14 @@ namespace FireplaceApi.Domain.Validators
                 var emailValidator = _serviceProvider.GetService<EmailValidator>();
                 await emailValidator.ValidateEmailIdentifierDoesNotExistAsync(EmailIdentifier.OfAddress(emailAddress));
             }
+        }
 
-            if (password != null)
-            {
-                ValidateInputPasswordIsCorrectForRequestingUser(user, password);
-            }
+        public async Task ValidatePatchRequestingUserPasswordInputParametersAsync(User user,
+            Password password, Password newPassword)
+        {
+            ValidateUserPasswordExists(user);
+            ValidateInputPasswordIsCorrectForRequestingUser(user, password);
+            await Task.CompletedTask;
         }
 
         public void ValidateDisplayNameFormat(string displayName)
@@ -255,6 +264,30 @@ namespace FireplaceApi.Domain.Validators
         public void ValidateResetPasswordCodeFormat(string resetPasswordCode)
         {
 
+        }
+
+        public bool ValidateUserPasswordExists(User requestingUser,
+            bool throwException = true)
+        {
+            if (requestingUser.Password != null && !string.IsNullOrWhiteSpace(requestingUser.Password.Hash))
+                return true;
+
+            if (throwException)
+                throw new PasswordNotExistException(requestingUser.Id);
+
+            return false;
+        }
+
+        public bool ValidateUserPasswordNotExist(User requestingUser,
+            bool throwException = true)
+        {
+            if (requestingUser.Password == null || string.IsNullOrWhiteSpace(requestingUser.Password.Hash))
+                return true;
+
+            if (throwException)
+                throw new PasswordAlreadyExistException(requestingUser.Id, requestingUser.Password.Hash);
+
+            return false;
         }
     }
 }
