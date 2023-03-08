@@ -33,7 +33,7 @@ namespace FireplaceApi.Infrastructure.Entities
             PostEntity = postEntity;
         }
 
-        public PostVoteEntity PureCopy() => new PostVoteEntity(Id, VoterEntityId,
+        public PostVoteEntity PureCopy() => new(Id, VoterEntityId,
             VoterEntityUsername, PostEntityId, IsUp, CreationDate, ModifiedDate);
     }
 

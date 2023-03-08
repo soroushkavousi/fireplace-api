@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Core.Attributes;
+﻿using FireplaceApi.Domain.Attributes;
 using Newtonsoft.Json;
 
 namespace FireplaceApi.Infrastructure.ValueObjects

@@ -1,8 +1,9 @@
-﻿using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Interfaces;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Domain.Enums;
+using FireplaceApi.Domain.Exceptions;
+using FireplaceApi.Domain.Extensions;
+using FireplaceApi.Domain.Identifiers;
+using FireplaceApi.Domain.Interfaces;
+using FireplaceApi.Domain.Models;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +38,9 @@ namespace FireplaceApi.Infrastructure.Repositories
             var sw = Stopwatch.StartNew();
             var errorEntites = await _errorEntities
                 .AsNoTracking()
+                .Search(
+                    identifier: null
+                )
                 .Include(
                 )
                 .OrderBy(e => e.Code)
@@ -47,13 +51,15 @@ namespace FireplaceApi.Infrastructure.Repositories
             return errorEntites.Select(_errorConverter.ConvertToModel).ToList();
         }
 
-        public async Task<Error> GetErrorByNameAsync(ErrorName name)
+        public async Task<Error> GetErrorAsync(ErrorIdentifier identifier)
         {
-            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { name });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
             var sw = Stopwatch.StartNew();
             var errorEntity = await _errorEntities
                 .AsNoTracking()
-                .Where(e => e.Name == name.ToString())
+                .Search(
+                    identifier: identifier
+                )
                 .Include(
                 )
                 .SingleOrDefaultAsync();
@@ -62,28 +68,14 @@ namespace FireplaceApi.Infrastructure.Repositories
             return _errorConverter.ConvertToModel(errorEntity);
         }
 
-        public async Task<Error> GetErrorByCodeAsync(int code)
-        {
-            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { code });
-            var sw = Stopwatch.StartNew();
-            var errorEntity = await _errorEntities
-                .AsNoTracking()
-                .Where(e => e.Code == code)
-                .Include(
-                )
-                .SingleOrDefaultAsync();
-
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { errorEntity });
-            return _errorConverter.ConvertToModel(errorEntity);
-        }
-
-        public async Task<Error> CreateErrorAsync(ulong id, ErrorName name,
-            int code, string clientMessage, int httpStatusCode)
+        public async Task<Error> CreateErrorAsync(ulong id, int code, ErrorType type,
+            FieldName field, string clientMessage, int httpStatusCode)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT",
-                parameters: new { id, name, code, clientMessage, httpStatusCode });
+                parameters: new { id, code, type, field, clientMessage, httpStatusCode });
             var sw = Stopwatch.StartNew();
-            var errorEntity = new ErrorEntity(id, name.ToString(), code, clientMessage, httpStatusCode);
+            var errorEntity = new ErrorEntity(id, code, type.Name, field.Name,
+                clientMessage, httpStatusCode);
             _errorEntities.Add(errorEntity);
             await _dbContext.SaveChangesAsync();
             _dbContext.DetachAllEntries();
@@ -105,20 +97,22 @@ namespace FireplaceApi.Infrastructure.Repositories
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                var serverMessage = $"Can't update the errorEntity DbUpdateConcurrencyException. {errorEntity.ToJson()}";
-                throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
+                throw new InternalServerException("Can't update the errorEntity DbUpdateConcurrencyException!",
+                    parameters: errorEntity, systemException: ex);
             }
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { errorEntity });
             return _errorConverter.ConvertToModel(errorEntity);
         }
 
-        public async Task DeleteErrorAsync(int code)
+        public async Task DeleteErrorAsync(ErrorIdentifier identifier)
         {
-            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { code });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
             var sw = Stopwatch.StartNew();
             var errorEntity = await _errorEntities
-                .Where(e => e.Code == code)
+                .Search(
+                    identifier: identifier
+                )
                 .SingleOrDefaultAsync();
 
             _errorEntities.Remove(errorEntity);
@@ -128,39 +122,15 @@ namespace FireplaceApi.Infrastructure.Repositories
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { errorEntity });
         }
 
-        public async Task<bool> DoesErrorNameExistAsync(ErrorName name)
+        public async Task<bool> DoesErrorExistAsync(ErrorIdentifier identifier)
         {
-            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { name });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
             var sw = Stopwatch.StartNew();
             var doesExist = await _errorEntities
                 .AsNoTracking()
-                .Where(e => e.Name == name.ToString())
-                .AnyAsync();
-
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
-            return doesExist;
-        }
-
-        public async Task<bool> DoesErrorCodeExistAsync(int code)
-        {
-            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { code });
-            var sw = Stopwatch.StartNew();
-            var doesExist = await _errorEntities
-                .AsNoTracking()
-                .Where(e => e.Code == code)
-                .AnyAsync();
-
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
-            return doesExist;
-        }
-
-        public async Task<bool> DoesErrorIdExistAsync(ulong id)
-        {
-            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
-            var sw = Stopwatch.StartNew();
-            var doesExist = await _errorEntities
-                .AsNoTracking()
-                .Where(e => e.Id == id)
+                .Search(
+                    identifier: identifier
+                )
                 .AnyAsync();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
@@ -174,6 +144,30 @@ namespace FireplaceApi.Infrastructure.Repositories
                     [NotNull] this IQueryable<ErrorEntity> errorEntitiesQuery)
         {
             return errorEntitiesQuery;
+        }
+
+        public static IQueryable<ErrorEntity> Search(
+            [NotNull] this IQueryable<ErrorEntity> q, ErrorIdentifier identifier)
+        {
+            if (identifier != null)
+            {
+                switch (identifier)
+                {
+                    case ErrorIdIdentifier idIdentifier:
+                        q = q.Where(e => e.Id == idIdentifier.Id);
+                        break;
+                    case ErrorCodeIdentifier codeIdentifier:
+                        q = q.Where(e => e.Code == codeIdentifier.Code);
+                        break;
+                    case ErrorTypeAndFieldIdentifier typeAndFieldIdentifier:
+                        q = q.Where(e =>
+                            e.Type == typeAndFieldIdentifier.Type.Name
+                            && e.Field == typeAndFieldIdentifier.Field.Name);
+                        break;
+                }
+            }
+
+            return q;
         }
     }
 }

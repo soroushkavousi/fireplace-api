@@ -1,8 +1,8 @@
-﻿using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Interfaces;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Domain.Enums;
+using FireplaceApi.Domain.Exceptions;
+using FireplaceApi.Domain.Extensions;
+using FireplaceApi.Domain.Interfaces;
+using FireplaceApi.Domain.Models;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -36,8 +36,8 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<List<RequestTrace>> ListRequestTracesAsync(string method = null,
             string action = null, string url = null, IPAddress ip = null, string country = null,
             string userAgentSearch = null, ulong? userId = null, int? statusCode = null,
-            long? fromDuration = null, ErrorName? errorName = null, DateTime? fromDate = null,
-            bool? withAction = null)
+            long? fromDuration = null, ErrorType errorType = null, FieldName errorField = null,
+            DateTime? fromDate = null, bool? withAction = null)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT",
                 parameters: new
@@ -51,7 +51,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                     userId,
                     statusCode,
                     fromDuration,
-                    errorName,
+                    errorType,
+                    errorField,
                     fromDate,
                     withAction
                 });
@@ -69,7 +70,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                     userId: userId,
                     statusCode: statusCode,
                     fromDuration: fromDuration,
-                    errorName: errorName,
+                    errorType: errorType,
+                    errorField: errorField,
                     fromDate: fromDate,
                     withAction: withAction
                 )
@@ -84,8 +86,8 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<int> CountRequestTracesAsync(string method = null,
             string action = null, string url = null, IPAddress ip = null, string country = null,
             string userAgentSearch = null, ulong? userId = null, int? statusCode = null,
-            long? fromDuration = null, ErrorName? errorName = null, DateTime? fromDate = null,
-            bool? withAction = null)
+            long? fromDuration = null, ErrorType errorType = null, FieldName errorField = null,
+            DateTime? fromDate = null, bool? withAction = null)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT",
                 parameters: new
@@ -99,7 +101,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                     userId,
                     statusCode,
                     fromDuration,
-                    errorName,
+                    errorType,
+                    errorField,
                     fromDate,
                     withAction
                 });
@@ -117,7 +120,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                     userId: userId,
                     statusCode: statusCode,
                     fromDuration: fromDuration,
-                    errorName: errorName,
+                    errorType: errorType,
+                    errorField: errorField,
                     fromDate: fromDate,
                     withAction: withAction
                 )
@@ -142,7 +146,8 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<RequestTrace> CreateRequestTraceAsync(ulong id, string method,
             string url, IPAddress ip, string country, string userAgent, ulong? userId,
-            int statusCode, long duration, string action = null, ErrorName? errorName = null)
+            int statusCode, long duration, string action = null, ErrorType errorType = null,
+            FieldName errorField = null)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT",
                 parameters: new
@@ -157,12 +162,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                     statusCode,
                     duration,
                     action,
-                    errorName
+                    errorType,
+                    errorField
                 });
             var sw = Stopwatch.StartNew();
             var requestTraceEntity = new RequestTraceEntity(id, method, url,
                 ip.ToString(), country, userAgent, userId, statusCode, duration,
-                action, errorName.ToString());
+                action, errorType?.Name, errorField?.Name);
             _requestTraceEntities.Add(requestTraceEntity);
             await _dbContext.SaveChangesAsync();
             _dbContext.DetachAllEntries();
@@ -184,8 +190,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                var serverMessage = $"Can't update the requestTraceEntity DbUpdateConcurrencyException. {requestTraceEntity.ToJson()}";
-                throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
+                throw new InternalServerException("Can't update the requestTraceEntity DbUpdateConcurrencyException!",
+                    parameters: requestTraceEntity, systemException: ex);
             }
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { requestTraceEntity });
@@ -226,7 +232,8 @@ namespace FireplaceApi.Infrastructure.Repositories
         public static IQueryable<RequestTraceEntity> Search(
             [NotNull] this IQueryable<RequestTraceEntity> q, string method,
             string action, string url, IPAddress ip, string country, string userAgentSearch, ulong? userId,
-            int? statusCode, long? fromDuration, ErrorName? errorName, DateTime? fromDate, bool? withAction)
+            int? statusCode, long? fromDuration, ErrorType errorType, FieldName errorField,
+            DateTime? fromDate, bool? withAction)
         {
             if (method != null)
                 q = q.Where(e => e.Method == method);
@@ -256,8 +263,11 @@ namespace FireplaceApi.Infrastructure.Repositories
             if (fromDuration != null)
                 q = q.Where(e => e.Duration >= fromDuration);
 
-            if (errorName != null)
-                q = q.Where(e => e.ErrorName == errorName.ToString());
+            if (errorType != null)
+                q = q.Where(e => e.ErrorType == errorType.Name);
+
+            if (errorField != null)
+                q = q.Where(e => e.ErrorField == errorField.Name);
 
             if (fromDate != null)
                 q = q.Where(e => e.CreationDate > fromDate);

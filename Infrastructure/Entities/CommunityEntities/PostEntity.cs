@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Domain.Enums;
+using FireplaceApi.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -76,7 +76,7 @@ namespace FireplaceApi.Infrastructure.Entities
             RequestingUserVote = requestingUserVote;
         }
 
-        public PostEntity PureCopy() => new PostEntity(Id, AuthorEntityId,
+        public PostEntity PureCopy() => new(Id, AuthorEntityId,
             AuthorEntityUsername, CommunityEntityId, CommunityEntityName,
             Content, Vote, RequestingUserVote, CreationDate, ModifiedDate);
     }

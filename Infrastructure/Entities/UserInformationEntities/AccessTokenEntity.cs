@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Core.Attributes;
+﻿using FireplaceApi.Domain.Attributes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -26,7 +26,7 @@ namespace FireplaceApi.Infrastructure.Entities
             UserEntity = userEntity;
         }
 
-        public AccessTokenEntity PureCopy() => new AccessTokenEntity(Id, UserEntityId,
+        public AccessTokenEntity PureCopy() => new(Id, UserEntityId,
             Value, CreationDate, ModifiedDate);
 
         public void RemoveLoopReferencing()

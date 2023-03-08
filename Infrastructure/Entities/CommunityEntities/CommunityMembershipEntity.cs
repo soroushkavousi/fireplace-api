@@ -36,7 +36,7 @@ namespace FireplaceApi.Infrastructure.Entities
             CommunityEntity = communityEntity;
         }
 
-        public CommunityMembershipEntity PureCopy() => new CommunityMembershipEntity(Id, UserEntityId,
+        public CommunityMembershipEntity PureCopy() => new(Id, UserEntityId,
             UserEntityUsername, CommunityEntityId, CommunityEntityName, CreationDate, ModifiedDate);
     }
 

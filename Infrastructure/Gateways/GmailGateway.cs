@@ -1,7 +1,7 @@
-﻿using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Interfaces;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.Tools;
+﻿using FireplaceApi.Domain.Extensions;
+using FireplaceApi.Domain.Interfaces;
+using FireplaceApi.Domain.Models;
+using FireplaceApi.Domain.Tools;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;
 using Google.Apis.Gmail.v1.Data;

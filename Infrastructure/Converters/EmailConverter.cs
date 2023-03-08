@@ -1,7 +1,7 @@
-﻿using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Models;
-using FireplaceApi.Core.ValueObjects;
+﻿using FireplaceApi.Domain.Enums;
+using FireplaceApi.Domain.Extensions;
+using FireplaceApi.Domain.Models;
+using FireplaceApi.Domain.ValueObjects;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

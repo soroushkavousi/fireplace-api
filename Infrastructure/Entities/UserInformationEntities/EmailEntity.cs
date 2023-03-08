@@ -29,7 +29,7 @@ namespace FireplaceApi.Infrastructure.Entities
             UserEntity = userEntity;
         }
 
-        public EmailEntity PureCopy() => new EmailEntity(Id, UserEntityId, Address,
+        public EmailEntity PureCopy() => new(Id, UserEntityId, Address,
             ActivationStatus, CreationDate, ModifiedDate, ActivationCode);
 
         public void RemoveLoopReferencing()

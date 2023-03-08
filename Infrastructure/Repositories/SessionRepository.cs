@@ -1,8 +1,8 @@
-﻿using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Exceptions;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Interfaces;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Domain.Enums;
+using FireplaceApi.Domain.Exceptions;
+using FireplaceApi.Domain.Extensions;
+using FireplaceApi.Domain.Interfaces;
+using FireplaceApi.Domain.Models;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -123,8 +123,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                var serverMessage = $"Can't update the sessionEntity DbUpdateConcurrencyException. {sessionEntity.ToJson()}";
-                throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
+                throw new InternalServerException("Can't update the sessionEntity DbUpdateConcurrencyException!",
+                    parameters: sessionEntity, systemException: ex);
             }
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { sessionEntity });

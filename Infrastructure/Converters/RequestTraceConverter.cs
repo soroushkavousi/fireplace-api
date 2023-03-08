@@ -1,7 +1,7 @@
-﻿using FireplaceApi.Core.Enums;
-using FireplaceApi.Core.Extensions;
-using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Domain.Enums;
+using FireplaceApi.Domain.Models;
 using FireplaceApi.Infrastructure.Entities;
+using FireplaceApi.Infrastructure.Enums;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
@@ -28,7 +28,7 @@ namespace FireplaceApi.Infrastructure.Converters
             var requestTraceEntity = new RequestTraceEntity(requestTrace.Id, requestTrace.Method,
                 requestTrace.Url, requestTrace.IP.ToString(), requestTrace.Country, requestTrace.UserAgent,
                 requestTrace.UserId, requestTrace.StatusCode, requestTrace.Duration, requestTrace.Action,
-                requestTrace.ErrorName?.ToString(), requestTrace.CreationDate, requestTrace.ModifiedDate);
+                requestTrace.ErrorType?.Name, requestTrace.ErrorField?.Name, requestTrace.CreationDate, requestTrace.ModifiedDate);
 
             return requestTraceEntity;
         }
@@ -38,14 +38,17 @@ namespace FireplaceApi.Infrastructure.Converters
             if (requestTraceEntity == null)
                 return null;
 
-            ErrorName? errorName = string.IsNullOrWhiteSpace(requestTraceEntity.ErrorName)
-                ? null : requestTraceEntity.ErrorName.ToEnum<ErrorName>();
+            ErrorType errorType = string.IsNullOrWhiteSpace(requestTraceEntity.ErrorType)
+                ? null : InfrastructureErrorType.FromName(requestTraceEntity.ErrorType);
+
+            FieldName errorField = string.IsNullOrWhiteSpace(requestTraceEntity.ErrorField)
+                ? null : InfrastructureFieldName.FromName(requestTraceEntity.ErrorField);
 
             var requestTrace = new RequestTrace(requestTraceEntity.Id, requestTraceEntity.Method,
                 requestTraceEntity.Url, IPAddress.Parse(requestTraceEntity.IP),
                 requestTraceEntity.Country, requestTraceEntity.UserAgent, requestTraceEntity.UserId,
                 requestTraceEntity.StatusCode, requestTraceEntity.Duration,
-                requestTraceEntity.Action, errorName,
+                requestTraceEntity.Action, errorType, errorField,
                 requestTraceEntity.CreationDate, requestTraceEntity.ModifiedDate);
 
             return requestTrace;

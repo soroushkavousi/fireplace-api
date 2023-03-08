@@ -275,7 +275,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                         name: "FK_CommunityMembershipEntities_CommunityEntities_CommunityEnti~",
                         columns: x => new { x.CommunityEntityId, x.CommunityEntityName },
                         principalTable: "CommunityEntities",
-                        principalColumns: new[] { "Id", "Name" },
+                        principalColumns: new[] { "Id", "Type" },
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CommunityMembershipEntities_UserEntities_UserEntityId_UserE~",
@@ -309,7 +309,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                         name: "FK_PostEntities_CommunityEntities_CommunityEntityId_CommunityE~",
                         columns: x => new { x.CommunityEntityId, x.CommunityEntityName },
                         principalTable: "CommunityEntities",
-                        principalColumns: new[] { "Id", "Name" },
+                        principalColumns: new[] { "Id", "Type" },
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PostEntities_UserEntities_AuthorEntityId_AuthorEntityUserna~",
@@ -427,7 +427,7 @@ namespace FireplaceApi.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_AccessTokenEntities_Value",
                 table: "AccessTokenEntities",
-                column: "Value",
+                column: "Parameters",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -493,7 +493,7 @@ namespace FireplaceApi.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_CommunityEntities_Name",
                 table: "CommunityEntities",
-                column: "Name",
+                column: "Type",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -553,7 +553,7 @@ namespace FireplaceApi.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_ErrorEntities_Name",
                 table: "ErrorEntities",
-                column: "Name",
+                column: "Type",
                 unique: true);
 
             migrationBuilder.CreateIndex(

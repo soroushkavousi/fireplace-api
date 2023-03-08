@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Core.Models;
+﻿using FireplaceApi.Domain.Models;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;

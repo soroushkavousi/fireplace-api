@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Core.Interfaces;
-using FireplaceApi.Core.Tools;
+﻿using FireplaceApi.Domain.Interfaces;
+using FireplaceApi.Domain.Tools;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
