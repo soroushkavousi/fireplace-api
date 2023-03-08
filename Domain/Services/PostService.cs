@@ -1,4 +1,6 @@
-﻿using FireplaceApi.Domain.Models;
+﻿using FireplaceApi.Domain.Enums;
+using FireplaceApi.Domain.Identifiers;
+using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Operators;
 using FireplaceApi.Domain.Validators;
 using FireplaceApi.Domain.ValueObjects;
@@ -22,103 +24,100 @@ namespace FireplaceApi.Domain.Services
             _postOperator = postOperator;
         }
 
-        public async Task<QueryResult<Post>> ListCommunityPostsAsync(string communityIdOrName, string sort,
-            User requestingUser = null)
+        public async Task<QueryResult<Post>> ListCommunityPostsAsync(CommunityIdentifier communityIdentifier,
+            SortType? sort, User requestingUser = null)
         {
             await _postValidator.ValidateListCommunityPostsInputParametersAsync(
-                communityIdOrName, sort, requestingUser);
-            return await _postOperator.ListCommunityPostsAsync(_postValidator.CommunityIdentifier,
-                _postValidator.Sort, requestingUser);
+                communityIdentifier, sort, requestingUser);
+            return await _postOperator.ListCommunityPostsAsync(communityIdentifier,
+                sort, requestingUser);
         }
 
-        public async Task<QueryResult<Post>> ListPostsAsync(string search, string sort, User requestingUser = null)
+        public async Task<QueryResult<Post>> ListPostsAsync(string search, SortType? sort, User requestingUser = null)
         {
             await _postValidator.ValidateListPostsInputParametersAsync(search, sort, requestingUser);
-            return await _postOperator.ListPostsAsync(search, _postValidator.Sort, requestingUser);
+            return await _postOperator.ListPostsAsync(search, sort, requestingUser);
         }
 
-        public async Task<List<Post>> ListPostsByIdsAsync(string encodedIds, User requestingUser = null)
+        public async Task<List<Post>> ListPostsByIdsAsync(List<ulong> ids, User requestingUser = null)
         {
-            await _postValidator.ValidateListPostsByIdsInputParametersAsync(encodedIds, requestingUser);
-            var communities = await _postOperator.ListPostsByIdsAsync(
-                _postValidator.Ids, requestingUser);
+            await _postValidator.ValidateListPostsByIdsInputParametersAsync(ids, requestingUser);
+            var communities = await _postOperator.ListPostsByIdsAsync(ids, requestingUser);
             return communities;
         }
 
         public async Task<QueryResult<Post>> ListSelfPostsAsync(User requestingUser,
-            string sort)
+            SortType? sort)
         {
-            await _postValidator.ValidateListSelfPostsInputParametersAsync(requestingUser,
-                sort);
-            var queryResult = await _postOperator.ListSelfPostsAsync(requestingUser,
-                _postValidator.Sort);
+            await _postValidator.ValidateListSelfPostsInputParametersAsync(requestingUser, sort);
+            var queryResult = await _postOperator.ListSelfPostsAsync(requestingUser, sort);
             return queryResult;
         }
 
-        public async Task<Post> GetPostByIdAsync(User requestingUser, string encodedId,
+        public async Task<Post> GetPostByIdAsync(User requestingUser, ulong id,
             bool? includeAuthor, bool? includeCommunity)
         {
             await _postValidator.ValidateGetPostByIdInputParametersAsync(
-                requestingUser, encodedId, includeAuthor, includeCommunity);
-            var post = await _postOperator.GetPostByIdAsync(_postValidator.PostId,
+                requestingUser, id, includeAuthor, includeCommunity);
+            var post = await _postOperator.GetPostByIdAsync(id,
                 includeAuthor.Value, includeCommunity.Value, requestingUser);
             return post;
         }
 
         public async Task<Post> CreatePostAsync(User requestingUser,
-            string communityEncodedIdOrName, string content)
+            CommunityIdentifier communityIdentifier, string content)
         {
             await _postValidator.ValidateCreatePostInputParametersAsync(
-                    requestingUser, communityEncodedIdOrName, content);
+                    requestingUser, communityIdentifier, content);
             return await _postOperator.CreatePostAsync(requestingUser,
-                _postValidator.CommunityIdentifier, content);
+                communityIdentifier, content);
         }
 
         public async Task<Post> VotePostAsync(User requestingUser,
-            string encodedId, bool? isUpvote)
+            ulong id, bool isUpvote)
         {
             await _postValidator.ValidateVotePostInputParametersAsync(
-                requestingUser, encodedId, isUpvote);
+                requestingUser, id, isUpvote);
             var post = await _postOperator.VotePostAsync(
-                requestingUser, _postValidator.PostId, isUpvote.Value);
+                requestingUser, id, isUpvote);
             return post;
         }
 
         public async Task<Post> ToggleVoteForPostAsync(User requestingUser,
-            string encodedId)
+            ulong id)
         {
             await _postValidator.ValidateToggleVoteForPostInputParametersAsync(
-                requestingUser, encodedId);
+                requestingUser, id);
             var post = await _postOperator.ToggleVoteForPostAsync(
-                requestingUser, _postValidator.PostId);
+                requestingUser, id);
             return post;
         }
 
         public async Task<Post> DeleteVoteForPostAsync(User requestingUser,
-            string encodedId)
+            ulong id)
         {
             await _postValidator.ValidateDeleteVoteForPostInputParametersAsync(
-                requestingUser, encodedId);
+                requestingUser, id);
             var post = await _postOperator.DeleteVoteForPostAsync(
-                requestingUser, _postValidator.PostId);
+                requestingUser, id);
             return post;
         }
 
         public async Task<Post> PatchPostByIdAsync(User requestingUser,
-            string encodedId, string content)
+            ulong id, string content)
         {
             await _postValidator.ValidatePatchPostByIdInputParametersAsync(
-                requestingUser, encodedId, content);
+                requestingUser, id, content);
             var post = await _postOperator.PatchPostByIdAsync(requestingUser,
-                _postValidator.PostId, content, null);
+                id, content, null);
             return post;
         }
 
-        public async Task DeletePostByIdAsync(User requestingUser, string encodedId)
+        public async Task DeletePostByIdAsync(User requestingUser, ulong id)
         {
             await _postValidator.ValidateDeletePostByIdInputParametersAsync(
-                requestingUser, encodedId);
-            await _postOperator.DeletePostByIdAsync(_postValidator.PostId);
+                requestingUser, id);
+            await _postOperator.DeletePostByIdAsync(id);
         }
     }
 }

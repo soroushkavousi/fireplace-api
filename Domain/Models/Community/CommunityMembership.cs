@@ -25,7 +25,7 @@ namespace FireplaceApi.Domain.Models
             Community = community;
         }
 
-        public CommunityMembership PureCopy() => new CommunityMembership(Id, UserId,
+        public CommunityMembership PureCopy() => new(Id, UserId,
             Username, CommunityId, CommunityName, CreationDate, ModifiedDate);
     }
 }

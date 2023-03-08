@@ -19,7 +19,8 @@ namespace FireplaceApi.Infrastructure.Entities
         public long Duration { get; set; }
         [Required]
         public int StatusCode { get; set; }
-        public string ErrorName { get; set; }
+        public string ErrorType { get; set; }
+        public string ErrorField { get; set; }
         [Required]
         public string Url { get; set; }
         public string UserAgent { get; set; }
@@ -28,8 +29,8 @@ namespace FireplaceApi.Infrastructure.Entities
 
         public RequestTraceEntity(ulong id, string method, string url, string ip,
             string country, string userAgent, ulong? userId, int statusCode, long duration,
-            string action = null, string errorName = null, DateTime? creationDate = null,
-            DateTime? modifiedDate = null) : base(id, creationDate, modifiedDate)
+            string action = null, string errorType = null, string errorField = null,
+            DateTime? creationDate = null, DateTime? modifiedDate = null) : base(id, creationDate, modifiedDate)
         {
             Method = method ?? throw new ArgumentNullException(nameof(method));
             Url = url ?? throw new ArgumentNullException(nameof(url));
@@ -40,12 +41,13 @@ namespace FireplaceApi.Infrastructure.Entities
             StatusCode = statusCode;
             Duration = duration;
             Action = action;
-            ErrorName = errorName;
+            ErrorType = errorType;
+            ErrorField = errorField;
         }
 
         public RequestTraceEntity PureCopy() => new(Id, Method, Url, IP, Country,
-            UserAgent, UserId, StatusCode, Duration, Action, ErrorName,
-            CreationDate, ModifiedDate);
+            UserAgent, UserId, StatusCode, Duration, Action, ErrorType,
+            ErrorField, CreationDate, ModifiedDate);
     }
 
     public class RequestTraceEntityConfiguration : IEntityTypeConfiguration<RequestTraceEntity>

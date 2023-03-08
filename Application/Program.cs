@@ -114,6 +114,7 @@ namespace FireplaceApi.Application
                 options.Filters.Add(typeof(InputHeaderParametersInjectorAttribute));
                 options.Filters.Add(typeof(InputCookieParametersInjectorAttribute));
                 options.Filters.Add(typeof(ActionLoggingAttribute));
+                options.Filters.Add(typeof(ActionInputValidatorAttribute));
             }).AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = SnakeCaseNamingPolicy.Instance;

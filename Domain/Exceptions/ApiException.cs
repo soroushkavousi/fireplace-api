@@ -1,18 +1,28 @@
 ﻿using FireplaceApi.Domain.Enums;
+using FireplaceApi.Domain.Identifiers;
 using System;
 
 namespace FireplaceApi.Domain.Exceptions
 {
-    public class ApiException : Exception
+    public abstract class ApiException : Exception
     {
-        public ErrorName ErrorName { get; set; }
+        public ErrorType ErrorType { get; private set; }
+        public FieldName ErrorField { get; private set; }
         public string ErrorServerMessage { get; set; }
+        public object Parameters { get; set; }
         public Exception Exception { get; set; }
+        public ErrorIdentifier ErrorIdentifier { get; private set; }
 
-        public ApiException(ErrorName errorName, string errorServerMessage = null, Exception systemException = null) : base(errorServerMessage, systemException)
+        public ApiException(ErrorType errorType, FieldName errorField,
+            string errorServerMessage = null, object parameters = null,
+            Exception systemException = null)
+            : base(errorServerMessage, systemException)
         {
-            ErrorName = errorName;
+            ErrorType = errorType;
+            ErrorField = errorField;
+            ErrorIdentifier = ErrorIdentifier.OfTypeAndField(ErrorType, ErrorField);
             ErrorServerMessage = errorServerMessage;
+            Parameters = parameters;
             Exception = systemException ?? this;
         }
     }

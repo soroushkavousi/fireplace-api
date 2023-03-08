@@ -1,4 +1,6 @@
-﻿using FireplaceApi.Domain.Models;
+﻿using FireplaceApi.Domain.Enums;
+using FireplaceApi.Domain.Identifiers;
+using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Operators;
 using FireplaceApi.Domain.Validators;
 using FireplaceApi.Domain.ValueObjects;
@@ -22,29 +24,27 @@ namespace FireplaceApi.Domain.Services
             _communityOperator = communityOperator;
         }
 
-        public async Task<QueryResult<Community>> ListCommunitiesAsync(string name, string sort)
+        public async Task<QueryResult<Community>> ListCommunitiesAsync(string name, SortType? sort)
         {
             await _communityValidator.ValidateListCommunitiesInputParametersAsync(name, sort);
-            var queryResult = await _communityOperator.ListCommunitiesAsync(
-                name, _communityValidator.Sort);
+            var queryResult = await _communityOperator.ListCommunitiesAsync(name, sort);
             return queryResult;
         }
 
-        public async Task<List<Community>> ListCommunitiesByIdsAsync(string encodedIds)
+        public async Task<List<Community>> ListCommunitiesByIdsAsync(List<ulong> ids)
         {
-            await _communityValidator.ValidateListCommunitiesByIdsInputParametersAsync(encodedIds);
-            var communities = await _communityOperator.ListCommunitiesByIdsAsync(
-                _communityValidator.Ids);
+            await _communityValidator.ValidateListCommunitiesByIdsInputParametersAsync(ids);
+            var communities = await _communityOperator.ListCommunitiesByIdsAsync(ids);
             return communities;
         }
 
-        public async Task<Community> GetCommunityByEncodedIdOrNameAsync(User requestingUser,
-            string encodedIdOrName, bool? includeCreator)
+        public async Task<Community> GetCommunityByIdentifierAsync(User requestingUser,
+            CommunityIdentifier identifier, bool? includeCreator)
         {
-            await _communityValidator.ValidateGetCommunityByEncodedIdOrNameInputParametersAsync(
-                requestingUser, encodedIdOrName, includeCreator);
+            await _communityValidator.ValidateGetCommunityByIdentifierInputParametersAsync(
+                requestingUser, identifier, includeCreator);
             var community = await _communityOperator.GetCommunityByIdentifierAsync(
-                _communityValidator.CommunityIdentifier, includeCreator.Value);
+                identifier, includeCreator.Value);
             return community;
         }
 
@@ -55,22 +55,21 @@ namespace FireplaceApi.Domain.Services
             return await _communityOperator.CreateCommunityAsync(requestingUser, name);
         }
 
-        public async Task<Community> PatchCommunityByEncodedIdOrNameAsync(User requestingUser,
-            string encodedIdOrName, string newName)
+        public async Task<Community> PatchCommunityByIdentifierAsync(User requestingUser,
+            CommunityIdentifier identifier, string newName)
         {
-            await _communityValidator.ValidatePatchCommunityByEncodedIdOrNameInputParametersAsync(
-                requestingUser, encodedIdOrName, newName);
+            await _communityValidator.ValidatePatchCommunityByIdentifierInputParametersAsync(
+                requestingUser, identifier, newName);
             var community = await _communityOperator.PatchCommunityByIdentifierAsync(
                 _communityValidator.Community, newName);
             return community;
         }
 
-        public async Task DeleteCommunityByEncodedIdOrNameAsync(User requestingUser, string encodedIdOrName)
+        public async Task DeleteCommunityByIdentifierAsync(User requestingUser, CommunityIdentifier identifier)
         {
-            await _communityValidator.ValidateDeleteCommunityByEncodedIdOrNameInputParametersAsync(
-                requestingUser, encodedIdOrName);
-            await _communityOperator.DeleteCommunityByIdentifierAsync(
-                _communityValidator.CommunityIdentifier);
+            await _communityValidator.ValidateDeleteCommunityByIdentifierInputParametersAsync(
+                requestingUser, identifier);
+            await _communityOperator.DeleteCommunityByIdentifierAsync(identifier);
         }
     }
 }

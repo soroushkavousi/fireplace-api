@@ -156,8 +156,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                var serverMessage = $"Can't update the userEntity DbUpdateConcurrencyException. {userEntity.ToJson()}";
-                throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
+                throw new InternalServerException("Can't update the userEntity DbUpdateConcurrencyException!",
+                    parameters: userEntity, systemException: ex);
             }
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { userEntity });
@@ -177,9 +177,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                var serverMessage = $"Can't update the userEntity DbUpdateConcurrencyException. " +
-                    $"{new { id, newUsername, rowAffectedCount }.ToJson()}";
-                throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
+                throw new InternalServerException("Can't update the userEntity DbUpdateConcurrencyException!",
+                    parameters: new { id, newUsername, rowAffectedCount }, systemException: ex);
             }
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { rowAffectedCount });

@@ -5,7 +5,7 @@ namespace FireplaceApi.Application.Tools
 {
     public class SnakeCaseNamingPolicy : JsonNamingPolicy
     {
-        private readonly SnakeCaseNamingStrategy _newtonsoftSnakeCaseNamingStrategy = new SnakeCaseNamingStrategy();
+        private readonly SnakeCaseNamingStrategy _newtonsoftSnakeCaseNamingStrategy = new();
 
         public static SnakeCaseNamingPolicy Instance { get; } = new SnakeCaseNamingPolicy();
 

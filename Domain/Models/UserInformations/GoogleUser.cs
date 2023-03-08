@@ -66,7 +66,7 @@ namespace FireplaceApi.Domain.Models
             User = user;
         }
 
-        public GoogleUser PureCopy() => new GoogleUser(Id, UserId, Code, AccessToken,
+        public GoogleUser PureCopy() => new(Id, UserId, Code, AccessToken,
             TokenType, AccessTokenExpiresInSeconds, RefreshToken, Scope, IdToken,
             AccessTokenIssuedTime, GmailAddress, GmailVerified, GmailIssuedTimeInSeconds,
             FullName, FirstName, LastName, Locale, PictureUrl, State, AuthUser, Prompt,

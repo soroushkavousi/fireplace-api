@@ -1,20 +1,21 @@
-﻿using FireplaceApi.Domain.Interfaces;
+﻿using FireplaceApi.Domain.Enums;
+using FireplaceApi.Domain.Interfaces;
 
 namespace FireplaceApi.Domain.Identifiers
 {
-    public abstract class CommunityMembershipIdentifier
+    public abstract class CommunityMembershipIdentifier : Identifier
     {
         public static CommunityMembershipIdIdentifier OfId(ulong id)
-            => new CommunityMembershipIdIdentifier(id);
+            => new(id);
 
         public static CommunityMembershipUserAndCommunityIdentifier OfUserAndCommunity(
             UserIdentifier userIdentifier, CommunityIdentifier communityIdentifier)
-            => new CommunityMembershipUserAndCommunityIdentifier(
-                userIdentifier, communityIdentifier);
+            => new(userIdentifier, communityIdentifier);
     }
 
     public class CommunityMembershipIdIdentifier : CommunityMembershipIdentifier, IIdIdentifier
     {
+        public override FieldName TargetField => FieldName.COMMUNITY_MEMBERSHIP_ID;
         public ulong Id { get; set; }
 
         internal CommunityMembershipIdIdentifier(ulong id)
@@ -25,6 +26,7 @@ namespace FireplaceApi.Domain.Identifiers
 
     public class CommunityMembershipUserAndCommunityIdentifier : CommunityMembershipIdentifier
     {
+        public override FieldName TargetField => FieldName.COMMUNITY_MEMBERSHIP;
         public UserIdentifier UserIdentifier { get; set; }
         public CommunityIdentifier CommunityIdentifier { get; set; }
 

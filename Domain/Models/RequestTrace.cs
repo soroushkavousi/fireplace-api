@@ -15,12 +15,13 @@ namespace FireplaceApi.Domain.Models
         public ulong? UserId { get; set; }
         public int StatusCode { get; set; }
         public long Duration { get; set; }
-        public ErrorName? ErrorName { get; set; }
+        public ErrorType ErrorType { get; set; }
+        public FieldName ErrorField { get; set; }
 
         public RequestTrace(ulong id, string method, string url, IPAddress ip,
             string country, string userAgent, ulong? userId, int statusCode, long duration,
-            string action, ErrorName? errorName, DateTime creationDate, DateTime? modifiedDate = null)
-            : base(id, creationDate, modifiedDate)
+            string action, ErrorType errorType, FieldName fieldName, DateTime creationDate,
+            DateTime? modifiedDate = null) : base(id, creationDate, modifiedDate)
         {
             Method = method ?? throw new ArgumentNullException(nameof(method));
             Url = url ?? throw new ArgumentNullException(nameof(url));
@@ -31,11 +32,12 @@ namespace FireplaceApi.Domain.Models
             StatusCode = statusCode;
             Duration = duration;
             Action = action;
-            ErrorName = errorName;
+            ErrorType = errorType;
+            ErrorField = fieldName;
         }
 
         public RequestTrace PureCopy() => new(Id, Method, Url,
             IP, Country, UserAgent, UserId, StatusCode, Duration,
-            Action, ErrorName, CreationDate, ModifiedDate);
+            Action, ErrorType, ErrorField, CreationDate, ModifiedDate);
     }
 }

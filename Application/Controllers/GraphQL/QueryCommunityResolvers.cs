@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Application.Converters;
+using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Services;
 using HotChocolate;
 using HotChocolate.Types;
@@ -12,7 +13,7 @@ namespace FireplaceApi.Application.Controllers
     {
         public async Task<QueryResultDto<CommunityDto>> GetCommunitiesAsync([Service] ILogger<QueryCommunityResolvers> logger,
             [Service] CommunityConverter communityConverter, [Service] CommunityService communityService,
-            string name, string sort = null)
+            string name, SortType? sort = null)
         {
             var queryResult = await communityService.ListCommunitiesAsync(name, sort);
             var queryResultDto = communityConverter.ConvertToDto(queryResult);

@@ -1,6 +1,5 @@
 ﻿using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Exceptions;
-using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Identifiers;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Operators;
@@ -12,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Domain.Validators
 {
-    public class EmailValidator : BaseValidator
+    public class EmailValidator : DomainValidator
     {
         private readonly ILogger<EmailValidator> _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -29,19 +28,18 @@ namespace FireplaceApi.Domain.Validators
         public EmailIdentifier EmailIdentifier { get; private set; }
         public Email Email { get; private set; }
 
+        public async Task ValidateActivateRequestingUserEmailInputParametersAsync(User requestingUser, int activationCode)
+        {
+            EmailIdentifier = EmailIdentifier.OfUserId(requestingUser.Id);
+            Email = await _emailOperator.GetEmailByIdentifierAsync(EmailIdentifier);
+            ValidateEmailIsNotAlreadyActivated(Email);
+            ValidateActivationCodeIsCorrectAsync(Email, activationCode);
+        }
+
         public async Task ValidateGetRequestingUserEmailInputParametersAsync(User requestingUser)
         {
             EmailIdentifier = EmailIdentifier.OfUserId(requestingUser.Id);
             await Task.CompletedTask;
-        }
-
-        public async Task ValidateActivateRequestingUserEmailInputParametersAsync(User requestingUser, int? activationCode)
-        {
-            ValidateParameterIsNotMissing(activationCode, nameof(activationCode), ErrorName.ACTIVATION_CODE_IS_MISSING);
-            EmailIdentifier = EmailIdentifier.OfUserId(requestingUser.Id);
-            Email = await _emailOperator.GetEmailByIdentifierAsync(EmailIdentifier);
-            ValidateEmailIsNotAlreadyActivated(Email);
-            ValidateActivationCodeIsCorrectAsync(Email, activationCode.Value);
         }
 
         public async Task ValidateResendActivationCodeInputParametersAsync(User requestingUser)
@@ -54,38 +52,28 @@ namespace FireplaceApi.Domain.Validators
         public void ValidateEmailAddressFormat(string address)
         {
             if (Regexes.EmailAddress.IsMatch(address) == false)
-            {
-                var serverMessage = $"Email address ({address}) doesn't have correct format!";
-                throw new ApiException(ErrorName.EMAIL_ADDRESS_NOT_VALID, serverMessage);
-            }
+                throw new EmailAddressInvalidValueException(address);
         }
 
         public async Task ValidateEmailIdentifierDoesNotExistAsync(EmailIdentifier identifier)
         {
             if (await _emailOperator.DoesEmailIdentifierExistAsync(identifier))
-            {
-                var serverMessage = $"Requested email already exists! {identifier.ToJson()}";
-                throw new ApiException(ErrorName.EMAIL_ADDRESS_EXISTS, serverMessage);
-            }
+                throw new EmailAlreadyExistsException(identifier);
         }
 
         public async Task ValidateEmailIdentifierExistsAsync(EmailIdentifier identifier)
         {
             if (await _emailOperator.DoesEmailIdentifierExistAsync(identifier) == false)
-            {
-                var serverMessage = $"Requested email doesn't exist! {identifier.ToJson()}";
-                throw new ApiException(ErrorName.EMAIL_ADDRESS_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
-            }
+                throw new EmailNotExistException(identifier);
         }
 
         public async Task<Email> ValidateAndGetEmailAsync(EmailIdentifier identifier)
         {
             var email = await _emailOperator.GetEmailByIdentifierAsync(identifier, true);
+
             if (email == null)
-            {
-                var serverMessage = $"Requested email doesn't exist! {identifier.ToJson()}";
-                throw new ApiException(ErrorName.EMAIL_ADDRESS_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
-            }
+                throw new EmailNotExistException(identifier);
+
             return email;
         }
 
@@ -93,34 +81,28 @@ namespace FireplaceApi.Domain.Validators
         {
             var email = await _emailOperator.GetEmailByIdentifierAsync(EmailIdentifier.OfAddress(emailAddress), true);
             if (email == null)
-            {
-                var serverMessage = $"Email address {emailAddress} doesn't exist! Password Hash: {password.Hash}";
-                throw new ApiException(ErrorName.AUTHENTICATION_FAILED, serverMessage);
-            }
+                throw new EmailNotExistException(EmailIdentifier.OfAddress(emailAddress));
 
             if (string.Equals(email.User.Password.Hash, password.Hash) == false)
-            {
-                var serverMessage = $"Input password is not correct! Email: {emailAddress}, Password Hash: {password.Hash}";
-                throw new ApiException(ErrorName.AUTHENTICATION_FAILED, serverMessage);
-            }
+                throw new EmailAndPasswordAuthenticationFailedException(emailAddress, password.Hash);
         }
 
         public void ValidateActivationCodeIsCorrectAsync(Email email, int activationCode)
         {
             if (activationCode != email.Activation.Code)
-            {
-                var serverMessage = $"Input activation code is not correct for email {email.Id}!";
-                throw new ApiException(ErrorName.EMAIL_ACTIVATION_CODE_NOT_CORRECT, serverMessage);
-            }
+                throw new ActivationCodeInvalidValueException(activationCode);
         }
 
         public void ValidateEmailIsNotAlreadyActivated(Email email)
         {
             if (email.Activation.Status == ActivationStatus.COMPLETED)
-            {
-                var serverMessage = $"email {email.Id} is already activated!";
-                throw new ApiException(ErrorName.EMAIL_IS_ALREADY_ACTIVATED, serverMessage);
-            }
+                throw new EmailAlreadyActivatedException(email.Address);
+        }
+
+        public void ValidateActivateCodeFormat(int activationCode)
+        {
+            if (activationCode < 10000 && activationCode > 99999)
+                throw new ActivationCodeInvalidValueException(activationCode);
         }
     }
 }

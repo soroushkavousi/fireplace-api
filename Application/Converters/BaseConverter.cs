@@ -10,7 +10,6 @@ namespace FireplaceApi.Application.Converters
         where M : BaseModel
         where DTO : class
     {
-
         public abstract DTO ConvertToDto(M model);
 
         public QueryResultDto<DTO> ConvertToDto(QueryResult<M> queryResult)
@@ -23,6 +22,7 @@ namespace FireplaceApi.Application.Converters
 
             var queryResultDto = new QueryResultDto<DTO>(itemDtos, moreItemIds);
             return queryResultDto;
+
         }
     }
 }

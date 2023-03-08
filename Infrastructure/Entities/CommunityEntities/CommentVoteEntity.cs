@@ -33,7 +33,7 @@ namespace FireplaceApi.Infrastructure.Entities
             CommentEntity = commentEntity;
         }
 
-        public CommentVoteEntity PureCopy() => new CommentVoteEntity(Id, VoterEntityId,
+        public CommentVoteEntity PureCopy() => new(Id, VoterEntityId,
             VoterEntityUsername, CommentEntityId, IsUp, CreationDate, ModifiedDate);
     }
 

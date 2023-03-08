@@ -1,5 +1,6 @@
 ﻿using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Extensions;
+using FireplaceApi.Domain.Identifiers;
 using FireplaceApi.Domain.Operators;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -28,7 +29,8 @@ namespace FireplaceApi.Application.IntegrationTests.Tools
             SampleObject = new { Property1 = "value1" };
         }
 
-        public async Task AssertResponseIsErrorAsync(ErrorName expectedErrorName, HttpResponseMessage response)
+        public async Task AssertResponseIsErrorAsync(ErrorType expectedErrorType, FieldName expectedRrrorField,
+            HttpResponseMessage response)
         {
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
@@ -37,14 +39,18 @@ namespace FireplaceApi.Application.IntegrationTests.Tools
             _logger.LogAppInformation($"responseBodyJson: {responseBodyJson}");
 
             Assert.Contains("code", responseBodyJObject);
+            Assert.Contains("type", responseBodyJObject);
+            Assert.Contains("field", responseBodyJObject);
             Assert.Contains("message", responseBodyJObject);
 
-            var responseError = await _errorOperator.GetErrorByCodeAsync(responseBodyJObject.Value<int>("code"));
-            Assert.Equal(expectedErrorName, responseError.Name);
+            var code = responseBodyJObject.Value<int>("code");
+            var responseError = await _errorOperator.GetErrorAsync(ErrorIdentifier.OfCode(code));
+            Assert.True(responseError.Type == expectedErrorType
+                && responseError.Field == expectedRrrorField);
         }
 
-        public async Task AssertResponseIsNotErrorAsync(ErrorName notExpectedErrorName, HttpResponseMessage response,
-            [CallerMemberName] string testName = "")
+        public async Task AssertResponseIsNotErrorAsync(ErrorType notExpectedErrorType, FieldName notExpectedRrrorField,
+            HttpResponseMessage response, [CallerMemberName] string testName = "")
         {
             var responseBodyJToken = await ReadResponseBodyAsJToken(response);
             if (responseBodyJToken.Type != JTokenType.Object)
@@ -58,8 +64,9 @@ namespace FireplaceApi.Application.IntegrationTests.Tools
             var responseErrorCode = responseBodyJObject.Value<int?>("code");
             if (responseErrorCode.HasValue)
             {
-                var responseError = await _errorOperator.GetErrorByCodeAsync(responseErrorCode.Value);
-                Assert.NotEqual(notExpectedErrorName, responseError.Name);
+                var responseError = await _errorOperator.GetErrorAsync(ErrorIdentifier.OfCode(responseErrorCode.Value));
+                Assert.False(responseError.Type == notExpectedErrorType
+                && responseError.Field == notExpectedRrrorField);
             }
         }
 

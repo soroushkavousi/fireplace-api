@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Domain.Enums;
-using FireplaceApi.Domain.Exceptions;
+﻿using FireplaceApi.Domain.Exceptions;
+using FireplaceApi.Domain.Identifiers;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Operators;
 using FireplaceApi.Domain.Tools;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Domain.Validators
 {
-    public class ErrorValidator : BaseValidator
+    public class ErrorValidator : DomainValidator
     {
         private readonly ILogger<ErrorValidator> _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -28,16 +28,14 @@ namespace FireplaceApi.Domain.Validators
             await Task.CompletedTask;
         }
 
-        public async Task ValidateGetErrorByCodeInputParametersAsync(User requestingUser, int? code)
+        public async Task ValidateGetErrorByCodeInputParametersAsync(User requestingUser, ErrorIdentifier identifier)
         {
-            ValidateParameterIsNotMissing(code, nameof(code), ErrorName.ERROR_CODE_IS_MISSING);
-            await ValidateErrorCodeExists(code.Value);
+            await ValidateErrorCodeExists(identifier);
         }
 
-        public async Task ValidatePatchErrorInputParametersAsync(User requestingUser, int? code, string clientMessage)
+        public async Task ValidatePatchErrorInputParametersAsync(User requestingUser, ErrorIdentifier identifier, string clientMessage)
         {
-            ValidateParameterIsNotMissing(code, nameof(code), ErrorName.ERROR_CODE_IS_MISSING);
-            await ValidateErrorCodeExists(code.Value);
+            await ValidateErrorCodeExists(identifier);
 
             if (clientMessage != null)
             {
@@ -45,22 +43,21 @@ namespace FireplaceApi.Domain.Validators
             }
         }
 
-        public async Task ValidateErrorCodeExists(int code)
+        public async Task ValidateErrorCodeExists(ErrorIdentifier identifier)
         {
-            if (await _errorOperator.DoesErrorCodeExistAsync(code) == false)
-            {
-                var serverMessage = $"Error {code} doesn't exists!";
-                throw new ApiException(ErrorName.ERROR_CODE_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
-            }
+            if (await _errorOperator.DoesErrorExistAsync(identifier) == false)
+                throw new ErrorNotExistException(identifier);
+        }
+
+        public void ValidateErrorCodeFormat(int code)
+        {
+
         }
 
         public void ValidateClientMessageFormat(string clientMessage)
         {
             if (Regexes.ErrorClientMessage.IsMatch(clientMessage) == false)
-            {
-                var serverMessage = $"Error client message ({clientMessage}) doesn't have correct format!";
-                throw new ApiException(ErrorName.ERROR_CLIENT_MESSAGE_NOT_VALID, serverMessage);
-            }
+                throw new ErrorClientMessageInvalidValueException(clientMessage);
         }
     }
 }

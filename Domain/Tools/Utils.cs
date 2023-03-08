@@ -8,7 +8,7 @@ namespace FireplaceApi.Domain.Tools
     public static class Utils
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private static readonly Random _random = new Random();
+        private static readonly Random _random = new();
 
         public static T CreateInstance<T>() => (T)Activator.CreateInstance(typeof(T), true);
 

@@ -32,7 +32,7 @@ namespace FireplaceApi.Domain.Models
             Community = community;
         }
 
-        public Post PureCopy() => new Post(Id, AuthorId,
+        public Post PureCopy() => new(Id, AuthorId,
             AuthorUsername, CommunityId, CommunityName, Vote,
             RequestingUserVote, Content, CreationDate, ModifiedDate);
     }

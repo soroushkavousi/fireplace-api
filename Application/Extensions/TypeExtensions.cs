@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Domain.Enums;
-using FireplaceApi.Domain.Exceptions;
+﻿using FireplaceApi.Domain.Exceptions;
 using FireplaceApi.Domain.Extensions;
 using Microsoft.OpenApi.Any;
 using System;
@@ -14,13 +13,11 @@ namespace FireplaceApi.Application.Extensions
         {
             var exampleProperty = type.GetProperty(Tools.Constants.ExamplePropertyName, BindingFlags.Public | BindingFlags.Static);
             if (exampleProperty == null)
-            {
-                throw new ApiException(ErrorName.INTERNAL_SERVER, $"Type {type} has no [Example] property!");
-            }
+                throw new InternalServerException("The type has not [Example] property!", new { type });
 
             var example = exampleProperty.GetValue(null).To<OpenApiObject>();
             if (example == null)
-                throw new ApiException(ErrorName.INTERNAL_SERVER, $"Type {type} [Example] is empty!");
+                throw new InternalServerException("The type [Example] property is empty!", new { type });
 
             return example;
         }

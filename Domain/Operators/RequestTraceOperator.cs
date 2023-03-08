@@ -33,24 +33,24 @@ namespace FireplaceApi.Domain.Operators
         public async Task<List<RequestTrace>> ListRequestTracesAsync(string method = null,
             string action = null, string url = null, IPAddress ip = null, string country = null,
             string userAgentSearch = null, ulong? userId = null, int? statusCode = null,
-            long? fromDuration = null, ErrorName? errorName = null, DateTime? fromDate = null,
-            bool? withAction = null)
+            long? fromDuration = null, ErrorType errorType = null, FieldName errorField = null,
+            DateTime? fromDate = null, bool? withAction = null)
         {
             var requestTraces = await _requestTraceRepository
                 .ListRequestTracesAsync(method, action, url, ip, country, userAgentSearch,
-                userId, statusCode, fromDuration, errorName, fromDate, withAction);
+                userId, statusCode, fromDuration, errorType, errorField, fromDate, withAction);
             return requestTraces;
         }
 
         public async Task<int> CountRequestTracesAsync(string method = null,
             string action = null, string url = null, IPAddress ip = null, string country = null,
             string userAgentSearch = null, ulong? userId = null, int? statusCode = null,
-            long? fromDuration = null, ErrorName? errorName = null, DateTime? fromDate = null,
-            bool? withAction = null)
+            long? fromDuration = null, ErrorType errorType = null, FieldName errorField = null,
+            DateTime? fromDate = null, bool? withAction = null)
         {
             var count = await _requestTraceRepository
                 .CountRequestTracesAsync(method, action, url, ip, country, userAgentSearch,
-                userId, statusCode, fromDuration, errorName, fromDate, withAction);
+                userId, statusCode, fromDuration, errorType, errorField, fromDate, withAction);
             return count;
         }
 
@@ -66,13 +66,14 @@ namespace FireplaceApi.Domain.Operators
 
         public async Task<RequestTrace> CreateRequestTraceAsync(string method,
             string url, IPAddress ip, string userAgent, ulong? userId,
-            int statusCode, long duration, string action = null, ErrorName? errorName = null)
+            int statusCode, long duration, string action = null,
+            ErrorType errorType = null, FieldName errorField = null)
         {
             var id = await IdGenerator.GenerateNewIdAsync(DoesRequestTraceIdExistAsync);
             var country = await FindCountryName(ip);
             var requestTrace = await _requestTraceRepository.CreateRequestTraceAsync(id,
                 method, url, ip, country, userAgent, userId, statusCode, duration,
-                action, errorName);
+                action, errorType, errorField);
             return requestTrace;
         }
 

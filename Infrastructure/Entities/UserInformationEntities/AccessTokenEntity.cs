@@ -26,7 +26,7 @@ namespace FireplaceApi.Infrastructure.Entities
             UserEntity = userEntity;
         }
 
-        public AccessTokenEntity PureCopy() => new AccessTokenEntity(Id, UserEntityId,
+        public AccessTokenEntity PureCopy() => new(Id, UserEntityId,
             Value, CreationDate, ModifiedDate);
 
         public void RemoveLoopReferencing()

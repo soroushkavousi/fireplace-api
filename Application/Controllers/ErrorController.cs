@@ -34,7 +34,7 @@ namespace FireplaceApi.Application.Controllers
             [BindNever][FromHeader] User requestingUser,
             [FromRoute] GetErrorByCodeInputRouteParameters inputRouteParameters)
         {
-            var error = await _errorService.GetErrorByCodeAsync(requestingUser, inputRouteParameters.Code);
+            var error = await _errorService.GetErrorAsync(requestingUser, inputRouteParameters.Identifier);
             var errorDto = _errorConverter.ConvertToDto(error);
             return errorDto;
         }

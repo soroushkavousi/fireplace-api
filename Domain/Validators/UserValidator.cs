@@ -1,6 +1,5 @@
 ﻿using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Exceptions;
-using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Identifiers;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Operators;
@@ -14,14 +13,14 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Domain.Validators
 {
-    public class UserValidator : BaseValidator
+    public class UserValidator : DomainValidator
     {
         private readonly ILogger<UserValidator> _logger;
         private readonly IServiceProvider _serviceProvider;
         private readonly UserOperator _userOperator;
 
-        public UserIdentifier UserIdentifier { get; private set; }
         public User User { get; private set; }
+        public UserIdentifier UserIdentifier { get; private set; }
 
         public UserValidator(ILogger<UserValidator> logger,
             IServiceProvider serviceProvider, UserOperator userOperator)
@@ -31,33 +30,25 @@ namespace FireplaceApi.Domain.Validators
             _userOperator = userOperator;
         }
 
-        public async Task ValidateOpenGoogleLogInPagenputParametersAsync(IPAddress ipAddress, string accessToken,
-            string refreshToken, string tokenType, int? expiresIn, string idToken)
-        {
-            await Task.CompletedTask;
-        }
+        //public async Task ValidateOpenGoogleLogInPagenputParametersAsync(IPAddress ipAddress, string accessToken,
+        //    string refreshToken, string tokenType, int? expiresIn, string idToken)
+        //{
+        //    await Task.CompletedTask;
+        //}
 
         public async Task ValidateLogInWithGoogleInputParametersAsync(IPAddress ipAddress, string state,
             string code, string scope, string authUser, string prompt, string error)
         {
             if (string.IsNullOrWhiteSpace(error) == false)
-            {
-                var serverMessage = $"Google error message: {error}";
-                throw new ApiException(ErrorName.BAD_REQUEST, serverMessage);
-            }
+                throw new InternalServerException("Google error message!", new { error });
+
             await Task.CompletedTask;
         }
 
         public async Task ValidateSignUpWithEmailInputParametersAsync(IPAddress ipAddress,
             string emailAddress, string username, Password password)
         {
-            ValidateParameterIsNotMissing(emailAddress, nameof(emailAddress), ErrorName.EMAIL_ADDRESS_IS_MISSING);
-            ValidateParameterIsNotMissing(username, nameof(username), ErrorName.USERNAME_IS_MISSING);
-            ValidateParameterIsNotMissing(password, nameof(password), ErrorName.PASSWORD_IS_MISSING);
-            ValidateUsernameFormat(username);
-            ValidatePasswordFormat(password);
             var emailValidator = _serviceProvider.GetService<EmailValidator>();
-            emailValidator.ValidateEmailAddressFormat(emailAddress);
             await ValidateUserIdentifierDoesNotExistAsync(UserIdentifier.OfUsername(username));
             await emailValidator.ValidateEmailIdentifierDoesNotExistAsync(EmailIdentifier.OfAddress(emailAddress));
         }
@@ -65,18 +56,13 @@ namespace FireplaceApi.Domain.Validators
         public async Task ValidateLogInWithEmailInputParametersAsync(IPAddress ipAddress,
             string emailAddress, Password password)
         {
-            ValidateParameterIsNotMissing(emailAddress, nameof(emailAddress), ErrorName.EMAIL_ADDRESS_IS_MISSING);
-            ValidateParameterIsNotMissing(password, nameof(password), ErrorName.PASSWORD_IS_MISSING);
             var emailValidator = _serviceProvider.GetService<EmailValidator>();
-            emailValidator.ValidateEmailAddressFormat(emailAddress);
             await emailValidator.ValidateEmailAddressMatchWithPasswordAsync(emailAddress, password);
         }
 
         public async Task ValidateLogInWithUsernameInputParametersAsync(IPAddress ipAddress,
             string username, Password password)
         {
-            ValidateParameterIsNotMissing(username, nameof(username), ErrorName.USERNAME_IS_MISSING);
-            ValidateParameterIsNotMissing(password, nameof(password), ErrorName.PASSWORD_IS_MISSING);
             await ValidateUsernameMatchWithPasswordAsync(username, password);
         }
 
@@ -86,17 +72,14 @@ namespace FireplaceApi.Domain.Validators
             await Task.CompletedTask;
         }
 
-        public async Task ValidateGetUserByUsernameInputParametersAsync(
-            User requestingUser, string username)
+        public async Task ValidateGetUserProfileInputParametersAsync(
+            User requestingUser, UserIdentifier identifier)
         {
-            ValidateUsernameFormat(username);
-            UserIdentifier = UserIdentifier.OfUsername(username);
-            await ValidateUserIdentifierExists(UserIdentifier);
+            await ValidateUserIdentifierExists(identifier);
         }
 
         public async Task ValidateSendResetPasswordCodeInputParametersAsync(string emailAddress, string resetPasswordWithCodeUrlFormat)
         {
-            ValidateParameterIsNotMissing(emailAddress, nameof(emailAddress), ErrorName.EMAIL_ADDRESS_IS_MISSING);
             var emailValidator = _serviceProvider.GetService<EmailValidator>();
             emailValidator.ValidateEmailAddressFormat(emailAddress);
             await emailValidator.ValidateEmailIdentifierExistsAsync(EmailIdentifier.OfAddress(emailAddress));
@@ -105,12 +88,7 @@ namespace FireplaceApi.Domain.Validators
         public async Task ValidateResetPasswordWithCodeInputParametersAsync(string emailAddress,
             string resetPasswordCode, Password newPassword)
         {
-            ValidateParameterIsNotMissing(emailAddress, nameof(emailAddress), ErrorName.EMAIL_ADDRESS_IS_MISSING);
-            ValidateParameterIsNotMissing(resetPasswordCode, nameof(resetPasswordCode), ErrorName.RESET_PASSWORD_CODE_IS_MISSING);
-            ValidateParameterIsNotMissing(newPassword, nameof(newPassword), ErrorName.PASSWORD_IS_MISSING);
-            ValidatePasswordFormat(newPassword);
             var emailValidator = _serviceProvider.GetService<EmailValidator>();
-            emailValidator.ValidateEmailAddressFormat(emailAddress);
             var email = await emailValidator.ValidateAndGetEmailAsync(EmailIdentifier.OfAddress(emailAddress));
             User = email.User;
             ValidateResetPasswordCodeIsCorrectAsync(User, resetPasswordCode);
@@ -124,102 +102,41 @@ namespace FireplaceApi.Domain.Validators
 
         public async Task ValidatePatchUserInputParametersAsync(User user, string displayName,
             string about, string avatarUrl, string bannerUrl, string username,
-            Password oldPassword, Password password, string emailAddress)
+            Password password, Password newPassword, string emailAddress)
         {
-            if (displayName != null)
-                ValidateDisplayNameFormat(displayName);
-
-            if (about != null)
-                ValidateAboutFormat(about);
-
-            if (avatarUrl != null)
-                ValidateUrlStringFormat(avatarUrl);
-
-            if (bannerUrl != null)
-                ValidateUrlStringFormat(bannerUrl);
-
             if (username != null)
             {
-                ValidateUsernameFormat(username);
                 await ValidateUserIdentifierDoesNotExistAsync(UserIdentifier.OfUsername(username));
             }
 
             if (emailAddress != null)
             {
                 var emailValidator = _serviceProvider.GetService<EmailValidator>();
-                emailValidator.ValidateEmailAddressFormat(emailAddress);
                 await emailValidator.ValidateEmailIdentifierDoesNotExistAsync(EmailIdentifier.OfAddress(emailAddress));
             }
 
-            ValidateBothOldPasswordAndPasswordAreNotNullIfRequested(oldPassword, password);
-            if (oldPassword != null && password != null)
+            if (password != null)
             {
-                ValidatePasswordFormat(password);
-                ValidateOldPasswordIsCorrect(user, oldPassword);
+                ValidateInputPasswordIsCorrectForRequestingUser(user, password);
             }
-        }
-
-        public async Task<UserIdentifier> ValidateMultipleIdentifiers(string encodedId,
-            string username, bool throwException = true)
-        {
-            var id = ValidateEncodedIdFormat(encodedId, "username", false);
-            if (id.HasValue)
-            {
-                var identifier = UserIdentifier.OfId(id.Value);
-                if (await ValidateUserIdentifierExists(identifier, false))
-                    return identifier;
-            }
-
-            if (ValidateUsernameFormat(username, false))
-            {
-                var identifier = UserIdentifier.OfUsername(username);
-                if (await ValidateUserIdentifierExists(identifier, false))
-                    return identifier;
-            }
-
-            if (throwException)
-            {
-                var serverMessage = $"Input encodedIdOrUsername ({new { encodedId, id, username }.ToJson()}) is not valid!";
-                throw new ApiException(ErrorName.USER_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
-            }
-            return default;
         }
 
         public void ValidateDisplayNameFormat(string displayName)
         {
             if (displayName.Length > 80)
-            {
-                var serverMessage = $"Invalid displayName format! ({displayName})!";
-                throw new ApiException(ErrorName.DISPLAY_NAME_FORMAT_IS_NOT_VALID, serverMessage);
-            }
+                throw new DisplayNameInvalidValueException(displayName);
         }
 
         public void ValidateAboutFormat(string about)
         {
             if (about.Length > 2000)
-            {
-                var serverMessage = $"Invalid about format! ({about})!";
-                throw new ApiException(ErrorName.ABOUT_FORMAT_IS_NOT_VALID, serverMessage);
-            }
+                throw new AboutInvalidValueException(about);
         }
 
-        public void ValidateBothOldPasswordAndPasswordAreNotNullIfRequested(Password oldPassword, Password password)
+        public void ValidateInputPasswordIsCorrectForRequestingUser(User requestingUser, Password password)
         {
-            if ((oldPassword != null && password == null)
-                || (oldPassword == null && password != null))
-            {
-                var serverMessage = $"Required both of old_password and password to change!";
-                throw new ApiException(ErrorName.REQUIRED_BOTH_OF_OLD_PASSWORD_AND_PASSWORD, serverMessage);
-            }
-        }
-
-        public void ValidateOldPasswordIsCorrect(User requestingUser, Password oldPassword)
-        {
-            if (Equals(requestingUser.Password.Hash, oldPassword.Hash))
-            {
-                var serverMessage = $"Old paassword is not correct!";
-                throw new ApiException(ErrorName.OLD_PASSWORD_NOT_CORRECT, serverMessage);
-            }
+            if (Equals(requestingUser.Password.Hash, password.Hash))
+                throw new PasswordInvalidValueException(password.Value, "The password is not correct!");
         }
 
         public async Task<bool> ValidateUserIdentifierExists(UserIdentifier identifier,
@@ -229,10 +146,8 @@ namespace FireplaceApi.Domain.Validators
                 return true;
 
             if (throwException)
-            {
-                var serverMessage = $"User {identifier.ToJson()} doesn't exists!";
-                throw new ApiException(ErrorName.USER_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
-            }
+                throw new UserNotExistException(identifier);
+
             return false;
         }
 
@@ -243,151 +158,100 @@ namespace FireplaceApi.Domain.Validators
                 return true;
 
             if (throwException)
-            {
-                switch (identifier)
-                {
-                    case UserUsernameIdentifier usernameIdentifier:
-                        var serverMessage = $"Username {usernameIdentifier.Username} already exists!";
-                        throw new ApiException(ErrorName.USERNAME_ALREADY_EXISTS, serverMessage);
-                }
-            }
-            return false;
-        }
+                throw new UserAlreadyExistsException(identifier);
 
-        public bool ValidateUserIdentifierFormat(
-            UserIdentifier identifier, bool throwException = true)
-        {
-            switch (identifier)
-            {
-                case UserIdIdentifier idIdentifier:
-                    break;
-                case UserUsernameIdentifier usernameIdentifier:
-                    if (!ValidateUsernameFormat(usernameIdentifier.Username, throwException))
-                        return false;
-                    break;
-            }
-            return true;
+            return false;
         }
 
         public bool ValidateUsernameFormat(string username, bool throwException = true)
         {
             if (Regexes.UsernameMinLength.IsMatch(username) == false)
-            {
-                var serverMessage = $"Username ({username}) doesn't have the minimum length!";
-                return throwException ?
-                    throw new ApiException(ErrorName.USERNAME_MIN_LENGTH, serverMessage) : false;
-            }
+                return throwException ? throw new UsernameInvalidValueException(username,
+                    "The username doesn't have the minimum length!") : false;
+
             if (Regexes.UsernameMaxLength.IsMatch(username) == false)
-            {
-                var serverMessage = $"Username ({username}) exceeds the maximum length!";
-                return throwException ?
-                    throw new ApiException(ErrorName.USERNAME_MAX_LENGTH, serverMessage) : false;
-            }
+                return throwException ? throw new UsernameInvalidValueException(username,
+                    "The username exceeds the maximum length!") : false;
+
             if (Regexes.UsernameStart.IsMatch(username) == false)
-            {
-                var serverMessage = $"Username ({username}) has wrong starts!";
-                return throwException ?
-                    throw new ApiException(ErrorName.USERNAME_WRONG_START, serverMessage) : false;
-            }
+                return throwException ? throw new UsernameInvalidValueException(username,
+                    "The username has wrong starts!") : false;
+
             if (Regexes.UsernameEnd.IsMatch(username) == false)
-            {
-                var serverMessage = $"Username ({username}) has wrong end!";
-                return throwException ?
-                    throw new ApiException(ErrorName.USERNAME_WRONG_END, serverMessage) : false;
-            }
+                return throwException ? throw new UsernameInvalidValueException(username,
+                    "The username has wrong end!") : false;
+
             if (Regexes.UsernameSafeConsecutives.IsMatch(username) == false)
-            {
-                var serverMessage = $"Username ({username}) has invalid consecutive!";
-                return throwException ?
-                    throw new ApiException(ErrorName.USERNAME_INVALID_CONSECUTIVE, serverMessage) : false;
-            }
+                return throwException ? throw new UsernameInvalidValueException(username,
+                    "The username has invalid consecutive!") : false;
+
             if (Regexes.UsernameValidCharacters.IsMatch(username) == false)
-            {
-                var serverMessage = $"Username ({username}) has invalid characters!";
-                return throwException ?
-                    throw new ApiException(ErrorName.USERNAME_VALID_CHARACTERS, serverMessage) : false;
-            }
+                return throwException ? throw new UsernameInvalidValueException(username,
+                    "The username has invalid characters!") : false;
 
             return true;
         }
 
-        public void ValidatePasswordFormat(Password password)
+        public Password ValidatePasswordFormat(string passwordValue, FieldName field = null)
         {
-            if (Regexes.PasswordMinLength.IsMatch(password.Value) == false)
+            if (field == null)
+                field = FieldName.PASSWORD;
+
+            string reason = FindPasswordProblem(passwordValue);
+            if (!string.IsNullOrEmpty(reason))
             {
-                var serverMessage = $"Input password doesn't have the minimum length!";
-                throw new ApiException(ErrorName.PASSWORD_MIN_LENGTH, serverMessage);
+                throw field.Name switch
+                {
+                    nameof(FieldName.PASSWORD) => throw new PasswordInvalidValueException(passwordValue, reason),
+                    nameof(FieldName.NEW_PASSWORD) => throw new NewPasswordInvalidValueException(passwordValue, reason),
+                    _ => throw new InternalServerException("Not known password field!")
+                };
             }
-            if (Regexes.PasswordMaxLength.IsMatch(password.Value) == false)
-            {
-                var serverMessage = $"Input password exceeds the maximum length!";
-                throw new ApiException(ErrorName.PASSWORD_MAX_LENGTH, serverMessage);
-            }
-            if (Regexes.PasswordAnUppercaseLetter.IsMatch(password.Value) == false)
-            {
-                var serverMessage = $"Input password doesn't have an uppercase letter!";
-                throw new ApiException(ErrorName.PASSWORD_AN_UPPERCASE_LETTER, serverMessage);
-            }
-            if (Regexes.PasswordANumber.IsMatch(password.Value) == false)
-            {
-                var serverMessage = $"Input password doesn't have a number!";
-                throw new ApiException(ErrorName.PASSWORD_A_NUMBER, serverMessage);
-            }
-            if (Regexes.PasswordALowercaseLetter.IsMatch(password.Value) == false)
-            {
-                var serverMessage = $"Input password doesn't have a lowercase letter!";
-                throw new ApiException(ErrorName.PASSWORD_A_LOWERCASE_LETTER, serverMessage);
-            }
-            if (Regexes.PasswordValidCharacters.IsMatch(password.Value) == false)
-            {
-                var serverMessage = $"Input password doesn't have valid characters!";
-                throw new ApiException(ErrorName.PASSWORD_VALID_CHARACTERS, serverMessage);
-            }
+            return Password.OfValue(passwordValue);
+        }
+
+        private string FindPasswordProblem(string passwordValue)
+        {
+            if (Regexes.PasswordMinLength.IsMatch(passwordValue) == false)
+                return "Input password doesn't have the minimum length!";
+
+            if (Regexes.PasswordMaxLength.IsMatch(passwordValue) == false)
+                return "Input password exceeds the maximum length!";
+
+            if (Regexes.PasswordAnUppercaseLetter.IsMatch(passwordValue) == false)
+                return "Input password doesn't have an uppercase letter!";
+
+            if (Regexes.PasswordANumber.IsMatch(passwordValue) == false)
+                return "Input password doesn't have a number!";
+
+            if (Regexes.PasswordALowercaseLetter.IsMatch(passwordValue) == false)
+                return "Input password doesn't have a lowercase letter!";
+
+            if (Regexes.PasswordValidCharacters.IsMatch(passwordValue) == false)
+                return "Input password doesn't have valid characters!";
+
+            return null;
         }
 
         public async Task ValidateUsernameMatchWithPasswordAsync(string username, Password password)
         {
             var user = await _userOperator.GetUserByIdentifierAsync(UserIdentifier.OfUsername(username));
             if (user == null)
-            {
-                var serverMessage = $"Username {username} doesn't exist! Password Hash: {password.Hash}";
-                throw new ApiException(ErrorName.AUTHENTICATION_FAILED, serverMessage);
-            }
+                throw new UsernameNotExistException(username);
 
             if (string.Equals(user.Password.Hash, password.Hash) == false)
-            {
-                var serverMessage = $"Input password is not correct! Username: {username}, Password Hash: {password.Hash}";
-                throw new ApiException(ErrorName.AUTHENTICATION_FAILED, serverMessage);
-            }
-        }
-
-        public void ValidateRequestingUserCanAlterUser(User requestingUser, UserIdentifier requestedUserIdentifier)
-        {
-            switch (requestedUserIdentifier)
-            {
-                case UserIdIdentifier idIdentifier:
-                    if (requestingUser.Id == idIdentifier.Id)
-                        return;
-                    break;
-                case UserUsernameIdentifier usernameIdentifier:
-                    if (string.Equals(requestingUser.Username, usernameIdentifier.Username,
-                        StringComparison.OrdinalIgnoreCase))
-                        return;
-                    break;
-            }
-            var serverMessage = $"requestingUser {requestingUser.Id} can't alter " +
-                $"user {requestedUserIdentifier.ToJson()}";
-            throw new ApiException(ErrorName.USER_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
-
+                throw new UsernameAndPasswordAuthenticationFailedException(username, password.Hash);
         }
 
         public void ValidateResetPasswordCodeIsCorrectAsync(User user, string resetPasswordCode)
         {
             if (resetPasswordCode != user.ResetPasswordCode)
-            {
-                var serverMessage = $"Input reset password code is not correct for user {user.Id}!";
-                throw new ApiException(ErrorName.RESET_PASSWORD_CODE_NOT_CORRECT, serverMessage);
-            }
+                throw new ResetPasswordCodeInvalidValueException(resetPasswordCode);
+        }
+
+        public void ValidateResetPasswordCodeFormat(string resetPasswordCode)
+        {
+
         }
     }
 }

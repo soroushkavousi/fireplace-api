@@ -25,7 +25,7 @@ namespace FireplaceApi.Infrastructure.Entities
             RelativePhysicalPath = relativePhysicalPath ?? throw new ArgumentNullException(nameof(relativePhysicalPath));
         }
 
-        public FileEntity PureCopy() => new FileEntity(Id, Name, RealName, RelativeUri,
+        public FileEntity PureCopy() => new(Id, Name, RealName, RelativeUri,
             RelativePhysicalPath, CreationDate, ModifiedDate);
 
         public void RemoveLoopReferencing()

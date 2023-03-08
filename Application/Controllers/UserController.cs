@@ -60,9 +60,8 @@ namespace FireplaceApi.Application.Controllers
             [BindNever][FromHeader] InputHeaderParameters inputHeaderParameters,
             [FromBody] SignUpWithEmailInputBodyParameters inputBodyParameters)
         {
-            var password = Password.OfValue(inputBodyParameters.Password);
             var user = await _userService.SignUpWithEmailAsync(inputHeaderParameters.IpAddress,
-                inputBodyParameters.EmailAddress, inputBodyParameters.Username, password);
+                inputBodyParameters.EmailAddress, inputBodyParameters.Username, inputBodyParameters.PasswordValueObject);
             var userDto = _userConverter.ConvertToDto(user);
             var outputCookieParameters = new SignUpWithEmailOutputCookieParameters(userDto.AccessToken);
             SetOutputCookieParameters(outputCookieParameters);
@@ -107,9 +106,8 @@ namespace FireplaceApi.Application.Controllers
             [BindNever][FromHeader] InputHeaderParameters inputHeaderParameters,
             [FromBody] LogInWithEmailInputBodyParameters inputBodyParameters)
         {
-            var password = Password.OfValue(inputBodyParameters.Password);
             var user = await _userService.LogInWithEmailAsync(inputHeaderParameters.IpAddress,
-                inputBodyParameters.EmailAddress, password);
+                inputBodyParameters.EmailAddress, inputBodyParameters.PasswordValueObject);
             var userDto = _userConverter.ConvertToDto(user);
             var outputCookieParameters = new SignUpWithEmailOutputCookieParameters(userDto.AccessToken);
             SetOutputCookieParameters(outputCookieParameters);
@@ -129,9 +127,8 @@ namespace FireplaceApi.Application.Controllers
             [BindNever][FromHeader] InputHeaderParameters inputHeaderParameters,
             [FromBody] LogInWithUsernameInputBodyParameters inputBodyParameters)
         {
-            var password = Password.OfValue(inputBodyParameters.Password);
             var user = await _userService.LogInWithUsernameAsync(inputHeaderParameters.IpAddress,
-                inputBodyParameters.Username, password);
+                inputBodyParameters.Username, inputBodyParameters.PasswordValueObject);
             var userDto = _userConverter.ConvertToDto(user);
             var outputCookieParameters = new SignUpWithEmailOutputCookieParameters(userDto.AccessToken);
             SetOutputCookieParameters(outputCookieParameters);
@@ -160,14 +157,14 @@ namespace FireplaceApi.Application.Controllers
         /// </summary>
         /// <returns>Requested user profile</returns>
         /// <response code="200">The user profile was successfully retrieved.</response>
-        [HttpGet("{username}")]
+        [HttpGet("{id-or-username}")]
         [ProducesResponseType(typeof(ProfileDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<ProfileDto>> GetUserProfileAsync(
             [BindNever][FromHeader] User requestingUser,
             [FromRoute] GetUserProfileInputRouteParameters inputRouteParameters)
         {
             var profile = await _userService.GetUserProfileAsync(requestingUser,
-                inputRouteParameters.Username);
+                inputRouteParameters.Identifier);
             var profileDto = _userConverter.ConvertToDto(profile);
             return profileDto;
         }
@@ -194,7 +191,7 @@ namespace FireplaceApi.Application.Controllers
         /// Reset password with code
         /// </summary>
         /// <returns>No content</returns>
-        /// <response code="200">Password successfully changed.</response>
+        /// <response code="200">PasswordValueObject successfully changed.</response>
         [AllowAnonymous]
         [HttpPost("reset-password-with-code")]
         [Consumes("application/json")]
@@ -202,9 +199,8 @@ namespace FireplaceApi.Application.Controllers
         public async Task<IActionResult> ResetPasswordWithCodeAsync(
             [FromBody] ResetPasswordWithCodeInputBodyParameters inputBodyParameters)
         {
-            var password = Password.OfValue(inputBodyParameters.NewPassword);
             await _userService.ResetPasswordWithCodeAsync(inputBodyParameters.EmailAddress,
-                inputBodyParameters.ResetPasswordCode, password);
+                inputBodyParameters.ResetPasswordCode, inputBodyParameters.PasswordValueObject);
             return Ok();
         }
 
@@ -220,11 +216,10 @@ namespace FireplaceApi.Application.Controllers
             [BindNever][FromHeader] User requestingUser,
             [FromBody] PatchUserInputBodyParameters inputBodyParameters)
         {
-            var password = Password.OfValue(inputBodyParameters.Password);
-            var oldPassword = Password.OfValue(inputBodyParameters.OldPassword);
+            var oldPassword = Password.OfValue(inputBodyParameters.Password);
             var user = await _userService.PatchRequestingUserAsync(requestingUser, inputBodyParameters.DisplayName,
                 inputBodyParameters.About, inputBodyParameters.AvatarUrl, inputBodyParameters.BannerUrl,
-                inputBodyParameters.Username, oldPassword, password, inputBodyParameters.EmailAddress);
+                inputBodyParameters.Username, oldPassword, inputBodyParameters.PasswordValueObject, inputBodyParameters.EmailAddress);
             var userDto = _userConverter.ConvertToDto(user);
             return userDto;
         }

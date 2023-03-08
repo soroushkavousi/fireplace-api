@@ -45,7 +45,7 @@ namespace FireplaceApi.Application.Controllers
             [FromQuery] ListCommunityPostsInputQueryParameters inputQueryParameters)
         {
             var queryResult = await _postService.ListCommunityPostsAsync(
-                inputRouteParameters.CommunityIdOrName, inputQueryParameters.Sort, requestingUser);
+                inputRouteParameters.CommunityIdentifier, inputQueryParameters.Sort, requestingUser);
             var queryResultDto = _postConverter.ConvertToDto(queryResult);
             return queryResultDto;
         }
@@ -129,7 +129,7 @@ namespace FireplaceApi.Application.Controllers
             [FromBody] CreatePostInputBodyParameters inputBodyParameters)
         {
             var post = await _postService.CreatePostAsync(requestingUser,
-                inputRouteParameters.CommunityIdOrName, inputBodyParameters.Content);
+                inputRouteParameters.CommunityIdentifier, inputBodyParameters.Content);
             var postDto = _postConverter.ConvertToDto(post);
             return postDto;
         }
@@ -148,7 +148,7 @@ namespace FireplaceApi.Application.Controllers
             [FromBody] VotePostInputBodyParameters inputBodyParameters)
         {
             var post = await _postService.VotePostAsync(
-                requestingUser, inputRouteParameters.Id, inputBodyParameters.IsUpvote);
+                requestingUser, inputRouteParameters.Id, inputBodyParameters.IsUpvote.Value);
             var postDto = _postConverter.ConvertToDto(post);
             return postDto;
         }

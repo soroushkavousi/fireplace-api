@@ -76,7 +76,7 @@ namespace FireplaceApi.Infrastructure.Entities
             RequestingUserVote = requestingUserVote;
         }
 
-        public PostEntity PureCopy() => new PostEntity(Id, AuthorEntityId,
+        public PostEntity PureCopy() => new(Id, AuthorEntityId,
             AuthorEntityUsername, CommunityEntityId, CommunityEntityName,
             Content, Vote, RequestingUserVote, CreationDate, ModifiedDate);
     }

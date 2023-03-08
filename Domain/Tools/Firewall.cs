@@ -51,23 +51,17 @@ namespace FireplaceApi.Domain.Tools
         public void ValidateRequestingUserExists(User requestingUser, string accessTokenValue)
         {
             if (requestingUser == null)
-                throw new ApiException(ErrorName.AUTHENTICATION_FAILED,
-                    $"There isn't any authorization in input header parameters! " +
-                    $"accessTokenValue: {accessTokenValue}");
+                throw new AccessTokenAuthenticationFailedException(accessTokenValue);
         }
 
         public async Task<AccessToken> ValidateAccessTokenAsync(string accessTokenValue, bool isUserEndpoint)
         {
-            _accessTokenValidator.ValidateAccessTokenValueFormat(accessTokenValue);
-            //if (Regexes.AccessTokenValue.IsMatch(accessTokenValue) == false)
-            //    throw new ApiException(ErrorName.AUTHENTICATION_FAILED,
-            //        $"Input access token doesn't have valid format! accessTokenValue: {accessTokenValue}");
+            _accessTokenValidator.ValidateAccessTokenValueFormat(accessTokenValue, authentication: true);
 
             var accessToken = await _accessTokenOperator
                 .GetAccessTokenByValueAsync(accessTokenValue, true);
             if (isUserEndpoint && accessToken == null)
-                throw new ApiException(ErrorName.AUTHENTICATION_FAILED,
-                    $"Input access token does not exist! accessTokenValue: {accessTokenValue}");
+                throw new AccessTokenAuthenticationFailedException(accessTokenValue);
 
             return accessToken;
         }
@@ -76,8 +70,7 @@ namespace FireplaceApi.Domain.Tools
         {
             var session = await _sessionOperator.FindSessionAsync(userId, ipAddress);
             if (session != null && session.State == SessionState.CLOSED)
-                throw new ApiException(ErrorName.AUTHENTICATION_FAILED,
-                    $"User session was closed! userId: {userId}, ipAddress: {ipAddress}");
+                throw new SessionClosedAuthenticationFailedException(userId, ipAddress);
 
             session = await _sessionOperator.CreateOrUpdateSessionAsync(userId, ipAddress);
             return session;
@@ -92,11 +85,7 @@ namespace FireplaceApi.Domain.Tools
             var requestCountPerIP = await _requestTraceOperator.CountRequestTracesAsync(ip: ip, fromDate: fromDate,
                 withAction: true);
             if (requestCountPerIP > Configs.Current.Api.MaxRequestPerIP)
-            {
-                var message = $"Max request limit reached for ip {ip}! request count: {requestCountPerIP}";
-                _logger.LogAppWarning(title: "REQUEST_LIMIT", parameters: new { fromDate, DateTime.UtcNow, ip, requestCountPerIP, Configs.Current.Api.MaxRequestPerIP });
-                throw new ApiException(ErrorName.MAX_REQUEST_LIMIT, message);
-            }
+                throw new MaxRequestPerIpLimitException(ip, requestCountPerIP);
         }
     }
 }

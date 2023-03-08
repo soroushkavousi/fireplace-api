@@ -41,10 +41,11 @@ namespace FireplaceApi.Application.Middlewares
             var userAgent = context.Request.Headers.UserAgent.ToString();
             var userId = context.GetRequestingUser()?.Id;
             var statusCode = context.Response.StatusCode;
-            var errorName = context.GetError()?.Name;
+            var errorType = context.GetError()?.Type;
+            var errorField = context.GetError()?.Field;
             var duration = sw.Finish();
             var requestTrace = await requestTraceOperator.CreateRequestTraceAsync(method,
-                url, ip, userAgent, userId, statusCode, duration, action, errorName);
+                url, ip, userAgent, userId, statusCode, duration, action, errorType, errorField);
         }
 
         private string FindActionName(HttpContext context)

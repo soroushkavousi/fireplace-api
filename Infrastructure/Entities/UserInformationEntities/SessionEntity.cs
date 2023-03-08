@@ -26,7 +26,7 @@ namespace FireplaceApi.Infrastructure.Entities
             UserEntity = userEntity;
         }
 
-        public SessionEntity PureCopy() => new SessionEntity(Id, UserEntityId, IpAddress,
+        public SessionEntity PureCopy() => new(Id, UserEntityId, IpAddress,
             State, CreationDate, ModifiedDate);
 
         public void RemoveLoopReferencing()

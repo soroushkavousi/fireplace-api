@@ -69,14 +69,12 @@ namespace FireplaceApi.Domain.Services
             return user;
         }
 
-        public async Task<Profile> GetUserProfileAsync(User requestingUser, string username)
+        public async Task<Profile> GetUserProfileAsync(User requestingUser, UserIdentifier identifier)
         {
-            await _userValidator.ValidateGetUserByUsernameInputParametersAsync(
-                requestingUser, username);
-
-            var user = await _userOperator.GetUserByIdentifierAsync(_userValidator.UserIdentifier,
+            await _userValidator.ValidateGetUserProfileInputParametersAsync(
+                requestingUser, identifier);
+            var user = await _userOperator.GetUserByIdentifierAsync(identifier,
                 false, false, false, false);
-
             var profile = new Profile(user);
             return profile;
         }

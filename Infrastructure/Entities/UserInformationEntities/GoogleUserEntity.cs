@@ -73,7 +73,7 @@ namespace FireplaceApi.Infrastructure.Entities
             UserEntity = userEntity;
         }
 
-        public GoogleUserEntity PureCopy() => new GoogleUserEntity(Id, UserEntityId, Code, AccessToken,
+        public GoogleUserEntity PureCopy() => new(Id, UserEntityId, Code, AccessToken,
             TokenType, AccessTokenExpiresInSeconds, RefreshToken, Scope, IdToken,
             AccessTokenIssuedTime, GmailAddress, GmailVerified, GmailIssuedTimeInSeconds,
             FullName, FirstName, LastName, Locale, PictureUrl, State, AuthUser, Prompt,

@@ -27,21 +27,21 @@ namespace FireplaceApi.Domain.Services
             return session;
         }
 
-        public async Task<Session> GetSessionByIdAsync(User requestingUser, string encodedId,
+        public async Task<Session> GetSessionByIdAsync(User requestingUser, ulong id,
             bool? includeUser)
         {
             await _sessionValidator.ValidateGetSessionByIdInputParametersAsync(requestingUser,
-                encodedId, includeUser);
+                id, includeUser);
             var session = await _sessionOperator.GetSessionByIdAsync(
-                _sessionValidator.SessionId, includeUser.Value);
+                id, includeUser.Value);
             return session;
         }
 
-        public async Task RevokeSessionByIdAsync(User requestingUser, string encodedId)
+        public async Task RevokeSessionByIdAsync(User requestingUser, ulong id)
         {
             await _sessionValidator.ValidateRevokeSessionByIdInputParametersAsync(
-                requestingUser, encodedId);
-            await _sessionOperator.RevokeSessionByIdAsync(_sessionValidator.SessionId);
+                requestingUser, id);
+            await _sessionOperator.RevokeSessionByIdAsync(id);
         }
     }
 }

@@ -38,7 +38,7 @@ namespace FireplaceApi.Application.Middlewares
                 var apiException = ex switch
                 {
                     ApiException apiExceptionObject => apiExceptionObject,
-                    _ => new ApiException(Error.InternalServerError.Name, Error.InternalServerError.ClientMessage, systemException: ex),
+                    _ => new InternalServerException(Error.InternalServerError.ServerMessage, systemException: ex),
                 };
                 var error = await CreateErrorAsync(apiException, errorOperator);
                 httpContext.Items[Constants.ErrorKey] = error;
@@ -51,9 +51,9 @@ namespace FireplaceApi.Application.Middlewares
         {
             var sw = Stopwatch.StartNew();
             Error error;
-            if (await errorOperator.DoesErrorNameExistAsync(apiException.ErrorName))
+            if (await errorOperator.DoesErrorExistAsync(apiException.ErrorIdentifier))
             {
-                error = await errorOperator.GetErrorByNameAsync(apiException.ErrorName);
+                error = await errorOperator.GetErrorAsync(apiException.ErrorIdentifier);
             }
             else
             {
@@ -62,6 +62,7 @@ namespace FireplaceApi.Application.Middlewares
             }
             error.ServerMessage = apiException.ErrorServerMessage;
             error.Exception = apiException.Exception;
+            error.Parameters = apiException.Parameters;
             return error;
         }
 
@@ -70,14 +71,14 @@ namespace FireplaceApi.Application.Middlewares
             httpContext.Response.ContentType = "application/json";
             httpContext.Response.StatusCode = error.HttpStatusCode;
 
-            if (error.Name != ErrorName.INTERNAL_SERVER)
-                _logger.LogAppWarning(message: $"{error.Name}: {error.ServerMessage}", title: "CLIENT_ERROR");
+            if (error.Type != ErrorType.INTERNAL_SERVER)
+                _logger.LogAppWarning(message: $"{error.Type}: {error.ServerMessage}", title: "CLIENT_ERROR", parameters: new { error.Field, error.Parameters });
             else
             {
                 if (error.Exception.GetType().IsSubclassOf(typeof(ApiException)))
-                    _logger.LogAppError($"{error.Name}: {error.ServerMessage}", ex: error.Exception, title: "SERVER_ERROR");
+                    _logger.LogAppError($"{error.Type}: {error.ServerMessage}", title: "SERVER_ERROR", parameters: new { error.Field, error.Parameters }, ex: error.Exception);
                 else
-                    _logger.LogAppCritical($"{error.Name}: {error.ServerMessage}", ex: error.Exception, title: "UNKNOWN_ERROR");
+                    _logger.LogAppCritical($"{error.Type}: {error.ServerMessage}", title: "UNKNOWN_ERROR", parameters: new { error.Field, error.Parameters }, ex: error.Exception);
             }
 
             var apiExceptionErrorDto = errorConverter.ConvertToApiExceptionDto(error);

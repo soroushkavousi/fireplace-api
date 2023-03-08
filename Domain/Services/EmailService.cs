@@ -19,7 +19,7 @@ namespace FireplaceApi.Domain.Services
             _emailOperator = emailOperator;
         }
 
-        public async Task<Email> ActivateRequestingUserEmailAsync(User requestingUser, int? activationCode)
+        public async Task<Email> ActivateRequestingUserEmailAsync(User requestingUser, int activationCode)
         {
             await _emailValidator.ValidateActivateRequestingUserEmailInputParametersAsync(requestingUser,
                 activationCode);

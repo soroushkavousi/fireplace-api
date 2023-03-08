@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Domain.Enums;
+using FireplaceApi.Domain.Identifiers;
 using FireplaceApi.Domain.Interfaces;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Tools;
@@ -29,81 +30,64 @@ namespace FireplaceApi.Domain.Operators
             return error;
         }
 
-        public async Task<Error> GetErrorByNameAsync(ErrorName name)
+        public async Task<Error> GetErrorAsync(ErrorIdentifier identifier)
         {
-            var error = await _errorRepository.GetErrorByNameAsync(name);
+            var error = await _errorRepository.GetErrorAsync(identifier);
             if (error == null)
                 return error;
 
             return error;
         }
 
-        public async Task<Error> GetErrorByCodeAsync(int code)
+        public async Task<Error> CreateErrorAsync(int code, ErrorType type,
+            FieldName field, string clientMessage, int httpStatusCode)
         {
-            var error = await _errorRepository.GetErrorByCodeAsync(code);
-            if (error == null)
-                return error;
-
+            var id = await IdGenerator.GenerateNewIdAsync(
+                (id) => DoesErrorExistAsync(ErrorIdentifier.OfId(id)));
+            var error = await _errorRepository.CreateErrorAsync(id, code,
+                type, field, clientMessage, httpStatusCode);
             return error;
         }
 
-        public async Task<Error> CreateErrorAsync(ErrorName name, int code,
-            string clientMessage, int httpStatusCode)
+        public async Task<Error> PatchErrorAsync(ErrorIdentifier identifier, int? code = null,
+            ErrorType type = null, FieldName field = null, string clientMessage = null,
+            int? httpStatusCode = null)
         {
-            var id = await IdGenerator.GenerateNewIdAsync(DoesErrorIdExistAsync);
-            var error = await _errorRepository.CreateErrorAsync(id, name,
-                code, clientMessage, httpStatusCode);
+            var error = await _errorRepository.GetErrorAsync(identifier);
+            error = await ApplyErrorChanges(error, code, type, field, clientMessage, httpStatusCode);
+            error = await GetErrorAsync(identifier);
             return error;
         }
 
-        public async Task<Error> PatchErrorByIdAsync(ErrorName id, int? code = null,
-            string clientMessage = null, int? httpStatusCode = null)
+        public async Task DeleteErrorAsync(ErrorIdentifier identifier)
         {
-            var error = await _errorRepository.GetErrorByNameAsync(id);
-            error = await ApplyErrorChanges(error, code, clientMessage, httpStatusCode);
-            error = await GetErrorByNameAsync(id);
-            return error;
-        }
-
-        public async Task<Error> PatchErrorByCodeAsync(int existingCode, int? code = null,
-            string clientMessage = null, int? httpStatusCode = null)
-        {
-            var error = await _errorRepository.GetErrorByCodeAsync(existingCode);
-            error = await ApplyErrorChanges(error, code, clientMessage, httpStatusCode);
-            error = await GetErrorByNameAsync(error.Name);
-            return error;
-        }
-
-        public async Task DeleteErrorAsync(int code)
-        {
-            await _errorRepository.DeleteErrorAsync(code);
+            await _errorRepository.DeleteErrorAsync(identifier);
 
         }
 
-        public async Task<bool> DoesErrorNameExistAsync(ErrorName name)
+        public async Task<bool> DoesErrorExistAsync(ErrorIdentifier identifier)
         {
-            var errorIdExists = await _errorRepository.DoesErrorNameExistAsync(name);
+            var errorIdExists = await _errorRepository.DoesErrorExistAsync(identifier);
             return errorIdExists;
         }
 
-        public async Task<bool> DoesErrorCodeExistAsync(int code)
-        {
-            var errorCodeExists = await _errorRepository.DoesErrorCodeExistAsync(code);
-            return errorCodeExists;
-        }
-
-        public async Task<bool> DoesErrorIdExistAsync(ulong id)
-        {
-            var errorCodeExists = await _errorRepository.DoesErrorIdExistAsync(id);
-            return errorCodeExists;
-        }
-
         private async Task<Error> ApplyErrorChanges(Error error, int? code = null,
+            ErrorType type = null, FieldName field = null,
             string clientMessage = null, int? httpStatusCode = null)
         {
             if (code != null)
             {
                 error.Code = code.Value;
+            }
+
+            if (type != null)
+            {
+                error.Type = type;
+            }
+
+            if (field != null)
+            {
+                error.Field = field;
             }
 
             if (clientMessage != null)

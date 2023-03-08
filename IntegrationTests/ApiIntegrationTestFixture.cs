@@ -1,6 +1,5 @@
 ﻿using FireplaceApi.Application.IntegrationTests.Tools;
 using FireplaceApi.Application.Tools;
-using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Exceptions;
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Infrastructure.Entities;
@@ -73,25 +72,25 @@ namespace FireplaceApi.Application.IntegrationTests
 
             if (mainDbContext.Database.GetPendingMigrations().Any())
             {
-                var message = "Database migrations are not applied!!!";
-                _logger.LogAppCritical(message);
-                throw new ApiException(ErrorName.INTERNAL_SERVER, message);
+                var serverMessage = "Database migrations are not applied!!!";
+                _logger.LogAppCritical(serverMessage);
+                throw new InternalServerException("Database migrations are not applied!!!");
             }
 
             _configsEntities ??= mainDbContext.ConfigsEntities.AsNoTracking().ToList();
             if (_configsEntities.Any() == false)
             {
-                var message = "No configs are found in the database!!!";
-                _logger.LogAppCritical(message);
-                throw new ApiException(ErrorName.INTERNAL_SERVER, message);
+                var serverMessage = "No configs are found in the database!!!";
+                _logger.LogAppCritical(serverMessage);
+                throw new InternalServerException("No configs are found in the database!!!");
             }
 
             _errorEntities ??= mainDbContext.ErrorEntities.AsNoTracking().ToList();
             if (_errorEntities.Any() == false)
             {
-                var message = "No errors are found in the database!!!";
-                _logger.LogAppCritical(message);
-                throw new ApiException(ErrorName.INTERNAL_SERVER, message);
+                var serverMessage = "No errors are found in the database!!!";
+                _logger.LogAppCritical(serverMessage);
+                throw new InternalServerException("No errors are found in the database!!!");
             }
         }
 

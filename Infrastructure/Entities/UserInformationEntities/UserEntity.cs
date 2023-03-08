@@ -63,7 +63,7 @@ namespace FireplaceApi.Infrastructure.Entities
             CommentVoteEntities = commentVoteEntities;
         }
 
-        public UserEntity PureCopy() => new UserEntity(Id, Username, State, CreationDate,
+        public UserEntity PureCopy() => new(Id, Username, State, CreationDate,
             DisplayName, About, AvatarUrl, BannerUrl, ModifiedDate, PasswordHash, ResetPasswordCode);
 
         //public void RemoveLoopReferencing()

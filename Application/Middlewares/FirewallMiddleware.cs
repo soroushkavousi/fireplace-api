@@ -1,7 +1,7 @@
 ﻿using FireplaceApi.Application.Attributes;
 using FireplaceApi.Application.Controllers;
+using FireplaceApi.Application.Exceptions;
 using FireplaceApi.Application.Extensions;
-using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Exceptions;
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Models;
@@ -110,19 +110,13 @@ namespace FireplaceApi.Application.Middlewares
                     && request.ContentType.Contains("multipart/form-data") == false
                     && request.ContentType.Contains("application/merge-patch+json") == false
                     ))
-            {
-                var serverMessage = $"Input request content type is not valid! request.ContentType: {request.ContentType}";
-                throw new ApiException(ErrorName.REQUEST_CONTENT_TYPE_IS_NOT_VALID, serverMessage);
-            }
+                throw new RequestContentTypeInvalidValueException(request.ContentType);
         }
 
         public void ValidateRequestBodyIsJson(string requestJsonBody)
         {
             if (requestJsonBody.IsJson() == false)
-            {
-                var serverMessage = $"Input request body is not json! requestJsonBody: {requestJsonBody}";
-                throw new ApiException(ErrorName.REQUEST_BODY_IS_NOT_JSON, serverMessage);
-            }
+                throw new RequestBodyInvalidValueException();
         }
 
         private void ValidateCsrfToken(HttpContext httpContext, bool isUserEndpoint)
@@ -137,10 +131,7 @@ namespace FireplaceApi.Application.Middlewares
             var headerCsrfToken = headerCsrfTokenStringValues.ToString();
             httpContext.Request.Cookies.TryGetValue(Tools.Constants.CsrfTokenKey, out string cookieCsrfToken);
             if (headerCsrfToken != cookieCsrfToken)
-            {
-                var serverMessage = $"headerCsrfToken != cookieCsrfToken => {headerCsrfToken} != {cookieCsrfToken}";
-                throw new ApiException(ErrorName.AUTHENTICATION_FAILED, serverMessage);
-            }
+                throw new CsrfTokenAuthenticationFailedException(headerCsrfToken, cookieCsrfToken);
         }
 
         private void GenerateAndSetCsrfTokenAsCookie(HttpContext httpContext, IAntiforgery antiforgery)

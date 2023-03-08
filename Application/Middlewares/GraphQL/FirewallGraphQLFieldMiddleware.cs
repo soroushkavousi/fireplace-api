@@ -19,7 +19,7 @@ namespace FireplaceApi.Application.Middlewares.GraphQL
 
         public async Task InvokeAsync(IMiddlewareContext context)
         {
-            //throw new ApiException(Core.Enums.ErrorName.ACCESS_DENIED, "GraphQL access denied!");
+            //throw new ApiException(Core.Enums.ErrorType.ACCESS_DENIED, "GraphQL access denied!");
             //throw new GraphQLException("Access Denied!");
             await _next(context);
         }

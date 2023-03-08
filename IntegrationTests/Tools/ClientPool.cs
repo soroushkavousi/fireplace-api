@@ -59,7 +59,7 @@ namespace FireplaceApi.Application.IntegrationTests.Tools
             => await CreateTestUser(
                 username: "NotVerifiedUser",
                 displayName: "NotVerified User",
-                passwordValue: "NotVerifiedUserPassword",
+                passwordValue: "NotVerifiedUserPassword111!",
                 activationCode: 11111,
                 emailAddress: "NotVerifiedUser@gmail.com",
                 state: UserState.NOT_VERIFIED
@@ -69,7 +69,7 @@ namespace FireplaceApi.Application.IntegrationTests.Tools
         => await CreateTestUser(
                 username: "Naruto",
                 displayName: "Naruto Uzumaki",
-                passwordValue: "NarutoPassword",
+                passwordValue: "NarutoPassword222@",
                 activationCode: 22222,
                 emailAddress: "Naruto@gmail.com",
                 state: UserState.VERIFIED
@@ -79,7 +79,7 @@ namespace FireplaceApi.Application.IntegrationTests.Tools
         => await CreateTestUser(
                 username: "Sasuke",
                 displayName: "Sasuke Uchiha",
-                passwordValue: "SasukePassword",
+                passwordValue: "SasukePassword333#",
                 activationCode: 33333,
                 emailAddress: "Sasuke@gmail.com",
                 state: UserState.VERIFIED

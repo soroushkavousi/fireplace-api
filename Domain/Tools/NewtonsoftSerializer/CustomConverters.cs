@@ -33,7 +33,7 @@ namespace FireplaceApi.Domain.Tools
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             IPEndPoint ep = (IPEndPoint)value;
-            JObject jo = new JObject
+            JObject jo = new()
             {
                 { "Address", JToken.FromObject(ep.Address, serializer) },
                 { "Port", ep.Port }

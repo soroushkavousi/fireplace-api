@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Domain.Models;
+﻿using FireplaceApi.Domain.Identifiers;
+using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Operators;
 using FireplaceApi.Domain.Validators;
 using Microsoft.Extensions.Logging;
@@ -21,19 +22,19 @@ namespace FireplaceApi.Domain.Services
         }
 
         public async Task<CommunityMembership> CreateCommunityMembershipAsync(
-            User requestingUser, string encodedCommunityId, string communityName)
+            User requestingUser, CommunityIdentifier communityIdentifier)
         {
             await _communityMembershipValidator.ValidateCreateCommunityMembershipInputParametersAsync(
-                requestingUser, encodedCommunityId, communityName);
+                requestingUser, communityIdentifier);
             return await _communityMembershipOperator.CreateCommunityMembershipAsync(requestingUser,
-                    _communityMembershipValidator.CommunityIdentitifer);
+                communityIdentifier);
         }
 
         public async Task DeleteCommunityMembershipAsync(User requestingUser,
-            string communityEncodedIdOrName)
+            CommunityIdentifier communityIdentifier)
         {
             await _communityMembershipValidator.ValidateDeleteCommunityMembershipInputParametersAsync(
-                    requestingUser, communityEncodedIdOrName);
+                    requestingUser, communityIdentifier);
             await _communityMembershipOperator.DeleteCommunityMembershipByIdentifierAsync(
                 _communityMembershipValidator.CommunityMembershipIdentifier);
         }

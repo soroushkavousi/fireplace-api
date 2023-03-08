@@ -1,19 +1,29 @@
-﻿using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Tools;
-using Microsoft.OpenApi.Any;
-using Swashbuckle.AspNetCore.Annotations;
+﻿using FireplaceApi.Application.Interfaces;
+using FireplaceApi.Application.Validators;
+using FireplaceApi.Domain.Identifiers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Application.Controllers
 {
-    [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
-    public class CreateCommunityMembershipInputBodyParameters
+    public class CreateCommunityMembershipInputRouteParameters : IValidator
     {
-        public string CommunityId { get; set; }
-        public string CommunityName { get; set; }
+        [Required]
+        [FromRoute(Name = "id-or-name")]
+        public string CommunityEncodedIdOrName { get; set; }
 
-        public static IOpenApiAny Example { get; } = new OpenApiObject
+        [BindNever]
+        public CommunityIdentifier CommunityIdentifier { get; set; }
+
+        public void Validate(IServiceProvider serviceProvider)
         {
-            [nameof(CommunityName).ToSnakeCase()] = CommunityDto.PureExample1[nameof(CommunityDto.Name).ToSnakeCase()],
-        };
+            var applicationValidator = serviceProvider.GetService<CommunityValidator>();
+            var domainValidator = applicationValidator.DomainValidator;
+
+            CommunityIdentifier = applicationValidator.ValidateEncodedIdOrName(CommunityEncodedIdOrName);
+        }
     }
 }

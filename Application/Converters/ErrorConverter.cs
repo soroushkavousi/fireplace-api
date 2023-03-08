@@ -21,7 +21,8 @@ namespace FireplaceApi.Application.Converters
             if (error == null)
                 return null;
 
-            var errorDto = new ErrorDto(error.Code, error.ClientMessage, error.HttpStatusCode);
+            var errorDto = new ErrorDto(error.Code, error.Type.Name,
+                error.Field.Name, error.ClientMessage, error.HttpStatusCode);
 
             return errorDto;
         }
@@ -31,7 +32,8 @@ namespace FireplaceApi.Application.Converters
             if (error == null)
                 return null;
 
-            var errorDto = new ApiExceptionErrorDto(error.Code, error.ClientMessage);
+            var errorDto = new ApiExceptionErrorDto(error.Code, error.Type.Name,
+                error.Field.Name, error.ClientMessage);
 
             return errorDto;
         }

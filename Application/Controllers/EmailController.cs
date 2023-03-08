@@ -36,7 +36,7 @@ namespace FireplaceApi.Application.Controllers
             [FromBody] ActivateRequestingUserEmailInputBodyParameters inputBodyParameters)
         {
             var email = await _emailService.ActivateRequestingUserEmailAsync(requestingUser,
-                inputBodyParameters.ActivationCode);
+                inputBodyParameters.ActivationCode.Value);
             var emailDto = _emailConverter.ConvertToDto(email);
             return emailDto;
         }

@@ -63,7 +63,7 @@ namespace FireplaceApi.Application.Controllers
             [FromQuery] ListCommentsInputQueryParameters inputQueryParameters)
         {
             var queryResult = new QueryResult<Comment>(null, null);
-            if (!inputQueryParameters.Ids.IsNullOrEmpty())
+            if (!inputQueryParameters.EncodedIds.IsNullOrEmpty())
             {
                 queryResult.Items = await _commentService.ListCommentsByIdsAsync(
                     inputQueryParameters.Ids, inputQueryParameters.Sort, requestingUser);
@@ -162,7 +162,7 @@ namespace FireplaceApi.Application.Controllers
             [FromBody] ReplyToCommentInputBodyParameters inputBodyParameters)
         {
             var comment = await _commentService.ReplyToCommentAsync(
-                requestingUser, inputRouteParameters.Id,
+                requestingUser, inputRouteParameters.ParentCommentId,
                 inputBodyParameters.Content);
             var commentDto = _commentConverter.ConvertToDto(comment);
             return commentDto;

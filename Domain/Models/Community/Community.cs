@@ -19,7 +19,7 @@ namespace FireplaceApi.Domain.Models
             Creator = creator;
         }
 
-        public Community PureCopy() => new Community(Id, Name, CreatorId,
+        public Community PureCopy() => new(Id, Name, CreatorId,
             CreatorUsername, CreationDate, ModifiedDate);
     }
 }

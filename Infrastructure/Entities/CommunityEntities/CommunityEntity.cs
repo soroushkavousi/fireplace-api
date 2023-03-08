@@ -35,7 +35,7 @@ namespace FireplaceApi.Infrastructure.Entities
             PostEntities = postEntities;
         }
 
-        public CommunityEntity PureCopy() => new CommunityEntity(Id, Name,
+        public CommunityEntity PureCopy() => new(Id, Name,
             CreatorEntityId, CreatorEntityUsername, CreationDate, ModifiedDate);
     }
 

@@ -40,7 +40,7 @@ namespace FireplaceApi.Domain.Models
             Sessions = sessions;
         }
 
-        public User PureCopy() => new User(Id, Username, State, CreationDate,
+        public User PureCopy() => new(Id, Username, State, CreationDate,
             DisplayName, About, AvatarUrl, BannerUrl, ModifiedDate, Password, ResetPasswordCode);
 
         public void RemoveLoopReferencing()

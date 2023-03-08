@@ -6,7 +6,7 @@ namespace FireplaceApi.Application.Tools
 {
     public class ApiContractResolver : DefaultContractResolver
     {
-        public static readonly ApiContractResolver Instance = new ApiContractResolver();
+        public static readonly ApiContractResolver Instance = new();
 
         public ApiContractResolver()
         {

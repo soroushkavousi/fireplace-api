@@ -44,7 +44,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<decimal>("UserEntityId")
                         .HasColumnType("numeric(20,0)");
 
-                    b.Property<string>("Value")
+                    b.Property<string>("Parameters")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -52,7 +52,7 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.HasIndex("UserEntityId");
 
-                    b.HasIndex("Value")
+                    b.HasIndex("Parameters")
                         .IsUnique();
 
                     b.ToTable("AccessTokenEntities");
@@ -167,7 +167,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -177,7 +177,7 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.HasIndex("CreatorEntityUsername");
 
-                    b.HasIndex("Name")
+                    b.HasIndex("Type")
                         .IsUnique();
 
                     b.HasIndex("CreatorEntityId", "CreatorEntityUsername");
@@ -324,18 +324,18 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Type")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("text")
-                        .HasDefaultValue("INTERNAL_SERVER");
+                        .HasDefaultValue("INTERNAL_SERVER_GENERAL");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.HasIndex("Name")
+                    b.HasIndex("Type")
                         .IsUnique();
 
                     b.ToTable("ErrorEntities");
@@ -354,7 +354,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -703,7 +703,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.HasOne("FireplaceApi.Infrastructure.Entities.CommunityEntity", "CommunityEntity")
                         .WithMany("CommunityMemberEntities")
                         .HasForeignKey("CommunityEntityId", "CommunityEntityName")
-                        .HasPrincipalKey("Id", "Name")
+                        .HasPrincipalKey("Id", "Type")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -753,7 +753,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.HasOne("FireplaceApi.Infrastructure.Entities.CommunityEntity", "CommunityEntity")
                         .WithMany("PostEntities")
                         .HasForeignKey("CommunityEntityId", "CommunityEntityName")
-                        .HasPrincipalKey("Id", "Name")
+                        .HasPrincipalKey("Id", "Type")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

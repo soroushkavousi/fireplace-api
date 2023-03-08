@@ -134,8 +134,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                var serverMessage = $"Can't update the postEntity DbUpdateConcurrencyException. {postEntity.ToJson()}";
-                throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
+                throw new InternalServerException("Can't update the post vote DbUpdateConcurrencyException!",
+                    parameters: postvote, systemException: ex);
             }
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });

@@ -25,7 +25,7 @@ namespace FireplaceApi.Domain.Models
             Comment = comment;
         }
 
-        public CommentVote PureCopy() => new CommentVote(Id, VoterId,
+        public CommentVote PureCopy() => new(Id, VoterId,
             VoterUsername, CommentId, IsUp, CreationDate, ModifiedDate);
     }
 }

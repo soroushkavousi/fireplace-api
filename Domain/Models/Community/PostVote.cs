@@ -24,7 +24,7 @@ namespace FireplaceApi.Domain.Models
             Post = post;
         }
 
-        public PostVote PureCopy() => new PostVote(Id, VoterId,
+        public PostVote PureCopy() => new(Id, VoterId,
             VoterUsername, PostId, IsUp, CreationDate, ModifiedDate);
     }
 }

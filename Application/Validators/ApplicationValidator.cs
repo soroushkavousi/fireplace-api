@@ -1,0 +1,89 @@
+﻿using FireplaceApi.Application.Enums;
+using FireplaceApi.Application.Exceptions;
+using FireplaceApi.Domain.Enums;
+using FireplaceApi.Domain.Exceptions;
+using FireplaceApi.Domain.Tools;
+using System;
+using System.Collections.Generic;
+
+namespace FireplaceApi.Application.Validators
+{
+    public class ApplicationValidator
+    {
+        public void ValidateFieldIsNotMissing(object value, FieldName field)
+        {
+            var fieldIsMissing = value switch
+            {
+                string stringValue => string.IsNullOrWhiteSpace(stringValue),
+                _ => value == null,
+            };
+            if (fieldIsMissing)
+            {
+                throw field.Name switch
+                {
+                    nameof(FieldName.COMMUNITY_NAME) => new CommunityNameMissingFieldException(),
+                    nameof(FieldName.POST_CONTENT) => new PostContentMissingFieldException(),
+                    nameof(FieldName.COMMENT_CONTENT) => new CommentContentMissingFieldException(),
+                    nameof(FieldName.USERNAME) => new UsernameMissingFieldException(),
+                    nameof(FieldName.EMAIL_ADDRESS) => new EmailAddressMissingFieldException(),
+                    nameof(FieldName.ACTIVATION_CODE) => new ActivationCodeMissingFieldException(),
+                    nameof(FieldName.PASSWORD) => new PasswordMissingFieldException(),
+                    nameof(FieldName.NEW_PASSWORD) => new NewPasswordMissingFieldException(),
+                    nameof(FieldName.RESET_PASSWORD_CODE) => new ResetPasswordCodeMissingFieldException(),
+                    nameof(FieldName.GOOGLE_CODE) => new PasswordMissingFieldException(),
+                    nameof(FieldName.IS_UPVOTE) => new IsUpvoteMissingFieldException(),
+                    _ => new InternalServerException("Field not known in missing fields!"),
+                };
+            }
+        }
+
+        public TEnum? ValidateInputEnum<TEnum>(string inputString) where TEnum : struct
+        {
+            if (string.IsNullOrWhiteSpace(inputString))
+                return default;
+
+            if (!Enum.TryParse(inputString, true, out TEnum result))
+            {
+                throw typeof(TEnum).Name switch
+                {
+                    nameof(SortType) => new SortInvalidValueException(inputString),
+                    nameof(CommunitySortType) => new CommunitySortInvalidValueException(inputString),
+                    _ => new InternalServerException("Not known enum type!"),
+                };
+            }
+
+            return result;
+        }
+
+        public ulong? ValidateEncodedIdFormat(string encodedId, FieldName field, bool throwException = true)
+        {
+            if (IdGenerator.IsEncodedIdFormatValid(encodedId))
+                return encodedId.IdDecode();
+
+            if (throwException)
+            {
+                throw field.Name switch
+                {
+                    nameof(FieldName.POST_ID) => new PostEncodedIdInvalidValueException(encodedId),
+                    nameof(FieldName.COMMENT_ID) => new CommentEncodedIdInvalidValueException(encodedId),
+                    _ => new InternalServerException("Not known encoded id field!"),
+                };
+            }
+            return default;
+        }
+
+        public List<ulong> ValidateIdsFormat(string stringOfEncodedIds)
+        {
+            if (string.IsNullOrWhiteSpace(stringOfEncodedIds))
+                return null;
+
+            List<ulong> ids = new();
+            var encodedIds = stringOfEncodedIds.Split(',');
+            foreach (var encodedId in encodedIds)
+            {
+                ids.Add(ValidateEncodedIdFormat(encodedId, ApplicationFieldName.COMMUNITY_ID_OR_NAME).Value);
+            }
+            return ids;
+        }
+    }
+}

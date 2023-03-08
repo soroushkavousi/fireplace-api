@@ -21,7 +21,7 @@ namespace FireplaceApi.Domain.Models
             PhysicalPath = physicalPath ?? throw new ArgumentNullException(nameof(physicalPath));
         }
 
-        public File PureCopy() => new File(Id, Name, RealName,
+        public File PureCopy() => new(Id, Name, RealName,
             Uri, PhysicalPath, CreationDate, ModifiedDate);
 
         public void RemoveLoopReferencing()

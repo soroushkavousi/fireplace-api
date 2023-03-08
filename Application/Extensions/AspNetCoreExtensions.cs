@@ -3,7 +3,6 @@ using FireplaceApi.Domain.Interfaces;
 using FireplaceApi.Domain.Operators;
 using FireplaceApi.Domain.Services;
 using FireplaceApi.Domain.Tools;
-using FireplaceApi.Domain.Validators;
 using FireplaceApi.Infrastructure.Gateways;
 using FireplaceApi.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -95,22 +94,31 @@ namespace FireplaceApi.Application.Extensions
 
         public static IServiceCollection AddValidators(this IServiceCollection services)
         {
-            services.AddScoped<AccessTokenValidator>();
-            services.AddScoped<CommentValidator>();
-            services.AddScoped<CommunityValidator>();
-            services.AddScoped<CommunityMembershipValidator>();
-            services.AddScoped<EmailValidator>();
-            services.AddScoped<ErrorValidator>();
-            services.AddScoped<FileValidator>();
-            services.AddScoped<PostValidator>();
-            services.AddScoped<SessionValidator>();
-            services.AddScoped<UserValidator>();
+            services.AddScoped<Validators.CommentValidator>();
+            services.AddScoped<Validators.CommunityValidator>();
+            services.AddScoped<Validators.CommunityMembershipValidator>();
+            services.AddScoped<Validators.EmailValidator>();
+            services.AddScoped<Validators.ErrorValidator>();
+            services.AddScoped<Validators.FileValidator>();
+            services.AddScoped<Validators.PostValidator>();
+            services.AddScoped<Validators.SessionValidator>();
+            services.AddScoped<Validators.UserValidator>();
+
+            services.AddScoped<Domain.Validators.AccessTokenValidator>();
+            services.AddScoped<Domain.Validators.CommentValidator>();
+            services.AddScoped<Domain.Validators.CommunityValidator>();
+            services.AddScoped<Domain.Validators.CommunityMembershipValidator>();
+            services.AddScoped<Domain.Validators.EmailValidator>();
+            services.AddScoped<Domain.Validators.ErrorValidator>();
+            services.AddScoped<Domain.Validators.FileValidator>();
+            services.AddScoped<Domain.Validators.PostValidator>();
+            services.AddScoped<Domain.Validators.SessionValidator>();
+            services.AddScoped<Domain.Validators.UserValidator>();
             return services;
         }
 
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddScoped<AccessTokenService>();
             services.AddScoped<CommentService>();
             services.AddScoped<CommunityService>();
             services.AddScoped<CommunityMembershipService>();

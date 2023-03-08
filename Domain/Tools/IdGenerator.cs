@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Domain.Tools
 {
-    public static class IdGenerator
+    public static partial class IdGenerator
     {
         private static readonly ulong _min = (ulong)Math.Pow(2, 10);
         private static readonly ulong _max = ulong.MaxValue - 1;
-        private static readonly Regex _encodedIdWrongRepetitionRegex = new(@"(\S)\1{2}");
-        private static readonly Regex _encodedIdWrongCharactersRegex = new(@"([0OlI])");
+        private static readonly Regex _encodedIdWrongRepetitionRegex = EncodedIdWrongRepetitionRegex();
+        private static readonly Regex _encodedIdWrongCharactersRegex = EncodedIdWrongCharactersRegex();
+        private static readonly Regex _encodedIdValidCharactersRegex = EncodedIdValidCharactersRegex();
 
         public static async Task<ulong> GenerateNewIdAsync(Func<ulong, Task<bool>> doesIdExistAsync = null)
         {
@@ -29,7 +30,7 @@ namespace FireplaceApi.Domain.Tools
             if (id == null)
                 return null;
 
-            return IdEncode(id.Value);
+            return id.Value.IdEncode();
         }
 
         public static string IdEncode(this ulong id)
@@ -48,10 +49,10 @@ namespace FireplaceApi.Domain.Tools
 
         public static ulong? IdDecodeOrDefault(this string encodedId)
         {
-            if (!IsEncodedIdFormatValid(encodedId))
+            if (!encodedId.IsEncodedIdFormatValid())
                 return default;
 
-            return IdDecode(encodedId);
+            return encodedId.IdDecode();
         }
 
         private static async Task<bool> IsIdValid(this ulong id,
@@ -61,8 +62,8 @@ namespace FireplaceApi.Domain.Tools
             if (id % 256 < 6)
                 return false;
 
-            var encodedId = IdEncode(id);
-            if (!IsEncodedIdFormatValid(encodedId))
+            var encodedId = id.IdEncode();
+            if (!encodedId.IsEncodedIdFormatValid())
                 return false;
 
             if (doesIdExistAsync != null && await doesIdExistAsync(id))
@@ -87,7 +88,19 @@ namespace FireplaceApi.Domain.Tools
             if (_encodedIdWrongCharactersRegex.IsMatch(encodedId))
                 return false;
 
+            if (_encodedIdValidCharactersRegex.IsMatch(encodedId) == false)
+                return false;
+
             return true;
         }
+
+        [GeneratedRegex("(\\S)\\1{2}")]
+        private static partial Regex EncodedIdWrongRepetitionRegex();
+
+        [GeneratedRegex("([0OlI])")]
+        private static partial Regex EncodedIdWrongCharactersRegex();
+
+        [GeneratedRegex("^[a-zA-Z0-9]+$")]
+        private static partial Regex EncodedIdValidCharactersRegex();
     }
 }

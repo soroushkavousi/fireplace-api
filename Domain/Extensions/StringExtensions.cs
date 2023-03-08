@@ -43,7 +43,7 @@ namespace FireplaceApi.Domain.Extensions
         public static string Shuffle(this string str)
         {
             char[] array = str.ToCharArray();
-            Random rng = new Random();
+            Random rng = new();
             int n = array.Length;
             while (n > 1)
             {
@@ -93,7 +93,7 @@ namespace FireplaceApi.Domain.Extensions
             bool isEmailAddress;
             try
             {
-                MailAddress address = new MailAddress(value);
+                MailAddress address = new(value);
                 isEmailAddress = (address.Address == value);
             }
             catch (FormatException)
@@ -153,8 +153,7 @@ namespace FireplaceApi.Domain.Extensions
 
         public static string ToHash(this string content)
         {
-            using HashAlgorithm algorithm = SHA256.Create();
-            var hashBytes = algorithm.ComputeHash(Encoding.UTF8.GetBytes(content));
+            var hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(content));
             var hash = new StringBuilder();
             foreach (byte b in hashBytes)
                 hash.Append(b.ToString("X2"));

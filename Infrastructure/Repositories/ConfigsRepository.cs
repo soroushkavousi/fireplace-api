@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Domain.Enums;
-using FireplaceApi.Domain.Exceptions;
+﻿using FireplaceApi.Domain.Exceptions;
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Identifiers;
 using FireplaceApi.Domain.Interfaces;
@@ -73,8 +72,8 @@ namespace FireplaceApi.Infrastructure.Repositories
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                var serverMessage = $"Can't update the configsEntity DbUpdateConcurrencyException. {configsEntity.ToJson()}";
-                throw new ApiException(ErrorName.INTERNAL_SERVER, serverMessage, systemException: ex);
+                throw new InternalServerException("Can't update the configsEntity DbUpdateConcurrencyException!",
+                    parameters: configsEntity, systemException: ex);
             }
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { configsEntity });

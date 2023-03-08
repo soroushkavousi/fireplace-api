@@ -43,7 +43,7 @@ namespace FireplaceApi.Application.Controllers
             [FromQuery] ListCommunitiesInputQueryParameters inputQueryParameters)
         {
             var queryResult = new QueryResult<Community>(null, null);
-            if (!inputQueryParameters.Ids.IsNullOrEmpty())
+            if (!inputQueryParameters.EncodedIds.IsNullOrEmpty())
             {
                 queryResult.Items = await _communityService.ListCommunitiesByIdsAsync(
                     inputQueryParameters.Ids);
@@ -70,9 +70,8 @@ namespace FireplaceApi.Application.Controllers
             [FromRoute] GetCommunityByIdOrNameInputRouteParameters inputRouteParameters,
             [FromQuery] GetCommunityInputQueryParameters inputQueryParameters)
         {
-            var community = await _communityService
-                .GetCommunityByEncodedIdOrNameAsync(requestingUser, inputRouteParameters.EncodedIdOrName,
-                inputQueryParameters.IncludeCreator);
+            var community = await _communityService.GetCommunityByIdentifierAsync
+                (requestingUser, inputRouteParameters.Identifier, inputQueryParameters.IncludeCreator);
             var communityDto = _communityConverter.ConvertToDto(community);
             return communityDto;
         }
@@ -108,8 +107,8 @@ namespace FireplaceApi.Application.Controllers
             [FromRoute] PatchCommunityByEncodedIdOrNameInputRouteParameters inputRouteParameters,
             [FromBody] PatchCommunityInputBodyParameters inputBodyParameters)
         {
-            var community = await _communityService.PatchCommunityByEncodedIdOrNameAsync(requestingUser,
-                inputRouteParameters.EncodedIdOrName, inputBodyParameters.NewName);
+            var community = await _communityService.PatchCommunityByIdentifierAsync(requestingUser,
+                inputRouteParameters.Identifier, inputBodyParameters.NewName);
             var communityDto = _communityConverter.ConvertToDto(community);
             return communityDto;
         }
@@ -125,7 +124,7 @@ namespace FireplaceApi.Application.Controllers
             [BindNever][FromHeader] User requestingUser,
             [FromRoute] DeleteCommunityByEncodedIdOrNameInputRouteParameters inputRouteParameters)
         {
-            await _communityService.DeleteCommunityByEncodedIdOrNameAsync(requestingUser, inputRouteParameters.EncodedIdOrName);
+            await _communityService.DeleteCommunityByIdentifierAsync(requestingUser, inputRouteParameters.Identifier);
             return Ok();
         }
     }

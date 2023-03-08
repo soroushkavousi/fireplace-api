@@ -33,15 +33,15 @@ namespace FireplaceApi.Application.Controllers
         /// </summary>
         /// <returns>Created community membership</returns>
         /// <response code="200">Returns the newly created item</response>
-        [HttpPost]
+        [HttpPost("/v{version:apiVersion}/communities/{id-or-name}/members")]
         [Consumes("application/json")]
         [ProducesResponseType(typeof(CommunityMembershipDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommunityMembershipDto>> CreateCommunityMembershipAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromBody] CreateCommunityMembershipInputBodyParameters inputBodyParameters)
+            [FromRoute] CreateCommunityMembershipInputRouteParameters inputBodyParameters)
         {
             var communityMembership = await _communityMembershipService.CreateCommunityMembershipAsync(
-                requestingUser, inputBodyParameters.CommunityId, inputBodyParameters.CommunityName);
+                requestingUser, inputBodyParameters.CommunityIdentifier);
             var communityMembershipDto = _communityMembershipConverter.ConvertToDto(communityMembership);
             return communityMembershipDto;
         }
@@ -58,7 +58,7 @@ namespace FireplaceApi.Application.Controllers
             [FromRoute] DeleteCommunityMembershipByCommunityIdentifierInputRouteParameters inputRouteParameters)
         {
             await _communityMembershipService.DeleteCommunityMembershipAsync(requestingUser,
-                inputRouteParameters.CommunityEncodedIdOrName);
+                inputRouteParameters.CommunityIdentifier);
             return Ok();
         }
     }

@@ -1,6 +1,4 @@
-﻿using FireplaceApi.Domain.Enums;
-using FireplaceApi.Domain.Exceptions;
-using FireplaceApi.Domain.Extensions;
+﻿using FireplaceApi.Domain.Exceptions;
 using FireplaceApi.Domain.Identifiers;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Operators;
@@ -10,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Domain.Validators
 {
-    public class CommunityMembershipValidator : BaseValidator
+    public class CommunityMembershipValidator : DomainValidator
     {
         private readonly ILogger<CommunityMembershipValidator> _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -18,7 +16,6 @@ namespace FireplaceApi.Domain.Validators
         private readonly CommunityValidator _communityValidator;
 
         public CommunityMembershipIdentifier CommunityMembershipIdentifier { get; private set; }
-        public CommunityIdentifier CommunityIdentitifer { get; private set; }
         public UserIdentifier UserIdentifier { get; private set; }
 
         public CommunityMembershipValidator(ILogger<CommunityMembershipValidator> logger,
@@ -32,24 +29,20 @@ namespace FireplaceApi.Domain.Validators
         }
 
         public async Task ValidateCreateCommunityMembershipInputParametersAsync(User requestingUser,
-            string encodedCommunityId, string communityName)
+            CommunityIdentifier communityIdentifier)
         {
-            CommunityIdentitifer = await _communityValidator
-                .ValidateMultipleIdentifiers(encodedCommunityId, communityName);
             UserIdentifier = UserIdentifier.OfId(requestingUser.Id);
             CommunityMembershipIdentifier = CommunityMembershipIdentifier
-                .OfUserAndCommunity(UserIdentifier, CommunityIdentitifer);
+                .OfUserAndCommunity(UserIdentifier, communityIdentifier);
             await ValidateCommunityMembershipDoesNotAlreadyExist(CommunityMembershipIdentifier);
         }
 
         public async Task ValidateDeleteCommunityMembershipInputParametersAsync(User requestingUser,
-            string communityEncodedIdOrName)
+            CommunityIdentifier communityIdentifier)
         {
-            CommunityIdentitifer = await _communityValidator
-                .ValidateMultipleIdentifiers(communityEncodedIdOrName, communityEncodedIdOrName);
             UserIdentifier = UserIdentifier.OfId(requestingUser.Id);
             CommunityMembershipIdentifier = CommunityMembershipIdentifier
-                .OfUserAndCommunity(UserIdentifier, CommunityIdentitifer);
+                .OfUserAndCommunity(UserIdentifier, communityIdentifier);
             await ValidateCommunityMembershipAlreadyExists(CommunityMembershipIdentifier);
         }
 
@@ -57,11 +50,7 @@ namespace FireplaceApi.Domain.Validators
             CommunityMembership communityMembership)
         {
             if (requestingUser.Id != communityMembership.UserId)
-            {
-                var serverMessage = $"requestingUser {requestingUser.Id} can't alter " +
-                    $"community membership {communityMembership.Id}";
-                throw new ApiException(ErrorName.USER_CAN_NOT_ALTER_COMMUNITY_MEMBERSHIP, serverMessage);
-            }
+                throw new CommunityMembershipAccessDeniedException(requestingUser.Id, communityMembership.Id);
         }
 
         public async Task<bool> ValidateCommunityMembershipDoesNotAlreadyExist(
@@ -72,10 +61,8 @@ namespace FireplaceApi.Domain.Validators
                 return true;
 
             if (throwException)
-            {
-                var serverMessage = $"CommunityMembership already exists! " + identifier.ToJson();
-                throw new ApiException(ErrorName.COMMUNITY_MEMBERSHIP_ALREADY_EXISTS, serverMessage);
-            }
+                throw new CommunityMembershipAlreadyExistsException(identifier);
+
             return false;
         }
 
@@ -87,11 +74,8 @@ namespace FireplaceApi.Domain.Validators
                 return true;
 
             if (throwException)
-            {
-                var serverMessage = $"CommunityMembership does not already exists! "
-                    + identifier.ToJson();
-                throw new ApiException(ErrorName.COMMUNITY_MEMBERSHIP_NOT_EXIST, serverMessage);
-            }
+                throw new CommunityMembershipNotExistException(identifier);
+
             return false;
         }
     }

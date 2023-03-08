@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Domain.Enums;
-using FireplaceApi.Domain.Exceptions;
+﻿using FireplaceApi.Domain.Exceptions;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Operators;
 using FireplaceApi.Domain.Tools;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Domain.Validators
 {
-    public class AccessTokenValidator : BaseValidator
+    public class AccessTokenValidator : DomainValidator
     {
         private readonly ILogger<AccessTokenValidator> _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -23,21 +22,14 @@ namespace FireplaceApi.Domain.Validators
             _accessTokenOperator = accessTokenOperator;
         }
 
-        public async Task ValidateGetAccessTokenByValueInputParametersAsync(
-            User requestingUser, string accessTokenValue, bool? includeUser)
-        {
-            ValidateParameterIsNotMissing(accessTokenValue, nameof(accessTokenValue),
-                ErrorName.ACCESS_TOKEN_VALUE_IS_MISSING);
-            ValidateAccessTokenValueFormat(accessTokenValue);
-            await ValidateUserCanAccessToAccessTokenValue(requestingUser, accessTokenValue);
-        }
-
-        public void ValidateAccessTokenValueFormat(string value)
+        public void ValidateAccessTokenValueFormat(string value, bool authentication = false)
         {
             if (Regexes.AccessTokenValue.IsMatch(value) == false)
             {
-                var serverMessage = $"Access token ({value}) doesn't have correct format!";
-                throw new ApiException(ErrorName.ACCESS_TOKEN_VALUE_IS_NOT_VALID, serverMessage);
+                if (authentication)
+                    throw new AccessTokenAuthenticationFailedException(value);
+                else
+                    throw new AcessTokenInvalidValueException(value);
             }
         }
 
@@ -45,11 +37,10 @@ namespace FireplaceApi.Domain.Validators
         {
             var accessToken = await _accessTokenOperator
                 .GetAccessTokenByValueAsync(value, true);
+
             if (accessToken == null)
-            {
-                var serverMessage = $"Access token value {value} doesn't exist!";
-                throw new ApiException(ErrorName.ACCESS_TOKEN_VALUE_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
-            }
+                throw new AccessTokenNotExistException(value);
+
             return accessToken;
         }
 
@@ -57,10 +48,7 @@ namespace FireplaceApi.Domain.Validators
         {
             var accessToken = await _accessTokenOperator.GetAccessTokenByValueAsync(value);
             if (accessToken.UserId != requestingUser.Id)
-            {
-                var serverMessage = $"Requesting user {requestingUser.Id} wants to access with another user's access token! target user id: {accessToken.UserId}";
-                throw new ApiException(ErrorName.ACCESS_TOKEN_VALUE_DOES_NOT_EXIST_OR_ACCESS_DENIED, serverMessage);
-            }
+                throw new AccessTokenAccessDeniedException(requestingUser.Id, value);
         }
     }
 }

@@ -1,17 +1,21 @@
 ﻿using FireplaceApi.Application.Extensions;
 using FireplaceApi.Application.Interfaces;
 using FireplaceApi.Application.Tools;
+using FireplaceApi.Application.Validators;
 using FireplaceApi.Domain.Attributes;
+using FireplaceApi.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 
 namespace FireplaceApi.Application.Controllers
 {
     [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
-    public class LogInWithGoogleInputQueryParameters
+    public class LogInWithGoogleInputQueryParameters : IValidator
     {
         [Required]
         [FromQuery(Name = "state")]
@@ -47,6 +51,15 @@ namespace FireplaceApi.Application.Controllers
             [nameof(Prompt).ToSnakeCase()] = new OpenApiString("consent"),
             [nameof(Error).ToSnakeCase()] = new OpenApiString("access_denied"),
         };
+
+        public void Validate(IServiceProvider serviceProvider)
+        {
+            var applicationValidator = serviceProvider.GetService<UserValidator>();
+            var domainValidator = applicationValidator.DomainValidator;
+
+            // TODO
+            applicationValidator.ValidateFieldIsNotMissing(Code, FieldName.GOOGLE_CODE);
+        }
     }
 
     public class LogInWithGoogleOutputCookieParameters : IOutputCookieParameters

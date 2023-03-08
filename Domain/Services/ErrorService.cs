@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Domain.Models;
+﻿using FireplaceApi.Domain.Identifiers;
+using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Operators;
 using FireplaceApi.Domain.Validators;
 using Microsoft.Extensions.Logging;
@@ -28,19 +29,19 @@ namespace FireplaceApi.Domain.Services
             return errors;
         }
 
-        public async Task<Error> GetErrorByCodeAsync(User requestingUser, int code)
+        public async Task<Error> GetErrorAsync(User requestingUser, ErrorIdentifier identifier)
         {
-            await _errorValidator.ValidateGetErrorByCodeInputParametersAsync(requestingUser, code);
-            var error = await _errorOperator.GetErrorByCodeAsync(code);
+            await _errorValidator.ValidateGetErrorByCodeInputParametersAsync(requestingUser, identifier);
+            var error = await _errorOperator.GetErrorAsync(identifier);
             return error;
         }
 
-        public async Task<Error> PatchErrorByCodeAsync(User requestingUser, int code,
+        public async Task<Error> PatchErrorByCodeAsync(User requestingUser, ErrorIdentifier identifier,
             string clientMessage)
         {
             await _errorValidator.ValidatePatchErrorInputParametersAsync(requestingUser,
-                code, clientMessage);
-            var error = await _errorOperator.PatchErrorByCodeAsync(code,
+                identifier, clientMessage);
+            var error = await _errorOperator.PatchErrorAsync(identifier,
                 clientMessage: clientMessage);
             return error;
         }

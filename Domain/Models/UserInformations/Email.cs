@@ -21,7 +21,7 @@ namespace FireplaceApi.Domain.Models
             User = user;
         }
 
-        public Email PureCopy() => new Email(Id, UserId, Address,
+        public Email PureCopy() => new(Id, UserId, Address,
             Activation, CreationDate, ModifiedDate);
 
         public void RemoveLoopReferencing()

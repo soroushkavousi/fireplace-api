@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Application.Extensions;
-using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Exceptions;
 using FireplaceApi.Domain.Extensions;
 using Microsoft.Extensions.Logging;
@@ -39,7 +38,7 @@ namespace FireplaceApi.Application.Tools
                         {
                             var errorExample = errorExampleList[i].To<OpenApiObject>();
                             if (errorExample.ContainsKey("message") == false)
-                                errorExample = TypeExampleProvider.FillErrorExampleFromName(errorExample, _serviceProvider, _logger).GetAwaiter().GetResult();
+                                errorExample = TypeExampleProvider.FillErrorExample(errorExample, _serviceProvider, _logger).GetAwaiter().GetResult();
                             errorExampleList[i] = errorExample;
                         }
                         example = errorExampleList;
@@ -47,7 +46,7 @@ namespace FireplaceApi.Application.Tools
 
                     case OpenApiObject errorExample:
                         if (errorExample.ContainsKey("message") == false)
-                            errorExample = TypeExampleProvider.FillErrorExampleFromName(errorExample, _serviceProvider, _logger).GetAwaiter().GetResult();
+                            errorExample = TypeExampleProvider.FillErrorExample(errorExample, _serviceProvider, _logger).GetAwaiter().GetResult();
                         example = errorExample;
                         break;
                 }
@@ -78,13 +77,11 @@ namespace FireplaceApi.Application.Tools
                 type = type.GenericTypeArguments[0];
             var exampleProperty = type.GetProperty(Constants.ActionExamplesPropertyName, BindingFlags.Public | BindingFlags.Static);
             if (exampleProperty == null)
-            {
-                throw new ApiException(ErrorName.INTERNAL_SERVER, $"Type {type} doesn't have example for action {actionName}");
-            }
+                throw new InternalServerException("Type doesn't have an example for the action!", new { type, actionName });
 
             var actionExamples = exampleProperty.GetValue(null)?.To<Dictionary<string, IOpenApiAny>>();
             if (actionExamples == null || actionExamples.Count == 0 || actionExamples.ContainsKey(actionName) == false)
-                throw new ApiException(ErrorName.INTERNAL_SERVER, $"Type {type} doesn't have example for action {actionName}");
+                throw new InternalServerException("Type doesn't have an example for the action!", new { type, actionName });
 
             return actionExamples[actionName];
         }
