@@ -12,8 +12,8 @@ namespace FireplaceApi.Domain.Validators
             {
                 throw field.Name switch
                 {
-                    nameof(FieldName.AVATART_URL) => throw new AvatarUrlInvalidValueException(urlString),
-                    nameof(FieldName.BANNER_URL) => throw new BannerUrlInvalidValueException(urlString),
+                    nameof(FieldName.AVATART_URL) => throw new AvatarUrlInvalidFormatException(urlString),
+                    nameof(FieldName.BANNER_URL) => throw new BannerUrlInvalidFormatException(urlString),
                     _ => throw new InternalServerException("Not known url!")
                 };
             }

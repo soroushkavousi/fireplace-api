@@ -29,7 +29,7 @@ namespace FireplaceApi.Application.Validators
                 return identifier;
             }
 
-            throw new CommunityEncodedIdOrNameInvalidValueException(encodedIdOrName);
+            throw new CommunityEncodedIdOrNameInvalidFormatException(encodedIdOrName);
         }
     }
 }

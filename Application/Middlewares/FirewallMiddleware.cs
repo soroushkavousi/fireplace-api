@@ -110,13 +110,13 @@ namespace FireplaceApi.Application.Middlewares
                     && request.ContentType.Contains("multipart/form-data") == false
                     && request.ContentType.Contains("application/merge-patch+json") == false
                     ))
-                throw new RequestContentTypeInvalidValueException(request.ContentType);
+                throw new RequestContentTypeIncorrectValueException(request.ContentType);
         }
 
         public void ValidateRequestBodyIsJson(string requestJsonBody)
         {
             if (requestJsonBody.IsJson() == false)
-                throw new RequestBodyInvalidValueException();
+                throw new RequestBodyInvalidFormatException();
         }
 
         private void ValidateCsrfToken(HttpContext httpContext, bool isUserEndpoint)

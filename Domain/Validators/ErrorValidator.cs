@@ -2,7 +2,6 @@
 using FireplaceApi.Domain.Identifiers;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Operators;
-using FireplaceApi.Domain.Tools;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -33,16 +32,6 @@ namespace FireplaceApi.Domain.Validators
             await ValidateErrorCodeExists(identifier);
         }
 
-        public async Task ValidatePatchErrorInputParametersAsync(User requestingUser, ErrorIdentifier identifier, string clientMessage)
-        {
-            await ValidateErrorCodeExists(identifier);
-
-            if (clientMessage != null)
-            {
-                ValidateClientMessageFormat(clientMessage);
-            }
-        }
-
         public async Task ValidateErrorCodeExists(ErrorIdentifier identifier)
         {
             if (await _errorOperator.DoesErrorExistAsync(identifier) == false)
@@ -52,12 +41,6 @@ namespace FireplaceApi.Domain.Validators
         public void ValidateErrorCodeFormat(int code)
         {
 
-        }
-
-        public void ValidateClientMessageFormat(string clientMessage)
-        {
-            if (Regexes.ErrorClientMessage.IsMatch(clientMessage) == false)
-                throw new ErrorClientMessageInvalidValueException(clientMessage);
         }
     }
 }

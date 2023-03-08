@@ -70,15 +70,15 @@ namespace FireplaceApi.Domain.Validators
         public bool ValidateCommunityNameFormat(string communityName, bool throwException = true)
         {
             if (Regexes.CommunityNameMinLength.IsMatch(communityName) == false)
-                return throwException ? throw new CommunityNameInvalidValueException(communityName,
+                return throwException ? throw new CommunityNameInvalidFormatException(communityName,
                     "The community name doesn't have the minimum length!") : false;
 
             if (Regexes.CommunityNameMaxLength.IsMatch(communityName) == false)
-                return throwException ? throw new CommunityNameInvalidValueException(communityName,
+                return throwException ? throw new CommunityNameInvalidFormatException(communityName,
                     "The community name has more characters than maximum length!") : false;
 
             if (Regexes.CommunityNameValidCharacters.IsMatch(communityName) == false)
-                return throwException ? throw new CommunityNameInvalidValueException(communityName,
+                return throwException ? throw new CommunityNameInvalidFormatException(communityName,
                     "The community name doesn't have valid characters!") : false;
 
             return true;

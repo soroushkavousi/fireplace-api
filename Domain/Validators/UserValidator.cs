@@ -133,19 +133,19 @@ namespace FireplaceApi.Domain.Validators
         public void ValidateDisplayNameFormat(string displayName)
         {
             if (displayName.Length > 80)
-                throw new DisplayNameInvalidValueException(displayName);
+                throw new DisplayNameInvalidFormatException(displayName);
         }
 
         public void ValidateAboutFormat(string about)
         {
             if (about.Length > 2000)
-                throw new AboutInvalidValueException(about);
+                throw new AboutInvalidFormatException(about);
         }
 
         public void ValidateInputPasswordIsCorrectForRequestingUser(User requestingUser, Password password)
         {
             if (!Equals(requestingUser.Password.Hash, password.Hash))
-                throw new PasswordInvalidValueException(password.Value, "The password is not correct!");
+                throw new PasswordIncorrectValueException(password.Hash);
         }
 
         public async Task<bool> ValidateUserIdentifierExists(UserIdentifier identifier,
@@ -175,27 +175,27 @@ namespace FireplaceApi.Domain.Validators
         public bool ValidateUsernameFormat(string username, bool throwException = true)
         {
             if (Regexes.UsernameMinLength.IsMatch(username) == false)
-                return throwException ? throw new UsernameInvalidValueException(username,
+                return throwException ? throw new UsernameInvalidFormatException(username,
                     "The username doesn't have the minimum length!") : false;
 
             if (Regexes.UsernameMaxLength.IsMatch(username) == false)
-                return throwException ? throw new UsernameInvalidValueException(username,
+                return throwException ? throw new UsernameInvalidFormatException(username,
                     "The username exceeds the maximum length!") : false;
 
             if (Regexes.UsernameStart.IsMatch(username) == false)
-                return throwException ? throw new UsernameInvalidValueException(username,
+                return throwException ? throw new UsernameInvalidFormatException(username,
                     "The username has wrong starts!") : false;
 
             if (Regexes.UsernameEnd.IsMatch(username) == false)
-                return throwException ? throw new UsernameInvalidValueException(username,
+                return throwException ? throw new UsernameInvalidFormatException(username,
                     "The username has wrong end!") : false;
 
             if (Regexes.UsernameSafeConsecutives.IsMatch(username) == false)
-                return throwException ? throw new UsernameInvalidValueException(username,
+                return throwException ? throw new UsernameInvalidFormatException(username,
                     "The username has invalid consecutive!") : false;
 
             if (Regexes.UsernameValidCharacters.IsMatch(username) == false)
-                return throwException ? throw new UsernameInvalidValueException(username,
+                return throwException ? throw new UsernameInvalidFormatException(username,
                     "The username has invalid characters!") : false;
 
             return true;
@@ -211,8 +211,8 @@ namespace FireplaceApi.Domain.Validators
             {
                 throw field.Name switch
                 {
-                    nameof(FieldName.PASSWORD) => throw new PasswordInvalidValueException(passwordValue, reason),
-                    nameof(FieldName.NEW_PASSWORD) => throw new NewPasswordInvalidValueException(passwordValue, reason),
+                    nameof(FieldName.PASSWORD) => throw new PasswordInvalidFormatException(passwordValue, reason),
+                    nameof(FieldName.NEW_PASSWORD) => throw new NewPasswordInvalidFormatException(passwordValue, reason),
                     _ => throw new InternalServerException("Not known password field!")
                 };
             }
@@ -258,7 +258,7 @@ namespace FireplaceApi.Domain.Validators
         public void ValidateResetPasswordCodeIsCorrectAsync(User user, string resetPasswordCode)
         {
             if (resetPasswordCode != user.ResetPasswordCode)
-                throw new ResetPasswordCodeInvalidValueException(resetPasswordCode);
+                throw new ResetPasswordCodeIncorrectValueException(resetPasswordCode);
         }
 
         public void ValidateResetPasswordCodeFormat(string resetPasswordCode)

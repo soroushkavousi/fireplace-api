@@ -29,7 +29,7 @@ namespace FireplaceApi.Application.Validators
                 return identifier;
             }
 
-            throw new UserEncodedIdOrUsernameInvalidValueException(encodedIdOrUsername);
+            throw new UserEncodedIdOrUsernameInvalidFormatException(encodedIdOrUsername);
         }
     }
 }

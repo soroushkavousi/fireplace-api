@@ -30,7 +30,7 @@ namespace FireplaceApi.Application.Controllers
 
         public static OpenApiObject PurePasswordErrorExample { get; } = new OpenApiObject
         {
-            [nameof(Type).ToSnakeCase()] = new OpenApiString(ErrorType.INVALID_VALUE.ToString()),
+            [nameof(Type).ToSnakeCase()] = new OpenApiString(ErrorType.INVALID_FORMAT.ToString()),
             [nameof(Field).ToSnakeCase()] = new OpenApiString(FieldName.PASSWORD.ToString()),
         };
 

@@ -23,7 +23,6 @@ namespace FireplaceApi.Domain.Tools
         public static Regex UsernameValidCharacters { get; } = UsernameValidCharactersRegex();
         public static Regex AuthorizationHeaderValue { get; } = AuthorizationHeaderValueRegex();
         public static Regex AccessTokenValue { get; } = AccessTokenValueRegex();
-        public static Regex ErrorClientMessage { get; } = ErrorClientMessageRegex();
         public static Regex TextWithWhitespace { get; } = TextWithWhitespaceRegex();
         public static Regex CommunityNameMinLength { get; } = CommunityNameMinLengthRegex();
         public static Regex CommunityNameMaxLength { get; } = CommunityNameMaxLengthRegex();
@@ -85,9 +84,6 @@ namespace FireplaceApi.Domain.Tools
 
         [GeneratedRegex("([\\d|a-f]{32})", RegexOptions.IgnoreCase, "en-US")]
         private static partial Regex AccessTokenValueRegex();
-
-        [GeneratedRegex("^(?=.*\\S).*$")]
-        private static partial Regex ErrorClientMessageRegex();
 
         [GeneratedRegex("^\\S*$")]
         private static partial Regex TextWithWhitespaceRegex();

@@ -84,7 +84,7 @@ namespace FireplaceApi.Application.IntegrationTests
                 var narutoUser = await _clientPool.CreateNarutoUserAsync();
                 var request = new HttpRequestMessage(HttpMethod.Post, "/communities");
                 var response = await narutoUser.SendRequestAsync(request);
-                await _testUtils.AssertResponseIsErrorAsync(ApplicationErrorType.INVALID_VALUE,
+                await _testUtils.AssertResponseIsErrorAsync(ApplicationErrorType.INCORRECT_VALUE,
                     ApplicationFieldName.REQUEST_CONTENT_TYPE, response);
 
                 _logger.LogAppInformation(title: "TEST_END", sw: sw);
@@ -112,7 +112,7 @@ namespace FireplaceApi.Application.IntegrationTests
                     Content = _testUtils.MakeRequestContent(jsonWithWrongFormat),
                 };
                 var response = await narutoUser.SendRequestAsync(request);
-                await _testUtils.AssertResponseIsErrorAsync(ApplicationErrorType.INVALID_VALUE,
+                await _testUtils.AssertResponseIsErrorAsync(ApplicationErrorType.INVALID_FORMAT,
                     ApplicationFieldName.REQUEST_BODY, response);
 
                 _logger.LogAppInformation(title: "TEST_END", sw: sw);
