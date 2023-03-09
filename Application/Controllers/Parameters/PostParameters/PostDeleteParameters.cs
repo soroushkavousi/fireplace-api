@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Application.Controllers
 {
-    public class GetPostByIdInputRouteParameters : IValidator
+    public class DeletePostByIdInputRouteParameters : IValidator
     {
         [Required]
         [FromRoute(Name = "id")]
@@ -27,17 +27,21 @@ namespace FireplaceApi.Application.Controllers
         }
     }
 
-    public class GetPostByIdInputQueryParameters : IValidator
+    public class DeleteVoteForPostInputRouteParameters : IValidator
     {
-        [FromQuery(Name = "include_author")]
-        public bool IncludeAuthor { get; set; } = false;
+        [Required]
+        [FromRoute(Name = "id")]
+        public string EncodedId { get; set; }
 
-        [FromQuery(Name = "include_community")]
-        public bool IncludeCommunity { get; set; } = false;
+        [BindNever]
+        public ulong Id { get; set; }
 
         public void Validate(IServiceProvider serviceProvider)
         {
+            var applicationValidator = serviceProvider.GetService<PostValidator>();
+            var domainValidator = applicationValidator.DomainValidator;
 
+            Id = applicationValidator.ValidateEncodedIdFormat(EncodedId, FieldName.POST_ID).Value;
         }
     }
 }

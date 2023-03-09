@@ -1,5 +1,6 @@
 ﻿using FireplaceApi.Application.Controllers;
 using FireplaceApi.Application.Middlewares;
+using FireplaceApi.Application.Resolvers;
 using HotChocolate.Execution.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;

@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Application.Converters;
+﻿using FireplaceApi.Application.Controllers;
+using FireplaceApi.Application.Converters;
 using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Services;
 using HotChocolate;
@@ -6,7 +7,7 @@ using HotChocolate.Types;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Application.Controllers
+namespace FireplaceApi.Application.Resolvers
 {
     [ExtendObjectType(typeof(GraphQLController))]
     public class QueryCommunityResolvers
