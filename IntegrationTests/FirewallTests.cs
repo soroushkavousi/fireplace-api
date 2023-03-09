@@ -30,7 +30,7 @@ namespace FireplaceApi.Application.IntegrationTests
 
 
         [Fact]
-        public async Task Guest_TryToAccessPrivateEndpoint_AccessDenied()
+        public async Task Guest_TryToAccessPrivateEndpoint_DeniedAccess()
         {
             var sw = Stopwatch.StartNew();
             try
@@ -52,7 +52,7 @@ namespace FireplaceApi.Application.IntegrationTests
         }
 
         [Fact]
-        public async Task User_TryToAccessPrivateEndpoint_AccessAccept()
+        public async Task User_TryToAccessPrivateEndpoint_AcceptedAccess()
         {
             var sw = Stopwatch.StartNew();
             try
