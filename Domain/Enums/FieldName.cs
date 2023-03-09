@@ -5,7 +5,6 @@ namespace FireplaceApi.Domain.Enums
 {
     public class FieldName : Enumeration<FieldName>
     {
-        private static int _enumValue = 0;
         public static readonly FieldName GENERAL = new();
         public static readonly FieldName USER = new();
         public static readonly FieldName USER_ID = new();
