@@ -108,17 +108,11 @@ namespace FireplaceApi.Domain.Validators
         }
 
         public async Task ValidatePatchUserInputParametersAsync(User user, string displayName,
-            string about, string avatarUrl, string bannerUrl, string username, string emailAddress)
+            string about, string avatarUrl, string bannerUrl, string username)
         {
             if (username != null)
             {
                 await ValidateUserIdentifierDoesNotExistAsync(UserIdentifier.OfUsername(username));
-            }
-
-            if (emailAddress != null)
-            {
-                var emailValidator = _serviceProvider.GetService<EmailValidator>();
-                await emailValidator.ValidateEmailIdentifierDoesNotExistAsync(EmailIdentifier.OfAddress(emailAddress));
             }
         }
 

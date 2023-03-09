@@ -234,7 +234,7 @@ namespace FireplaceApi.Application.Controllers
         {
             var user = await _userService.PatchRequestingUserAsync(requestingUser, inputBodyParameters.DisplayName,
                 inputBodyParameters.About, inputBodyParameters.AvatarUrl, inputBodyParameters.BannerUrl,
-                inputBodyParameters.Username, inputBodyParameters.EmailAddress);
+                inputBodyParameters.Username);
             var userDto = _userConverter.ConvertToDto(user);
             return userDto;
         }

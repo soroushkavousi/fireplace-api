@@ -49,6 +49,12 @@ namespace FireplaceApi.Domain.Validators
             ValidateEmailIsNotAlreadyActivated(Email);
         }
 
+        public async Task ValidatePatchEmailInputParametersAsync(User requestingUser, string newAddress)
+        {
+            EmailIdentifier = EmailIdentifier.OfUserId(requestingUser.Id);
+            await ValidateEmailIdentifierDoesNotExistAsync(EmailIdentifier.OfAddress(newAddress));
+        }
+
         public void ValidateEmailAddressFormat(string address)
         {
             if (Regexes.EmailAddress.IsMatch(address) == false)

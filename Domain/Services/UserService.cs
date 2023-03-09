@@ -100,13 +100,12 @@ namespace FireplaceApi.Domain.Services
         }
 
         public async Task<User> PatchRequestingUserAsync(User requestingUser, string displayName,
-            string about, string avatarUrl, string bannerUrl, string username, string emailAddress)
+            string about, string avatarUrl, string bannerUrl, string username)
         {
             await _userValidator.ValidatePatchUserInputParametersAsync(requestingUser, displayName,
-                about, avatarUrl, bannerUrl, username, emailAddress);
-            var user = await _userOperator.PatchUserByIdentifierAsync(
-                UserIdentifier.OfId(requestingUser.Id), displayName, about, avatarUrl, bannerUrl,
-                username, emailAddress);
+                about, avatarUrl, bannerUrl, username);
+            var user = await _userOperator.PatchUserByIdentifierAsync(UserIdentifier.OfId(requestingUser.Id),
+                displayName, about, avatarUrl, bannerUrl, username);
             return user;
         }
 

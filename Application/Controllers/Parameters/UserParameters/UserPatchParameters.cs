@@ -21,7 +21,6 @@ namespace FireplaceApi.Application.Controllers
         public string AvatarUrl { get; set; }
         public string BannerUrl { get; set; }
         public string Username { get; set; }
-        public string EmailAddress { get; set; }
 
         public static IOpenApiAny Example { get; } = new OpenApiObject
         {
@@ -30,7 +29,6 @@ namespace FireplaceApi.Application.Controllers
             [nameof(AvatarUrl).ToSnakeCase()] = new OpenApiString("NewAvatarUrl"),
             [nameof(BannerUrl).ToSnakeCase()] = new OpenApiString("NewBannerUrl"),
             [nameof(Username).ToSnakeCase()] = new OpenApiString("NewUsername"),
-            [nameof(EmailAddress).ToSnakeCase()] = new OpenApiString("NewEmailAddress"),
         };
 
         public void Validate(IServiceProvider serviceProvider)
@@ -53,9 +51,6 @@ namespace FireplaceApi.Application.Controllers
 
             if (Username != null)
                 domainValidator.ValidateUsernameFormat(Username);
-
-            if (EmailAddress != null)
-                emailValidator.ValidateEmailAddressFormat(EmailAddress);
         }
     }
 

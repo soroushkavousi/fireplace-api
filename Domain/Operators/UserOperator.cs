@@ -282,12 +282,11 @@ namespace FireplaceApi.Domain.Operators
 
         public async Task<User> PatchUserByIdentifierAsync(UserIdentifier userIdentifier,
             string displayName = null, string about = null, string avatarUrl = null,
-            string bannerUrl = null, string username = null, string emailAddress = null,
-            UserState? state = null)
+            string bannerUrl = null, string username = null, UserState? state = null)
         {
             var user = await _userRepository.GetUserByIdentifierAsync(userIdentifier, true);
             user = await ApplyUserChanges(user, displayName, about, avatarUrl, bannerUrl,
-                username, emailAddress, state);
+                username, state);
             user = await GetUserByIdentifierAsync(UserIdentifier.OfId(user.Id), true, false, false, false);
             return user;
         }
@@ -330,8 +329,7 @@ namespace FireplaceApi.Domain.Operators
 
         public async Task<User> ApplyUserChanges(User user, string displayName = null,
             string about = null, string avatarUrl = null, string bannerUrl = null,
-            string username = null, string emailAddress = null,
-            UserState? state = null, string resetPasswordCode = null)
+            string username = null, UserState? state = null, string resetPasswordCode = null)
         {
             var foundAnyChange = false;
             if (displayName != null)
@@ -378,13 +376,6 @@ namespace FireplaceApi.Domain.Operators
 
             if (foundAnyChange)
                 user = await _userRepository.UpdateUserAsync(user);
-
-            if (emailAddress != null)
-            {
-                var emailOperator = _serviceProvider.GetService<EmailOperator>();
-                user.Email = await emailOperator.PatchEmailByIdentifierAsync(
-                    EmailIdentifier.OfId(user.Email.Id), address: emailAddress);
-            }
 
             return user;
         }

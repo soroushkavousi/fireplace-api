@@ -63,7 +63,8 @@ namespace FireplaceApi.Application.Controllers
         {
             [nameof(EmailController.ActivateRequestingUserEmailAsync)] = Example1,
             [nameof(EmailController.ResendActivationCodeAsync)] = new OpenApiNull(),
-            [nameof(EmailController.GetRequestingUserEmailAsync)] = Example1
+            [nameof(EmailController.GetRequestingUserEmailAsync)] = Example1,
+            [nameof(EmailController.PatchEmailAsync)] = Example1
         };
 
         static EmailDto()
