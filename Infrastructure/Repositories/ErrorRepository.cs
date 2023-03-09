@@ -55,7 +55,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<Error> GetErrorAsync(ErrorIdentifier identifier)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
-            if(_cache.TryGetValue(identifier.Key, out Error cachedError))
+            if (_cache.TryGetValue(identifier.Key, out Error cachedError))
             {
                 _logger.LogAppInformation(title: "CACHED_DATABASE_OUTPUT", parameters: new { cachedError });
                 return cachedError;

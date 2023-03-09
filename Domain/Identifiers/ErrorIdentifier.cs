@@ -1,6 +1,5 @@
 ﻿using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Interfaces;
-using System;
 
 namespace FireplaceApi.Domain.Identifiers
 {
