@@ -72,8 +72,9 @@ namespace FireplaceApi.Application.Middlewares
             }
 
             GenerateAndSetCsrfTokenAsCookie(httpContext, antiforgery);
-            _logger.LogAppInformation("Execution time for inner of the firewall only", sw);
+            _logger.LogAppInformation(sw: sw, title: "FIREWALL_CHECK_DURATION");
             await _next(httpContext);
+            _logger.LogAppInformation(sw: sw, title: "FIREWALL_MIDDLEWARE");
         }
 
         private async Task ControlRequestBody(HttpContext httpContext, Firewall firewall)

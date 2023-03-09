@@ -1,10 +1,13 @@
 ﻿using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Interfaces;
+using System;
 
 namespace FireplaceApi.Domain.Identifiers
 {
     public abstract class ErrorIdentifier : Identifier
     {
+        public abstract string Key { get; }
+
         public static ErrorIdIdentifier OfId(ulong id)
              => new(id);
 
@@ -18,6 +21,7 @@ namespace FireplaceApi.Domain.Identifiers
     public class ErrorIdIdentifier : ErrorIdentifier, IIdIdentifier
     {
         public override FieldName TargetField => FieldName.ERROR_ID;
+        public override string Key => $"{Id}";
         public ulong Id { get; set; }
 
         internal ErrorIdIdentifier(ulong id)
@@ -29,6 +33,7 @@ namespace FireplaceApi.Domain.Identifiers
     public class ErrorCodeIdentifier : ErrorIdentifier
     {
         public override FieldName TargetField => FieldName.ERROR_CODE;
+        public override string Key => $"{Code}";
         public int Code { get; set; }
 
         internal ErrorCodeIdentifier(int code)
@@ -40,6 +45,7 @@ namespace FireplaceApi.Domain.Identifiers
     public class ErrorTypeAndFieldIdentifier : ErrorIdentifier
     {
         public override FieldName TargetField => FieldName.ERROR;
+        public override string Key => $"{Type}_{Field}";
         public ErrorType Type { get; set; }
         public FieldName Field { get; set; }
 
