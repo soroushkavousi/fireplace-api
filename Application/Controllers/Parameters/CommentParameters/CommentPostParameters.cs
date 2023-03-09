@@ -91,4 +91,42 @@ namespace FireplaceApi.Application.Controllers
             domainValidator.ValidateCommentContentFormat(Content);
         }
     }
+
+    public class VoteCommentInputRouteParameters : IValidator
+    {
+        [Required]
+        [FromRoute(Name = "id")]
+        public string EncodedId { get; set; }
+
+        [BindNever]
+        public ulong Id { get; set; }
+
+        public void Validate(IServiceProvider serviceProvider)
+        {
+            var applicationValidator = serviceProvider.GetService<CommentValidator>();
+            var domainValidator = applicationValidator.DomainValidator;
+
+            Id = applicationValidator.ValidateEncodedIdFormat(EncodedId, FieldName.COMMENT_ID).Value;
+        }
+    }
+
+    [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
+    public class VoteCommentInputBodyParameters : IValidator
+    {
+        [Required]
+        public bool? IsUpvote { get; set; }
+
+        public static IOpenApiAny Example { get; } = new OpenApiObject
+        {
+            [nameof(IsUpvote).ToSnakeCase()] = new OpenApiBoolean(true),
+        };
+
+        public void Validate(IServiceProvider serviceProvider)
+        {
+            var applicationValidator = serviceProvider.GetService<CommentValidator>();
+            var domainValidator = applicationValidator.DomainValidator;
+
+            applicationValidator.ValidateFieldIsNotMissing(IsUpvote, FieldName.IS_UPVOTE);
+        }
+    }
 }

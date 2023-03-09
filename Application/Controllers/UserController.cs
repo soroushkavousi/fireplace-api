@@ -2,7 +2,6 @@
 using FireplaceApi.Application.Converters;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Services;
-using FireplaceApi.Domain.ValueObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -170,6 +169,23 @@ namespace FireplaceApi.Application.Controllers
         }
 
         /// <summary>
+        /// Create a password for requesting user.
+        /// </summary>
+        /// <returns>No content</returns>
+        /// <response code="200">The user password successfully set.</response>
+        [HttpPost("me/password")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> CreateRequestingUserPasswordAsync(
+            [BindNever][FromHeader] User requestingUser,
+            [FromBody] CreateRequestingUserPasswordInputBodyParameters inputBodyParameters)
+        {
+            await _userService.CreateRequestingUserPasswordAsync(requestingUser,
+                inputBodyParameters.PasswordValueObject);
+            return Ok();
+        }
+
+        /// <summary>
         /// Send reset password code
         /// </summary>
         /// <returns>No content</returns>
@@ -191,7 +207,7 @@ namespace FireplaceApi.Application.Controllers
         /// Reset password with code
         /// </summary>
         /// <returns>No content</returns>
-        /// <response code="200">PasswordValueObject successfully changed.</response>
+        /// <response code="200">The user password successfully changed.</response>
         [AllowAnonymous]
         [HttpPost("reset-password-with-code")]
         [Consumes("application/json")]
@@ -216,12 +232,28 @@ namespace FireplaceApi.Application.Controllers
             [BindNever][FromHeader] User requestingUser,
             [FromBody] PatchUserInputBodyParameters inputBodyParameters)
         {
-            var oldPassword = Password.OfValue(inputBodyParameters.Password);
             var user = await _userService.PatchRequestingUserAsync(requestingUser, inputBodyParameters.DisplayName,
                 inputBodyParameters.About, inputBodyParameters.AvatarUrl, inputBodyParameters.BannerUrl,
-                inputBodyParameters.Username, oldPassword, inputBodyParameters.PasswordValueObject, inputBodyParameters.EmailAddress);
+                inputBodyParameters.Username);
             var userDto = _userConverter.ConvertToDto(user);
             return userDto;
+        }
+
+        /// <summary>
+        /// Update the requesting user password.
+        /// </summary>
+        /// <returns>No content</returns>
+        /// <response code="200">The user password successfully changed.</response>
+        [HttpPatch("me/password")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> PatchRequestingUserPasswordAsync(
+            [BindNever][FromHeader] User requestingUser,
+            [FromBody] PatchRequestingUserPasswordInputBodyParameters inputBodyParameters)
+        {
+            await _userService.PatchRequestingUserPasswordAsync(requestingUser,
+                inputBodyParameters.PasswordValueObject, inputBodyParameters.NewPasswordValueObject);
+            return Ok();
         }
 
         /// <summary>

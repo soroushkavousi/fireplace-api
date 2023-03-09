@@ -56,7 +56,7 @@ namespace FireplaceApi.Domain.Tools
 
         public async Task<AccessToken> ValidateAccessTokenAsync(string accessTokenValue, bool isUserEndpoint)
         {
-            _accessTokenValidator.ValidateAccessTokenValueFormat(accessTokenValue, authentication: true);
+            _accessTokenValidator.ValidateAccessTokenValueFormat(accessTokenValue);
 
             var accessToken = await _accessTokenOperator
                 .GetAccessTokenByValueAsync(accessTokenValue, true);

@@ -62,7 +62,7 @@ namespace FireplaceApi.Domain.Services
         public async Task<User> GetRequestingUserAsync(User requestingUser,
             bool? includeEmail, bool? includeSessions)
         {
-            await _userValidator.ValidateRequestingUserInputParametersAsync(requestingUser,
+            await _userValidator.ValidateGetRequestingUserInputParametersAsync(requestingUser,
                 includeEmail, includeSessions);
             var user = await _userOperator.GetUserByIdentifierAsync(UserIdentifier.OfId(requestingUser.Id),
                 includeEmail.Value, false, false, includeSessions.Value);
@@ -79,6 +79,14 @@ namespace FireplaceApi.Domain.Services
             return profile;
         }
 
+        public async Task CreateRequestingUserPasswordAsync(User requestingUser, Password password)
+        {
+            await _userValidator.ValidateCreateRequestingUserPasswordInputParametersAsync(requestingUser,
+                password);
+            await _userOperator.PatchRequestingUserPasswordAsync(
+                requestingUser, password);
+        }
+
         public async Task SendResetPasswordCodeAsync(string emailAddress, string resetPasswordWithCodeUrlFormat)
         {
             await _userValidator.ValidateSendResetPasswordCodeInputParametersAsync(emailAddress, resetPasswordWithCodeUrlFormat);
@@ -88,19 +96,25 @@ namespace FireplaceApi.Domain.Services
         public async Task ResetPasswordWithCodeAsync(string emailAddress, string resetPasswordCode, Password newPassword)
         {
             await _userValidator.ValidateResetPasswordWithCodeInputParametersAsync(emailAddress, resetPasswordCode, newPassword);
-            await _userOperator.ResetPasswordWithCode(_userValidator.User, newPassword);
+            await _userOperator.PatchRequestingUserPasswordAsync(_userValidator.User, newPassword);
         }
 
         public async Task<User> PatchRequestingUserAsync(User requestingUser, string displayName,
-            string about, string avatarUrl, string bannerUrl, string username,
-            Password oldPassword, Password password, string emailAddress)
+            string about, string avatarUrl, string bannerUrl, string username)
         {
             await _userValidator.ValidatePatchUserInputParametersAsync(requestingUser, displayName,
-                about, avatarUrl, bannerUrl, username, oldPassword, password, emailAddress);
-            var user = await _userOperator.PatchUserByIdentifierAsync(
-                UserIdentifier.OfId(requestingUser.Id), displayName, about, avatarUrl, bannerUrl,
-                username, password, emailAddress);
+                about, avatarUrl, bannerUrl, username);
+            var user = await _userOperator.PatchUserByIdentifierAsync(UserIdentifier.OfId(requestingUser.Id),
+                displayName, about, avatarUrl, bannerUrl, username);
             return user;
+        }
+
+        public async Task PatchRequestingUserPasswordAsync(User requestingUser, Password password, Password newPassword)
+        {
+            await _userValidator.ValidatePatchRequestingUserPasswordInputParametersAsync(requestingUser,
+                password, newPassword);
+            await _userOperator.PatchRequestingUserPasswordAsync(
+                requestingUser, newPassword);
         }
 
         public async Task DeleteRequestingUserAsync(User requestingUser)

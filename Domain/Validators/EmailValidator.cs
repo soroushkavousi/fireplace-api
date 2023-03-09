@@ -49,10 +49,16 @@ namespace FireplaceApi.Domain.Validators
             ValidateEmailIsNotAlreadyActivated(Email);
         }
 
+        public async Task ValidatePatchEmailInputParametersAsync(User requestingUser, string newAddress)
+        {
+            EmailIdentifier = EmailIdentifier.OfUserId(requestingUser.Id);
+            await ValidateEmailIdentifierDoesNotExistAsync(EmailIdentifier.OfAddress(newAddress));
+        }
+
         public void ValidateEmailAddressFormat(string address)
         {
             if (Regexes.EmailAddress.IsMatch(address) == false)
-                throw new EmailAddressInvalidValueException(address);
+                throw new EmailAddressInvalidFormatException(address);
         }
 
         public async Task ValidateEmailIdentifierDoesNotExistAsync(EmailIdentifier identifier)
@@ -90,7 +96,7 @@ namespace FireplaceApi.Domain.Validators
         public void ValidateActivationCodeIsCorrectAsync(Email email, int activationCode)
         {
             if (activationCode != email.Activation.Code)
-                throw new ActivationCodeInvalidValueException(activationCode);
+                throw new ActivationCodeIncorrectValueException(activationCode);
         }
 
         public void ValidateEmailIsNotAlreadyActivated(Email email)
@@ -102,7 +108,7 @@ namespace FireplaceApi.Domain.Validators
         public void ValidateActivateCodeFormat(int activationCode)
         {
             if (activationCode < 10000 && activationCode > 99999)
-                throw new ActivationCodeInvalidValueException(activationCode);
+                throw new ActivationCodeIncorrectValueException(activationCode);
         }
     }
 }

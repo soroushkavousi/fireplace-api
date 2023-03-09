@@ -46,8 +46,8 @@ namespace FireplaceApi.Application.Validators
             {
                 throw typeof(TEnum).Name switch
                 {
-                    nameof(SortType) => new SortInvalidValueException(inputString),
-                    nameof(CommunitySortType) => new CommunitySortInvalidValueException(inputString),
+                    nameof(SortType) => new SortIncorrectValueException(inputString),
+                    nameof(CommunitySortType) => new CommunitySortIncorrectValueException(inputString),
                     _ => new InternalServerException("Not known enum type!"),
                 };
             }
@@ -64,8 +64,8 @@ namespace FireplaceApi.Application.Validators
             {
                 throw field.Name switch
                 {
-                    nameof(FieldName.POST_ID) => new PostEncodedIdInvalidValueException(encodedId),
-                    nameof(FieldName.COMMENT_ID) => new CommentEncodedIdInvalidValueException(encodedId),
+                    nameof(FieldName.POST_ID) => new PostEncodedIdInvalidFormatException(encodedId),
+                    nameof(FieldName.COMMENT_ID) => new CommentEncodedIdInvalidFormatException(encodedId),
                     _ => new InternalServerException("Not known encoded id field!"),
                 };
             }

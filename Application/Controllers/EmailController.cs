@@ -71,5 +71,23 @@ namespace FireplaceApi.Application.Controllers
             var emailDto = _emailConverter.ConvertToDto(email);
             return emailDto;
         }
+
+        /// <summary>
+        /// Change the requesting user email address
+        /// </summary>
+        /// <returns>Updated email</returns>
+        /// <response code="200">Returns the updated email.</response>
+        [HttpPatch("me")]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(EmailDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<EmailDto>> PatchEmailAsync(
+            [BindNever][FromHeader] User requestingUser,
+            [FromBody] PatchEmailInputBodyParameters inputBodyParameters)
+        {
+            var email = await _emailService.PatchEmailAsync(requestingUser,
+                inputBodyParameters.NewAddress);
+            var emailDto = _emailConverter.ConvertToDto(email);
+            return emailDto;
+        }
     }
 }

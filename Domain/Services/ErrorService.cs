@@ -35,15 +35,5 @@ namespace FireplaceApi.Domain.Services
             var error = await _errorOperator.GetErrorAsync(identifier);
             return error;
         }
-
-        public async Task<Error> PatchErrorByCodeAsync(User requestingUser, ErrorIdentifier identifier,
-            string clientMessage)
-        {
-            await _errorValidator.ValidatePatchErrorInputParametersAsync(requestingUser,
-                identifier, clientMessage);
-            var error = await _errorOperator.PatchErrorAsync(identifier,
-                clientMessage: clientMessage);
-            return error;
-        }
     }
 }

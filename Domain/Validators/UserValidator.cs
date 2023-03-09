@@ -66,7 +66,7 @@ namespace FireplaceApi.Domain.Validators
             await ValidateUsernameMatchWithPasswordAsync(username, password);
         }
 
-        public async Task ValidateRequestingUserInputParametersAsync(User requestingUser,
+        public async Task ValidateGetRequestingUserInputParametersAsync(User requestingUser,
             bool? includeEmail, bool? includeSessions)
         {
             await Task.CompletedTask;
@@ -76,6 +76,13 @@ namespace FireplaceApi.Domain.Validators
             User requestingUser, UserIdentifier identifier)
         {
             await ValidateUserIdentifierExists(identifier);
+        }
+
+        public async Task ValidateCreateRequestingUserPasswordInputParametersAsync(User user,
+            Password password)
+        {
+            ValidateUserPasswordNotExist(user);
+            await Task.CompletedTask;
         }
 
         public async Task ValidateSendResetPasswordCodeInputParametersAsync(string emailAddress, string resetPasswordWithCodeUrlFormat)
@@ -101,42 +108,38 @@ namespace FireplaceApi.Domain.Validators
         }
 
         public async Task ValidatePatchUserInputParametersAsync(User user, string displayName,
-            string about, string avatarUrl, string bannerUrl, string username,
-            Password password, Password newPassword, string emailAddress)
+            string about, string avatarUrl, string bannerUrl, string username)
         {
             if (username != null)
             {
                 await ValidateUserIdentifierDoesNotExistAsync(UserIdentifier.OfUsername(username));
             }
+        }
 
-            if (emailAddress != null)
-            {
-                var emailValidator = _serviceProvider.GetService<EmailValidator>();
-                await emailValidator.ValidateEmailIdentifierDoesNotExistAsync(EmailIdentifier.OfAddress(emailAddress));
-            }
-
-            if (password != null)
-            {
-                ValidateInputPasswordIsCorrectForRequestingUser(user, password);
-            }
+        public async Task ValidatePatchRequestingUserPasswordInputParametersAsync(User user,
+            Password password, Password newPassword)
+        {
+            ValidateUserPasswordExists(user);
+            ValidateInputPasswordIsCorrectForRequestingUser(user, password);
+            await Task.CompletedTask;
         }
 
         public void ValidateDisplayNameFormat(string displayName)
         {
             if (displayName.Length > 80)
-                throw new DisplayNameInvalidValueException(displayName);
+                throw new DisplayNameInvalidFormatException(displayName);
         }
 
         public void ValidateAboutFormat(string about)
         {
             if (about.Length > 2000)
-                throw new AboutInvalidValueException(about);
+                throw new AboutInvalidFormatException(about);
         }
 
         public void ValidateInputPasswordIsCorrectForRequestingUser(User requestingUser, Password password)
         {
-            if (Equals(requestingUser.Password.Hash, password.Hash))
-                throw new PasswordInvalidValueException(password.Value, "The password is not correct!");
+            if (!Equals(requestingUser.Password.Hash, password.Hash))
+                throw new PasswordIncorrectValueException(password.Hash);
         }
 
         public async Task<bool> ValidateUserIdentifierExists(UserIdentifier identifier,
@@ -166,27 +169,27 @@ namespace FireplaceApi.Domain.Validators
         public bool ValidateUsernameFormat(string username, bool throwException = true)
         {
             if (Regexes.UsernameMinLength.IsMatch(username) == false)
-                return throwException ? throw new UsernameInvalidValueException(username,
+                return throwException ? throw new UsernameInvalidFormatException(username,
                     "The username doesn't have the minimum length!") : false;
 
             if (Regexes.UsernameMaxLength.IsMatch(username) == false)
-                return throwException ? throw new UsernameInvalidValueException(username,
+                return throwException ? throw new UsernameInvalidFormatException(username,
                     "The username exceeds the maximum length!") : false;
 
             if (Regexes.UsernameStart.IsMatch(username) == false)
-                return throwException ? throw new UsernameInvalidValueException(username,
+                return throwException ? throw new UsernameInvalidFormatException(username,
                     "The username has wrong starts!") : false;
 
             if (Regexes.UsernameEnd.IsMatch(username) == false)
-                return throwException ? throw new UsernameInvalidValueException(username,
+                return throwException ? throw new UsernameInvalidFormatException(username,
                     "The username has wrong end!") : false;
 
             if (Regexes.UsernameSafeConsecutives.IsMatch(username) == false)
-                return throwException ? throw new UsernameInvalidValueException(username,
+                return throwException ? throw new UsernameInvalidFormatException(username,
                     "The username has invalid consecutive!") : false;
 
             if (Regexes.UsernameValidCharacters.IsMatch(username) == false)
-                return throwException ? throw new UsernameInvalidValueException(username,
+                return throwException ? throw new UsernameInvalidFormatException(username,
                     "The username has invalid characters!") : false;
 
             return true;
@@ -202,8 +205,8 @@ namespace FireplaceApi.Domain.Validators
             {
                 throw field.Name switch
                 {
-                    nameof(FieldName.PASSWORD) => throw new PasswordInvalidValueException(passwordValue, reason),
-                    nameof(FieldName.NEW_PASSWORD) => throw new NewPasswordInvalidValueException(passwordValue, reason),
+                    nameof(FieldName.PASSWORD) => throw new PasswordInvalidFormatException(passwordValue, reason),
+                    nameof(FieldName.NEW_PASSWORD) => throw new NewPasswordInvalidFormatException(passwordValue, reason),
                     _ => throw new InternalServerException("Not known password field!")
                 };
             }
@@ -218,14 +221,17 @@ namespace FireplaceApi.Domain.Validators
             if (Regexes.PasswordMaxLength.IsMatch(passwordValue) == false)
                 return "Input password exceeds the maximum length!";
 
+            if (Regexes.PasswordALowercaseLetter.IsMatch(passwordValue) == false)
+                return "Input password doesn't have a lowercase letter!";
+
             if (Regexes.PasswordAnUppercaseLetter.IsMatch(passwordValue) == false)
                 return "Input password doesn't have an uppercase letter!";
 
             if (Regexes.PasswordANumber.IsMatch(passwordValue) == false)
                 return "Input password doesn't have a number!";
 
-            if (Regexes.PasswordALowercaseLetter.IsMatch(passwordValue) == false)
-                return "Input password doesn't have a lowercase letter!";
+            if (Regexes.PasswordASpecialLetter.IsMatch(passwordValue) == false)
+                return "Input password doesn't have a special character!";
 
             if (Regexes.PasswordValidCharacters.IsMatch(passwordValue) == false)
                 return "Input password doesn't have valid characters!";
@@ -246,12 +252,36 @@ namespace FireplaceApi.Domain.Validators
         public void ValidateResetPasswordCodeIsCorrectAsync(User user, string resetPasswordCode)
         {
             if (resetPasswordCode != user.ResetPasswordCode)
-                throw new ResetPasswordCodeInvalidValueException(resetPasswordCode);
+                throw new ResetPasswordCodeIncorrectValueException(resetPasswordCode);
         }
 
         public void ValidateResetPasswordCodeFormat(string resetPasswordCode)
         {
 
+        }
+
+        public bool ValidateUserPasswordExists(User requestingUser,
+            bool throwException = true)
+        {
+            if (requestingUser.Password != null && !string.IsNullOrWhiteSpace(requestingUser.Password.Hash))
+                return true;
+
+            if (throwException)
+                throw new PasswordNotExistException(requestingUser.Id);
+
+            return false;
+        }
+
+        public bool ValidateUserPasswordNotExist(User requestingUser,
+            bool throwException = true)
+        {
+            if (requestingUser.Password == null || string.IsNullOrWhiteSpace(requestingUser.Password.Hash))
+                return true;
+
+            if (throwException)
+                throw new PasswordAlreadyExistException(requestingUser.Id, requestingUser.Password.Hash);
+
+            return false;
         }
     }
 }

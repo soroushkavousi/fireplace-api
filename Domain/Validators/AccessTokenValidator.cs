@@ -22,15 +22,10 @@ namespace FireplaceApi.Domain.Validators
             _accessTokenOperator = accessTokenOperator;
         }
 
-        public void ValidateAccessTokenValueFormat(string value, bool authentication = false)
+        public void ValidateAccessTokenValueFormat(string value)
         {
             if (Regexes.AccessTokenValue.IsMatch(value) == false)
-            {
-                if (authentication)
-                    throw new AccessTokenAuthenticationFailedException(value);
-                else
-                    throw new AcessTokenInvalidValueException(value);
-            }
+                throw new AccessTokenAuthenticationFailedException(value);
         }
 
         public async Task<AccessToken> ValidateAccessTokenValueExistsAsync(string value)

@@ -22,6 +22,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         private readonly FireplaceApiDbContext _dbContext;
         private readonly DbSet<ErrorEntity> _errorEntities;
         private readonly ErrorConverter _errorConverter;
+        private static readonly Dictionary<string, Error> _cache = new();
 
         public ErrorRepository(ILogger<ErrorRepository> logger,
             FireplaceApiDbContext dbContext, ErrorConverter errorConverter)
@@ -54,6 +55,11 @@ namespace FireplaceApi.Infrastructure.Repositories
         public async Task<Error> GetErrorAsync(ErrorIdentifier identifier)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
+            if (_cache.TryGetValue(identifier.Key, out Error cachedError))
+            {
+                _logger.LogAppInformation(title: "CACHED_DATABASE_OUTPUT", parameters: new { cachedError });
+                return cachedError;
+            }
             var sw = Stopwatch.StartNew();
             var errorEntity = await _errorEntities
                 .AsNoTracking()
@@ -65,7 +71,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .SingleOrDefaultAsync();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { errorEntity });
-            return _errorConverter.ConvertToModel(errorEntity);
+            var error = _errorConverter.ConvertToModel(errorEntity);
+            _cache.Add(identifier.Key, error);
+            return error;
         }
 
         public async Task<Error> CreateErrorAsync(ulong id, int code, ErrorType type,

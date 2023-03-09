@@ -158,4 +158,17 @@ namespace FireplaceApi.Domain.Exceptions
             )
         { }
     }
+
+    public class PasswordNotExistException : ApiException
+    {
+        public PasswordNotExistException(ulong userId)
+            : base(
+                errorType: ErrorType.NOT_EXIST_OR_ACCESS_DENIED,
+                errorField: FieldName.PASSWORD,
+                errorServerMessage: "The user doesn't have a password!",
+                parameters: new { userId },
+                systemException: null
+            )
+        { }
+    }
 }

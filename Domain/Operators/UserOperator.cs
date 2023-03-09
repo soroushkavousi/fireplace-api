@@ -280,21 +280,22 @@ namespace FireplaceApi.Domain.Operators
             _ = emailOperator.SendEmailMessage(emailAddress, emailSubject, emailMessage);
         }
 
-        public async Task ResetPasswordWithCode(User user, Password password)
-        {
-            await ApplyUserChanges(user, password: password);
-        }
-
         public async Task<User> PatchUserByIdentifierAsync(UserIdentifier userIdentifier,
             string displayName = null, string about = null, string avatarUrl = null,
-            string bannerUrl = null, string username = null, Password password = null,
-            string emailAddress = null, UserState? state = null)
+            string bannerUrl = null, string username = null, UserState? state = null)
         {
             var user = await _userRepository.GetUserByIdentifierAsync(userIdentifier, true);
             user = await ApplyUserChanges(user, displayName, about, avatarUrl, bannerUrl,
-                username, password, emailAddress, state);
+                username, state);
             user = await GetUserByIdentifierAsync(UserIdentifier.OfId(user.Id), true, false, false, false);
             return user;
+        }
+
+        public async Task PatchRequestingUserPasswordAsync(User user,
+            Password password = null)
+        {
+            user.Password = password;
+            user = await _userRepository.UpdateUserAsync(user);
         }
 
         public async Task DeleteUserByIdentifierAsync(UserIdentifier userIdentifier)
@@ -328,8 +329,7 @@ namespace FireplaceApi.Domain.Operators
 
         public async Task<User> ApplyUserChanges(User user, string displayName = null,
             string about = null, string avatarUrl = null, string bannerUrl = null,
-            string username = null, Password password = null, string emailAddress = null,
-            UserState? state = null, string resetPasswordCode = null)
+            string username = null, UserState? state = null, string resetPasswordCode = null)
         {
             var foundAnyChange = false;
             if (displayName != null)
@@ -362,12 +362,6 @@ namespace FireplaceApi.Domain.Operators
                 await _userRepository.UpdateUsernameAsync(user.Id, username);
             }
 
-            if (password != null)
-            {
-                user.Password = password;
-                foundAnyChange = true;
-            }
-
             if (state != null)
             {
                 user.State = state.Value;
@@ -382,13 +376,6 @@ namespace FireplaceApi.Domain.Operators
 
             if (foundAnyChange)
                 user = await _userRepository.UpdateUserAsync(user);
-
-            if (emailAddress != null)
-            {
-                var emailOperator = _serviceProvider.GetService<EmailOperator>();
-                user.Email = await emailOperator.PatchEmailByIdentifierAsync(
-                    EmailIdentifier.OfId(user.Email.Id), address: emailAddress);
-            }
 
             return user;
         }

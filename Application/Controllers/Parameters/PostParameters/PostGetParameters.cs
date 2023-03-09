@@ -93,4 +93,36 @@ namespace FireplaceApi.Application.Controllers
             Sort = applicationValidator.ValidateInputEnum<SortType>(SortString);
         }
     }
+
+    public class GetPostByIdInputRouteParameters : IValidator
+    {
+        [Required]
+        [FromRoute(Name = "id")]
+        public string EncodedId { get; set; }
+
+        [BindNever]
+        public ulong Id { get; set; }
+
+        public void Validate(IServiceProvider serviceProvider)
+        {
+            var applicationValidator = serviceProvider.GetService<PostValidator>();
+            var domainValidator = applicationValidator.DomainValidator;
+
+            Id = applicationValidator.ValidateEncodedIdFormat(EncodedId, FieldName.POST_ID).Value;
+        }
+    }
+
+    public class GetPostByIdInputQueryParameters : IValidator
+    {
+        [FromQuery(Name = "include_author")]
+        public bool IncludeAuthor { get; set; } = false;
+
+        [FromQuery(Name = "include_community")]
+        public bool IncludeCommunity { get; set; } = false;
+
+        public void Validate(IServiceProvider serviceProvider)
+        {
+
+        }
+    }
 }

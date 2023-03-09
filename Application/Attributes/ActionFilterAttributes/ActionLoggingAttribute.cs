@@ -30,7 +30,7 @@ namespace FireplaceApi.Application.Attributes
             {
                 var message = context.Exception.GetType().Name;
                 if (context.Exception is ApiException apiException)
-                    message += $" | {apiException.ErrorType}";
+                    message += $" | {apiException.ErrorType} | {apiException.ErrorField}";
                 else
                     message += $" | {context.Exception.Message}";
                 _logger.LogAppInformation(title: "ACTION_OUTPUT", message: message, sw: _sw);

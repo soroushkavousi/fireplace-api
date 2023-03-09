@@ -113,7 +113,7 @@ namespace FireplaceApi.Domain.Validators
         {
             var maximumLength = 2000;
             if (content.Length > maximumLength)
-                throw new PostContentInvalidValueException(content);
+                throw new PostContentInvalidFormatException(content);
         }
 
         public void ValidateRequestingUserCanAlterPost(User requestingUser,

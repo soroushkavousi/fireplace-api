@@ -40,5 +40,13 @@ namespace FireplaceApi.Domain.Services
                 _emailValidator.EmailIdentifier);
             return email;
         }
+
+        public async Task<Email> PatchEmailAsync(User requestingUser, string newAddress)
+        {
+            await _emailValidator.ValidatePatchEmailInputParametersAsync(requestingUser, newAddress);
+            var email = await _emailOperator.PatchEmailByIdentifierAsync(
+                _emailValidator.EmailIdentifier, address: newAddress);
+            return email;
+        }
     }
 }

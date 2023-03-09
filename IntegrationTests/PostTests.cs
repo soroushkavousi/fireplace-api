@@ -2,6 +2,9 @@
 using FireplaceApi.Application.IntegrationTests.Models;
 using FireplaceApi.Application.IntegrationTests.Tools;
 using FireplaceApi.Domain.Extensions;
+using FireplaceApi.Domain.Interfaces;
+using FireplaceApi.Domain.Models;
+using FireplaceApi.Domain.Tools;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -20,6 +23,7 @@ namespace FireplaceApi.Application.IntegrationTests
         private readonly ILogger<PostTests> _logger;
         private readonly ClientPool _clientPool;
         private readonly TestUtils _testUtils;
+        private readonly ICommunityRepository _communityRepository;
 
         public PostTests(ApiIntegrationTestFixture fixture)
         {
@@ -28,6 +32,7 @@ namespace FireplaceApi.Application.IntegrationTests
             _logger = _fixture.ServiceProvider.GetRequiredService<ILogger<PostTests>>();
             _clientPool = _fixture.ClientPool;
             _testUtils = _fixture.TestUtils;
+            _communityRepository = _fixture.ServiceProvider.GetRequiredService<ICommunityRepository>();
         }
 
         [Fact]
@@ -40,13 +45,13 @@ namespace FireplaceApi.Application.IntegrationTests
 
                 var narutoUser = await _clientPool.CreateNarutoUserAsync();
                 var animeCommunityName = "anime-community";
-                var animeCommunity = await CommunityTests.CreateCommunityAsync(_testUtils,
+                var animeCommunity = await CommunityTests.CreateCommunityWithRepositoryAsync(_communityRepository,
                     narutoUser, animeCommunityName);
                 var postContent = "Sample Post Content";
-                var createdPost = await CreatePostAsync(_testUtils, narutoUser, animeCommunityName, postContent);
-                var retrievedPost = await GetPostAsync(narutoUser, createdPost.Id);
+                var createdPost = await CreatePostWithApiAsync(_testUtils, narutoUser, animeCommunityName, postContent);
+                var retrievedPost = await GetPostWithApiAsync(narutoUser, createdPost.Id);
                 Assert.Equal(createdPost.Id, retrievedPost.Id);
-                var animePosts = await ListPostsAsync(narutoUser, animeCommunityName);
+                var animePosts = await ListPostsWithApiAsync(narutoUser, animeCommunityName);
                 Assert.Single(animePosts.Items);
                 Assert.Equal(createdPost.Id, animePosts.Items[0].Id);
 
@@ -59,7 +64,7 @@ namespace FireplaceApi.Application.IntegrationTests
             }
         }
 
-        public static async Task<PostDto> CreatePostAsync(TestUtils testUtils, TestUser user,
+        public static async Task<PostDto> CreatePostWithApiAsync(TestUtils testUtils, TestUser user,
             string communityEncodedIdOrName, string postContent)
         {
             var request = new HttpRequestMessage(HttpMethod.Post,
@@ -78,7 +83,16 @@ namespace FireplaceApi.Application.IntegrationTests
             return createdPost;
         }
 
-        public static async Task<PostDto> GetPostAsync(TestUser user, string postEncodedId)
+        public static async Task<Post> CreatePostWithRepositoryAsync(IPostRepository postRepository,
+            TestUser user, ulong communityId, string communityName, string postContent)
+        {
+            var newId = await IdGenerator.GenerateNewIdAsync();
+            var createdPost = await postRepository.CreatePostAsync(newId, user.Id, user.Username, communityId, communityName, postContent);
+            Assert.NotNull(createdPost);
+            return createdPost;
+        }
+
+        public static async Task<PostDto> GetPostWithApiAsync(TestUser user, string postEncodedId)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"/posts/{postEncodedId}");
             var response = await user.SendRequestAsync(request);
@@ -89,7 +103,7 @@ namespace FireplaceApi.Application.IntegrationTests
             return retrievedPost;
         }
 
-        public static async Task<QueryResultDto<PostDto>> ListPostsAsync(TestUser user, string communityEncodedIdOrName)
+        public static async Task<QueryResultDto<PostDto>> ListPostsWithApiAsync(TestUser user, string communityEncodedIdOrName)
         {
             var baseUrl = $"/communities/{communityEncodedIdOrName}/posts";
             var queryParameters = new Dictionary<string, string>()

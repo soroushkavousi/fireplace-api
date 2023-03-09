@@ -105,6 +105,10 @@ namespace FireplaceApi.Application.Controllers
             [nameof(UserController.LogInWithEmailAsync)] = Example1,
             [nameof(UserController.LogInWithUsernameAsync)] = Example1,
             [nameof(UserController.GetRequestingUserAsync)] = Example1,
+            [nameof(UserController.CreateRequestingUserPasswordAsync)] = new OpenApiNull(),
+            [nameof(UserController.SendResetPasswordCodeAsync)] = new OpenApiNull(),
+            [nameof(UserController.ResetPasswordWithCodeAsync)] = new OpenApiNull(),
+            [nameof(UserController.PatchRequestingUserPasswordAsync)] = new OpenApiNull(),
             [nameof(UserController.PatchRequestingUserAsync)] = Example1,
             [nameof(UserController.DeleteRequestingUserAsync)] = new OpenApiNull(),
         };
