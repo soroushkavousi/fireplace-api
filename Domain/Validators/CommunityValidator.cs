@@ -38,7 +38,7 @@ namespace FireplaceApi.Domain.Validators
         }
 
         public async Task ValidateGetCommunityByIdentifierInputParametersAsync(
-            User requestingUser, CommunityIdentifier identifier, bool? includeCreator)
+            CommunityIdentifier identifier)
         {
             await ValidateCommunityIdentifierExists(identifier);
         }

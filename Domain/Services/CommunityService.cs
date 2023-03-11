@@ -38,13 +38,13 @@ namespace FireplaceApi.Domain.Services
             return communities;
         }
 
-        public async Task<Community> GetCommunityByIdentifierAsync(User requestingUser,
-            CommunityIdentifier identifier, bool? includeCreator)
+        public async Task<Community> GetCommunityByIdentifierAsync(
+            CommunityIdentifier identifier)
         {
             await _communityValidator.ValidateGetCommunityByIdentifierInputParametersAsync(
-                requestingUser, identifier, includeCreator);
+                identifier);
             var community = await _communityOperator.GetCommunityByIdentifierAsync(
-                identifier, includeCreator.Value);
+                identifier, false);
             return community;
         }
 

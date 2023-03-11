@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Application.Controllers;
-using FireplaceApi.Application.Middlewares;
+﻿using FireplaceApi.Application.Middlewares;
 using FireplaceApi.Application.Resolvers;
 using HotChocolate.Execution.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,9 +29,15 @@ namespace FireplaceApi.Application.Extensions
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            return builder
-                .AddQueryType<GraphQLController>()
-                .AddTypeExtension<QueryCommunityResolvers>();
+            builder = builder
+                .AddQueryType<GraphQLQuery>()
+                .AddTypeExtension<CommunityQueryResolvers>();
+
+            builder = builder
+                .AddMutationType<GraphQLMutation>()
+                .AddTypeExtension<CommunityMutationResolvers>();
+
+            return builder;
         }
     }
 }

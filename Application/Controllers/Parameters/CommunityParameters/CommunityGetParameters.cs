@@ -58,15 +58,4 @@ namespace FireplaceApi.Application.Controllers
             Identifier = applicationValidator.ValidateEncodedIdOrName(EncodedIdOrName);
         }
     }
-
-    public class GetCommunityInputQueryParameters : IValidator
-    {
-        [FromQuery(Name = "include_creator")]
-        public bool IncludeCreator { get; set; } = true;
-
-        public void Validate(IServiceProvider serviceProvider)
-        {
-
-        }
-    }
 }

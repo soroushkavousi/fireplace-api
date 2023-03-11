@@ -39,7 +39,6 @@ namespace FireplaceApi.Application.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(QueryResultDto<CommunityDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<QueryResultDto<CommunityDto>>> ListCommunitiesAsync(
-            [BindNever][FromHeader] User requestingUser,
             [FromQuery] ListCommunitiesInputQueryParameters inputQueryParameters)
         {
             var queryResult = new QueryResult<Community>(null, null);
@@ -66,12 +65,10 @@ namespace FireplaceApi.Application.Controllers
         [HttpGet("{id-or-name}")]
         [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommunityDto>> GetCommunityByIdOrNameAsync(
-            [BindNever][FromHeader] User requestingUser,
-            [FromRoute] GetCommunityByIdOrNameInputRouteParameters inputRouteParameters,
-            [FromQuery] GetCommunityInputQueryParameters inputQueryParameters)
+            [FromRoute] GetCommunityByIdOrNameInputRouteParameters inputRouteParameters)
         {
-            var community = await _communityService.GetCommunityByIdentifierAsync
-                (requestingUser, inputRouteParameters.Identifier, inputQueryParameters.IncludeCreator);
+            var community = await _communityService.GetCommunityByIdentifierAsync(
+                inputRouteParameters.Identifier);
             var communityDto = _communityConverter.ConvertToDto(community);
             return communityDto;
         }

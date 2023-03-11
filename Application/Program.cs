@@ -2,6 +2,7 @@ using FireplaceApi.Application.Attributes;
 using FireplaceApi.Application.Controllers;
 using FireplaceApi.Application.Extensions;
 using FireplaceApi.Application.Middlewares;
+using FireplaceApi.Application.Tool;
 using FireplaceApi.Application.Tools;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Infrastructure.Entities;
@@ -189,9 +190,12 @@ namespace FireplaceApi.Application
             builder.Services.AddHostedService<StatusCheckerService>();
             builder.Services.AddHostedService<ConfigLoaderService>();
 
-            builder.Services.AddGraphQLServer()
+            builder.Services
+                .AddGraphQLServer()
                 .UseGraphQLPipeline()
-                .AddGraphQLResolvers();
+                .AddGraphQLResolvers()
+                .AddHttpRequestInterceptor<GraphQLHttpRequestInterceptor>();
+
         }
 
         private WebApplication CreateApp(WebApplicationBuilder builder)
