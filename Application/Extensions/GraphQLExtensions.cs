@@ -18,7 +18,8 @@ namespace FireplaceApi.Application.Extensions
 
             return builder
                 .UseDefaultPipeline()
-                .UseSampleGraphQLRequestMiddleware();
+                .UseSampleGraphQLRequestMiddleware()
+                .UseField<ResolverLoggingFieldMiddleware>();
         }
 
         public static IRequestExecutorBuilder AddGraphQLResolvers(
