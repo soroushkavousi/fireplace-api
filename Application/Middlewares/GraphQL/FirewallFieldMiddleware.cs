@@ -58,7 +58,7 @@ namespace FireplaceApi.Application.Middlewares
         public static bool IsResolverAUserEndpoint(this IMiddlewareContext context)
         {
             var field = (ObjectField)context.GetType().GetProperty("Field").GetValue(context, null);
-            var isUserEndpoint = field.ResolverMember.GetCustomAttribute<AllowAnonymousAttribute>() != null;
+            var isUserEndpoint = field.ResolverMember.GetCustomAttribute<AllowAnonymousAttribute>() == null;
             return isUserEndpoint;
         }
     }
