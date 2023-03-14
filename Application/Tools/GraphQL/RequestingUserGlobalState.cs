@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Application.Tool
 {
-    public class GraphQLHttpRequestInterceptor : DefaultHttpRequestInterceptor
+    public class RequestingUserGlobalState : DefaultHttpRequestInterceptor
     {
         public override ValueTask OnCreateAsync(HttpContext context,
             IRequestExecutor requestExecutor, IQueryRequestBuilder requestBuilder,

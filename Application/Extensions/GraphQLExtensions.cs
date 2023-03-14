@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Application.Middlewares;
 using FireplaceApi.Application.Resolvers;
 using HotChocolate.Execution.Configuration;
+using HotChocolate.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -39,6 +40,14 @@ namespace FireplaceApi.Application.Extensions
                 .AddTypeExtension<CommunityMutationResolvers>();
 
             return builder;
+        }
+
+        public static bool IsResolverAQueryOrMutationExtendedType(this IMiddlewareContext context)
+        {
+            var typeName = context.ObjectType.Name;
+            if (typeName == nameof(GraphQLQuery) || typeName == nameof(GraphQLMutation))
+                return true;
+            return false;
         }
     }
 }

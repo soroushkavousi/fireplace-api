@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Application.Resolvers;
+﻿using FireplaceApi.Application.Extensions;
 using FireplaceApi.Domain.Extensions;
 using HotChocolate.Resolvers;
 using HotChocolate.Types;
@@ -23,13 +23,24 @@ namespace FireplaceApi.Application.Middlewares
 
         public async Task InvokeAsync(IMiddlewareContext context)
         {
-            var name = context.ObjectType.Name;
-            if (name != nameof(GraphQLQuery) && name != nameof(GraphQLMutation))
+            if (!context.IsResolverAQueryOrMutationExtendedType())
             {
                 await _next(context);
                 return;
             }
             var sw = Stopwatch.StartNew();
+            var inputs = context.GetResolverInputs();
+            var fieldName = context.GetResolverName();
+            _logger.LogAppInformation(message: $"resolver: {fieldName}", title: "RESOLVER_INPUT", parameters: inputs);
+            await _next(context);
+            _logger.LogAppInformation(sw: sw, message: $"resolver: {fieldName}", title: "RESOLVER_OUTPUT", parameters: context.Result);
+        }
+    }
+
+    public static class ResolverLoggingFieldMiddlewareExtensions
+    {
+        internal static Dictionary<string, object> GetResolverInputs(this IMiddlewareContext context)
+        {
             var arguments = (IReadOnlyDictionary<string, ArgumentValue>)context.GetType().GetProperty("Arguments").GetValue(context, null);
             var argumentKeys = arguments.Keys;
             var inputs = new Dictionary<string, object>();
@@ -38,11 +49,14 @@ namespace FireplaceApi.Application.Middlewares
                 var value = context.ArgumentValue<object>(key);
                 inputs.Add(key, value);
             }
+            return inputs;
+        }
+
+        internal static string GetResolverName(this IMiddlewareContext context)
+        {
             var field = (ObjectField)context.GetType().GetProperty("Field").GetValue(context, null);
             var fieldName = field.Name.ToUpper();
-            _logger.LogAppInformation(message: $"resolver: {fieldName}", title: "RESOLVER_INPUT", parameters: inputs);
-            await _next(context);
-            _logger.LogAppInformation(sw: sw, message: $"resolver: {fieldName}", title: "RESOLVER_OUTPUT", parameters: context.Result);
+            return fieldName;
         }
     }
 }

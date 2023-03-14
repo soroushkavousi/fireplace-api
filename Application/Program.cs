@@ -194,7 +194,7 @@ namespace FireplaceApi.Application
                 .AddGraphQLServer()
                 .UseGraphQLPipeline()
                 .AddGraphQLResolvers()
-                .AddHttpRequestInterceptor<GraphQLHttpRequestInterceptor>();
+                .AddHttpRequestInterceptor<RequestingUserGlobalState>();
 
         }
 
