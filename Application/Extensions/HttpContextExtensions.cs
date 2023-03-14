@@ -13,11 +13,12 @@ namespace FireplaceApi.Application.Extensions
     {
         private static readonly string _inputHeaderParametersKey = "InputHeaderParameters";
         private static readonly string _inputCookieParametersKey = "InputCookieParameters";
+        private static readonly string _accessTokenKey = "AccessToken";
 
         public static InputHeaderParameters GetInputHeaderParameters(this HttpContext httpContext)
         {
-            if (httpContext.Items.ContainsKey(_inputHeaderParametersKey))
-                return httpContext.Items[_inputHeaderParametersKey].To<InputHeaderParameters>();
+            if (httpContext.Items.TryGetValue(_inputHeaderParametersKey, out object value))
+                return value.To<InputHeaderParameters>();
 
             var inputHeaderParameters = new InputHeaderParameters(httpContext);
             httpContext.Items[_inputHeaderParametersKey] = inputHeaderParameters;
@@ -26,12 +27,28 @@ namespace FireplaceApi.Application.Extensions
 
         public static InputCookieParameters GetInputCookieParameters(this HttpContext httpContext)
         {
-            if (httpContext.Items.ContainsKey(_inputCookieParametersKey))
-                return httpContext.Items[_inputCookieParametersKey].To<InputCookieParameters>();
+            if (httpContext.Items.TryGetValue(_inputCookieParametersKey, out object value))
+                return value.To<InputCookieParameters>();
 
             var inputCookieParameters = new InputCookieParameters(httpContext);
             httpContext.Items[_inputCookieParametersKey] = inputCookieParameters;
             return inputCookieParameters;
+        }
+
+        public static string GetAccessTokenValue(this HttpContext httpContext)
+        {
+            if (httpContext.Items.TryGetValue(_accessTokenKey, out object value))
+                return value.To<string>();
+
+            var inputHeaderParameters = httpContext.GetInputHeaderParameters();
+            var inputCookieParameters = httpContext.GetInputCookieParameters();
+
+            var accessTokenValue = inputHeaderParameters.AccessTokenValue;
+            if (string.IsNullOrWhiteSpace(accessTokenValue))
+                accessTokenValue = inputCookieParameters.AccessTokenValue;
+
+            httpContext.Items[_accessTokenKey] = accessTokenValue;
+            return accessTokenValue;
         }
 
         public static User GetRequestingUser(this HttpContext httpContext)

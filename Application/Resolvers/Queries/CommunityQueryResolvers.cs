@@ -5,6 +5,7 @@ using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Services;
 using HotChocolate;
 using HotChocolate.Types;
+using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Application.Resolvers
@@ -12,6 +13,7 @@ namespace FireplaceApi.Application.Resolvers
     [ExtendObjectType(typeof(GraphQLQuery))]
     public class CommunityQueryResolvers
     {
+        [AllowAnonymous]
         public async Task<QueryResultDto<CommunityDto>> GetCommunitiesAsync(
             [Service(ServiceKind.Resolver)] CommunityService communityService,
             [Service(ServiceKind.Resolver)] CommunityValidator communityValidator,
@@ -24,6 +26,7 @@ namespace FireplaceApi.Application.Resolvers
             return queryResultDto;
         }
 
+        [AllowAnonymous]
         public async Task<CommunityDto> GetCommunityAsync(
             [Service(ServiceKind.Resolver)] CommunityService communityService,
             [Service(ServiceKind.Resolver)] CommunityValidator communityValidator,
