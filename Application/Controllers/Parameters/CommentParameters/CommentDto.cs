@@ -32,7 +32,7 @@ namespace FireplaceApi.Application.Controllers
         public DateTime CreationDate { get; set; }
         [Required]
         public DateTime? ModifiedDate { get; set; }
-        public UserDto Author { get; set; }
+        public ProfileDto Author { get; set; }
         public PostDto Post { get; set; }
         public List<CommentDto> ChildComments { get; set; }
         public List<string> MoreChildCommentIds { get; set; }
@@ -151,7 +151,7 @@ namespace FireplaceApi.Application.Controllers
         public CommentDto(string id, string authorId, string authorUsername,
             string postId, int vote, VoteType requestingUserVote,
             string content, DateTime creationDate, string parentCommentId = null,
-            DateTime? modifiedDate = null, UserDto author = null, PostDto post = null,
+            DateTime? modifiedDate = null, ProfileDto author = null, PostDto post = null,
             List<CommentDto> childComments = null, List<string> moreChildCommentIds = null)
         {
             Id = id;

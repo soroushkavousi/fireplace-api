@@ -1,7 +1,6 @@
 ﻿using FireplaceApi.Application.Controllers;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Tools;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 
@@ -23,12 +22,8 @@ namespace FireplaceApi.Application.Converters
             if (email == null)
                 return null;
 
-            UserDto userDto = null;
-            if (email.User != null)
-                userDto = _serviceProvider.GetService<UserConverter>().ConvertToDto(email.User.PureCopy());
-
             var emailDto = new EmailDto(email.Id.IdEncode(), email.UserId.IdEncode(), email.Address,
-                email.Activation.Status.ToString(), userDto);
+                email.Activation.Status.ToString());
 
             return emailDto;
         }

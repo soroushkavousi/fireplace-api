@@ -42,25 +42,6 @@ namespace FireplaceApi.Application.Controllers
         }
 
         /// <summary>
-        /// Get a single session.
-        /// </summary>
-        /// <returns>Requested session</returns>
-        /// <response code="200">The session was successfully retrieved.</response>
-        [HttpGet("{id}")]
-        [ProducesResponseType(typeof(SessionDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<SessionDto>> GetSessionByIdAsync(
-            [BindNever][FromHeader] User requestingUser,
-            [FromRoute] GetSessionByIdInputRouteParameters inputRouteParameters,
-            [FromQuery] GetSessionByIdInputQueryParameters inputQueryParameters)
-        {
-            var session = await _sessionService.GetSessionByIdAsync(requestingUser, inputRouteParameters.Id,
-                inputQueryParameters.IncludeUser);
-            var sessionDto = _sessionConverter.ConvertToDto(session);
-            return sessionDto;
-        }
-
-
-        /// <summary>
         /// Revoke session or session.
         /// </summary>
         /// <returns>Created basic authentication</returns>

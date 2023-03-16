@@ -25,10 +25,10 @@ namespace FireplaceApi.Application.Converters
             if (comment == null)
                 return null;
 
-            UserDto authorDto = null;
+            ProfileDto authorDto = null;
             if (comment.Author != null)
                 authorDto = _serviceProvider.GetService<UserConverter>()
-                    .ConvertToDto(comment.Author.PureCopy());
+                    .ConvertToProfileDto(comment.Author.PureCopy());
 
             PostDto postDto = null;
             if (comment.Post != null)

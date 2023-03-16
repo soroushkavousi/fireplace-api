@@ -23,10 +23,10 @@ namespace FireplaceApi.Application.Converters
             if (post == null)
                 return null;
 
-            UserDto authorDto = null;
+            ProfileDto profileDto = null;
             if (post.Author != null)
-                authorDto = _serviceProvider.GetService<UserConverter>()
-                    .ConvertToDto(post.Author.PureCopy());
+                profileDto = _serviceProvider.GetService<UserConverter>()
+                    .ConvertToProfileDto(post.Author.PureCopy());
 
             CommunityDto communityDto = null;
             if (post.Community != null)
@@ -37,7 +37,7 @@ namespace FireplaceApi.Application.Converters
                 post.AuthorId.IdEncode(), post.AuthorUsername,
                 post.CommunityId.IdEncode(), post.CommunityName,
                 post.Vote, post.RequestingUserVote, post.Content,
-                post.CreationDate, post.ModifiedDate, authorDto, communityDto);
+                post.CreationDate, post.ModifiedDate, profileDto, communityDto);
 
             return postDto;
         }

@@ -32,7 +32,7 @@ namespace FireplaceApi.Application.Controllers
         public DateTime CreationDate { get; set; }
         [Required]
         public DateTime? ModifiedDate { get; set; }
-        public UserDto Author { get; set; }
+        public ProfileDto Author { get; set; }
         public CommunityDto Community { get; set; }
 
         public static OpenApiObject PureExample1 { get; } = new OpenApiObject
@@ -138,7 +138,7 @@ namespace FireplaceApi.Application.Controllers
 
         public PostDto(string id, string authorId, string authorUsername, string communityId,
             string communityName, int vote, VoteType requestingUserVote, string content,
-            DateTime creationDate, DateTime? modifiedDate, UserDto author = null,
+            DateTime creationDate, DateTime? modifiedDate, ProfileDto author = null,
             CommunityDto community = null)
         {
             Id = id;
