@@ -21,6 +21,7 @@ namespace FireplaceApi.Application.Extensions
                 .UseDefaultPipeline()
                 .UseSampleGraphQLRequestMiddleware()
                 .UseField<ResolverLoggingFieldMiddleware>()
+                .UseField<ApiExceptionFieldMiddleware>()
                 .UseField<FirewallFieldMiddleware>();
         }
 

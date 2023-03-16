@@ -3,7 +3,6 @@ using FireplaceApi.Application.Tools;
 using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Exceptions;
 using FireplaceApi.Domain.Extensions;
-using FireplaceApi.Domain.Identifiers;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Operators;
 using Microsoft.AspNetCore.Builder;
@@ -36,35 +35,11 @@ namespace FireplaceApi.Application.Middlewares
             }
             catch (Exception ex)
             {
-                var apiException = ex switch
-                {
-                    ApiException apiExceptionObject => apiExceptionObject,
-                    _ => new InternalServerException(Error.InternalServerError.ServerMessage, systemException: ex),
-                };
-                var error = await CreateErrorAsync(apiException, errorOperator);
+                var error = await errorOperator.GetErrorAsync(ex);
                 httpContext.Items[Constants.ErrorKey] = error;
                 await ReportError(error, errorConverter, httpContext);
             }
             _logger.LogAppTrace(sw: sw, title: "EXCEPTION_MIDDLEWARE");
-        }
-
-        private async Task<Error> CreateErrorAsync(ApiException apiException, ErrorOperator errorOperator)
-        {
-            var sw = Stopwatch.StartNew();
-            var error = await errorOperator.GetErrorAsync(apiException.ErrorIdentifier);
-            if (error == null)
-            {
-                _logger.LogAppError("Can't fill error details from database!", sw, parameters: apiException);
-                var errorTypeGeneralIdentifier = ErrorIdentifier.OfTypeAndField(apiException.ErrorType, FieldName.GENERAL);
-                error = await errorOperator.GetErrorAsync(errorTypeGeneralIdentifier);
-                error ??= Error.InternalServerError;
-            }
-
-            error.Field = apiException.ErrorField;
-            error.ServerMessage = apiException.ErrorServerMessage;
-            error.Exception = apiException.Exception;
-            error.Parameters = apiException.Parameters;
-            return error;
         }
 
         private async Task ReportError(Error error, ErrorConverter errorConverter, HttpContext httpContext)
