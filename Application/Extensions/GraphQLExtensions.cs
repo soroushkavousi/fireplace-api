@@ -35,7 +35,9 @@ namespace FireplaceApi.Application.Extensions
 
             builder = builder
                 .AddQueryType<GraphQLQuery>()
-                .AddTypeExtension<CommunityQueryResolvers>();
+                .AddTypeExtension<CommunityQueryResolvers>()
+                .AddTypeExtension<CommunityPostQueryResolvers>()
+                .AddTypeExtension<PostQueryResolvers>();
 
             builder = builder
                 .AddMutationType<GraphQLMutation>()
