@@ -42,7 +42,7 @@ namespace FireplaceApi.Application.Resolvers
             [Service(ServiceKind.Resolver)] PostValidator postValidator,
             [Service] PostConverter postConverter,
             [User] User requestingUser,
-            string search, SortType? sort = null)
+            [GraphQLNonNullType] string search, SortType? sort = null)
         {
             var queryResult = await postService.ListPostsAsync(search, sort, requestingUser);
             var queryResultDto = postConverter.ConvertToDto(queryResult);
@@ -55,7 +55,7 @@ namespace FireplaceApi.Application.Resolvers
             [Service(ServiceKind.Resolver)] PostValidator postValidator,
             [Service] PostConverter postConverter,
             [User] User requestingUser,
-            string id)
+            [GraphQLNonNullType] string id)
         {
             var ulongId = postValidator.ValidateEncodedIdFormat(id, FieldName.POST_ID).Value;
             var post = await postService.GetPostByIdAsync(ulongId, false, false, requestingUser);

@@ -24,10 +24,10 @@ namespace FireplaceApi.Domain.Services
             _communityOperator = communityOperator;
         }
 
-        public async Task<QueryResult<Community>> ListCommunitiesAsync(string name, SortType? sort)
+        public async Task<QueryResult<Community>> ListCommunitiesAsync(string search, SortType? sort)
         {
-            await _communityValidator.ValidateListCommunitiesInputParametersAsync(name, sort);
-            var queryResult = await _communityOperator.ListCommunitiesAsync(name, sort);
+            await _communityValidator.ValidateListCommunitiesInputParametersAsync(search, sort);
+            var queryResult = await _communityOperator.ListCommunitiesAsync(search, sort);
             return queryResult;
         }
 

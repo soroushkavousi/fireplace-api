@@ -22,7 +22,7 @@ namespace FireplaceApi.Application.Resolvers
             [Service(ServiceKind.Resolver)] CommunityConverter communityConverter,
             [Service] IServiceProvider serviceProvider,
             [User] User requestingUser,
-            CreateCommunityInput input)
+            [GraphQLNonNullType] CreateCommunityInput input)
         {
             input.Validate(serviceProvider);
             var community = await communityService.CreateCommunityAsync(requestingUser, input.Name);

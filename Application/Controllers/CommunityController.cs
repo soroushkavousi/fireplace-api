@@ -49,7 +49,7 @@ namespace FireplaceApi.Application.Controllers
             }
             else
             {
-                queryResult = await _communityService.ListCommunitiesAsync(inputQueryParameters.Name,
+                queryResult = await _communityService.ListCommunitiesAsync(inputQueryParameters.Search,
                     inputQueryParameters.Sort);
             }
             var queryResultDto = _communityConverter.ConvertToDto(queryResult);

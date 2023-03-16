@@ -32,6 +32,7 @@ namespace FireplaceApi.Application.Validators
                     nameof(FieldName.RESET_PASSWORD_CODE) => new ResetPasswordCodeMissingFieldException(),
                     nameof(FieldName.GOOGLE_CODE) => new PasswordMissingFieldException(),
                     nameof(FieldName.IS_UPVOTE) => new IsUpvoteMissingFieldException(),
+                    nameof(FieldName.SEARCH) => new SearchMissingFieldException(),
                     _ => new InternalServerException("Field not known in missing fields!"),
                 };
             }

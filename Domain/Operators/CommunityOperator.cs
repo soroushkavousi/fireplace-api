@@ -23,10 +23,10 @@ namespace FireplaceApi.Domain.Operators
             _communityRepository = communityRepository;
         }
 
-        public async Task<QueryResult<Community>> ListCommunitiesAsync(string name, SortType? sort)
+        public async Task<QueryResult<Community>> ListCommunitiesAsync(string search, SortType? sort)
         {
             sort ??= Constants.DefaultSort;
-            var communities = await _communityRepository.ListCommunitiesAsync(name, sort);
+            var communities = await _communityRepository.ListCommunitiesAsync(search, sort);
             var queryResult = new QueryResult<Community>(communities);
             return queryResult;
         }

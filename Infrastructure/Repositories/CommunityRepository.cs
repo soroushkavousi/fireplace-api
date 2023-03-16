@@ -32,15 +32,15 @@ namespace FireplaceApi.Infrastructure.Repositories
             _communityConverter = communityConverter;
         }
 
-        public async Task<List<Community>> ListCommunitiesAsync(string name, SortType? sort)
+        public async Task<List<Community>> ListCommunitiesAsync(string search, SortType? sort)
         {
-            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { name });
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { search });
             var sw = Stopwatch.StartNew();
             var communityEntities = await _communityEntities
                 .AsNoTracking()
                 .Search(
                     identifier: null,
-                    search: name,
+                    search: search,
                     sort: sort ?? SortType.NEW
                 )
                 .Take(Configs.Current.QueryResult.TotalLimit)
@@ -168,7 +168,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                throw new InternalServerException("Can't update the community name DbUpdateConcurrencyException!",
+                throw new InternalServerException("Can't update the community search DbUpdateConcurrencyException!",
                     parameters: new { id, newCommunityName, rowAffectedCount }, systemException: ex);
             }
 

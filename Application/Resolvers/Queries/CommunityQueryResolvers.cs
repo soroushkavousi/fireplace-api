@@ -18,10 +18,10 @@ namespace FireplaceApi.Application.Resolvers
             [Service(ServiceKind.Resolver)] CommunityService communityService,
             [Service(ServiceKind.Resolver)] CommunityValidator communityValidator,
             [Service] CommunityConverter communityConverter,
-            string name, CommunitySortType? sort = null)
+            [GraphQLNonNullType] string search, CommunitySortType? sort = null)
         {
             var sortType = sort.HasValue ? (SortType)sort.Value : (SortType?)null;
-            var queryResult = await communityService.ListCommunitiesAsync(name, sortType);
+            var queryResult = await communityService.ListCommunitiesAsync(search, sortType);
             var queryResultDto = communityConverter.ConvertToDto(queryResult);
             return queryResultDto;
         }
@@ -31,7 +31,7 @@ namespace FireplaceApi.Application.Resolvers
             [Service(ServiceKind.Resolver)] CommunityService communityService,
             [Service(ServiceKind.Resolver)] CommunityValidator communityValidator,
             [Service] CommunityConverter communityConverter,
-            string idOrName)
+            [GraphQLNonNullType] string idOrName)
         {
             var communityIdentifier = communityValidator.ValidateEncodedIdOrName(idOrName);
             var community = await communityService.GetCommunityByIdentifierAsync(communityIdentifier);

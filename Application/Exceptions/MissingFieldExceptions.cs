@@ -115,4 +115,13 @@ namespace FireplaceApi.Application.Exceptions
             )
         { }
     }
+
+    public class SearchMissingFieldException : MissingFieldException
+    {
+        public SearchMissingFieldException()
+            : base(
+                errorField: FieldName.SEARCH
+            )
+        { }
+    }
 }
