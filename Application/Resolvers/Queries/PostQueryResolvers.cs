@@ -15,16 +15,14 @@ using System.Threading.Tasks;
 namespace FireplaceApi.Application.Resolvers
 {
     [ExtendObjectType(typeof(CommunityDto))]
-    public class CommunityPostQueryResolvers
+    public class CommunityPostsQueryResolvers
     {
         [AllowAnonymous]
         public async Task<QueryResultDto<PostDto>> GetPostsAsync(
             [Service(ServiceKind.Resolver)] PostService postService,
             [Service(ServiceKind.Resolver)] PostValidator postValidator,
-            [Service] PostConverter postConverter,
-            [User] User requestingUser,
-            [Parent] CommunityDto community,
-            SortType? sort = null)
+            [Service] PostConverter postConverter, [User] User requestingUser, 
+            [Parent] CommunityDto community, SortType? sort = null)
         {
             var communityIdentifier = CommunityIdentifier.OfId(community.Id.IdDecode());
             var queryResult = await postService.ListCommunityPostsAsync(communityIdentifier, sort, requestingUser);
@@ -40,8 +38,7 @@ namespace FireplaceApi.Application.Resolvers
         public async Task<QueryResultDto<PostDto>> GetPostsAsync(
             [Service(ServiceKind.Resolver)] PostService postService,
             [Service(ServiceKind.Resolver)] PostValidator postValidator,
-            [Service] PostConverter postConverter,
-            [User] User requestingUser,
+            [Service] PostConverter postConverter, [User] User requestingUser,
             [GraphQLNonNullType] string search, SortType? sort = null)
         {
             var queryResult = await postService.ListPostsAsync(search, sort, requestingUser);
@@ -53,8 +50,7 @@ namespace FireplaceApi.Application.Resolvers
         public async Task<PostDto> GetPostAsync(
             [Service(ServiceKind.Resolver)] PostService postService,
             [Service(ServiceKind.Resolver)] PostValidator postValidator,
-            [Service] PostConverter postConverter,
-            [User] User requestingUser,
+            [Service] PostConverter postConverter, [User] User requestingUser,
             [GraphQLNonNullType] string id)
         {
             var ulongId = postValidator.ValidateEncodedIdFormat(id, FieldName.POST_ID).Value;
