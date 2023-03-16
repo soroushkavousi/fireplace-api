@@ -108,9 +108,9 @@ namespace FireplaceApi.Application.Controllers
             [FromRoute] GetPostByIdInputRouteParameters inputRouteParameters,
             [FromQuery] GetPostByIdInputQueryParameters inputQueryParameters)
         {
-            var post = await _postService
-                .GetPostByIdAsync(requestingUser, inputRouteParameters.Id,
-                inputQueryParameters.IncludeAuthor, inputQueryParameters.IncludeCommunity);
+            var post = await _postService.GetPostByIdAsync(inputRouteParameters.Id,
+                inputQueryParameters.IncludeAuthor, inputQueryParameters.IncludeCommunity,
+                requestingUser);
             var postDto = _postConverter.ConvertToDto(post);
             return postDto;
         }
