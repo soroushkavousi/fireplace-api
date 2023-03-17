@@ -21,6 +21,7 @@ namespace FireplaceApi.Application.Controllers
         public string CreatorUsername { get; set; }
         [Required]
         public DateTime CreationDate { get; set; }
+        public QueryResultDto<PostDto> Posts { get; set; }
 
         public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
@@ -86,13 +87,15 @@ namespace FireplaceApi.Application.Controllers
         }
 
         public CommunityDto(string id, string name, string creatorId,
-            string creatorUsername, DateTime creationDate)
+            string creatorUsername, DateTime creationDate,
+            QueryResultDto<PostDto> posts = null)
         {
             Id = id;
             Name = name;
             CreatorId = creatorId;
             CreatorUsername = creatorUsername;
             CreationDate = creationDate;
+            Posts = posts;
         }
     }
 }

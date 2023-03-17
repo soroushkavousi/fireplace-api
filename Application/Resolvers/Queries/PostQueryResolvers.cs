@@ -14,23 +14,6 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Application.Resolvers
 {
-    [ExtendObjectType(typeof(CommunityDto))]
-    public class CommunityPostsQueryResolvers
-    {
-        [AllowAnonymous]
-        public async Task<QueryResultDto<PostDto>> GetPostsAsync(
-            [Service(ServiceKind.Resolver)] PostService postService,
-            [Service(ServiceKind.Resolver)] PostValidator postValidator,
-            [Service] PostConverter postConverter, [User] User requestingUser, 
-            [Parent] CommunityDto community, SortType? sort = null)
-        {
-            var communityIdentifier = CommunityIdentifier.OfId(community.Id.IdDecode());
-            var queryResult = await postService.ListCommunityPostsAsync(communityIdentifier, sort, requestingUser);
-            var queryResultDto = postConverter.ConvertToDto(queryResult);
-            return queryResultDto;
-        }
-    }
-
     [ExtendObjectType(typeof(GraphQLQuery))]
     public class PostQueryResolvers
     {
@@ -55,6 +38,39 @@ namespace FireplaceApi.Application.Resolvers
         {
             var ulongId = postValidator.ValidateEncodedIdFormat(id, FieldName.POST_ID).Value;
             var post = await postService.GetPostByIdAsync(ulongId, false, false, requestingUser);
+            var postDto = postConverter.ConvertToDto(post);
+            return postDto;
+        }
+    }
+
+    [ExtendObjectType(typeof(CommunityDto))]
+    public class CommunityPostsQueryResolvers
+    {
+        [AllowAnonymous]
+        public async Task<QueryResultDto<PostDto>> GetPostsAsync(
+            [Service(ServiceKind.Resolver)] PostService postService,
+            [Service(ServiceKind.Resolver)] PostValidator postValidator,
+            [Service] PostConverter postConverter, [User] User requestingUser,
+            [Parent] CommunityDto community, SortType? sort = null)
+        {
+            var communityIdentifier = CommunityIdentifier.OfId(community.Id.IdDecode());
+            var queryResult = await postService.ListCommunityPostsAsync(communityIdentifier, sort, requestingUser);
+            var queryResultDto = postConverter.ConvertToDto(queryResult);
+            return queryResultDto;
+        }
+    }
+
+    [ExtendObjectType(typeof(CommentDto))]
+    public class CommentPostQueryResolvers
+    {
+        [AllowAnonymous]
+        public async Task<PostDto> GetPostAsync(
+            [Service(ServiceKind.Resolver)] PostService postService,
+            [Service(ServiceKind.Resolver)] PostValidator postValidator,
+            [Service] PostConverter postConverter, [User] User requestingUser,
+            [Parent] CommentDto comment)
+        {
+            var post = await postService.GetPostByIdAsync(comment.PostId.IdDecode(), false, false, requestingUser);
             var postDto = postConverter.ConvertToDto(post);
             return postDto;
         }
