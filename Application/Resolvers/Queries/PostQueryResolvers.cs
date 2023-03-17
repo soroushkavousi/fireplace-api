@@ -75,4 +75,21 @@ namespace FireplaceApi.Application.Resolvers
             return postDto;
         }
     }
+
+    [ExtendObjectType(typeof(UserDto))]
+    public class UserPostsQueryResolvers
+    {
+        [AllowAnonymous]
+        public async Task<QueryResultDto<PostDto>> GetPostsAsync(
+            [Service(ServiceKind.Resolver)] PostService postService,
+            [Service(ServiceKind.Resolver)] PostValidator postValidator,
+            [Service] PostConverter postConverter,
+            [User] User requestingUser, [Parent] UserDto user,
+            SortType? sort = null)
+        {
+            var queryResult = await postService.ListSelfPostsAsync(requestingUser, sort);
+            var queryResultDto = postConverter.ConvertToDto(queryResult);
+            return queryResultDto;
+        }
+    }
 }

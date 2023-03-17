@@ -47,4 +47,21 @@ namespace FireplaceApi.Application.Resolvers
             return queryResultDto;
         }
     }
+
+    [ExtendObjectType(typeof(UserDto))]
+    public class UserCommentsQueryResolvers
+    {
+        [AllowAnonymous]
+        public async Task<QueryResultDto<CommentDto>> GetCommentsAsync(
+            [Service(ServiceKind.Resolver)] CommentService commentService,
+            [Service(ServiceKind.Resolver)] CommentValidator commentValidator,
+            [Service] CommentConverter commentConverter,
+            [User] User requestingUser, [Parent] UserDto user,
+            SortType? sort = null)
+        {
+            var queryResult = await commentService.ListSelfCommentsAsync(requestingUser, sort);
+            var queryResultDto = commentConverter.ConvertToDto(queryResult);
+            return queryResultDto;
+        }
+    }
 }
