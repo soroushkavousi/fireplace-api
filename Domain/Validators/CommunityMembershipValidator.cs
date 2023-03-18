@@ -31,6 +31,7 @@ namespace FireplaceApi.Domain.Validators
         public async Task ValidateCreateCommunityMembershipInputParametersAsync(User requestingUser,
             CommunityIdentifier communityIdentifier)
         {
+            await _communityValidator.ValidateCommunityIdentifierExistsAsync(communityIdentifier);
             UserIdentifier = UserIdentifier.OfId(requestingUser.Id);
             CommunityMembershipIdentifier = CommunityMembershipIdentifier
                 .OfUserAndCommunity(UserIdentifier, communityIdentifier);
@@ -40,17 +41,12 @@ namespace FireplaceApi.Domain.Validators
         public async Task ValidateDeleteCommunityMembershipInputParametersAsync(User requestingUser,
             CommunityIdentifier communityIdentifier)
         {
+            var community = await _communityValidator.ValidateCommunityIdentifierExistsByGettingAsync(communityIdentifier);
+            ValidateUserIsNotTheOwnerOfTheCommunity(requestingUser, community);
             UserIdentifier = UserIdentifier.OfId(requestingUser.Id);
             CommunityMembershipIdentifier = CommunityMembershipIdentifier
                 .OfUserAndCommunity(UserIdentifier, communityIdentifier);
             await ValidateCommunityMembershipAlreadyExists(CommunityMembershipIdentifier);
-        }
-
-        public void ValidateRequestingUserCanAlterCommunityMembership(User requestingUser,
-            CommunityMembership communityMembership)
-        {
-            if (requestingUser.Id != communityMembership.UserId)
-                throw new CommunityMembershipAccessDeniedException(requestingUser.Id, communityMembership.Id);
         }
 
         public async Task<bool> ValidateCommunityMembershipDoesNotAlreadyExist(
@@ -77,6 +73,14 @@ namespace FireplaceApi.Domain.Validators
                 throw new CommunityMembershipNotExistException(identifier);
 
             return false;
+        }
+
+        public void ValidateUserIsNotTheOwnerOfTheCommunity(User user, Community community)
+        {
+            if (community.CreatorId == user.Id)
+                throw new CommunityMembershipAccessDeniedException(user.Id, community.Id);
+
+            return;
         }
     }
 }

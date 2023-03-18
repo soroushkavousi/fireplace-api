@@ -47,7 +47,7 @@ namespace FireplaceApi.Application.Controllers
         }
 
         /// <summary>
-        /// Exit from a community.
+        /// Leave a community.
         /// </summary>
         /// <returns>No content</returns>
         /// <response code="200">The community membership was successfully deleted.</response>
