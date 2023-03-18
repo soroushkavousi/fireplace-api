@@ -4,6 +4,7 @@ using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Tools;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Domain.Operators
@@ -25,6 +26,17 @@ namespace FireplaceApi.Domain.Operators
             _communityMembershipRepository = communityMembershipRepository;
             _userOperator = userOperator;
             _communityOperator = communityOperator;
+        }
+
+        public async Task<List<CommunityMembership>> SearchCommunityMembershipsAsync(
+            UserIdentifier userIdentifier = null, CommunityIdentifier communityIdentifier = null,
+            bool includeUser = false, bool includeCommunity = false)
+        {
+            var communityMemberships = await _communityMembershipRepository
+                .SearchCommunityMembershipsAsync(userIdentifier, communityIdentifier,
+                    includeUser, includeCommunity);
+
+            return communityMemberships;
         }
 
         public async Task<CommunityMembership> GetCommunityMembershipByIdentifierAsync(

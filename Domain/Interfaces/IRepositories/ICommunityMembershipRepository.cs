@@ -1,11 +1,15 @@
 ﻿using FireplaceApi.Domain.Identifiers;
 using FireplaceApi.Domain.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Domain.Interfaces
 {
     public interface ICommunityMembershipRepository
     {
+        public Task<List<CommunityMembership>> SearchCommunityMembershipsAsync(
+            UserIdentifier userIdentifier = null, CommunityIdentifier communityIdentifier = null,
+            bool includeUser = false, bool includeCommunity = false);
         public Task<CommunityMembership> GetCommunityMembershipByIdentifierAsync(
             CommunityMembershipIdentifier identifier, bool includeUser = false,
             bool includeCommunity = false);

@@ -7,6 +7,7 @@ using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -28,6 +29,33 @@ namespace FireplaceApi.Infrastructure.Repositories
             _dbContext = dbContext;
             _communityMembershipEntities = dbContext.CommunityMembershipEntities;
             _communityMembershipConverter = communityMembershipConverter;
+        }
+
+        public async Task<List<CommunityMembership>> SearchCommunityMembershipsAsync(
+            UserIdentifier userIdentifier = null, CommunityIdentifier communityIdentifier = null,
+            bool includeUser = false, bool includeCommunity = false)
+        {
+            _logger.LogAppInformation(title: "DATABASE_INPUT",
+                parameters: new { userIdentifier, communityIdentifier });
+            var sw = Stopwatch.StartNew();
+            var communityMembershipEntity = await _communityMembershipEntities
+                .AsNoTracking()
+                .Search(
+                    identifier: null,
+                    userIdentifier: userIdentifier,
+                    communityIdentifier: communityIdentifier
+                )
+                .Include(
+                    userEntity: includeUser,
+                    communityEntity: includeCommunity
+                )
+                .Take(Configs.Current.QueryResult.TotalLimit)
+                .ToListAsync();
+
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { ids = communityMembershipEntity.Select(e => e.Id) });
+            return communityMembershipEntity.Select(
+                _communityMembershipConverter.ConvertToModel).ToList();
         }
 
         public async Task<CommunityMembership> GetCommunityMembershipByIdentifierAsync(

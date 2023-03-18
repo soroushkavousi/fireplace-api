@@ -5,8 +5,11 @@ using FireplaceApi.Domain.Interfaces;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Tools;
 using FireplaceApi.Domain.ValueObjects;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Domain.Operators
@@ -14,12 +17,14 @@ namespace FireplaceApi.Domain.Operators
     public class CommunityOperator
     {
         private readonly ILogger<CommunityOperator> _logger;
+        private readonly IServiceProvider _serviceProvider;
         private readonly ICommunityRepository _communityRepository;
 
         public CommunityOperator(ILogger<CommunityOperator> logger,
-            ICommunityRepository communityRepository)
+            IServiceProvider serviceProvider, ICommunityRepository communityRepository)
         {
             _logger = logger;
+            _serviceProvider = serviceProvider;
             _communityRepository = communityRepository;
         }
 
@@ -27,6 +32,17 @@ namespace FireplaceApi.Domain.Operators
         {
             sort ??= Constants.DefaultSort;
             var communities = await _communityRepository.ListCommunitiesAsync(search, sort);
+            var queryResult = new QueryResult<Community>(communities);
+            return queryResult;
+        }
+
+        public async Task<QueryResult<Community>> ListJoinedCommunitiesAsync(User requestingUser, SortType? sort)
+        {
+            sort ??= Constants.DefaultSort;
+            var communityMembershipOperator = _serviceProvider.GetService<CommunityMembershipOperator>();
+            var communityMemberships = await communityMembershipOperator.SearchCommunityMembershipsAsync(
+                userIdentifier: UserIdentifier.OfId(requestingUser.Id), includeCommunity: true);
+            var communities = communityMemberships.Select(cm => cm.Community).ToList();
             var queryResult = new QueryResult<Community>(communities);
             return queryResult;
         }

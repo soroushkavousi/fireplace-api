@@ -32,6 +32,11 @@ namespace FireplaceApi.Domain.Validators
             await Task.CompletedTask;
         }
 
+        public async Task ValidateListJoinedCommunitiesInputParametersAsync(User requestingUser, SortType? sort)
+        {
+            await Task.CompletedTask;
+        }
+
         public async Task ValidateListCommunitiesByIdsInputParametersAsync(List<ulong> ids)
         {
             await Task.CompletedTask;

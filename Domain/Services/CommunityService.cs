@@ -31,6 +31,13 @@ namespace FireplaceApi.Domain.Services
             return queryResult;
         }
 
+        public async Task<QueryResult<Community>> ListJoinedCommunitiesAsync(User requestingUser, SortType? sort)
+        {
+            await _communityValidator.ValidateListJoinedCommunitiesInputParametersAsync(requestingUser, sort);
+            var queryResult = await _communityOperator.ListJoinedCommunitiesAsync(requestingUser, sort);
+            return queryResult;
+        }
+
         public async Task<List<Community>> ListCommunitiesByIdsAsync(List<ulong> ids)
         {
             await _communityValidator.ValidateListCommunitiesByIdsInputParametersAsync(ids);
