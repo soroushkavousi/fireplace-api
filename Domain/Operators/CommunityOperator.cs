@@ -86,6 +86,9 @@ namespace FireplaceApi.Domain.Operators
                 id => DoesCommunityIdentifierExistAsync(CommunityIdentifier.OfId(id)));
             var community = await _communityRepository.CreateCommunityAsync(
                 id, name, requestingUser.Id, requestingUser.Username);
+            var communityMembershipOperator = _serviceProvider.GetService<CommunityMembershipOperator>();
+            var membership = await communityMembershipOperator
+                .CreateCommunityMembershipAsync(requestingUser, CommunityIdentifier.OfId(community.Id));
             return community;
         }
 
