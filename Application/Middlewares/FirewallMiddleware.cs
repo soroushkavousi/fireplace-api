@@ -84,6 +84,7 @@ namespace FireplaceApi.Application.Middlewares
                 || httpMethod == HttpMethod.Patch)
             {
                 CheckRequestContentType(httpContext.Request);
+
                 if (httpContext.Request.ContentType.Contains("application/json")
                     || httpContext.Request.ContentType.Contains("application/merge-patch+json"))
                 {
@@ -118,9 +119,12 @@ namespace FireplaceApi.Application.Middlewares
             if (httpContext.Request.Method.IsSafeHttpMethod())
                 return;
 
+            httpContext.Request.Cookies.TryGetValue(Tools.Constants.CsrfTokenKey, out string cookieCsrfToken);
+            if (string.IsNullOrWhiteSpace(cookieCsrfToken))
+                return;
+
             httpContext.Request.Headers.TryGetValue(Tools.Constants.CsrfTokenKey, out StringValues headerCsrfTokenStringValues);
             var headerCsrfToken = headerCsrfTokenStringValues.ToString();
-            httpContext.Request.Cookies.TryGetValue(Tools.Constants.CsrfTokenKey, out string cookieCsrfToken);
             if (headerCsrfToken != cookieCsrfToken)
                 throw new CsrfTokenAuthenticationFailedException(headerCsrfToken, cookieCsrfToken);
         }
