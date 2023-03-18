@@ -124,4 +124,13 @@ namespace FireplaceApi.Application.Exceptions
             )
         { }
     }
+
+    public class RequestBodyMissingFieldException : MissingFieldException
+    {
+        public RequestBodyMissingFieldException()
+            : base(
+                errorField: ApplicationFieldName.REQUEST_BODY
+            )
+        { }
+    }
 }

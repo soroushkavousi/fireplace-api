@@ -242,6 +242,11 @@ namespace FireplaceApi.Application
                 options.InjectJavascript("https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js");
                 options.InjectJavascript("https://apis.google.com/js/platform.js");
                 options.InjectJavascript("/swagger-ui/custom-swagger-ui.js");
+                options.UseRequestInterceptor("(req) => {" +
+                        "if (req.method == 'POST' && !('Content-Type' in req.headers))" +
+                            "req.headers['Content-Type'] = 'application/json';" +
+                        "return req; " +
+                    "}");
             });
 
             app.UseExceptionMiddleware();
