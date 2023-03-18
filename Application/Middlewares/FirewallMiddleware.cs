@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Application.Attributes;
-using FireplaceApi.Application.Controllers;
 using FireplaceApi.Application.Exceptions;
 using FireplaceApi.Application.Extensions;
 using FireplaceApi.Domain.Exceptions;
@@ -34,15 +33,15 @@ namespace FireplaceApi.Application.Middlewares
         public async Task InvokeAsync(HttpContext httpContext, Firewall firewall, IAntiforgery antiforgery)
         {
             var sw = Stopwatch.StartNew();
+            var firewallCheckStopWatch = Stopwatch.StartNew();
             var isUserEndpoint = httpContext.GetActionAttribute<IAllowAnonymous>() == null;
             var requestPath = httpContext.Request.Path.Value;
-            if (!requestPath.Contains("graphql"))
+            if (!requestPath.StartsWith("/graphql"))
                 ValidateCsrfToken(httpContext, isUserEndpoint);
             await ControlRequestBody(httpContext, firewall);
 
+            var accessTokenValue = httpContext.GetAccessTokenValue();
             var inputHeaderParameters = httpContext.GetInputHeaderParameters();
-            var inputCookieParameters = httpContext.GetInputCookieParameters();
-            var accessTokenValue = FindAccessTokenValue(inputHeaderParameters, inputCookieParameters);
             var ipAddress = inputHeaderParameters.IpAddress;
 
             User requestingUser = null;
@@ -58,21 +57,21 @@ namespace FireplaceApi.Application.Middlewares
                 }
             }
 
-            if (!requestPath.Contains("graphql"))
+            if (isUserEndpoint)
             {
-                if (isUserEndpoint || requestingUser != null)
-                {
+                if (!requestPath.StartsWith("/graphql"))
                     firewall.ValidateRequestingUserExists(requestingUser, accessTokenValue);
+
+                if (requestingUser != null)
                     await firewall.CheckUser(requestingUser, ipAddress);
-                }
-                else
-                {
-                    await firewall.CheckGuest(ipAddress);
-                }
+            }
+            else
+            {
+                await firewall.CheckGuest(ipAddress);
             }
 
             GenerateAndSetCsrfTokenAsCookie(httpContext, antiforgery);
-            _logger.LogAppInformation(sw: sw, title: "FIREWALL_CHECK_DURATION");
+            _logger.LogAppInformation(sw: firewallCheckStopWatch, title: "FIREWALL_CHECK_DURATION");
             await _next(httpContext);
             _logger.LogAppInformation(sw: sw, title: "FIREWALL_MIDDLEWARE");
         }
@@ -85,6 +84,7 @@ namespace FireplaceApi.Application.Middlewares
                 || httpMethod == HttpMethod.Patch)
             {
                 CheckRequestContentType(httpContext.Request);
+
                 if (httpContext.Request.ContentType.Contains("application/json")
                     || httpContext.Request.ContentType.Contains("application/merge-patch+json"))
                 {
@@ -92,15 +92,6 @@ namespace FireplaceApi.Application.Middlewares
                     ValidateRequestBodyIsJson(requestBody);
                 }
             }
-        }
-
-        protected string FindAccessTokenValue(InputHeaderParameters inputHeaderParameters,
-            InputCookieParameters inputCookieParameters)
-        {
-            var accessTokenValue = inputHeaderParameters.AccessTokenValue;
-            if (string.IsNullOrWhiteSpace(accessTokenValue))
-                accessTokenValue = inputCookieParameters.AccessTokenValue;
-            return accessTokenValue;
         }
 
         public void CheckRequestContentType(HttpRequest request)
@@ -128,9 +119,12 @@ namespace FireplaceApi.Application.Middlewares
             if (httpContext.Request.Method.IsSafeHttpMethod())
                 return;
 
+            httpContext.Request.Cookies.TryGetValue(Tools.Constants.CsrfTokenKey, out string cookieCsrfToken);
+            if (string.IsNullOrWhiteSpace(cookieCsrfToken))
+                return;
+
             httpContext.Request.Headers.TryGetValue(Tools.Constants.CsrfTokenKey, out StringValues headerCsrfTokenStringValues);
             var headerCsrfToken = headerCsrfTokenStringValues.ToString();
-            httpContext.Request.Cookies.TryGetValue(Tools.Constants.CsrfTokenKey, out string cookieCsrfToken);
             if (headerCsrfToken != cookieCsrfToken)
                 throw new CsrfTokenAuthenticationFailedException(headerCsrfToken, cookieCsrfToken);
         }

@@ -21,7 +21,7 @@ namespace FireplaceApi.Application.Controllers
         public string CreatorUsername { get; set; }
         [Required]
         public DateTime CreationDate { get; set; }
-        public UserDto Creator { get; set; }
+        public QueryResultDto<PostDto> Posts { get; set; }
 
         public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
@@ -30,7 +30,6 @@ namespace FireplaceApi.Application.Controllers
             [nameof(CreatorId).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Id).ToSnakeCase()],
             [nameof(CreatorUsername).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Username).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
-            [nameof(Creator).ToSnakeCase()] = new OpenApiNull(),
         };
         public static OpenApiObject PureExample2 { get; } = new OpenApiObject
         {
@@ -39,7 +38,6 @@ namespace FireplaceApi.Application.Controllers
             [nameof(CreatorId).ToSnakeCase()] = UserDto.PureExample2[nameof(Id).ToSnakeCase()],
             [nameof(CreatorUsername).ToSnakeCase()] = UserDto.PureExample2[nameof(UserDto.Username).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
-            [nameof(Creator).ToSnakeCase()] = new OpenApiNull(),
         };
 
         public static OpenApiArray PureListExample1 { get; } = new OpenApiArray
@@ -54,7 +52,6 @@ namespace FireplaceApi.Application.Controllers
             [nameof(CreatorId).ToSnakeCase()] = PureExample1[nameof(CreatorId).ToSnakeCase()],
             [nameof(CreatorUsername).ToSnakeCase()] = PureExample1[nameof(CreatorUsername).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = PureExample1[nameof(CreationDate).ToSnakeCase()],
-            [nameof(Creator).ToSnakeCase()] = PureExample1[nameof(Creator).ToSnakeCase()],
         };
         public static OpenApiObject Example2 { get; } = new OpenApiObject
         {
@@ -63,7 +60,6 @@ namespace FireplaceApi.Application.Controllers
             [nameof(CreatorId).ToSnakeCase()] = PureExample2[nameof(CreatorId).ToSnakeCase()],
             [nameof(CreatorUsername).ToSnakeCase()] = PureExample2[nameof(CreatorUsername).ToSnakeCase()],
             [nameof(CreationDate).ToSnakeCase()] = PureExample2[nameof(CreationDate).ToSnakeCase()],
-            [nameof(Creator).ToSnakeCase()] = PureExample2[nameof(Creator).ToSnakeCase()],
         };
         public static OpenApiArray ListExample1 { get; } = new OpenApiArray
         {
@@ -91,14 +87,15 @@ namespace FireplaceApi.Application.Controllers
         }
 
         public CommunityDto(string id, string name, string creatorId,
-            string creatorUsername, DateTime creationDate, UserDto creator = null)
+            string creatorUsername, DateTime creationDate,
+            QueryResultDto<PostDto> posts = null)
         {
             Id = id;
             Name = name;
             CreatorId = creatorId;
             CreatorUsername = creatorUsername;
             CreationDate = creationDate;
-            Creator = creator;
+            Posts = posts;
         }
     }
 }

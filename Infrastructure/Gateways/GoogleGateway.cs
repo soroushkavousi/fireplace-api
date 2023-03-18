@@ -63,8 +63,10 @@ namespace FireplaceApi.Infrastructure.Gateways
                 var tokenResponse = await flow.ExchangeCodeForTokenAsync("", code,
                    redirectUrl, CancellationToken.None);
 
-                var jwt = new Jwt(tokenResponse.IdToken);
-                var idTokenPayload = jwt.ExtractPayload<Payload>();
+                var idTokenPayload = await ValidateAsync(tokenResponse.IdToken);
+                if (idTokenPayload == null)
+                    throw new InternalServerException("Google id token is not valid!");
+
                 var googleUser = new GoogleUserToken(code, tokenResponse.AccessToken,
                     tokenResponse.TokenType, tokenResponse.ExpiresInSeconds.Value,
                     tokenResponse.RefreshToken, tokenResponse.Scope, tokenResponse.IdToken,
@@ -72,14 +74,10 @@ namespace FireplaceApi.Infrastructure.Gateways
                     idTokenPayload.IssuedAtTimeSeconds.Value, idTokenPayload.Name,
                     idTokenPayload.GivenName, idTokenPayload.FamilyName,
                     idTokenPayload.Locale, idTokenPayload.Picture);
+
                 _logger.LogAppInformation(sw: sw, parameters: new { googleUser });
 
                 return googleUser;
-
-                // TODO
-                //var urlTest = authorizationCodeRequest.Build();
-                //var url = urlTest.AbsoluteUri;
-                //var validPayload = await GoogleJsonWebSignature.ValidateAsync(tokenResponse.IdToken, new ValidateSettings);
             }
             catch (Exception ex)
             {

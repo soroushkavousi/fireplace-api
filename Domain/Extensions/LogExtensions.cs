@@ -124,7 +124,6 @@ namespace FireplaceApi.Domain.Extensions
             return logMessage;
         }
 
-
         public static long Finish(this Stopwatch sw)
         {
             if (sw == null)

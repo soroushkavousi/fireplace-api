@@ -4,6 +4,7 @@ using FireplaceApi.Domain.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 
 namespace FireplaceApi.Application.Converters
 {
@@ -23,14 +24,18 @@ namespace FireplaceApi.Application.Converters
             if (community == null)
                 return null;
 
-            UserDto creatorDto = null;
-            if (community.Creator != null)
-                creatorDto = _serviceProvider.GetService<UserConverter>()
-                    .ConvertToDto(community.Creator.PureCopy());
+            QueryResultDto<PostDto> postDtos = null;
+            if (community.Posts != null)
+            {
+                community.Posts.Items = community.Posts.Items
+                    .Select(comment => comment.PureCopy()).ToList();
+                postDtos = _serviceProvider.GetService<PostConverter>()
+                    .ConvertToDto(community.Posts);
+            }
 
             var communityDto = new CommunityDto(community.Id.IdEncode(), community.Name,
                 community.CreatorId.IdEncode(), community.CreatorUsername,
-                community.CreationDate, creatorDto);
+                community.CreationDate, postDtos);
 
             return communityDto;
         }

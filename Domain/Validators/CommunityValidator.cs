@@ -27,7 +27,7 @@ namespace FireplaceApi.Domain.Validators
             _communityOperator = communityOperator;
         }
 
-        public async Task ValidateListCommunitiesInputParametersAsync(string name, SortType? sort)
+        public async Task ValidateListCommunitiesInputParametersAsync(string search, SortType? sort)
         {
             await Task.CompletedTask;
         }
@@ -38,7 +38,7 @@ namespace FireplaceApi.Domain.Validators
         }
 
         public async Task ValidateGetCommunityByIdentifierInputParametersAsync(
-            User requestingUser, CommunityIdentifier identifier, bool? includeCreator)
+            CommunityIdentifier identifier)
         {
             await ValidateCommunityIdentifierExists(identifier);
         }
@@ -71,15 +71,15 @@ namespace FireplaceApi.Domain.Validators
         {
             if (Regexes.CommunityNameMinLength.IsMatch(communityName) == false)
                 return throwException ? throw new CommunityNameInvalidFormatException(communityName,
-                    "The community name doesn't have the minimum length!") : false;
+                    "The community search doesn't have the minimum length!") : false;
 
             if (Regexes.CommunityNameMaxLength.IsMatch(communityName) == false)
                 return throwException ? throw new CommunityNameInvalidFormatException(communityName,
-                    "The community name has more characters than maximum length!") : false;
+                    "The community search has more characters than maximum length!") : false;
 
             if (Regexes.CommunityNameValidCharacters.IsMatch(communityName) == false)
                 return throwException ? throw new CommunityNameInvalidFormatException(communityName,
-                    "The community name doesn't have valid characters!") : false;
+                    "The community search doesn't have valid characters!") : false;
 
             return true;
         }

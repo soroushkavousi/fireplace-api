@@ -50,6 +50,7 @@ namespace FireplaceApi.Domain.Enums
         public static readonly FieldName CSRF_TOKEN = new();
         public static readonly FieldName USERNAME_AND_PASSWORD = new();
         public static readonly FieldName EMAIL_AND_PASSWORD = new();
+        public static readonly FieldName SEARCH = new();
 
         protected FieldName([CallerMemberName] string name = null) : base(name) { }
     }

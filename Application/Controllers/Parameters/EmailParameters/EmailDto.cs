@@ -18,7 +18,6 @@ namespace FireplaceApi.Application.Controllers
         public string Address { get; set; }
         [Required]
         public string ActivationStatus { get; set; }
-        public UserDto User { get; set; }
 
         public static OpenApiObject PureExample1 { get; } = new OpenApiObject
         {
@@ -26,7 +25,6 @@ namespace FireplaceApi.Application.Controllers
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(Address).ToSnakeCase()] = new OpenApiString("erenyeager@gmail.com"),
             [nameof(ActivationStatus).ToSnakeCase()] = new OpenApiString(Domain.Enums.ActivationStatus.COMPLETED.ToString()),
-            [nameof(User).ToSnakeCase()] = new OpenApiNull(),
         };
         public static OpenApiObject PureExample2 { get; } = new OpenApiObject
         {
@@ -34,7 +32,6 @@ namespace FireplaceApi.Application.Controllers
             [nameof(UserId).ToSnakeCase()] = null,
             [nameof(Address).ToSnakeCase()] = new OpenApiString("lelouchlamperouge@gmail.com"),
             [nameof(ActivationStatus).ToSnakeCase()] = new OpenApiString(Domain.Enums.ActivationStatus.SENT.ToString()),
-            [nameof(User).ToSnakeCase()] = new OpenApiNull(),
         };
         public static OpenApiArray PureListExample1 { get; } = new OpenApiArray
         {
@@ -47,7 +44,6 @@ namespace FireplaceApi.Application.Controllers
             [nameof(UserId).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Id).ToSnakeCase()],
             [nameof(Address).ToSnakeCase()] = PureExample1[nameof(Address).ToSnakeCase()],
             [nameof(ActivationStatus).ToSnakeCase()] = PureExample1[nameof(ActivationStatus).ToSnakeCase()],
-            [nameof(User).ToSnakeCase()] = UserDto.PureExample1,
         };
         public static OpenApiObject Example2 { get; } = new OpenApiObject
         {
@@ -55,7 +51,6 @@ namespace FireplaceApi.Application.Controllers
             [nameof(UserId).ToSnakeCase()] = UserDto.PureExample2[nameof(UserDto.Id).ToSnakeCase()],
             [nameof(Address).ToSnakeCase()] = PureExample2[nameof(Address).ToSnakeCase()],
             [nameof(ActivationStatus).ToSnakeCase()] = PureExample2[nameof(ActivationStatus).ToSnakeCase()],
-            [nameof(User).ToSnakeCase()] = UserDto.PureExample2,
         };
 
         public static OpenApiObject Example { get; } = Example1;
@@ -74,13 +69,12 @@ namespace FireplaceApi.Application.Controllers
         }
 
         public EmailDto(string id, string userId, string address,
-            string activationStatus, UserDto user = null)
+            string activationStatus)
         {
             Id = id;
             UserId = userId;
             Address = address;
             ActivationStatus = activationStatus;
-            User = user;
         }
     }
 }

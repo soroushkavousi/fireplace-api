@@ -54,11 +54,11 @@ namespace FireplaceApi.Domain.Services
             return queryResult;
         }
 
-        public async Task<Post> GetPostByIdAsync(User requestingUser, ulong id,
-            bool? includeAuthor, bool? includeCommunity)
+        public async Task<Post> GetPostByIdAsync(ulong id, bool? includeAuthor,
+            bool? includeCommunity, User requestingUser = null)
         {
             await _postValidator.ValidateGetPostByIdInputParametersAsync(
-                requestingUser, id, includeAuthor, includeCommunity);
+                id, includeAuthor, includeCommunity, requestingUser);
             var post = await _postOperator.GetPostByIdAsync(id,
                 includeAuthor.Value, includeCommunity.Value, requestingUser);
             return post;

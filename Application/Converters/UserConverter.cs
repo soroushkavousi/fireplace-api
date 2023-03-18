@@ -46,6 +46,17 @@ namespace FireplaceApi.Application.Converters
             return userDto;
         }
 
+        public ProfileDto ConvertToProfileDto(User user)
+        {
+            if (user == null)
+                return null;
+
+            var profileDto = new ProfileDto(user.Username, user.CreationDate,
+                user.DisplayName, user.About, user.AvatarUrl, user.BannerUrl);
+
+            return profileDto;
+        }
+
         public ProfileDto ConvertToDto(Profile profile)
         {
             if (profile == null)

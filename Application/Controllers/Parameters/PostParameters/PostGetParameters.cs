@@ -70,6 +70,9 @@ namespace FireplaceApi.Application.Controllers
             var applicationValidator = serviceProvider.GetService<PostValidator>();
             var domainValidator = applicationValidator.DomainValidator;
 
+            if (string.IsNullOrWhiteSpace(EncodedIds))
+                applicationValidator.ValidateFieldIsNotMissing(Search, FieldName.SEARCH);
+
             Sort = (SortType?)applicationValidator.ValidateInputEnum<CommunitySortType>(SortString);
 
             Ids = applicationValidator.ValidateIdsFormat(EncodedIds);

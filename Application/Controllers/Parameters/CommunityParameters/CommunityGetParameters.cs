@@ -14,8 +14,8 @@ namespace FireplaceApi.Application.Controllers
 {
     public class ListCommunitiesInputQueryParameters : IValidator
     {
-        [FromQuery(Name = "name")]
-        public string Name { get; set; }
+        [FromQuery(Name = "search")]
+        public string Search { get; set; }
 
         [FromQuery(Name = "sort")]
         [SwaggerEnum(Type = typeof(CommunitySortType))]
@@ -34,6 +34,9 @@ namespace FireplaceApi.Application.Controllers
         {
             var applicationValidator = serviceProvider.GetService<CommunityValidator>();
             var domainValidator = applicationValidator.DomainValidator;
+
+            if (string.IsNullOrWhiteSpace(EncodedIds))
+                applicationValidator.ValidateFieldIsNotMissing(Search, FieldName.SEARCH);
 
             Sort = (SortType?)applicationValidator.ValidateInputEnum<CommunitySortType>(SortString);
 
@@ -56,17 +59,6 @@ namespace FireplaceApi.Application.Controllers
             var domainValidator = applicationValidator.DomainValidator;
 
             Identifier = applicationValidator.ValidateEncodedIdOrName(EncodedIdOrName);
-        }
-    }
-
-    public class GetCommunityInputQueryParameters : IValidator
-    {
-        [FromQuery(Name = "include_creator")]
-        public bool IncludeCreator { get; set; } = true;
-
-        public void Validate(IServiceProvider serviceProvider)
-        {
-
         }
     }
 }

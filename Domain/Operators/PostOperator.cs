@@ -72,7 +72,7 @@ namespace FireplaceApi.Domain.Operators
         }
 
         public async Task<Post> GetPostByIdAsync(ulong id,
-            bool includeAuthor, bool includeCommunity, User requestingUser)
+            bool includeAuthor, bool includeCommunity, User requestingUser = null)
         {
             var post = await _postRepository.GetPostByIdAsync(
                 id, includeAuthor, includeCommunity, requestingUser);

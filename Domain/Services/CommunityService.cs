@@ -24,10 +24,10 @@ namespace FireplaceApi.Domain.Services
             _communityOperator = communityOperator;
         }
 
-        public async Task<QueryResult<Community>> ListCommunitiesAsync(string name, SortType? sort)
+        public async Task<QueryResult<Community>> ListCommunitiesAsync(string search, SortType? sort)
         {
-            await _communityValidator.ValidateListCommunitiesInputParametersAsync(name, sort);
-            var queryResult = await _communityOperator.ListCommunitiesAsync(name, sort);
+            await _communityValidator.ValidateListCommunitiesInputParametersAsync(search, sort);
+            var queryResult = await _communityOperator.ListCommunitiesAsync(search, sort);
             return queryResult;
         }
 
@@ -38,13 +38,13 @@ namespace FireplaceApi.Domain.Services
             return communities;
         }
 
-        public async Task<Community> GetCommunityByIdentifierAsync(User requestingUser,
-            CommunityIdentifier identifier, bool? includeCreator)
+        public async Task<Community> GetCommunityByIdentifierAsync(
+            CommunityIdentifier identifier)
         {
             await _communityValidator.ValidateGetCommunityByIdentifierInputParametersAsync(
-                requestingUser, identifier, includeCreator);
+                identifier);
             var community = await _communityOperator.GetCommunityByIdentifierAsync(
-                identifier, includeCreator.Value);
+                identifier, false);
             return community;
         }
 

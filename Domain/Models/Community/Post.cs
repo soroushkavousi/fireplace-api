@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Domain.Enums;
+using FireplaceApi.Domain.ValueObjects;
 using System;
 
 namespace FireplaceApi.Domain.Models
@@ -14,11 +15,13 @@ namespace FireplaceApi.Domain.Models
         public string Content { get; set; }
         public User Author { get; set; }
         public Community Community { get; set; }
+        public QueryResult<Comment> Comments { get; set; }
 
         public Post(ulong id, ulong authorId, string authorUsername,
             ulong communityId, string communityName, int vote, VoteType requestingUserVote,
             string content, DateTime creationDate, DateTime? modifiedDate = null,
-            User author = null, Community community = null)
+            User author = null, Community community = null,
+            QueryResult<Comment> comments = null)
             : base(id, creationDate, modifiedDate)
         {
             AuthorId = authorId;
@@ -30,10 +33,12 @@ namespace FireplaceApi.Domain.Models
             Content = content;
             Author = author;
             Community = community;
+            Comments = comments;
         }
 
         public Post PureCopy() => new(Id, AuthorId,
             AuthorUsername, CommunityId, CommunityName, Vote,
-            RequestingUserVote, Content, CreationDate, ModifiedDate);
+            RequestingUserVote, Content, CreationDate,
+            ModifiedDate);
     }
 }

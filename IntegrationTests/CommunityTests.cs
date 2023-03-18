@@ -124,7 +124,7 @@ namespace FireplaceApi.Application.IntegrationTests
             var baseUrl = $"/communities";
             var queryParameters = new Dictionary<string, string>()
             {
-                { "name", communityName },
+                { "search", communityName },
             };
             var requestUrl = QueryHelpers.AddQueryString(baseUrl, queryParameters);
             var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);

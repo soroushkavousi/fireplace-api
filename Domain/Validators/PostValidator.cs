@@ -51,8 +51,8 @@ namespace FireplaceApi.Domain.Validators
             await Task.CompletedTask;
         }
 
-        public async Task ValidateGetPostByIdInputParametersAsync(User requestingUser, ulong id,
-            bool? includeAuthor, bool? includeCommunity)
+        public async Task ValidateGetPostByIdInputParametersAsync(ulong id,
+            bool? includeAuthor, bool? includeCommunity, User requestingUser = null)
         {
             Post = await ValidatePostExistsAsync(id);
         }
