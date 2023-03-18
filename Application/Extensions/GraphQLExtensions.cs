@@ -38,6 +38,7 @@ namespace FireplaceApi.Application.Extensions
                 .AddTypeExtension<UserQueryResolvers>()
                 .AddTypeExtension<CommunityQueryResolvers>()
                 .AddTypeExtension<PostCommunityQueryResolvers>()
+                .AddTypeExtension<UserCommunitiesQueryResolvers>()
                 .AddTypeExtension<PostQueryResolvers>()
                 .AddTypeExtension<CommunityPostsQueryResolvers>()
                 .AddTypeExtension<CommentPostQueryResolvers>()

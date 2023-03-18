@@ -60,4 +60,22 @@ namespace FireplaceApi.Application.Resolvers
             return communityDto;
         }
     }
+
+    [ExtendObjectType(typeof(UserDto))]
+    public class UserCommunitiesQueryResolvers
+    {
+        [AllowAnonymous]
+        public async Task<QueryResultDto<CommunityDto>> GetJoinedCommunitiesAsync(
+            [Service(ServiceKind.Resolver)] CommunityService communityService,
+            [Service(ServiceKind.Resolver)] CommunityValidator communityValidator,
+            [Service] CommunityConverter communityConverter,
+            [User] User requestingUser, [Parent] UserDto user,
+            CommunitySortType? sort = null)
+        {
+            var sortType = sort.HasValue ? (SortType)sort.Value : (SortType?)null;
+            var queryResult = await communityService.ListJoinedCommunitiesAsync(requestingUser, sortType);
+            var queryResultDto = communityConverter.ConvertToDto(queryResult);
+            return queryResultDto;
+        }
+    }
 }
