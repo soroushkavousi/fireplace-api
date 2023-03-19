@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FireplaceApi.Infrastructure.Migrations
 {
     [DbContext(typeof(FireplaceApiDbContext))]
-    [Migration("20221110182819_MergeMigrations")]
+    [Migration("20230319190057_MergeMigrations")]
     partial class MergeMigrations
     {
         /// <inheritdoc />
@@ -23,7 +23,7 @@ namespace FireplaceApi.Infrastructure.Migrations
             modelBuilder
                 .HasAnnotation("Npgsql:CollationDefinition:case_insensitive", "en-u-ks-primary,en-u-ks-primary,icu,False")
                 .HasAnnotation("Npgsql:DefaultColumnCollation", "case_insensitive")
-                .HasAnnotation("ProductVersion", "7.0.0")
+                .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -36,7 +36,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now() at time zone 'utc'");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
@@ -44,7 +44,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<decimal>("UserEntityId")
                         .HasColumnType("numeric(20,0)");
 
-                    b.Property<string>("Parameters")
+                    b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -52,7 +52,7 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.HasIndex("UserEntityId");
 
-                    b.HasIndex("Parameters")
+                    b.HasIndex("Value")
                         .IsUnique();
 
                     b.ToTable("AccessTokenEntities");
@@ -77,7 +77,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now() at time zone 'utc'");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
@@ -117,7 +117,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now() at time zone 'utc'");
 
                     b.Property<bool>("IsUp")
                         .HasColumnType("boolean");
@@ -155,7 +155,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now() at time zone 'utc'");
 
                     b.Property<decimal>("CreatorEntityId")
                         .HasColumnType("numeric(20,0)");
@@ -167,7 +167,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Type")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -177,7 +177,7 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.HasIndex("CreatorEntityUsername");
 
-                    b.HasIndex("Type")
+                    b.HasIndex("Name")
                         .IsUnique();
 
                     b.HasIndex("CreatorEntityId", "CreatorEntityUsername");
@@ -200,7 +200,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now() at time zone 'utc'");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
@@ -239,7 +239,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now() at time zone 'utc'");
 
                     b.Property<ConfigsEntityData>("Data")
                         .IsRequired()
@@ -280,7 +280,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now() at time zone 'utc'");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
@@ -314,7 +314,11 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now() at time zone 'utc'");
+
+                    b.Property<string>("Field")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("HttpStatusCode")
                         .ValueGeneratedOnAdd()
@@ -326,16 +330,11 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasDefaultValue("INTERNAL_SERVER_GENERAL");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Code")
-                        .IsUnique();
-
-                    b.HasIndex("Type")
                         .IsUnique();
 
                     b.ToTable("ErrorEntities");
@@ -349,12 +348,12 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now() at time zone 'utc'");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Type")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -395,7 +394,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now() at time zone 'utc'");
 
                     b.Property<string>("FirstName")
                         .HasColumnType("text");
@@ -485,7 +484,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now() at time zone 'utc'");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
@@ -518,7 +517,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now() at time zone 'utc'");
 
                     b.Property<bool>("IsUp")
                         .HasColumnType("boolean");
@@ -551,6 +550,61 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.ToTable("PostVoteEntities");
                 });
 
+            modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.RequestTraceEntity", b =>
+                {
+                    b.Property<decimal>("Id")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<string>("Action")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now() at time zone 'utc'");
+
+                    b.Property<long>("Duration")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ErrorField")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ErrorType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("IP")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Method")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("StatusCode")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("text");
+
+                    b.Property<decimal?>("UserId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RequestTraceEntities");
+                });
+
             modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.SessionEntity", b =>
                 {
                     b.Property<decimal>("Id")
@@ -559,7 +613,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now() at time zone 'utc'");
 
                     b.Property<string>("IpAddress")
                         .IsRequired()
@@ -599,7 +653,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now() at time zone 'utc'");
 
                     b.Property<string>("DisplayName")
                         .HasColumnType("text");
@@ -703,7 +757,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.HasOne("FireplaceApi.Infrastructure.Entities.CommunityEntity", "CommunityEntity")
                         .WithMany("CommunityMemberEntities")
                         .HasForeignKey("CommunityEntityId", "CommunityEntityName")
-                        .HasPrincipalKey("Id", "Type")
+                        .HasPrincipalKey("Id", "Name")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -753,7 +807,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.HasOne("FireplaceApi.Infrastructure.Entities.CommunityEntity", "CommunityEntity")
                         .WithMany("PostEntities")
                         .HasForeignKey("CommunityEntityId", "CommunityEntityName")
-                        .HasPrincipalKey("Id", "Type")
+                        .HasPrincipalKey("Id", "Name")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
