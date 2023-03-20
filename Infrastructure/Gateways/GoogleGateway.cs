@@ -58,7 +58,7 @@ namespace FireplaceApi.Infrastructure.Gateways
                 });
 
                 var authorizationCodeRequest = flow.CreateAuthorizationCodeRequest(redirectUrl);
-                authorizationCodeRequest.State = "docs";
+                authorizationCodeRequest.State = "swagger";
 
                 var tokenResponse = await flow.ExchangeCodeForTokenAsync("", code,
                    redirectUrl, CancellationToken.None);
@@ -132,7 +132,7 @@ namespace FireplaceApi.Infrastructure.Gateways
 
             //var authorizationCodeRequest = flow.CreateAuthorizationCodeRequest(redirectUrl);
 
-            //authorizationCodeRequest.State = "docs";
+            //authorizationCodeRequest.State = "swagger";
             //var urlTest = authorizationCodeRequest.Build();
             //var url = urlTest.AbsoluteUri;
         }
@@ -145,7 +145,7 @@ namespace FireplaceApi.Infrastructure.Gateways
 
             return GetAuthUrl(_baseAuthUrl,
                 googleConfigs.ClientId, redirectUrl, "code",
-                "openid profile email", "online", "docs", "true", "page");
+                "openid profile email", "online", "swagger", "true", "page");
         }
 
         public string GetAuthUrl(string baseAuthUrl,
