@@ -38,16 +38,16 @@ namespace FireplaceApi.Application.Controllers
         [ProducesResponseType(typeof(CommunityMembershipDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CommunityMembershipDto>> CreateCommunityMembershipAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] CreateCommunityMembershipInputRouteParameters inputBodyParameters)
+            [FromRoute] CreateCommunityMembershipInputRouteParameters inputRouteParameters)
         {
             var communityMembership = await _communityMembershipService.CreateCommunityMembershipAsync(
-                requestingUser, inputBodyParameters.CommunityIdentifier);
+                requestingUser, inputRouteParameters.CommunityIdentifier);
             var communityMembershipDto = _communityMembershipConverter.ConvertToDto(communityMembership);
             return communityMembershipDto;
         }
 
         /// <summary>
-        /// Exit from a community.
+        /// Leave a community.
         /// </summary>
         /// <returns>No content</returns>
         /// <response code="200">The community membership was successfully deleted.</response>

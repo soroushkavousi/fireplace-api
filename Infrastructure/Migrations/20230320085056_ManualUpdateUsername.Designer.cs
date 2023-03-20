@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FireplaceApi.Infrastructure.Migrations
 {
     [DbContext(typeof(FireplaceApiDbContext))]
-    [Migration("20230308075803_ImproveErrorEntity3")]
-    partial class ImproveErrorEntity3
+    [Migration("20230320085056_ManualUpdateUsername")]
+    partial class ManualUpdateUsername
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,7 +23,7 @@ namespace FireplaceApi.Infrastructure.Migrations
             modelBuilder
                 .HasAnnotation("Npgsql:CollationDefinition:case_insensitive", "en-u-ks-primary,en-u-ks-primary,icu,False")
                 .HasAnnotation("Npgsql:DefaultColumnCollation", "case_insensitive")
-                .HasAnnotation("ProductVersion", "7.0.0")
+                .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);

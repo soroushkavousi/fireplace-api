@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FireplaceApi.Infrastructure.Migrations
 {
     [DbContext(typeof(FireplaceApiDbContext))]
-    [Migration("20230305165533_ImproveErrorEntity2")]
-    partial class ImproveErrorEntity2
+    [Migration("20230319190057_MergeMigrations")]
+    partial class MergeMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,7 +23,7 @@ namespace FireplaceApi.Infrastructure.Migrations
             modelBuilder
                 .HasAnnotation("Npgsql:CollationDefinition:case_insensitive", "en-u-ks-primary,en-u-ks-primary,icu,False")
                 .HasAnnotation("Npgsql:DefaultColumnCollation", "case_insensitive")
-                .HasAnnotation("ProductVersion", "7.0.0")
+                .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -328,12 +328,6 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasDefaultValue("INTERNAL_SERVER");
-
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("text");
@@ -577,9 +571,6 @@ namespace FireplaceApi.Infrastructure.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("ErrorField")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ErrorName")
                         .HasColumnType("text");
 
                     b.Property<string>("ErrorType")

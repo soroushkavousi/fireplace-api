@@ -32,7 +32,7 @@ namespace FireplaceApi.Domain.Validators
         public async Task ValidateListCommunityPostsInputParametersAsync(CommunityIdentifier communityIdentifier,
             SortType? sort, User requestingUser)
         {
-            await _communityValidator.ValidateCommunityIdentifierExists(communityIdentifier);
+            await _communityValidator.ValidateCommunityIdentifierExistsAsync(communityIdentifier);
         }
 
         public async Task ValidateListPostsInputParametersAsync(string search, SortType? sort, User requestingUser)
@@ -60,7 +60,7 @@ namespace FireplaceApi.Domain.Validators
         public async Task ValidateCreatePostInputParametersAsync(
             User requestingUser, CommunityIdentifier communityIdentifier, string content)
         {
-            await _communityValidator.ValidateCommunityIdentifierExists(communityIdentifier);
+            await _communityValidator.ValidateCommunityIdentifierExistsAsync(communityIdentifier);
         }
 
         public async Task ValidateVotePostInputParametersAsync(User requestingUser,

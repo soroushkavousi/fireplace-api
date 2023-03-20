@@ -57,6 +57,23 @@ namespace FireplaceApi.Application.Controllers
         }
 
         /// <summary>
+        /// List joined communities.
+        /// </summary>
+        /// <returns>List of communities</returns>
+        /// <response code="200">The communities was successfully retrieved.</response>
+        [HttpGet("joined")]
+        [ProducesResponseType(typeof(QueryResultDto<CommunityDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<QueryResultDto<CommunityDto>>> ListJoinedCommunitiesAsync(
+            [BindNever][FromHeader] User requestingUser,
+            [FromQuery] ListJoinedCommunitiesInputQueryParameters inputQueryParameters)
+        {
+            var queryResult = await _communityService.ListJoinedCommunitiesAsync(requestingUser,
+                inputQueryParameters.Sort);
+            var queryResultDto = _communityConverter.ConvertToDto(queryResult);
+            return queryResultDto;
+        }
+
+        /// <summary>
         /// Get a single community by id or name.
         /// </summary>
         /// <returns>Requested community</returns>

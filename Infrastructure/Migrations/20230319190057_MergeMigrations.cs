@@ -23,7 +23,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     EnvironmentName = table.Column<string>(type: "text", nullable: false)
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
                     Data = table.Column<ConfigsEntityData>(type: "jsonb", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -36,13 +36,15 @@ namespace FireplaceApi.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false, defaultValue: "INTERNAL_SERVER")
-                        .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
                     Code = table.Column<int>(type: "integer", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
+                    Field = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
                     ClientMessage = table.Column<string>(type: "text", nullable: false)
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
                     HttpStatusCode = table.Column<int>(type: "integer", nullable: false, defaultValue: 400),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -63,12 +65,44 @@ namespace FireplaceApi.Infrastructure.Migrations
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
                     RelativePhysicalPath = table.Column<string>(type: "text", nullable: true)
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FileEntities", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RequestTraceEntities",
+                columns: table => new
+                {
+                    Id = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    Method = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
+                    Action = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
+                    IP = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
+                    Country = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
+                    UserId = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
+                    Duration = table.Column<long>(type: "bigint", nullable: false),
+                    StatusCode = table.Column<int>(type: "integer", nullable: false),
+                    ErrorType = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
+                    ErrorField = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
+                    Url = table.Column<string>(type: "text", nullable: false)
+                        .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
+                    UserAgent = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
+                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RequestTraceEntities", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -92,7 +126,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
                     ResetPasswordCode = table.Column<string>(type: "text", nullable: true)
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -109,7 +143,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     UserEntityId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     Value = table.Column<string>(type: "text", nullable: false)
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -133,7 +167,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     CreatorEntityId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     CreatorEntityUsername = table.Column<string>(type: "text", nullable: false)
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -159,7 +193,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     ActivationStatus = table.Column<string>(type: "text", nullable: false)
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
                     ActivationCode = table.Column<int>(type: "integer", nullable: true),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -215,7 +249,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
                     RedirectToUserUrl = table.Column<string>(type: "text", nullable: true)
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -239,7 +273,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
                     State = table.Column<string>(type: "text", nullable: false)
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -264,7 +298,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     CommunityEntityId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     CommunityEntityName = table.Column<string>(type: "text", nullable: false)
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -275,7 +309,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                         name: "FK_CommunityMembershipEntities_CommunityEntities_CommunityEnti~",
                         columns: x => new { x.CommunityEntityId, x.CommunityEntityName },
                         principalTable: "CommunityEntities",
-                        principalColumns: new[] { "Id", "Type" },
+                        principalColumns: new[] { "Id", "Name" },
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CommunityMembershipEntities_UserEntities_UserEntityId_UserE~",
@@ -299,7 +333,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     Vote = table.Column<int>(type: "integer", nullable: false),
                     Content = table.Column<string>(type: "text", nullable: false)
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -309,7 +343,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                         name: "FK_PostEntities_CommunityEntities_CommunityEntityId_CommunityE~",
                         columns: x => new { x.CommunityEntityId, x.CommunityEntityName },
                         principalTable: "CommunityEntities",
-                        principalColumns: new[] { "Id", "Type" },
+                        principalColumns: new[] { "Id", "Name" },
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PostEntities_UserEntities_AuthorEntityId_AuthorEntityUserna~",
@@ -332,7 +366,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     Vote = table.Column<int>(type: "integer", nullable: false),
                     Content = table.Column<string>(type: "text", nullable: false)
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -367,7 +401,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
                     PostEntityId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     IsUp = table.Column<bool>(type: "boolean", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -398,7 +432,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                         .Annotation("Npgsql:DefaultColumnCollation", "case_insensitive"),
                     CommentEntityId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     IsUp = table.Column<bool>(type: "boolean", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
                     ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -427,7 +461,7 @@ namespace FireplaceApi.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_AccessTokenEntities_Value",
                 table: "AccessTokenEntities",
-                column: "Parameters",
+                column: "Value",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -493,7 +527,7 @@ namespace FireplaceApi.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_CommunityEntities_Name",
                 table: "CommunityEntities",
-                column: "Type",
+                column: "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -548,12 +582,6 @@ namespace FireplaceApi.Infrastructure.Migrations
                 name: "IX_ErrorEntities_Code",
                 table: "ErrorEntities",
                 column: "Code",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ErrorEntities_Name",
-                table: "ErrorEntities",
-                column: "Type",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -659,6 +687,9 @@ namespace FireplaceApi.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "PostVoteEntities");
+
+            migrationBuilder.DropTable(
+                name: "RequestTraceEntities");
 
             migrationBuilder.DropTable(
                 name: "SessionEntities");

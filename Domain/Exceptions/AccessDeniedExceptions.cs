@@ -17,12 +17,12 @@ namespace FireplaceApi.Domain.Exceptions
 
     public class CommunityMembershipAccessDeniedException : ApiException
     {
-        public CommunityMembershipAccessDeniedException(ulong requestingUserId, ulong communiyMembershipId)
+        public CommunityMembershipAccessDeniedException(ulong requestingUserId, ulong communityId)
             : base(
                 errorType: ErrorType.NOT_EXIST_OR_ACCESS_DENIED,
                 errorField: FieldName.COMMUNITY_MEMBERSHIP,
-                errorServerMessage: "The user does not have access to the community membership!",
-                parameters: new { requestingUserId, communiyMembershipId },
+                errorServerMessage: "The user can not alter the community membership!",
+                parameters: new { requestingUserId, communityId },
                 systemException: null
             )
         { }

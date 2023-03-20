@@ -111,11 +111,11 @@ namespace FireplaceApi.Application
             builder.Services.AddRouting(options => options.LowercaseUrls = true);
             builder.Services.AddControllers(options =>
             {
-                options.Filters.Add(typeof(RequestingUserInjectorAttribute));
-                options.Filters.Add(typeof(InputHeaderParametersInjectorAttribute));
-                options.Filters.Add(typeof(InputCookieParametersInjectorAttribute));
-                options.Filters.Add(typeof(ActionLoggingAttribute));
-                options.Filters.Add(typeof(ActionInputValidatorAttribute));
+                options.Filters.Add<RequestingUserInjectorAttribute>();
+                options.Filters.Add<InputHeaderParametersInjectorAttribute>();
+                options.Filters.Add<InputCookieParametersInjectorAttribute>();
+                options.Filters.Add<ActionLoggingAttribute>();
+                options.Filters.Add<ActionInputValidatorAttribute>();
             }).AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = SnakeCaseNamingPolicy.Instance;

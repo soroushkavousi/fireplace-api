@@ -75,6 +75,7 @@ namespace FireplaceApi.Application.Controllers
         public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
         {
             [nameof(CommunityController.ListCommunitiesAsync)] = QueryResultExample1,
+            [nameof(CommunityController.ListJoinedCommunitiesAsync)] = QueryResultExample1,
             [nameof(CommunityController.GetCommunityByIdOrNameAsync)] = Example1,
             [nameof(CommunityController.CreateCommunityAsync)] = Example1,
             [nameof(CommunityController.PatchCommunityByEncodedIdOrNameAsync)] = Example1,

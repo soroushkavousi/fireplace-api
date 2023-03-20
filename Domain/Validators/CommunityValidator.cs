@@ -32,6 +32,11 @@ namespace FireplaceApi.Domain.Validators
             await Task.CompletedTask;
         }
 
+        public async Task ValidateListJoinedCommunitiesInputParametersAsync(User requestingUser, SortType? sort)
+        {
+            await Task.CompletedTask;
+        }
+
         public async Task ValidateListCommunitiesByIdsInputParametersAsync(List<ulong> ids)
         {
             await Task.CompletedTask;
@@ -40,7 +45,7 @@ namespace FireplaceApi.Domain.Validators
         public async Task ValidateGetCommunityByIdentifierInputParametersAsync(
             CommunityIdentifier identifier)
         {
-            await ValidateCommunityIdentifierExists(identifier);
+            await ValidateCommunityIdentifierExistsAsync(identifier);
         }
 
         public async Task ValidateCreateCommunityInputParametersAsync(User requestingUser, string name)
@@ -51,7 +56,7 @@ namespace FireplaceApi.Domain.Validators
         public async Task ValidatePatchCommunityByIdentifierInputParametersAsync(User requestingUser,
             CommunityIdentifier identifier, string newName)
         {
-            await ValidateCommunityIdentifierExists(identifier);
+            await ValidateCommunityIdentifierExistsAsync(identifier);
             Community = await _communityOperator.GetCommunityByIdentifierAsync(
                 identifier, false);
             ValidateRequestingUserCanAlterCommunity(requestingUser, Community);
@@ -61,7 +66,7 @@ namespace FireplaceApi.Domain.Validators
         public async Task ValidateDeleteCommunityByIdentifierInputParametersAsync(User requestingUser,
             CommunityIdentifier identifier)
         {
-            await ValidateCommunityIdentifierExists(identifier);
+            await ValidateCommunityIdentifierExistsAsync(identifier);
             Community = await _communityOperator.GetCommunityByIdentifierAsync(
                 identifier, false);
             ValidateRequestingUserCanAlterCommunity(requestingUser, Community);
@@ -84,7 +89,7 @@ namespace FireplaceApi.Domain.Validators
             return true;
         }
 
-        public async Task<bool> ValidateCommunityIdentifierExists(
+        public async Task<bool> ValidateCommunityIdentifierExistsAsync(
             CommunityIdentifier identifier, bool throwException = true)
         {
             if (await _communityOperator.DoesCommunityIdentifierExistAsync(identifier))
@@ -94,6 +99,15 @@ namespace FireplaceApi.Domain.Validators
                 throw new CommunityNotExistException(identifier);
 
             return false;
+        }
+
+        public async Task<Community> ValidateCommunityIdentifierExistsByGettingAsync(
+            CommunityIdentifier identifier)
+        {
+            var community = await _communityOperator.GetCommunityByIdentifierAsync(identifier, false);
+            if (community == null)
+                throw new CommunityNotExistException(identifier);
+            return community;
         }
 
         public async Task<bool> ValidateCommunityIdentifierDoesNotExistAsync(

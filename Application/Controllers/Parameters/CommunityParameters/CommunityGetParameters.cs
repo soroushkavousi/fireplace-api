@@ -44,6 +44,24 @@ namespace FireplaceApi.Application.Controllers
         }
     }
 
+    public class ListJoinedCommunitiesInputQueryParameters : IValidator
+    {
+        [FromQuery(Name = "sort")]
+        [SwaggerEnum(Type = typeof(CommunitySortType))]
+        public string SortString { get; set; }
+
+        [BindNever]
+        public SortType? Sort { get; set; }
+
+        public void Validate(IServiceProvider serviceProvider)
+        {
+            var applicationValidator = serviceProvider.GetService<CommunityValidator>();
+            var domainValidator = applicationValidator.DomainValidator;
+
+            Sort = (SortType?)applicationValidator.ValidateInputEnum<CommunitySortType>(SortString);
+        }
+    }
+
     public class GetCommunityByIdOrNameInputRouteParameters : IValidator
     {
         [Required]
