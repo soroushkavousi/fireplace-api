@@ -34,9 +34,9 @@ namespace FireplaceApi.Domain.Operators
         public async Task<QueryResult<Comment>> ListPostCommentsAsync(ulong postId,
             SortType? sort = null, User requestingUser = null)
         {
-            sort ??= Constants.DefaultSort;
+            sort ??= default;
             var postComments = await _commentRepository.ListPostCommentsAsync(
-                postId, sort, requestingUser);
+                postId, sort.Value, requestingUser);
 
             var queryResult = CreateQueryResult(postComments);
             return queryResult;
@@ -45,33 +45,34 @@ namespace FireplaceApi.Domain.Operators
         public async Task<List<Comment>> ListCommentsByIdsAsync(List<ulong> ids,
             SortType? sort = null, User requestingUser = null)
         {
-            sort ??= Constants.DefaultSort;
+            sort ??= default;
             if (ids.IsNullOrEmpty())
                 return null;
 
             var comments = await _commentRepository.ListCommentsByIdsAsync(
-                ids, sort, requestingUser);
+                ids, sort.Value, requestingUser);
             return comments;
         }
 
         public async Task<QueryResult<Comment>> ListSelfCommentsAsync(User author,
             SortType? sort = null)
         {
-            sort ??= Constants.DefaultSort;
+            sort ??= default;
             var selfComments = await _commentRepository.ListSelfCommentsAsync(
-                author, sort);
+                author, sort.Value);
 
             var queryResult = CreateQueryResult(selfComments);
             return queryResult;
         }
 
         public async Task<QueryResult<Comment>> ListChildCommentsAsync(User requestingUser,
-            ulong parentCommentId)
+            ulong parentCommentId, SortType? sort = null)
         {
-            var parentComment = await _commentRepository.GetCommentByIdAsync(parentCommentId,
-                requestingUser: requestingUser, includeChildComments: true);
+            sort ??= default;
+            var childComments = await _commentRepository.ListChildCommentAsync(parentCommentId,
+                sort.Value, requestingUser: requestingUser);
 
-            var queryResult = CreateQueryResult(parentComment.ChildComments);
+            var queryResult = CreateQueryResult(childComments);
             return queryResult;
         }
 

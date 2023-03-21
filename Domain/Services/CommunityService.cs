@@ -24,14 +24,14 @@ namespace FireplaceApi.Domain.Services
             _communityOperator = communityOperator;
         }
 
-        public async Task<QueryResult<Community>> ListCommunitiesAsync(string search, SortType? sort)
+        public async Task<QueryResult<Community>> ListCommunitiesAsync(string search, CommunitySortType? sort)
         {
             await _communityValidator.ValidateListCommunitiesInputParametersAsync(search, sort);
             var queryResult = await _communityOperator.ListCommunitiesAsync(search, sort);
             return queryResult;
         }
 
-        public async Task<QueryResult<Community>> ListJoinedCommunitiesAsync(User requestingUser, SortType? sort)
+        public async Task<QueryResult<Community>> ListJoinedCommunitiesAsync(User requestingUser, CommunitySortType? sort)
         {
             await _communityValidator.ValidateListJoinedCommunitiesInputParametersAsync(requestingUser, sort);
             var queryResult = await _communityOperator.ListJoinedCommunitiesAsync(requestingUser, sort);

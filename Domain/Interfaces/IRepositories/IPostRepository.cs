@@ -9,10 +9,10 @@ namespace FireplaceApi.Domain.Interfaces
     public interface IPostRepository
     {
         public Task<List<Post>> ListCommunityPostsAsync(CommunityIdentifier communityIdentifier,
-            SortType? sort = null, User requestingUser = null);
-        public Task<List<Post>> ListPostsAsync(string search, SortType? sort, User requestingUser = null);
+            SortType sort, User requestingUser = null);
+        public Task<List<Post>> ListPostsAsync(string search, SortType sort, User requestingUser = null);
         public Task<List<Post>> ListPostsByIdsAsync(List<ulong> Ids, User requestingUser = null);
-        public Task<List<Post>> ListSelfPostsAsync(User author, SortType? sort);
+        public Task<List<Post>> ListSelfPostsAsync(User author, SortType sort);
         public Task<Post> GetPostByIdAsync(ulong id, bool includeAuthor = false,
             bool includeCommunity = false, User requestingUser = null);
         public Task<Post> CreatePostAsync(ulong id, ulong authorUserId,

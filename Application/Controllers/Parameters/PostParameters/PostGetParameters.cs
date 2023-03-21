@@ -73,7 +73,7 @@ namespace FireplaceApi.Application.Controllers
             if (string.IsNullOrWhiteSpace(EncodedIds))
                 applicationValidator.ValidateFieldIsNotMissing(Search, FieldName.SEARCH);
 
-            Sort = (SortType?)applicationValidator.ValidateInputEnum<CommunitySortType>(SortString);
+            Sort = applicationValidator.ValidateInputEnum<SortType>(SortString);
 
             Ids = applicationValidator.ValidateIdsFormat(EncodedIds);
         }

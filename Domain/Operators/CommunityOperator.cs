@@ -28,17 +28,17 @@ namespace FireplaceApi.Domain.Operators
             _communityRepository = communityRepository;
         }
 
-        public async Task<QueryResult<Community>> ListCommunitiesAsync(string search, SortType? sort)
+        public async Task<QueryResult<Community>> ListCommunitiesAsync(string search, CommunitySortType? sort = null)
         {
-            sort ??= Constants.DefaultSort;
-            var communities = await _communityRepository.ListCommunitiesAsync(search, sort);
+            sort ??= default;
+            var communities = await _communityRepository.ListCommunitiesAsync(search, sort.Value);
             var queryResult = new QueryResult<Community>(communities);
             return queryResult;
         }
 
-        public async Task<QueryResult<Community>> ListJoinedCommunitiesAsync(User requestingUser, SortType? sort)
+        public async Task<QueryResult<Community>> ListJoinedCommunitiesAsync(User requestingUser, CommunitySortType? sort = null)
         {
-            sort ??= Constants.DefaultSort;
+            sort ??= default;
             var communityMembershipOperator = _serviceProvider.GetService<CommunityMembershipOperator>();
             var communityMemberships = await communityMembershipOperator.SearchCommunityMembershipsAsync(
                 userIdentifier: UserIdentifier.OfId(requestingUser.Id), includeCommunity: true);

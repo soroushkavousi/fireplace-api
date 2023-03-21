@@ -100,10 +100,11 @@ namespace FireplaceApi.Application.Controllers
         [ProducesResponseType(typeof(QueryResultDto<CommentDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<QueryResultDto<CommentDto>>> ListChildCommentsAsync(
             [BindNever][FromHeader] User requestingUser,
-            [FromRoute] ListChildCommentsInputRouteParameters inputRouteParameters)
+            [FromRoute] ListChildCommentsInputRouteParameters inputRouteParameters,
+            [FromQuery] ListChildCommentsInputQueryParameters inputQueryParameters)
         {
             var queryResult = await _commentService.ListChildCommentsAsync(
-                inputRouteParameters.ParentId, requestingUser);
+                inputRouteParameters.ParentId, inputQueryParameters.Sort, requestingUser);
             var queryResultDto = _commentConverter.ConvertToDto(queryResult);
             return queryResultDto;
         }

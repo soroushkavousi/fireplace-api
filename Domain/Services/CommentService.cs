@@ -54,10 +54,10 @@ namespace FireplaceApi.Domain.Services
         }
 
         public async Task<QueryResult<Comment>> ListChildCommentsAsync(
-            ulong parentCommentId, User requestingUser = null)
+            ulong parentCommentId, SortType? sort, User requestingUser = null)
         {
             await _commentValidator.ValidateListChildCommentsAsyncInputParametersAsync(
-                parentCommentId, requestingUser);
+                parentCommentId, sort, requestingUser);
             var queryResult = await _commentOperator.ListChildCommentsAsync(requestingUser,
                 parentCommentId);
             return queryResult;

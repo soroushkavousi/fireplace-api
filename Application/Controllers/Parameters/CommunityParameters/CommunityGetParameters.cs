@@ -26,7 +26,7 @@ namespace FireplaceApi.Application.Controllers
 
 
         [BindNever]
-        public SortType? Sort { get; set; }
+        public CommunitySortType? Sort { get; set; }
         [BindNever]
         public List<ulong> Ids { get; private set; }
 
@@ -38,7 +38,7 @@ namespace FireplaceApi.Application.Controllers
             if (string.IsNullOrWhiteSpace(EncodedIds))
                 applicationValidator.ValidateFieldIsNotMissing(Search, FieldName.SEARCH);
 
-            Sort = (SortType?)applicationValidator.ValidateInputEnum<CommunitySortType>(SortString);
+            Sort = applicationValidator.ValidateInputEnum<CommunitySortType>(SortString);
 
             Ids = applicationValidator.ValidateIdsFormat(EncodedIds);
         }
@@ -51,14 +51,14 @@ namespace FireplaceApi.Application.Controllers
         public string SortString { get; set; }
 
         [BindNever]
-        public SortType? Sort { get; set; }
+        public CommunitySortType? Sort { get; set; }
 
         public void Validate(IServiceProvider serviceProvider)
         {
             var applicationValidator = serviceProvider.GetService<CommunityValidator>();
             var domainValidator = applicationValidator.DomainValidator;
 
-            Sort = (SortType?)applicationValidator.ValidateInputEnum<CommunitySortType>(SortString);
+            Sort = applicationValidator.ValidateInputEnum<CommunitySortType>(SortString);
         }
     }
 

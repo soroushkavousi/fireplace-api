@@ -27,12 +27,12 @@ namespace FireplaceApi.Domain.Validators
             _communityOperator = communityOperator;
         }
 
-        public async Task ValidateListCommunitiesInputParametersAsync(string search, SortType? sort)
+        public async Task ValidateListCommunitiesInputParametersAsync(string search, CommunitySortType? sort)
         {
             await Task.CompletedTask;
         }
 
-        public async Task ValidateListJoinedCommunitiesInputParametersAsync(User requestingUser, SortType? sort)
+        public async Task ValidateListJoinedCommunitiesInputParametersAsync(User requestingUser, CommunitySortType? sort)
         {
             await Task.CompletedTask;
         }
