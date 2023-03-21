@@ -203,13 +203,5 @@ namespace FireplaceApi.Infrastructure.Repositories
 
             return googleUserEntitiesQuery;
         }
-
-        public static GoogleUserEntity RemoveLoopReferencing([NotNull] this GoogleUserEntity googleUserEntity)
-        {
-            if (googleUserEntity.UserEntity != null)
-                googleUserEntity.UserEntity.GoogleUserEntity = null;
-
-            return googleUserEntity;
-        }
     }
 }
