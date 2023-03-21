@@ -192,7 +192,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            if (requestingUser != null)
+            if (postEntity != null && requestingUser != null)
                 postEntity.CheckRequestingUserVote(requestingUser);
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });

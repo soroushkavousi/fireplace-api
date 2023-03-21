@@ -171,7 +171,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            if (requestingUser != null)
+            if (commentEntity != null && requestingUser != null)
                 commentEntity.CheckRequestingUserVote(requestingUser);
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntity });
