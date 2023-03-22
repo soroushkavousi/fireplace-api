@@ -24,8 +24,7 @@ namespace FireplaceApi.Application.Resolvers
             [Service] CommunityConverter communityConverter,
             [GraphQLNonNullType] string search, CommunitySortType? sort = null)
         {
-            var sortType = sort.HasValue ? (SortType)sort.Value : (SortType?)null;
-            var queryResult = await communityService.ListCommunitiesAsync(search, sortType);
+            var queryResult = await communityService.ListCommunitiesAsync(search, sort);
             var queryResultDto = communityConverter.ConvertToDto(queryResult);
             return queryResultDto;
         }
@@ -72,8 +71,7 @@ namespace FireplaceApi.Application.Resolvers
             [User] User requestingUser, [Parent] UserDto user,
             CommunitySortType? sort = null)
         {
-            var sortType = sort.HasValue ? (SortType)sort.Value : (SortType?)null;
-            var queryResult = await communityService.ListJoinedCommunitiesAsync(requestingUser, sortType);
+            var queryResult = await communityService.ListJoinedCommunitiesAsync(requestingUser, sort);
             var queryResultDto = communityConverter.ConvertToDto(queryResult);
             return queryResultDto;
         }

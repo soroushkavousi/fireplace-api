@@ -32,7 +32,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             _communityConverter = communityConverter;
         }
 
-        public async Task<List<Community>> ListCommunitiesAsync(string search, SortType? sort)
+        public async Task<List<Community>> ListCommunitiesAsync(string search, CommunitySortType sort)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { search });
             var sw = Stopwatch.StartNew();
@@ -40,9 +40,9 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Search(
                     identifier: null,
-                    search: search,
-                    sort: sort ?? SortType.NEW
+                    search: search
                 )
+                .Sort(sort)
                 .Take(Configs.Current.QueryResult.TotalLimit)
                 .ToListAsync();
 
@@ -79,8 +79,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Search(
                     identifier: identifier,
-                    search: null,
-                    sort: null
+                    search: null
                 )
                 .Include(
                     creatorEntity: includeCreator
@@ -182,8 +181,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             var communityEntity = await _communityEntities
                 .Search(
                     identifier: identifier,
-                    search: null,
-                    sort: null
+                    search: null
                 )
                 .SingleOrDefaultAsync();
 
@@ -202,8 +200,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Search(
                     identifier: identifier,
-                    search: null,
-                    sort: null
+                    search: null
                 )
                 .AnyAsync();
 
@@ -239,7 +236,7 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public static IQueryable<CommunityEntity> Search(
             [NotNull] this IQueryable<CommunityEntity> q, CommunityIdentifier identifier,
-            string search, SortType? sort)
+            string search)
         {
             if (identifier != null)
             {
@@ -258,17 +255,18 @@ namespace FireplaceApi.Infrastructure.Repositories
                 q = q.Where(e => EF.Functions
                     .ILike(EF.Functions.Collate(e.Name, "default"), $"%{search}%"));
 
-            if (sort.HasValue)
+            return q;
+        }
+
+        public static IQueryable<CommunityEntity> Sort(
+            [NotNull] this IQueryable<CommunityEntity> q, CommunitySortType sort)
+        {
+            q = sort switch
             {
-                q = sort switch
-                {
-                    SortType.NEW => q.OrderByDescending(e => e.CreationDate),
-                    SortType.OLD => q.OrderBy(e => e.CreationDate),
-                    _ => q.OrderByDescending(e => e.CreationDate),
-                };
-            }
-            else
-                q = q.OrderByDescending(e => e.CreationDate);
+                CommunitySortType.NEW => q.OrderByDescending(e => e.CreationDate),
+                CommunitySortType.OLD => q.OrderBy(e => e.CreationDate),
+                _ => q.OrderByDescending(e => e.CreationDate),
+            };
 
             return q;
         }

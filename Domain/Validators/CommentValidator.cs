@@ -49,7 +49,7 @@ namespace FireplaceApi.Domain.Validators
         }
 
         public async Task ValidateListChildCommentsAsyncInputParametersAsync(
-            ulong parentCommentId, User requestingUser)
+            ulong parentCommentId, SortType? sort, User requestingUser)
         {
             ParentComment = await ValidateCommentExistsAsync(parentCommentId);
         }

@@ -2,9 +2,7 @@
 using FireplaceApi.Application.IntegrationTests.Models;
 using FireplaceApi.Application.IntegrationTests.Tools;
 using FireplaceApi.Domain.Extensions;
-using FireplaceApi.Domain.Interfaces;
-using FireplaceApi.Domain.Models;
-using FireplaceApi.Domain.Tools;
+using FireplaceApi.Domain.Operators;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -23,7 +21,7 @@ namespace FireplaceApi.Application.IntegrationTests
         private readonly ILogger<CommunityTests> _logger;
         private readonly ClientPool _clientPool;
         private readonly TestUtils _testUtils;
-        private readonly ICommunityRepository _communityRepository;
+        private readonly CommunityOperator _communityOperator;
 
         public CommunityTests(ApiIntegrationTestFixture fixture)
         {
@@ -32,7 +30,7 @@ namespace FireplaceApi.Application.IntegrationTests
             _logger = _fixture.ServiceProvider.GetRequiredService<ILogger<CommunityTests>>();
             _clientPool = _fixture.ClientPool;
             _testUtils = _fixture.TestUtils;
-            _communityRepository = _fixture.ServiceProvider.GetRequiredService<ICommunityRepository>();
+            _communityOperator = _fixture.ServiceProvider.GetRequiredService<CommunityOperator>();
         }
 
         [Fact]
@@ -67,8 +65,8 @@ namespace FireplaceApi.Application.IntegrationTests
                 _logger.LogAppInformation(title: "TEST_START");
 
                 var narutoUser = await _clientPool.CreateNarutoUserAsync();
-                var backendDevelopersCommunity = await CreateCommunityWithRepositoryAsync(_communityRepository, narutoUser, "backend-developers");
-                var gamersCommunity = await CreateCommunityWithRepositoryAsync(_communityRepository, narutoUser, "gamers");
+                var backendDevelopersCommunity = await _communityOperator.CreateCommunityAsync(narutoUser, "backend-developers");
+                var gamersCommunity = await _communityOperator.CreateCommunityAsync(narutoUser, "gamers");
                 var communityQueryResult = await ListCommunitiesWithApiAsync(narutoUser, "dev");
                 Assert.Single(communityQueryResult.Items);
                 Assert.Equal(backendDevelopersCommunity.Name, communityQueryResult.Items[0].Name);
@@ -95,15 +93,6 @@ namespace FireplaceApi.Application.IntegrationTests
             response.EnsureSuccessStatusCode();
             var responseBody = await response.Content.ReadAsStringAsync();
             var createdCommunity = responseBody.FromJson<CommunityDto>();
-            Assert.NotNull(createdCommunity);
-            return createdCommunity;
-        }
-
-        public static async Task<Community> CreateCommunityWithRepositoryAsync(ICommunityRepository postRepository,
-            TestUser user, string name)
-        {
-            var newId = await IdGenerator.GenerateNewIdAsync();
-            var createdCommunity = await postRepository.CreateCommunityAsync(newId, name, user.Id, user.Username);
             Assert.NotNull(createdCommunity);
             return createdCommunity;
         }

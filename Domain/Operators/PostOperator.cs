@@ -33,19 +33,19 @@ namespace FireplaceApi.Domain.Operators
         }
 
         public async Task<QueryResult<Post>> ListCommunityPostsAsync(CommunityIdentifier communityIdentifier,
-            SortType? sort, User requestingUser)
+            SortType? sort = null, User requestingUser = null)
         {
-            sort ??= Constants.DefaultSort;
+            sort ??= default;
             var communityPosts = await _postRepository.ListCommunityPostsAsync(
-                communityIdentifier, sort, requestingUser);
+                communityIdentifier, sort.Value, requestingUser);
             var queryResult = new QueryResult<Post>(communityPosts);
             return queryResult;
         }
 
         public async Task<QueryResult<Post>> ListPostsAsync(string search, SortType? sort, User requestingUser = null)
         {
-            sort ??= Constants.DefaultSort;
-            var posts = await _postRepository.ListPostsAsync(search, sort, requestingUser);
+            sort ??= default;
+            var posts = await _postRepository.ListPostsAsync(search, sort.Value, requestingUser);
             var queryResult = new QueryResult<Post>(posts);
             return queryResult;
         }
@@ -63,9 +63,9 @@ namespace FireplaceApi.Domain.Operators
         public async Task<QueryResult<Post>> ListSelfPostsAsync(User author,
             SortType? sort = null)
         {
-            sort ??= Constants.DefaultSort;
+            sort ??= default;
             var selfPosts = await _postRepository.ListSelfPostsAsync(
-                author, sort);
+                author, sort.Value);
 
             var queryResult = new QueryResult<Post>(selfPosts);
             return queryResult;
@@ -100,6 +100,14 @@ namespace FireplaceApi.Domain.Operators
                         .GetIdByNameAsync(communityName);
                     break;
             }
+            var post = await CreatePostAsync(requestingUser, communityId,
+                communityName, content);
+            return post;
+        }
+
+        public async Task<Post> CreatePostAsync(User requestingUser,
+            ulong communityId, string communityName, string content)
+        {
             var id = await IdGenerator.GenerateNewIdAsync(DoesPostIdExistAsync);
             var post = await _postRepository.CreatePostAsync(
                 id, requestingUser.Id, requestingUser.Username,

@@ -170,13 +170,5 @@ namespace FireplaceApi.Infrastructure.Repositories
 
             return q;
         }
-
-        public static EmailEntity RemoveLoopReferencing([NotNull] this EmailEntity emailEntity)
-        {
-            if (emailEntity.UserEntity != null)
-                emailEntity.UserEntity.EmailEntity = null;
-
-            return emailEntity;
-        }
     }
 }

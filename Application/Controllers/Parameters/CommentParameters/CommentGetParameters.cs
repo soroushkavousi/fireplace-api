@@ -89,6 +89,24 @@ namespace FireplaceApi.Application.Controllers
         }
     }
 
+    public class ListChildCommentsInputQueryParameters : IValidator
+    {
+        [FromQuery(Name = "sort")]
+        [SwaggerEnum(Type = typeof(SortType))]
+        public string SortString { get; set; }
+
+        [BindNever]
+        public SortType? Sort { get; set; }
+
+        public void Validate(IServiceProvider serviceProvider)
+        {
+            var applicationValidator = serviceProvider.GetService<CommentValidator>();
+            var domainValidator = applicationValidator.DomainValidator;
+
+            Sort = applicationValidator.ValidateInputEnum<SortType>(SortString);
+        }
+    }
+
     public class ListSelfCommentsInputQueryParameters : IValidator
     {
         [FromQuery(Name = "sort")]

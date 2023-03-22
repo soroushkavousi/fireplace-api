@@ -222,19 +222,15 @@ namespace FireplaceApi.Application
             app.UseStaticFiles();
 
             app.UseRewriter(new RewriteOptions()
-                .AddRewrite(@"^(?!v\d)(?!docs)(?!graphql)(?!swagger)(.*)", $"{Constants.LatestApiVersion}/$1", false));
+                .AddRewrite(@"^(?!v\d)(?!graphql)(?!swagger)(.*)", $"{Constants.LatestApiVersion}/$1", false));
             app.UseRouting();
 
-            app.UseSwagger(options =>
-            {
-                options.RouteTemplate = "docs/{documentName}/swagger.json";
-            });
+            app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
                 options.DocumentTitle = "Fireplace Api Docs";
                 options.EnableDeepLinking();
-                options.RoutePrefix = "docs";
-                options.SwaggerEndpoint($"/docs/{Constants.LatestApiVersion}/swagger.json", Constants.LatestApiVersion.ToUpper());
+                options.SwaggerEndpoint($"/swagger/{Constants.LatestApiVersion}/swagger.json", Constants.LatestApiVersion.ToUpper());
                 options.DocExpansion(DocExpansion.List);
                 options.DisplayRequestDuration();
                 options.InjectStylesheet("https://fonts.googleapis.com/css?family=Roboto");

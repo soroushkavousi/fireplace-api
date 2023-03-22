@@ -33,7 +33,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public async Task<List<Post>> ListCommunityPostsAsync(CommunityIdentifier communityIdentifier,
-            SortType? sort = null, User requestingUser = null)
+            SortType sort, User requestingUser = null)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
@@ -46,17 +46,16 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Search(
                     authorId: null,
-                    self: null,
                     joined: null,
                     communityIdentifier: communityIdentifier,
-                    search: null,
-                    sort: sort
+                    search: null
                 )
                 .Include(
                     authorEntity: false,
                     communityEntity: false,
                     requestingUser: requestingUser
                 )
+                .Sort(sort)
                 .Take(Configs.Current.QueryResult.TotalLimit)
                 .ToListAsync();
 
@@ -68,7 +67,7 @@ namespace FireplaceApi.Infrastructure.Repositories
             return postEntities.Select(_postConverter.ConvertToModel).ToList();
         }
 
-        public async Task<List<Post>> ListPostsAsync(string search, SortType? sort,
+        public async Task<List<Post>> ListPostsAsync(string search, SortType sort,
             User requestingUser = null)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
@@ -82,17 +81,16 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Search(
                     authorId: null,
-                    self: null,
                     joined: null,
                     communityIdentifier: null,
-                    search: search,
-                    sort: sort
+                    search: search
                 )
                 .Include(
                     authorEntity: false,
-                    communityEntity: true,
+                    communityEntity: false,
                     requestingUser: requestingUser
                 )
+                .Sort(sort)
                 .Take(Configs.Current.QueryResult.TotalLimit)
                 .ToListAsync();
 
@@ -137,7 +135,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public async Task<List<Post>> ListSelfPostsAsync(User author,
-            SortType? sort)
+            SortType sort)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
@@ -149,17 +147,16 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Search(
                     authorId: author.Id,
-                    self: null,
                     joined: null,
                     communityIdentifier: null,
-                    search: null,
-                    sort: sort
+                    search: null
                 )
                 .Include(
                     authorEntity: false,
-                    communityEntity: true,
+                    communityEntity: false,
                     requestingUser: author
                 )
+                .Sort(sort)
                 .Take(Configs.Current.QueryResult.TotalLimit)
                 .ToListAsync();
 
@@ -192,7 +189,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            if (requestingUser != null)
+            if (postEntity != null && requestingUser != null)
                 postEntity.CheckRequestingUserVote(requestingUser);
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
@@ -299,11 +296,11 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public static IQueryable<PostEntity> Search(
-            [NotNull] this IQueryable<PostEntity> q, bool? self,
-            bool? joined, ulong? authorId, CommunityIdentifier communityIdentifier,
-            string search, SortType? sort)
+            [NotNull] this IQueryable<PostEntity> q, bool? joined,
+            ulong? authorId, CommunityIdentifier communityIdentifier,
+            string search)
         {
-            if (self.HasValue)
+            if (authorId.HasValue)
                 q = q.Where(e => e.AuthorEntityId == authorId.Value);
 
             if (communityIdentifier != null)
@@ -323,23 +320,24 @@ namespace FireplaceApi.Infrastructure.Repositories
                 q = q.Where(e => EF.Functions
                     .ILike(EF.Functions.Collate(e.Content, "default"), $"%{search}%"));
 
-            if (sort.HasValue)
-            {
-                q = sort switch
-                {
-                    SortType.TOP => q.OrderByDescending(e => e.Vote),
-                    SortType.NEW => q.OrderByDescending(e => e.CreationDate),
-                    SortType.OLD => q.OrderBy(e => e.CreationDate),
-                    _ => q.OrderByDescending(e => e.Vote),
-                };
-            }
-            else
-                q = q.OrderByDescending(e => e.Vote);
-
             if (joined.HasValue)
                 q = q.Where(
                     e => e.CommunityEntity.CommunityMemberEntities.Select(jc => jc.UserEntityId)
                         .Contains(e.CommunityEntityId));
+
+            return q;
+        }
+
+        public static IQueryable<PostEntity> Sort(
+            [NotNull] this IQueryable<PostEntity> q, SortType sort)
+        {
+            q = sort switch
+            {
+                SortType.TOP => q.OrderByDescending(e => e.Vote),
+                SortType.NEW => q.OrderByDescending(e => e.CreationDate),
+                SortType.OLD => q.OrderBy(e => e.CreationDate),
+                _ => q.OrderByDescending(e => e.Vote),
+            };
 
             return q;
         }

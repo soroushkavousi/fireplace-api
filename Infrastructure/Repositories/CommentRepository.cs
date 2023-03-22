@@ -3,7 +3,6 @@ using FireplaceApi.Domain.Exceptions;
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Interfaces;
 using FireplaceApi.Domain.Models;
-using FireplaceApi.Domain.Tools;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +33,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public async Task<List<Comment>> ListPostCommentsAsync(ulong postId,
-            SortType? sort, User requestingUser = null)
+            SortType sort, User requestingUser = null)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
@@ -47,10 +46,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Search(
                     authorId: null,
-                    self: null,
                     postId: postId,
                     search: null,
-                    sort: sort,
                     isRoot: true
                 )
                 .Include(
@@ -60,6 +57,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                     requestingUser: requestingUser,
                     sort: sort
                 )
+                .Sort(sort)
                 .Take(Configs.Current.QueryResult.TotalLimit)
                 .ToListAsync();
 
@@ -71,8 +69,39 @@ namespace FireplaceApi.Infrastructure.Repositories
             return commentEntities.Select(_commentConverter.ConvertToModel).ToList();
         }
 
+        public async Task<List<Comment>> ListChildCommentAsync(ulong id, SortType sort,
+            User requestingUser = null)
+        {
+            _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
+            {
+                id,
+                sort,
+                requestingUserId = requestingUser?.Id
+            });
+            var sw = Stopwatch.StartNew();
+            var commentEntity = await _commentEntities
+                .AsNoTracking()
+                .Where(e => e.Id == id)
+                .Include(
+                    authorEntity: false,
+                    postEntity: false,
+                    childCommentEntities: true,
+                    requestingUser: requestingUser,
+                    sort: sort
+                )
+                .SingleOrDefaultAsync();
+
+            if (commentEntity != null && requestingUser != null)
+                commentEntity.CheckRequestingUserVote(requestingUser);
+
+            var childCommentEntities = commentEntity?.ChildCommentEntities;
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+                parameters: new { childCommentEntities = childCommentEntities?.Select(e => e.Id) });
+            return childCommentEntities.Select(_commentConverter.ConvertToModel).ToList();
+        }
+
         public async Task<List<Comment>> ListCommentsByIdsAsync(List<ulong> Ids,
-            SortType? sort, User requestingUser = null)
+            SortType sort, User requestingUser = null)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT",
                 parameters: new
@@ -109,7 +138,7 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public async Task<List<Comment>> ListSelfCommentsAsync(User author,
-            SortType? sort)
+            SortType sort)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
             {
@@ -121,10 +150,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Search(
                     authorId: author.Id,
-                    self: true,
                     postId: null,
                     search: null,
-                    sort: sort,
                     isRoot: null
                 )
                 .Include(
@@ -134,6 +161,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                     requestingUser: author,
                     sort: sort
                 )
+                .Sort(sort)
                 .Take(Configs.Current.QueryResult.TotalLimit)
                 .ToListAsync();
 
@@ -146,7 +174,6 @@ namespace FireplaceApi.Infrastructure.Repositories
 
         public async Task<Comment> GetCommentByIdAsync(ulong id,
             bool includeAuthor = false, bool includePost = false,
-            bool includeChildComments = false, SortType? sort = null,
             User requestingUser = null)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
@@ -154,8 +181,6 @@ namespace FireplaceApi.Infrastructure.Repositories
                 id,
                 includeAuthor,
                 includePost,
-                includeChildComments,
-                sort,
                 requestingUserId = requestingUser?.Id
             });
             var sw = Stopwatch.StartNew();
@@ -165,13 +190,13 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .Include(
                     authorEntity: includeAuthor,
                     postEntity: includePost,
-                    childCommentEntities: includeChildComments,
+                    childCommentEntities: false,
                     requestingUser: requestingUser,
-                    sort: sort
+                    sort: null
                 )
                 .SingleOrDefaultAsync();
 
-            if (requestingUser != null)
+            if (commentEntity != null && requestingUser != null)
                 commentEntity.CheckRequestingUserVote(requestingUser);
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntity });
@@ -268,9 +293,6 @@ namespace FireplaceApi.Infrastructure.Repositories
 
             if (childCommentEntities)
             {
-                sort ??= Constants.DefaultSort;
-
-
                 IIncludableQueryable<CommentEntity, IOrderedEnumerable<CommentEntity>> z = null;
                 for (int i = 0; i < Configs.Current.QueryResult.DepthLimit; i++)
                 {
@@ -335,11 +357,10 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public static IQueryable<CommentEntity> Search(
-            [NotNull] this IQueryable<CommentEntity> q, bool? self,
-            ulong? authorId, ulong? postId, string search, SortType? sort,
-            bool? isRoot)
+            [NotNull] this IQueryable<CommentEntity> q, ulong? authorId,
+            ulong? postId, string search, bool? isRoot)
         {
-            if (self.HasValue && self.Value)
+            if (authorId.HasValue)
                 q = q.Where(e => e.AuthorEntityId == authorId.Value);
 
             if (postId.HasValue)
@@ -352,18 +373,19 @@ namespace FireplaceApi.Infrastructure.Repositories
             if (isRoot.HasValue && isRoot.Value)
                 q = q.Where(e => e.ParentCommentEntityId == null);
 
-            if (sort.HasValue)
+            return q;
+        }
+
+        public static IQueryable<CommentEntity> Sort(
+            [NotNull] this IQueryable<CommentEntity> q, SortType sort)
+        {
+            q = sort switch
             {
-                q = sort switch
-                {
-                    SortType.TOP => q.OrderByDescending(e => e.Vote),
-                    SortType.NEW => q.OrderByDescending(e => e.CreationDate),
-                    SortType.OLD => q.OrderBy(e => e.CreationDate),
-                    _ => q.OrderByDescending(e => e.Vote),
-                };
-            }
-            else
-                q = q.OrderByDescending(e => e.Vote);
+                SortType.TOP => q.OrderByDescending(e => e.Vote),
+                SortType.NEW => q.OrderByDescending(e => e.CreationDate),
+                SortType.OLD => q.OrderBy(e => e.CreationDate),
+                _ => q.OrderByDescending(e => e.Vote),
+            };
 
             return q;
         }

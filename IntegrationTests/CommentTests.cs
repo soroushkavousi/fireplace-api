@@ -3,8 +3,8 @@ using FireplaceApi.Application.IntegrationTests.Models;
 using FireplaceApi.Application.IntegrationTests.Tools;
 using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Extensions;
-using FireplaceApi.Domain.Interfaces;
 using FireplaceApi.Domain.Models;
+using FireplaceApi.Domain.Operators;
 using FireplaceApi.Domain.Tools;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,10 +25,9 @@ namespace FireplaceApi.Application.IntegrationTests
         private readonly ILogger<CommentTests> _logger;
         private readonly ClientPool _clientPool;
         private readonly TestUtils _testUtils;
-        private readonly ICommentRepository _commentRepository;
-        private readonly ICommentVoteRepository _commentVoteRepository;
-        private readonly IPostRepository _postRepository;
-        private readonly ICommunityRepository _communityRepository;
+        private readonly CommentOperator _commentOperator;
+        private readonly PostOperator _postOperator;
+        private readonly CommunityOperator _communityOperator;
 
         public CommentTests(ApiIntegrationTestFixture fixture)
         {
@@ -37,10 +36,9 @@ namespace FireplaceApi.Application.IntegrationTests
             _logger = _fixture.ServiceProvider.GetRequiredService<ILogger<CommentTests>>();
             _clientPool = _fixture.ClientPool;
             _testUtils = _fixture.TestUtils;
-            _commentRepository = _fixture.ServiceProvider.GetRequiredService<ICommentRepository>();
-            _commentVoteRepository = _fixture.ServiceProvider.GetRequiredService<ICommentVoteRepository>();
-            _postRepository = _fixture.ServiceProvider.GetRequiredService<IPostRepository>();
-            _communityRepository = _fixture.ServiceProvider.GetRequiredService<ICommunityRepository>();
+            _commentOperator = _fixture.ServiceProvider.GetRequiredService<CommentOperator>();
+            _postOperator = _fixture.ServiceProvider.GetRequiredService<PostOperator>();
+            _communityOperator = _fixture.ServiceProvider.GetRequiredService<CommunityOperator>();
         }
 
         [Fact]
@@ -53,25 +51,24 @@ namespace FireplaceApi.Application.IntegrationTests
 
                 var narutoUser = await _clientPool.CreateNarutoUserAsync();
                 var animeCommunityName = "anime-community";
-                var animeCommunity = await CommunityTests.CreateCommunityWithRepositoryAsync(_communityRepository,
-                    narutoUser, animeCommunityName);
+                var animeCommunity = await _communityOperator.CreateCommunityAsync(narutoUser, animeCommunityName);
                 var postContent = "Sample Post Content";
-                var post = await PostTests.CreatePostWithRepositoryAsync(_postRepository, narutoUser, animeCommunity.Id,
+                var post = await _postOperator.CreatePostAsync(narutoUser, animeCommunity.Id,
                     animeCommunityName, postContent);
                 var comments = new List<Comment>();
                 for (int i = 0; i < Configs.Current.QueryResult.ViewLimit + 4; i++)
                 {
-                    var comment = await CreateCommentWithRepositoryAsync(_commentRepository, narutoUser, post.Id, $"comment {i}");
+                    var comment = await _commentOperator.ReplyToPostAsync(narutoUser, post.Id, $"comment {i}");
                     comments.Add(comment);
                 }
 
                 var comment10 = comments[9];
-                var comment10Vote = await VoteCommentWithRepositoryAsync(_commentVoteRepository, narutoUser, comment10.Id, isUp: true);
+                var comment10Vote = await _commentOperator.VoteCommentAsync(narutoUser, comment10.Id, isUp: true);
 
                 var comment10Childs = new List<Comment>();
                 for (int i = 0; i < Configs.Current.QueryResult.ViewLimit + 6; i++)
                 {
-                    var comment = await CreateCommentWithRepositoryAsync(_commentRepository, narutoUser, post.Id, $"comment 10, {i}", comment10.Id);
+                    var comment = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment10.Id, $"comment 10, {i}");
                     comment10Childs.Add(comment);
                 }
 
@@ -79,7 +76,8 @@ namespace FireplaceApi.Application.IntegrationTests
                 Assert.Equal(Configs.Current.QueryResult.ViewLimit, postComments.Items.Count);
                 Assert.Equal(comments.Count - Configs.Current.QueryResult.ViewLimit, postComments.MoreItemIds.Count);
 
-                var comment10Dto = postComments.Items.Single(c => c.Id.IdDecode() == comment10.Id);
+                var comment10Dto = postComments.Items[0];
+                Assert.Equal(comment10.Id, comment10Dto.Id.IdDecode());
                 Assert.Equal(Configs.Current.QueryResult.ViewLimit, comment10Dto.ChildComments.Count);
                 Assert.Equal(comment10Childs.Count - Configs.Current.QueryResult.ViewLimit, comment10Dto.MoreChildCommentIds.Count);
 
@@ -102,33 +100,32 @@ namespace FireplaceApi.Application.IntegrationTests
 
                 var narutoUser = await _clientPool.CreateNarutoUserAsync();
                 var animeCommunityName = "anime-community";
-                var animeCommunity = await CommunityTests.CreateCommunityWithRepositoryAsync(
-                    _communityRepository, narutoUser, animeCommunityName);
+                var animeCommunity = await _communityOperator.CreateCommunityAsync(narutoUser, animeCommunityName);
                 var postContent = "Sample Post Content";
-                var post = await PostTests.CreatePostWithRepositoryAsync(_postRepository, narutoUser,
+                var post = await _postOperator.CreatePostAsync(narutoUser,
                     animeCommunity.Id, animeCommunity.Name, postContent);
-                var comment1 = await CreateCommentWithRepositoryAsync(_commentRepository, narutoUser, post.Id, "comment 1");
-                var comment2 = await CreateCommentWithRepositoryAsync(_commentRepository, narutoUser, post.Id, "comment 2");
-                var comment3 = await CreateCommentWithRepositoryAsync(_commentRepository, narutoUser, post.Id, "comment 3");
+                var comment1 = await _commentOperator.ReplyToPostAsync(narutoUser, post.Id, "comment 1");
+                var comment2 = await _commentOperator.ReplyToPostAsync(narutoUser, post.Id, "comment 2");
+                var comment3 = await _commentOperator.ReplyToPostAsync(narutoUser, post.Id, "comment 3");
 
-                var comment11 = await CreateCommentWithRepositoryAsync(_commentRepository, narutoUser, post.Id, "comment 1, 1", comment1.Id);
-                var comment12 = await CreateCommentWithRepositoryAsync(_commentRepository, narutoUser, post.Id, "comment 1, 2", comment1.Id);
-                var comment13 = await CreateCommentWithRepositoryAsync(_commentRepository, narutoUser, post.Id, "comment 1, 3", comment1.Id);
-                var comment14 = await CreateCommentWithRepositoryAsync(_commentRepository, narutoUser, post.Id, "comment 1, 4", comment1.Id);
+                var comment11 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment1.Id, "comment 1, 1");
+                var comment12 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment1.Id, "comment 1, 2");
+                var comment13 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment1.Id, "comment 1, 3");
+                var comment14 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment1.Id, "comment 1, 4");
 
-                var comment21 = await CreateCommentWithRepositoryAsync(_commentRepository, narutoUser, post.Id, "comment 2, 1", comment2.Id);
-                var comment22 = await CreateCommentWithRepositoryAsync(_commentRepository, narutoUser, post.Id, "comment 2, 2", comment2.Id);
+                var comment21 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment2.Id, "comment 2, 1");
+                var comment22 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment2.Id, "comment 2, 2");
 
-                var comment31 = await CreateCommentWithRepositoryAsync(_commentRepository, narutoUser, post.Id, "comment 3, 1", comment3.Id);
-                var comment32 = await CreateCommentWithRepositoryAsync(_commentRepository, narutoUser, post.Id, "comment 3, 2", comment3.Id);
-                var comment33 = await CreateCommentWithRepositoryAsync(_commentRepository, narutoUser, post.Id, "comment 3, 3", comment3.Id);
+                var comment31 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment3.Id, "comment 3, 1");
+                var comment32 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment3.Id, "comment 3, 2");
+                var comment33 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment3.Id, "comment 3, 3");
 
-                var comment131 = await CreateCommentWithRepositoryAsync(_commentRepository, narutoUser, post.Id, "comment 1, 3, 1", comment13.Id);
-                var comment132 = await CreateCommentWithRepositoryAsync(_commentRepository, narutoUser, post.Id, "comment 1, 3, 2", comment13.Id);
-                var comment133 = await CreateCommentWithRepositoryAsync(_commentRepository, narutoUser, post.Id, "comment 1, 3, 3", comment13.Id);
+                var comment131 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment13.Id, "comment 1, 3, 1");
+                var comment132 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment13.Id, "comment 1, 3, 2");
+                var comment133 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment13.Id, "comment 1, 3, 3");
 
-                var comment311 = await CreateCommentWithRepositoryAsync(_commentRepository, narutoUser, post.Id, "comment 3, 1, 1", comment31.Id);
-                var comment312 = await CreateCommentWithRepositoryAsync(_commentRepository, narutoUser, post.Id, "comment 3, 1, 2", comment31.Id);
+                var comment311 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment31.Id, "comment 3, 1, 1");
+                var comment312 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment31.Id, "comment 3, 1, 2");
 
                 var nestedComments = await ListPostCommentsWithApiAsync(narutoUser, post.Id.IdEncode(), SortType.TOP);
                 Assert.Equal(3, nestedComments.Items.Count);
@@ -187,15 +184,6 @@ namespace FireplaceApi.Application.IntegrationTests
             return createdComment;
         }
 
-        public static async Task<Comment> CreateCommentWithRepositoryAsync(ICommentRepository commentRepository,
-            TestUser user, ulong postId, string content, ulong? parentCommentId = null)
-        {
-            var newId = await IdGenerator.GenerateNewIdAsync();
-            var createdComment = await commentRepository.CreateCommentAsync(newId, user.Id, user.Username, postId, content, parentCommentId);
-            Assert.NotNull(createdComment);
-            return createdComment;
-        }
-
         public static async Task<CommentDto> GetCommentWithApiAsync(TestUser user, string commentEncodedId)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"/comments/{commentEncodedId}");
@@ -238,15 +226,6 @@ namespace FireplaceApi.Application.IntegrationTests
             var responseBody = await response.Content.ReadAsStringAsync();
             var comment = responseBody.FromJson<CommentDto>();
             return comment;
-        }
-
-        public static async Task<CommentVote> VoteCommentWithRepositoryAsync(ICommentVoteRepository commentVoteRepository,
-            TestUser user, ulong commentId, bool isUp = true)
-        {
-            var newId = await IdGenerator.GenerateNewIdAsync();
-            var commentVote = await commentVoteRepository.CreateCommentVoteAsync(newId, user.Id, user.Username, commentId, isUp);
-            Assert.NotNull(commentVote);
-            return commentVote;
         }
     }
 }

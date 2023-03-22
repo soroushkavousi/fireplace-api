@@ -197,7 +197,7 @@ namespace FireplaceApi.Application.Controllers
         public async Task<IActionResult> SendResetPasswordCodeAsync(
             [FromBody] SendResetPasswordCodeInputBodyParameters inputBodyParameters)
         {
-            var resetPasswordUrl = $"{Configs.Current.Api.BaseUrlPath}/docs" +
+            var resetPasswordUrl = $"{Configs.Current.Api.BaseUrlPath}/swagger" +
                 $"#/User/post_{Tools.Constants.LatestApiVersion}_users_reset_password_with_code";
             await _userService.SendResetPasswordCodeAsync(inputBodyParameters.EmailAddress, resetPasswordUrl);
             return Ok();
