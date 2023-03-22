@@ -10,7 +10,7 @@ Stack: REST API, GraphQL, ASP&#46;NET Core (7.0), PostgreSQL, Swagger, Nginx, CI
 
 <div align="center">
     <a href="https://api.fireplace.bitiano.com/swagger" target="_blank">
-        <img src="https://files.fireplace.bitiano.com/api/swagger-top.png?" width="85%" />
+        <img src="https://files.fireplace.bitiano.com/api/swagger-top.png" width="85%" />
         <p style="margin-top: 5px">The Swagger UI</p>
     </a>
 </div>
@@ -47,7 +47,7 @@ This project has been divided into multiple subprojects to implement a domain-dr
 - Integration Tests
 
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/the-architecture.png?" />
+  <img src="https://files.fireplace.bitiano.com/api/the-architecture.png" />
 </div>
 
 ### Layers:
@@ -210,31 +210,31 @@ With the **_swagger UI_**, you can easily interact with the API and learn it. It
  <br/>
  
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/swagger-top.png?" width="85%" />
+  <img src="https://files.fireplace.bitiano.com/api/swagger-top.png" width="85%" />
 </div>
 
  <br/>
  
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/swagger-sample-execution.png?" width="85%" />
+  <img src="https://files.fireplace.bitiano.com/api/swagger-sample-execution.png" width="85%" />
 </div>
 
  <br/> 
   
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/various-log-in-sign-up.png?" width="85%" />
+  <img src="https://files.fireplace.bitiano.com/api/various-log-in-sign-up.png" width="85%" />
 </div>
 
  <br/> 
   
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/comment-routes.png?" width="85%" />
+  <img src="https://files.fireplace.bitiano.com/api/comment-routes.png" width="85%" />
 </div>
 
  <br/>
  
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/response-list-communities.png?" width="85%" />
+  <img src="https://files.fireplace.bitiano.com/api/response-list-communities.png" width="85%" />
 </div>
 
  <br/>

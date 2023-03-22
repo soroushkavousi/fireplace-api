@@ -48,14 +48,11 @@ namespace FireplaceApi.Application.Tools
                 <div>
                     <p><strong><i>Welcome</i></strong>! Fireplace API is a Reddit API clone that has communities, posts, and nested comments.</p>
                     <p>This project is just an individual effort to create a real-world Web API sample with ASP.NET Core framework. </p>
-                    <p>
-                            <strong><i>Note:</i></strong> After logging in, your access token will automatically be saved in cookies, and you are not needed to use headers for authentication.
-                    </p>
+                    <p><strong><i>Note:</i></strong> After logging in, your access token will automatically be saved in cookies, and you are not needed to use headers for authentication.</p>
                     <br />
                     <p>Check the <a target=""_blank"" href=""https://github.com/soroushkavousi/fireplace-api""><b><i>Fireplace API GitHub Repository</i></b></a></p>
                     <p>Check the <a target=""_blank"" href=""{Configs.Current.Api.BaseUrlPath}/graphql""><b><i>The GraphQL Playground</i></b></a></p>
-                    <br />
-                </div> <br />";
+                </div><br />";
 
             description_html += $@"
                 <div>
