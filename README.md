@@ -1,10 +1,31 @@
 # Welcome to Fireplace API
 
-Fireplace API is a **Reddit API clone** that has communities, posts, and nested comments. This project is just an individual effort to create a real-world Web API with some advanced features.
+Fireplace API is a **Reddit API clone** that has communities, posts, and nested comments. This project is just an individual effort to create a real-world Web API sample with some advanced features.
 
 The API is developed via ASP&#46;NET Core framework and has many features such as DDD structure, Swagger UI, Integration Testing, various Sign-Up Methods, Error Handling, Logging System, Security Features, CICD, and Docker Deployment. <br/>
 
-Stack: ASP&#46;NET Core (7.0), PostgreSQL, Swagger, Nginx, CICD, Docker, GitHub Actions, Google OAuth 2.0, Gmail API, NLog, xUnit <br/>
+Stack: REST API, GraphQL, ASP&#46;NET Core (7.0), PostgreSQL, Swagger, Nginx, CICD, Docker, GitHub Actions, Google OAuth 2.0, Gmail API, NLog, xUnit <br/>
+
+<br/>
+
+<div align="center">
+    <a href="https://api.fireplace.bitiano.com/swagger" target="_blank">
+        <img src="https://files.fireplace.bitiano.com/api/swagger-top.png?" width="85%" />
+        <p style="margin-top: 5px">The Swagger UI</p>
+    </a>
+</div>
+
+<br/>
+
+<div align="center">
+    <a href="https://api.fireplace.bitiano.com/graphql" target="_blank">
+        <img src="https://files.fireplace.bitiano.com/api/graphql-playground.png" width="85%" />
+        <p style="margin-top: 5px">The GraphQL Playground</p>
+    </a>
+</div>
+
+<br/>
+<br/>
 
 \- Following Sections:
 
@@ -13,12 +34,7 @@ Stack: ASP&#46;NET Core (7.0), PostgreSQL, Swagger, Nginx, CICD, Docker, GitHub 
 - [**The Swagger**](#the-swagger)
 - [**How to run a clone**](#how-to-run-a-clone)
 
- <br/> 
- 
-<div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/swagger-top.png?" width="85%" />
-</div>
-
+ <br/>
  <br/>
 
 # The DDD Architecture
@@ -31,7 +47,7 @@ This project has been divided into multiple subprojects to implement a domain-dr
 - Integration Tests
 
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/the-architecture.png" />
+  <img src="https://files.fireplace.bitiano.com/api/the-architecture.png?" />
 </div>
 
 ### Layers:
@@ -65,22 +81,32 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 **1. The DDD Architecture**
 
 - Layers as subprojects: Application, Domain, Infrastructure
-- API: UI interface
-- Domain: Business rules & logic
-- Infrastructure: Data persistence & third-party projects
+- API: Handles the client requests
+- Domain: Handles business rules & logic
+- Infrastructure: Handles data persistence & third-party systems
 
 **2. The Swagger**
 
-- Check [The Swagger UI](https://api.fireplace.bitiano.com/docs/index.html)
+- Check [The Swagger UI](https://api.fireplace.bitiano.com/swagger)
 - Has the list of API actions to view or run
 - Has examples of possible responses for each action
 - Supports Bearer Authentication
 - Has a custom Google Sign-In button
 - Automatically save cookies after login
 - Automatically use the CSRF token
-- Has customization with [custom-swagger-ui.css](Application/wwwroot/swagger-ui/custom-swagger-ui.css) & [custom-swagger-ui.js](Application/wwwroot/swagger-ui/custom-swagger-ui.js)
+- Has customizations with [custom-swagger-ui.css](Application/wwwroot/swagger-ui/custom-swagger-ui.css) & [custom-swagger-ui.js](Application/wwwroot/swagger-ui/custom-swagger-ui.js)
 
-**3. CICD with GitHub Action**
+**3. GraphQL**
+
+- Check [The GraphQL Playground](https://api.fireplace.bitiano.com/graphql), which is interactive and graphical IDE for GraphQL
+- With GraphQL you can prevent over-fetching and under-fetching
+- With GraphQL you can call multiple API actions with just a request
+- With GraphQL playground you can check all the schema you can call
+- Supports nested data such as community posts and post comments
+- Supports self data such as created posts, created comments, and joined communities
+
+
+**4. CICD with GitHub Action**
 
 - Check [The CICD.yml](.github/workflows/CICD.yml)
 - Has three steps: Test, Build, and Deploy
@@ -88,12 +114,12 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 - At the build stage, a docker image will be created and pushed to Docker Hub
 - At the deploy stage, the image will be run in a VPS with docker-compose
 
-**4. Docker & Docker Compose**
+**5. Docker & Docker Compose**
 
 - Check [The Dockerfile](Dockerfile) (For building)
 - Check [The docker-compose.yml](docker-compose.yml) (For deploying)
 
-**5. Integration Testing**
+**6. Integration Testing**
 
 - With [xUnit](https://xunit.net/)
 - Parallelism for each test class
@@ -116,8 +142,8 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
   - Stateless paginations can produce duplicate data and even miss some data of different sorts!
 - Use Query Result instead of Pagination
   - The idea is to send a list of the remaining ids for each query
-  - Query result is a collection of items and more item ids
-  - Also nested comments have child comments and more child comment ids
+  - Query result is a collection of items and a list of more item ids
+  - Also nested comments have child comments and a list of more child comment ids
 
 **9. Supports nested comments**
 
@@ -131,11 +157,14 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 
 **11. Error Handling**
 
-- Returning error is a JSON of error code and error client message
-- Error client messages are in the database, which can be found by error name (Enum), not error code, because of readability and flexibility
+- The error json has a code, a type, a field, and a message
+- Error code is unique to a pair of error type and error field
+- Error types are ALREADY_EXISTS, INVALID_FORMAT, AUTHENTICATION_FAILED, and etc
+- Error field refers to the item that caused the error
+- Error client messages are stored in the database
 - Error codes can be changed freely in the database without changing the production codes
-- Exception middleware catches ApiException, which contains the error name and the error server message
-- Server Message is for logging, and Client Message is for users
+- Exception middleware catches ApiException, and the other Exceptions occured in the code
+- Server Message is for the logging, and Client Message is for the users
 
 **12. Has logging system**
 
@@ -143,9 +172,9 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 - Check [The nlog.config](Application/Tools/NLog/nlog.config)
 - Check [The LogExtensions.cs](Domain/Extensions/LogExtensions.cs)
 - Has Sensitive Data Masking
-- Log directory path can be specified in the environment variables
+- The directory of the log files can be specified in the environment variables
 - Each log line has Request Info, Process Info, Code Location, Log Time, Execution Time, Parameters Involved, Title, Message, and Exception
-- Each part of a log line has its padding and reserved space
+- Each part of a log line has its padding and reserved space for readability
 
 **13. Sign up and Log in methods**
 
@@ -158,7 +187,7 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 **14. Request Tracing & API Request Rate Limit**
 
 - Request details will be stored in the database
-  - Method, Action, URL, IP, User Agent, User ID, Duration, Status Code, Error Name, Request Time, …
+  - Method, Action, URL, IP, User Agent, User ID, Duration, Status Code, Error Name, Request Time, â€¦
 - Currently, only allow a few API calls per one hour
 
 **15. Supports user sessions**
@@ -174,9 +203,9 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 
 # The Swagger
 
-With the **_swagger UI_**, you can easily interact with the API and learn it. It shows all routes, inputs, outputs, models, and errors. It also generates a _[swagger.json](https://api.fireplace.bitiano.com/docs/v1/swagger.json)_, which describes the schema of the API that can be imported into your app.
+With the **_swagger UI_**, you can easily interact with the API and learn it. It shows all routes, inputs, outputs, models, and errors. It also generates a _[swagger.json](https://api.fireplace.bitiano.com/swagger/v1/swagger.json)_, which describes the schema of the API that can be imported into your app.
 
-[Check the **Swagger UI** website](https://api.fireplace.bitiano.com/docs/index.html)
+[Check the **Swagger UI** website](https://api.fireplace.bitiano.com/swagger)
 
  <br/>
  
@@ -211,13 +240,13 @@ With the **_swagger UI_**, you can easily interact with the API and learn it. It
  <br/>
  
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/response-bad-request.png?" width="60%" />
+  <img src="https://files.fireplace.bitiano.com/api/response-bad-request.png" width="60%" />
 </div>
 
  <br/>
  
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/create-a-post-request.png?" width="85%" />
+  <img src="https://files.fireplace.bitiano.com/api/create-a-post-request.png" width="85%" />
 </div>
 
 <br/> <br/>
@@ -285,7 +314,7 @@ Option 2: Via launchSettings.json
       "commandName": "Project",
       "applicationUrl": "http://localhost:5000",
       "launchBrowser": true,
-      "launchUrl": "docs",
+      "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "FIREPLACE_API_LOG_DIRECTORY": "path/to/logs",
@@ -316,8 +345,8 @@ Note: In this project, the file 'launchSettings.json' will not be pushed to the 
 > dotnet run --project Application
 ```
 
-Now you can check the docs:
-http://localhost:5000/docs
+Now you can check the swagger:
+http://localhost:5000/swagger
 
 Note: At this stage, you may have noticed that some errors say there are no configs or errors in the database! So we are going to fix them.
 
