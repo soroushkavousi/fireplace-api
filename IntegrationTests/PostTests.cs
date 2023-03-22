@@ -2,9 +2,7 @@
 using FireplaceApi.Application.IntegrationTests.Models;
 using FireplaceApi.Application.IntegrationTests.Tools;
 using FireplaceApi.Domain.Extensions;
-using FireplaceApi.Domain.Interfaces;
-using FireplaceApi.Domain.Models;
-using FireplaceApi.Domain.Tools;
+using FireplaceApi.Domain.Operators;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -23,7 +21,7 @@ namespace FireplaceApi.Application.IntegrationTests
         private readonly ILogger<PostTests> _logger;
         private readonly ClientPool _clientPool;
         private readonly TestUtils _testUtils;
-        private readonly ICommunityRepository _communityRepository;
+        private readonly CommunityOperator _communityOperator;
 
         public PostTests(ApiIntegrationTestFixture fixture)
         {
@@ -32,7 +30,7 @@ namespace FireplaceApi.Application.IntegrationTests
             _logger = _fixture.ServiceProvider.GetRequiredService<ILogger<PostTests>>();
             _clientPool = _fixture.ClientPool;
             _testUtils = _fixture.TestUtils;
-            _communityRepository = _fixture.ServiceProvider.GetRequiredService<ICommunityRepository>();
+            _communityOperator = _fixture.ServiceProvider.GetRequiredService<CommunityOperator>();
         }
 
         [Fact]
@@ -45,8 +43,7 @@ namespace FireplaceApi.Application.IntegrationTests
 
                 var narutoUser = await _clientPool.CreateNarutoUserAsync();
                 var animeCommunityName = "anime-community";
-                var animeCommunity = await CommunityTests.CreateCommunityWithRepositoryAsync(_communityRepository,
-                    narutoUser, animeCommunityName);
+                var animeCommunity = await _communityOperator.CreateCommunityAsync(narutoUser, animeCommunityName);
                 var postContent = "Sample Post Content";
                 var createdPost = await CreatePostWithApiAsync(_testUtils, narutoUser, animeCommunityName, postContent);
                 var retrievedPost = await GetPostWithApiAsync(narutoUser, createdPost.Id);
@@ -79,15 +76,6 @@ namespace FireplaceApi.Application.IntegrationTests
             response.EnsureSuccessStatusCode();
             var responseBody = await response.Content.ReadAsStringAsync();
             var createdPost = responseBody.FromJson<PostDto>();
-            Assert.NotNull(createdPost);
-            return createdPost;
-        }
-
-        public static async Task<Post> CreatePostWithRepositoryAsync(IPostRepository postRepository,
-            TestUser user, ulong communityId, string communityName, string postContent)
-        {
-            var newId = await IdGenerator.GenerateNewIdAsync();
-            var createdPost = await postRepository.CreatePostAsync(newId, user.Id, user.Username, communityId, communityName, postContent);
             Assert.NotNull(createdPost);
             return createdPost;
         }

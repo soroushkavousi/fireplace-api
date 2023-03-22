@@ -89,9 +89,8 @@ namespace FireplaceApi.Domain.Operators
             ulong postId, string content)
         {
             var id = await IdGenerator.GenerateNewIdAsync(DoesCommentIdExistAsync);
-            var comment = await _commentRepository
-                .CreateCommentAsync(id, requestingUser.Id,
-                    requestingUser.Username, postId, content);
+            var comment = await _commentRepository.CreateCommentAsync(id,
+                requestingUser.Id, requestingUser.Username, postId, content);
             return comment;
         }
 
@@ -101,10 +100,17 @@ namespace FireplaceApi.Domain.Operators
             var parentComment = await _commentRepository
                 .GetCommentByIdAsync(commentId);
             var postId = parentComment.PostId;
+            var comment = await ReplyToCommentAsync(requestingUser, postId,
+                commentId, content);
+            return comment;
+        }
+
+        public async Task<Comment> ReplyToCommentAsync(User requestingUser,
+            ulong postId, ulong commentId, string content)
+        {
             var id = await IdGenerator.GenerateNewIdAsync(DoesCommentIdExistAsync);
-            var comment = await _commentRepository
-                .CreateCommentAsync(id, requestingUser.Id, requestingUser.Username,
-                    postId, content, commentId);
+            var comment = await _commentRepository.CreateCommentAsync(id,
+                requestingUser.Id, requestingUser.Username, postId, content, commentId);
             return comment;
         }
 

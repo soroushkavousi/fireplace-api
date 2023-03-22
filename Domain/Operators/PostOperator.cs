@@ -100,6 +100,14 @@ namespace FireplaceApi.Domain.Operators
                         .GetIdByNameAsync(communityName);
                     break;
             }
+            var post = await CreatePostAsync(requestingUser, communityId,
+                communityName, content);
+            return post;
+        }
+
+        public async Task<Post> CreatePostAsync(User requestingUser,
+            ulong communityId, string communityName, string content)
+        {
             var id = await IdGenerator.GenerateNewIdAsync(DoesPostIdExistAsync);
             var post = await _postRepository.CreatePostAsync(
                 id, requestingUser.Id, requestingUser.Username,
