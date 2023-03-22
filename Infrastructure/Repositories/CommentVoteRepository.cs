@@ -35,19 +35,19 @@ namespace FireplaceApi.Infrastructure.Repositories
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { Ids });
             var sw = Stopwatch.StartNew();
-            var commentEntities = await _commentVoteEntities
+            var commentVoteEntities = await _commentVoteEntities
                 .AsNoTracking()
                 .Where(e => Ids.Contains(e.Id))
                 .ToListAsync();
 
-            var commentEntityDictionary = new Dictionary<ulong, CommentVoteEntity>();
-            commentEntities.ForEach(e => commentEntityDictionary[e.Id] = e);
-            commentEntities = new List<CommentVoteEntity>();
-            Ids.ForEach(id => commentEntities.Add(commentEntityDictionary[id]));
+            var commentVoteEntityDictionary = new Dictionary<ulong, CommentVoteEntity>();
+            commentVoteEntities.ForEach(e => commentVoteEntityDictionary[e.Id] = e);
+            commentVoteEntities = new List<CommentVoteEntity>();
+            Ids.ForEach(id => commentVoteEntities.Add(commentVoteEntityDictionary[id]));
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
-                parameters: new { commentEntities = commentEntities.Select(e => e.Id) });
-            return commentEntities.Select(_commentVoteConverter.ConvertToModel).ToList();
+                parameters: new { commentEntities = commentVoteEntities.Select(e => e.Id) });
+            return commentVoteEntities.Select(_commentVoteConverter.ConvertToModel).ToList();
         }
 
         public async Task<CommentVote> GetCommentVoteByIdAsync(ulong id,
@@ -60,7 +60,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 includeComment
             });
             var sw = Stopwatch.StartNew();
-            var commentEntity = await _commentVoteEntities
+            var commentVoteEntity = await _commentVoteEntities
                 .AsNoTracking()
                 .Where(e => e.Id == id)
                 .Include(
@@ -69,8 +69,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntity });
-            return _commentVoteConverter.ConvertToModel(commentEntity);
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentVoteEntity });
+            return _commentVoteConverter.ConvertToModel(commentVoteEntity);
         }
 
         public async Task<CommentVote> GetCommentVoteAsync(ulong voterId,
@@ -84,7 +84,7 @@ namespace FireplaceApi.Infrastructure.Repositories
                 includeComment
             });
             var sw = Stopwatch.StartNew();
-            var commentEntity = await _commentVoteEntities
+            var commentVoteEntity = await _commentVoteEntities
                 .AsNoTracking()
                 .Where(e => e.VoterEntityId == voterId
                     && e.CommentEntityId == commentId)
@@ -94,8 +94,8 @@ namespace FireplaceApi.Infrastructure.Repositories
                 )
                 .SingleOrDefaultAsync();
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntity });
-            return _commentVoteConverter.ConvertToModel(commentEntity);
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentVoteEntity });
+            return _commentVoteConverter.ConvertToModel(commentVoteEntity);
         }
 
         public async Task<CommentVote> CreateCommentVoteAsync(ulong id, ulong voterUserId,
@@ -110,23 +110,23 @@ namespace FireplaceApi.Infrastructure.Repositories
                 isUp
             });
             var sw = Stopwatch.StartNew();
-            var commentEntity = new CommentVoteEntity(id, voterUserId,
+            var commentVoteEntity = new CommentVoteEntity(id, voterUserId,
                 voterUsername, commentId, isUp);
-            _commentVoteEntities.Add(commentEntity);
+            _commentVoteEntities.Add(commentVoteEntity);
             await _dbContext.SaveChangesAsync();
             _dbContext.DetachAllEntries();
 
             _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
-                parameters: new { commentEntity });
-            return _commentVoteConverter.ConvertToModel(commentEntity);
+                parameters: new { commentVoteEntity });
+            return _commentVoteConverter.ConvertToModel(commentVoteEntity);
         }
 
         public async Task<CommentVote> UpdateCommentVoteAsync(CommentVote commentvote)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { commentvote });
             var sw = Stopwatch.StartNew();
-            var commentEntity = _commentVoteConverter.ConvertToEntity(commentvote);
-            _commentVoteEntities.Update(commentEntity);
+            var commentVoteEntity = _commentVoteConverter.ConvertToEntity(commentvote);
+            _commentVoteEntities.Update(commentVoteEntity);
             try
             {
                 await _dbContext.SaveChangesAsync();
@@ -134,27 +134,27 @@ namespace FireplaceApi.Infrastructure.Repositories
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                throw new InternalServerException("Can't update the commentEntity DbUpdateConcurrencyException!",
-                    parameters: commentEntity, systemException: ex);
+                throw new InternalServerException("Can't update the commentVoteEntity DbUpdateConcurrencyException!",
+                    parameters: commentVoteEntity, systemException: ex);
             }
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntity });
-            return _commentVoteConverter.ConvertToModel(commentEntity);
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentVoteEntity });
+            return _commentVoteConverter.ConvertToModel(commentVoteEntity);
         }
 
         public async Task DeleteCommentVoteByIdAsync(ulong id)
         {
             _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
             var sw = Stopwatch.StartNew();
-            var commentEntity = await _commentVoteEntities
+            var commentVoteEntity = await _commentVoteEntities
                 .Where(e => e.Id == id)
                 .SingleOrDefaultAsync();
 
-            _commentVoteEntities.Remove(commentEntity);
+            _commentVoteEntities.Remove(commentVoteEntity);
             await _dbContext.SaveChangesAsync();
             _dbContext.DetachAllEntries();
 
-            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntity });
+            _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentVoteEntity });
         }
 
         public async Task<bool> DoesCommentVoteIdExistAsync(ulong id)
