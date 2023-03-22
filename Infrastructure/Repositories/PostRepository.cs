@@ -46,7 +46,6 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Search(
                     authorId: null,
-                    self: null,
                     joined: null,
                     communityIdentifier: communityIdentifier,
                     search: null
@@ -82,7 +81,6 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Search(
                     authorId: null,
-                    self: null,
                     joined: null,
                     communityIdentifier: null,
                     search: search
@@ -149,7 +147,6 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Search(
                     authorId: author.Id,
-                    self: null,
                     joined: null,
                     communityIdentifier: null,
                     search: null
@@ -299,11 +296,11 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public static IQueryable<PostEntity> Search(
-            [NotNull] this IQueryable<PostEntity> q, bool? self,
-            bool? joined, ulong? authorId, CommunityIdentifier communityIdentifier,
+            [NotNull] this IQueryable<PostEntity> q, bool? joined,
+            ulong? authorId, CommunityIdentifier communityIdentifier,
             string search)
         {
-            if (self.HasValue)
+            if (authorId.HasValue)
                 q = q.Where(e => e.AuthorEntityId == authorId.Value);
 
             if (communityIdentifier != null)

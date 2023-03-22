@@ -46,7 +46,6 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Search(
                     authorId: null,
-                    self: null,
                     postId: postId,
                     search: null,
                     isRoot: true
@@ -151,7 +150,6 @@ namespace FireplaceApi.Infrastructure.Repositories
                 .AsNoTracking()
                 .Search(
                     authorId: author.Id,
-                    self: true,
                     postId: null,
                     search: null,
                     isRoot: null
@@ -359,10 +357,10 @@ namespace FireplaceApi.Infrastructure.Repositories
         }
 
         public static IQueryable<CommentEntity> Search(
-            [NotNull] this IQueryable<CommentEntity> q, bool? self,
-            ulong? authorId, ulong? postId, string search, bool? isRoot)
+            [NotNull] this IQueryable<CommentEntity> q, ulong? authorId,
+            ulong? postId, string search, bool? isRoot)
         {
-            if (self.HasValue && self.Value)
+            if (authorId.HasValue)
                 q = q.Where(e => e.AuthorEntityId == authorId.Value);
 
             if (postId.HasValue)
