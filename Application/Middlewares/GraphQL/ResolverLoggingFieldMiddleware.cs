@@ -23,7 +23,7 @@ namespace FireplaceApi.Application.Middlewares
 
         public async Task InvokeAsync(IMiddlewareContext context)
         {
-            if (!context.IsResolverAQueryOrMutationExtendedType())
+            if (!context.IsApiResolver())
             {
                 await _next(context);
                 return;

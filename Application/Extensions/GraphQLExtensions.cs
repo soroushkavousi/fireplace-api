@@ -2,6 +2,7 @@
 using FireplaceApi.Application.Resolvers;
 using HotChocolate.Execution.Configuration;
 using HotChocolate.Resolvers;
+using HotChocolate.Types;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -54,10 +55,13 @@ namespace FireplaceApi.Application.Extensions
             return builder;
         }
 
-        public static bool IsResolverAQueryOrMutationExtendedType(this IMiddlewareContext context)
+        public static ObjectField GetField(this IMiddlewareContext context)
+            => (ObjectField)context.GetType().GetProperty("Field").GetValue(context, null);
+
+        public static bool IsApiResolver(this IMiddlewareContext context)
         {
-            var typeName = context.ObjectType.Name;
-            if (typeName == nameof(GraphQLQuery) || typeName == nameof(GraphQLMutation))
+            var field = context.GetField();
+            if (field.ResolverMember.MemberType == System.Reflection.MemberTypes.Method)
                 return true;
             return false;
         }
