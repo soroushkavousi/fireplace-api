@@ -3,7 +3,6 @@ using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Tools;
 using HotChocolate.Resolvers;
-using HotChocolate.Types;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -29,7 +28,7 @@ namespace FireplaceApi.Application.Middlewares
 
         public async Task InvokeAsync(IMiddlewareContext context)
         {
-            if (!context.IsResolverAQueryOrMutationExtendedType())
+            if (!context.IsApiResolver())
             {
                 await _next(context);
                 return;
@@ -57,7 +56,7 @@ namespace FireplaceApi.Application.Middlewares
     {
         public static bool IsResolverAUserEndpoint(this IMiddlewareContext context)
         {
-            var field = (ObjectField)context.GetType().GetProperty("Field").GetValue(context, null);
+            var field = context.GetField();
             var isUserEndpoint = field.ResolverMember.GetCustomAttribute<AllowAnonymousAttribute>() == null;
             return isUserEndpoint;
         }

@@ -1,7 +1,6 @@
 ﻿using FireplaceApi.Application.Extensions;
 using FireplaceApi.Domain.Extensions;
 using HotChocolate.Resolvers;
-using HotChocolate.Types;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,17 +22,17 @@ namespace FireplaceApi.Application.Middlewares
 
         public async Task InvokeAsync(IMiddlewareContext context)
         {
-            if (!context.IsResolverAQueryOrMutationExtendedType())
+            if (!context.IsApiResolver())
             {
                 await _next(context);
                 return;
             }
             var sw = Stopwatch.StartNew();
             var inputs = context.GetResolverInputs();
-            var fieldName = context.GetResolverName();
-            _logger.LogAppInformation(message: $"resolver: {fieldName}", title: "RESOLVER_INPUT", parameters: inputs);
+            var path = context.Path.ToString();
+            _logger.LogAppInformation(message: path, title: "RESOLVER_INPUT", parameters: inputs);
             await _next(context);
-            _logger.LogAppInformation(sw: sw, message: $"resolver: {fieldName}", title: "RESOLVER_OUTPUT", parameters: context.Result);
+            _logger.LogAppInformation(sw: sw, message: path, title: "RESOLVER_OUTPUT", parameters: context.Result);
         }
     }
 
@@ -50,13 +49,6 @@ namespace FireplaceApi.Application.Middlewares
                 inputs.Add(key, value);
             }
             return inputs;
-        }
-
-        internal static string GetResolverName(this IMiddlewareContext context)
-        {
-            var field = (ObjectField)context.GetType().GetProperty("Field").GetValue(context, null);
-            var fieldName = field.Name.ToUpper();
-            return fieldName;
         }
     }
 }

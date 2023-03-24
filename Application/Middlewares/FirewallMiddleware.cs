@@ -36,7 +36,7 @@ namespace FireplaceApi.Application.Middlewares
             var firewallCheckStopWatch = Stopwatch.StartNew();
             var isUserEndpoint = httpContext.GetActionAttribute<IAllowAnonymous>() == null;
             var requestPath = httpContext.Request.Path.Value;
-            if (!requestPath.StartsWith("/graphql"))
+            if (!requestPath.StartsWith(Tools.Constants.GraphQLBaseRoute))
                 ValidateCsrfToken(httpContext, isUserEndpoint);
             await ControlRequestBody(httpContext, firewall);
 
@@ -59,7 +59,7 @@ namespace FireplaceApi.Application.Middlewares
 
             if (isUserEndpoint)
             {
-                if (!requestPath.StartsWith("/graphql"))
+                if (!requestPath.StartsWith(Tools.Constants.GraphQLBaseRoute))
                     firewall.ValidateRequestingUserExists(requestingUser, accessTokenValue);
 
                 if (requestingUser != null)

@@ -14,5 +14,7 @@
         public static string CsrfTokenKey { get; } = "X-CSRF-TOKEN";
         public static string SetCookieHeaderKey { get; } = "Set-Cookie";
         public static string ErrorKey { get; } = "Error";
+        public static string GraphQLBaseRoute { get; } = "/graphql";
+        public static string ActionNameKey { get; } = "ActionName";
     }
 }
