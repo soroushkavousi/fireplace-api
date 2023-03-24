@@ -170,11 +170,14 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 
 - Use [NLog](https://nlog-project.org/)
 - Check [The nlog.config](Application/Tools/NLog/nlog.config)
-- Check [The LogExtensions.cs](Domain/Extensions/LogExtensions.cs)
 - Has Sensitive Data Masking
 - The directory of the log files can be specified in the environment variables
-- Each log line has Request Info, Process Info, Code Location, Log Time, Execution Time, Parameters Involved, Title, Message, and Exception
+- Supports Request Info, Process Info, Code Location, Log Time, Log Level, Unique Trace Identifier, Execution Time, Parameters Involved, Title, Message, and Exception
 - Each part of a log line has its padding and reserved space for readability
+- Check [LogExtensions.cs](Domain/Extensions/LogExtensions.cs), 
+[ActionLoggingAttribute.cs](Application/Attributes/ActionFilterAttributes/ActionLoggingAttribute.cs), 
+[ResolverLoggingFieldMiddleware.cs](Application/Middlewares/GraphQL/ResolverLoggingFieldMiddleware.cs), 
+[RequestTracerMiddleware.cs](Application/Middlewares/RequestTracerMiddleware.cs)
 
 **13. Sign up and Log in methods**
 
