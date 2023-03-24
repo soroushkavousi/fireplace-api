@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Application.Extensions;
+using FireplaceApi.Application.Tools;
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Operators;
 using Microsoft.AspNetCore.Builder;
@@ -25,17 +26,19 @@ namespace FireplaceApi.Application.Middlewares
         public async Task InvokeAsync(HttpContext context, RequestTraceOperator requestTraceOperator)
         {
             var sw = Stopwatch.StartNew();
-            _logger.LogAppInformation(title: "REQUEST");
+            var requestInfoMessage = context.CreateRequestInfoMessage();
+            _logger.LogAppInformation(requestInfoMessage, title: "REQUEST");
             await _next(context);
+            var action = context.FindActionName();
             await StoreRequestTrace(context, sw, requestTraceOperator);
-            _logger.LogAppInformation(sw: sw, title: "REQUEST_DURATION");
+            _logger.LogAppInformation($"action: {action ?? "null"} | {requestInfoMessage}", sw: sw, title: "REQUEST_DURATION");
         }
 
         private async Task StoreRequestTrace(HttpContext context, Stopwatch sw,
             RequestTraceOperator requestTraceOperator)
         {
             var method = context.Request.Method;
-            var action = FindActionName(context);
+            var action = context.FindActionName();
             var url = context.Request.GetDisplayUrl();
             var ip = context.GetInputHeaderParameters()?.IpAddress;
             var userAgent = context.Request.Headers.UserAgent.ToString();
@@ -47,20 +50,45 @@ namespace FireplaceApi.Application.Middlewares
             var requestTrace = await requestTraceOperator.CreateRequestTraceAsync(method,
                 url, ip, userAgent, userId, statusCode, duration, action, errorType, errorField);
         }
-
-        private string FindActionName(HttpContext context)
-        {
-            var routeData = context.GetRouteData();
-            routeData.Values.TryGetValue("action", out var actionName);
-            return (string)actionName;
-        }
     }
 
-    public static class IApplicationBuilderRequestTracerMiddleware
+    public static class RequestTracerMiddlewareExtensions
     {
         public static IApplicationBuilder UseRequestTracerMiddleware(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<RequestTracerMiddleware>();
+        }
+
+        public static string CreateRequestInfoMessage(this HttpContext context)
+        {
+            var ip = context.GetInputHeaderParameters()?.IpAddress;
+            var request = context.Request;
+            var method = request.Method;
+            var url = $"{request.Scheme}://{request.Host}{request.Path}";
+            var requestInfoMessage = $"{ip} {method} {url}";
+            return requestInfoMessage;
+        }
+
+        public static string FindActionName(this HttpContext context)
+        {
+            string actionName = null;
+            if (context.Items.TryGetValue(Constants.ActionNameKey, out var actionNameObject))
+            {
+                actionName = (string)actionNameObject;
+                return actionName;
+            }
+
+            var routeData = context.GetRouteData();
+            if (routeData.Values.TryGetValue("action", out actionNameObject))
+                actionName = (string)actionNameObject;
+            else
+            {
+                var requestPath = context.Request.Path.ToString();
+                if (requestPath.StartsWith(Constants.GraphQLBaseRoute))
+                    actionName = "GraphQL";
+            }
+            context.Items.Add(Constants.ActionNameKey, actionName);
+            return actionName;
         }
     }
 }
