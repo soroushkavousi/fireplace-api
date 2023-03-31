@@ -3,6 +3,7 @@ using FireplaceApi.Domain.Interfaces;
 using FireplaceApi.Domain.Operators;
 using FireplaceApi.Domain.Services;
 using FireplaceApi.Domain.Tools;
+using FireplaceApi.Infrastructure.CacheService;
 using FireplaceApi.Infrastructure.Gateways;
 using FireplaceApi.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -60,11 +61,18 @@ namespace FireplaceApi.Application.Extensions
             return services;
         }
 
+        public static IServiceCollection AddCacheServices(this IServiceCollection services)
+        {
+            services.AddSingleton<IRequestTraceCacheService, RequestTraceCacheService>();
+            return services;
+        }
+
         public static IServiceCollection AddGateways(this IServiceCollection services)
         {
             services.AddSingleton<IEmailGateway, GmailGateway>();
             services.AddScoped<IFileGateway, FileGateway>();
             services.AddScoped<IGoogleGateway, GoogleGateway>();
+            services.AddSingleton<RedisGateway>();
             return services;
         }
 

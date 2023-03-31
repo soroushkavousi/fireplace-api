@@ -5,7 +5,6 @@ using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Operators;
 using FireplaceApi.Domain.Validators;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
@@ -81,9 +80,7 @@ namespace FireplaceApi.Domain.Tools
             if (ip.IsLocalIpAddress())
                 return;
 
-            var fromDate = DateTime.UtcNow.AddMinutes(-Configs.Current.Api.RequestLimitionPeriodInMinutes);
-            var requestCountPerIP = await _requestTraceOperator.CountRequestTracesAsync(ip: ip, fromDate: fromDate,
-                withAction: true);
+            var requestCountPerIP = await _requestTraceOperator.CountIpRequestTimesAsync(ip: ip);
             if (requestCountPerIP > Configs.Current.Api.MaxRequestPerIP)
                 throw new MaxRequestPerIpLimitException(ip, requestCountPerIP);
         }

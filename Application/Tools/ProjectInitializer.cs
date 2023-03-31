@@ -1,8 +1,14 @@
-﻿using FireplaceApi.Domain.Extensions;
+﻿using FireplaceApi.Domain.Enums;
+using FireplaceApi.Domain.Exceptions;
+using FireplaceApi.Domain.Extensions;
+using FireplaceApi.Domain.Models;
+using FireplaceApi.Infrastructure.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using NLog;
 using NLog.Web;
 using System;
+using System.Linq;
 
 namespace FireplaceApi.Application.Tools
 {
@@ -23,6 +29,7 @@ namespace FireplaceApi.Application.Tools
             ReadAppSettings();
             SetupLogger();
             CheckConnectionString();
+            LoadConfigsFromTheDatabase();
         }
 
         private static void ReadEnvironmentVariables()
@@ -66,6 +73,32 @@ namespace FireplaceApi.Application.Tools
                 Console.WriteLine($"Error: {message}");
                 throw new Exception(message);
             }
+        }
+
+        private static void LoadConfigsFromTheDatabase()
+        {
+            var dbContext = new FireplaceApiDbContext(EnvironmentVariable.ConnectionString.Value);
+            var environmentName = EnvironmentVariable.EnvironmentName.Value;
+
+            ConfigsEntity.Current = dbContext.ConfigsEntities
+                .AsNoTracking()
+                .SingleOrDefault(e => e.EnvironmentName == environmentName);
+
+            if (ConfigsEntity.Current == null)
+            {
+                var serverMessage = "No configs are found in the database!!!";
+                Logger.LogAppCritical(serverMessage);
+                throw new InternalServerException(serverMessage, parameters: new { environmentName });
+            }
+
+            Configs.Current = new Configs(ConfigsEntity.Current.Id,
+                ConfigsEntity.Current.EnvironmentName.ToEnum<EnvironmentName>(),
+                api: ConfigsEntity.Current.Data.Api,
+                file: ConfigsEntity.Current.Data.File,
+                queryResult: ConfigsEntity.Current.Data.QueryResult,
+                email: ConfigsEntity.Current.Data.Email,
+                google: ConfigsEntity.Current.Data.Google,
+                ConfigsEntity.Current.CreationDate, ConfigsEntity.Current.ModifiedDate);
         }
     }
 }

@@ -3,22 +3,11 @@ using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Infrastructure.Entities;
 using FireplaceApi.Infrastructure.ValueObjects;
-using Microsoft.Extensions.Logging;
-using System;
 
 namespace FireplaceApi.Infrastructure.Converters
 {
     public class ConfigsConverter
     {
-        private readonly ILogger<ConfigsConverter> _logger;
-        private readonly IServiceProvider _serviceProvider;
-
-        public ConfigsConverter(ILogger<ConfigsConverter> logger, IServiceProvider serviceProvider)
-        {
-            _logger = logger;
-            _serviceProvider = serviceProvider;
-        }
-
         public ConfigsEntity ConvertToEntity(Configs configs)
         {
             if (configs == null)
