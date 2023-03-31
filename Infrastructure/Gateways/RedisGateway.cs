@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Domain.Extensions;
-using FireplaceApi.Domain.Models;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using System;
@@ -19,7 +18,7 @@ namespace FireplaceApi.Infrastructure.Gateways
         {
             _logger = logger;
             _db = redis.GetDatabase();
-            _server = redis.GetServer(Configs.Current.Api.RedisConnectionString);
+            _server = redis.GetServer(redis.GetEndPoints()[0]);
         }
 
         public async Task<T> GetDataAsync<T>(string key)
