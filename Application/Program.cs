@@ -21,6 +21,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
+using StackExchange.Redis;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
@@ -77,6 +78,16 @@ namespace FireplaceApi.Application
 
         private void ConfigureBuilderServices(WebApplicationBuilder builder)
         {
+            builder.Services.AddApiConverters();
+            builder.Services.AddServices();
+            builder.Services.AddValidators();
+            builder.Services.AddOperators();
+            builder.Services.AddTools();
+            builder.Services.AddInfrastructurConverters();
+            builder.Services.AddGateways();
+            builder.Services.AddRepositories();
+            builder.Services.AddCacheServices();
+
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddSingleton<IObjectModelValidator, NullObjectModelValidator>();
             var infrastructureAssemblyName = $"{nameof(FireplaceApi)}.{nameof(FireplaceApi.Infrastructure)}";
@@ -86,14 +97,9 @@ namespace FireplaceApi.Application
                     optionsBuilder => optionsBuilder.MigrationsAssembly(infrastructureAssemblyName))
             );
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-            builder.Services.AddInfrastructurConverters();
-            builder.Services.AddRepositories();
-            builder.Services.AddGateways();
-            builder.Services.AddTools();
-            builder.Services.AddOperators();
-            builder.Services.AddValidators();
-            builder.Services.AddServices();
-            builder.Services.AddApiConverters();
+
+            var redisConnection = ConnectionMultiplexer.Connect(Configs.Current.Api.RedisConnectionString);
+            builder.Services.AddSingleton<IConnectionMultiplexer>(redisConnection);
 
             builder.Services.AddAntiforgery(options =>
             {
@@ -188,14 +194,12 @@ namespace FireplaceApi.Application
             });
 
             builder.Services.AddHostedService<StatusCheckerService>();
-            builder.Services.AddHostedService<ConfigLoaderService>();
 
             builder.Services
                 .AddGraphQLServer()
                 .UseGraphQLPipeline()
                 .AddGraphQLResolvers()
                 .AddHttpRequestInterceptor<RequestingUserGlobalState>();
-
         }
 
         private WebApplication CreateApp(WebApplicationBuilder builder)

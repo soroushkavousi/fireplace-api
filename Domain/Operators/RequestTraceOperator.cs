@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Domain.Enums;
+using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Interfaces;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Tools;
@@ -14,14 +15,17 @@ namespace FireplaceApi.Domain.Operators
     {
         private readonly ILogger<RequestTraceOperator> _logger;
         private readonly IServiceProvider _serviceProvider;
-        private readonly IRequestTraceRepository _requestTraceRepository;
+        private readonly IRequestTraceRepository _repository;
+        private readonly IRequestTraceCacheService _cacheService;
 
         public RequestTraceOperator(ILogger<RequestTraceOperator> logger,
-            IServiceProvider serviceProvider, IRequestTraceRepository requestTraceRepository)
+            IServiceProvider serviceProvider, IRequestTraceRepository repository,
+            IRequestTraceCacheService cacheService)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
-            _requestTraceRepository = requestTraceRepository;
+            _repository = repository;
+            _cacheService = cacheService;
         }
 
         public async Task<string> FindCountryName(IPAddress ip)
@@ -36,7 +40,7 @@ namespace FireplaceApi.Domain.Operators
             long? fromDuration = null, ErrorType errorType = null, FieldName errorField = null,
             DateTime? fromDate = null, bool? withAction = null)
         {
-            var requestTraces = await _requestTraceRepository
+            var requestTraces = await _repository
                 .ListRequestTracesAsync(method, action, url, ip, country, userAgentSearch,
                 userId, statusCode, fromDuration, errorType, errorField, fromDate, withAction);
             return requestTraces;
@@ -48,15 +52,20 @@ namespace FireplaceApi.Domain.Operators
             long? fromDuration = null, ErrorType errorType = null, FieldName errorField = null,
             DateTime? fromDate = null, bool? withAction = null)
         {
-            var count = await _requestTraceRepository
+            var count = await _repository
                 .CountRequestTracesAsync(method, action, url, ip, country, userAgentSearch,
                 userId, statusCode, fromDuration, errorType, errorField, fromDate, withAction);
             return count;
         }
 
+        public async Task<int> CountIpRequestTimesAsync(IPAddress ip)
+        {
+            return await _cacheService.CoutIpRequestTimesAsync(ip);
+        }
+
         public async Task<RequestTrace> GetRequestTraceByIdAsync(ulong id)
         {
-            var requestTrace = await _requestTraceRepository
+            var requestTrace = await _repository
                 .GetRequestTraceByIdAsync(id);
             if (requestTrace == null)
                 return requestTrace;
@@ -71,20 +80,25 @@ namespace FireplaceApi.Domain.Operators
         {
             var id = await IdGenerator.GenerateNewIdAsync(DoesRequestTraceIdExistAsync);
             var country = await FindCountryName(ip);
-            var requestTrace = await _requestTraceRepository.CreateRequestTraceAsync(id,
+            var requestTrace = await _repository.CreateRequestTraceAsync(id,
                 method, url, ip, country, userAgent, userId, statusCode, duration,
                 action, errorType, errorField);
+
+            var errorIsTheIpLimitation = errorType != null && errorType == ErrorType.LIMITATION && errorField == FieldName.MAX_REQUEST_PER_IP;
+            if (!string.IsNullOrWhiteSpace(action) && !ip.IsLocalIpAddress() && !errorIsTheIpLimitation)
+                await _cacheService.AddIpRequestTimeAsync(ip, Configs.Current.Api.RequestLimitionPeriod);
+
             return requestTrace;
         }
 
         public async Task DeleteRequestTraceAsync(ulong id)
         {
-            await _requestTraceRepository.DeleteRequestTraceAsync(id);
+            await _repository.DeleteRequestTraceAsync(id);
         }
 
         public async Task<bool> DoesRequestTraceIdExistAsync(ulong id)
         {
-            var requestTraceIdExists = await _requestTraceRepository.DoesRequestTraceIdExistAsync(id);
+            var requestTraceIdExists = await _repository.DoesRequestTraceIdExistAsync(id);
             return requestTraceIdExists;
         }
     }

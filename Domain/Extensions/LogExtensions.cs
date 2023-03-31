@@ -117,10 +117,13 @@ namespace FireplaceApi.Domain.Extensions
 
             if (parameters != null)
             {
-                logMessage += $" | {parameters.ToJson()}";
+                var json = parameters.ToJson();
+                var maxJsonSize = 300;
+                if (json.Length > maxJsonSize)
+                    json = json[..maxJsonSize] + "...";
+                logMessage += $" | {json}";
             }
 
-            //logMessage = logMessage.EscapeCurlyBrackets();
             return logMessage;
         }
 

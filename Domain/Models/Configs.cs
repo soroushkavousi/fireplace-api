@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Domain.Attributes;
 using FireplaceApi.Domain.Enums;
 using System;
+using System.Text.Json.Serialization;
 
 namespace FireplaceApi.Domain.Models
 {
@@ -38,6 +39,9 @@ namespace FireplaceApi.Domain.Models
             public int CookieMaxAgeInDays { get; set; }
             public int RequestLimitionPeriodInMinutes { get; set; }
             public int MaxRequestPerIP { get; set; }
+            public string RedisConnectionString { get; set; }
+            [JsonIgnore]
+            public TimeSpan RequestLimitionPeriod => TimeSpan.FromMinutes(RequestLimitionPeriodInMinutes);
         }
 
         public class FileConfigs
@@ -80,6 +84,7 @@ namespace FireplaceApi.Domain.Models
                 CookieMaxAgeInDays = 30,
                 RequestLimitionPeriodInMinutes = 60,
                 MaxRequestPerIP = 50,
+                RedisConnectionString = null
             },
             file: new FileConfigs
             {

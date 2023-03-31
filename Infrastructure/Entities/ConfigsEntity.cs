@@ -11,6 +11,8 @@ namespace FireplaceApi.Infrastructure.Entities
     [Index(nameof(EnvironmentName), IsUnique = true)]
     public class ConfigsEntity : BaseEntity
     {
+        public static ConfigsEntity Current { get; set; }
+
         [Required]
         public string EnvironmentName { get; set; }
         [Required]
