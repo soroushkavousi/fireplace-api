@@ -4,7 +4,7 @@ Fireplace API is a **Reddit API clone** that has communities, posts, and nested 
 
 The API is developed via ASP&#46;NET Core framework and has many features such as DDD structure, Swagger UI, Integration Testing, various Sign-Up Methods, Error Handling, Logging System, Security Features, CICD, and Docker Deployment. <br/>
 
-Stack: REST API, GraphQL, ASP&#46;NET Core (7.0), PostgreSQL, Swagger, Nginx, CICD, Docker, GitHub Actions, Google OAuth 2.0, Gmail API, NLog, xUnit <br/>
+Stack: REST API, GraphQL, ASP&#46;NET Core (7.0), PostgreSQL, Redis, Swagger, Nginx, CICD, Docker, GitHub Actions, Google OAuth 2.0, Gmail API, NLog, xUnit <br/>
 
 <br/>
 
@@ -47,7 +47,7 @@ This project has been divided into multiple subprojects to implement a domain-dr
 - Integration Tests
 
 <div align="center">
-  <img src="https://files.fireplace.bitiano.com/api/the-architecture.png" />
+  <img src="https://files.fireplace.bitiano.com/api/the-architecture.png?" />
 </div>
 
 ### Layers:
@@ -78,14 +78,14 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 
 # Summary
 
-**1. The DDD Architecture**
+**1. DDD Architecture**
 
 - Layers as subprojects: Application, Domain, Infrastructure
 - API: Handles the client requests
 - Domain: Handles business rules & logic
 - Infrastructure: Handles data persistence & third-party systems
 
-**2. The Swagger**
+**2. Swagger**
 
 - Check [The Swagger UI](https://api.fireplace.bitiano.com/swagger)
 - Has the list of API actions to view or run
@@ -98,15 +98,21 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 
 **3. GraphQL**
 
-- Check [The GraphQL Playground](https://api.fireplace.bitiano.com/graphql), which is interactive and graphical IDE for GraphQL
+- Check [The GraphQL Playground](https://api.fireplace.bitiano.com/graphql), which is an interactive and graphical IDE for GraphQL
 - With GraphQL you can prevent over-fetching and under-fetching
 - With GraphQL you can call multiple API actions with just a request
 - With GraphQL playground you can check all the schema you can call
 - Supports nested data such as community posts and post comments
-- Supports self data such as created posts, created comments, and joined communities
+- Supports self-data such as created posts, created comments, and joined communities
 
+**4. Caching System with Redis**
 
-**4. CICD with GitHub Action**
+- Getting recent request traces from the database took more than 50ms. So I add Redis to cache them. Now API is much faster.
+- Each model has its own cache service class. Check [RequestTraceCacheService](Infrastructure/CacheService/RequestTraceCacheService.cs)
+- Check [RedisGateway](Infrastructure/Gateways/RedisGateway.cs)
+- The project caching system is in its starting phase. There are a lot more items to be cached. 
+
+**5. CICD with GitHub Action**
 
 - Check [The CICD.yml](.github/workflows/CICD.yml)
 - Has three steps: Test, Build, and Deploy
@@ -114,28 +120,27 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 - At the build stage, a docker image will be created and pushed to Docker Hub
 - At the deploy stage, the image will be run in a VPS with docker-compose
 
-**5. Docker & Docker Compose**
+**6. Docker & Docker Compose**
 
 - Check [The Dockerfile](Dockerfile) (For building)
 - Check [The docker-compose.yml](docker-compose.yml) (For deploying)
 
-**6. Integration Testing**
+**7. Integration Testing**
 
 - With [xUnit](https://xunit.net/)
 - Parallelism for each test class
 - Each test class has its own database clone
 - Each test function is independent
 
-**7. Database**
+**8. Database wih PostgreSQL**
 
-- With [PostgreSQL](https://www.postgresql.org/)
 - Has a repository for each entity
 - Use Fluent API
 - Use ulong Id
 - Use case-insensitive collation
 - Each entity inherits from a base class that has Id, CreationDate, and ModifiedDate
 
-**8. Pagination vs Query Result**
+**9. Pagination vs Query Result**
 
 - After implementing both stateful & stateless paginations, I decided to remove them!
   - Stateful paginations need a considerable amount of server resources to be run!
@@ -145,17 +150,17 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
   - Query result is a collection of items and a list of more item ids
   - Also nested comments have child comments and a list of more child comment ids
 
-**9. Supports nested comments**
+**10. Supports nested comments**
 
 - Each comment has a field for its replied comments
 - Can get post comments along with their replies for a specific sort with the structure
 
-**10. Prevents CSRF attacks**
+**11. Prevents CSRF attacks**
 
 - The token will be refreshed for every unsafe HTTP method call
 - The token should be equal in both cookies and headers
 
-**11. Error Handling**
+**12. Error Handling**
 
 - The error json has a code, a type, a field, and a message
 - Error code is unique to a pair of error type and error field
@@ -166,7 +171,7 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 - Exception middleware catches ApiException, and the other Exceptions occured in the code
 - Server Message is for the logging, and Client Message is for the users
 
-**12. Has logging system**
+**13. Has logging system**
 
 - Use [NLog](https://nlog-project.org/)
 - Check [The nlog.config](Application/Tools/NLog/nlog.config)
@@ -179,7 +184,7 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 [ResolverLoggingFieldMiddleware.cs](Application/Middlewares/GraphQL/ResolverLoggingFieldMiddleware.cs), 
 [RequestTracerMiddleware.cs](Application/Middlewares/RequestTracerMiddleware.cs)
 
-**13. Sign up and Log in methods**
+**14. Sign up and Log in methods**
 
 - Use Bearer Scheme
 - Sign Up: Google Sign-in, Email
@@ -187,18 +192,18 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 - Can specify the access token in both cookies and headers
 - Use [Gmail API](https://developers.google.com/gmail/api) for sending emails
 
-**14. Request Tracing & API Request Rate Limit**
+**15. Request Tracing & API Request Rate Limit**
 
 - Request details will be stored in the database
   - Method, Action, URL, IP, User Agent, User ID, Duration, Status Code, Error Name, Request Time, …
 - Currently, only allow a few API calls per one hour
 
-**15. Supports user sessions**
+**16. Supports user sessions**
 
 - Can get the list of sessions and revoke them
 - Currently, sessions only have IP, but I should also add the user-agent and the country of the IP
 
-**16. Id Generation and Encoding**
+**17. Id Generation and Encoding**
 
 - Check [Guides/id-generation-and-encoding.md](Guides/id-generation-and-encoding.md)
 
