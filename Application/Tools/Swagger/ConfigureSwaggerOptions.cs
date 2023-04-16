@@ -57,8 +57,8 @@ namespace FireplaceApi.Application.Tools
             description_html += $@"
                 <div>
                     <div>Sample urls:</div>
-                    <p style=""margin-left: 40px;""><a href=""{Configs.Current.Api.BaseUrlPath}/communities?name=developers"">{Configs.Current.Api.BaseUrlPath}/communities?name=developers</a></p>
-                    <p style=""margin-left: 40px;""><a href=""{Configs.Current.Api.BaseUrlPath}/{Constants.LatestApiVersion}/communities?name=developers"">{Configs.Current.Api.BaseUrlPath}/{Constants.LatestApiVersion}/communities?name=developers</a></p>
+                    <p style=""margin-left: 40px;""><a href=""{Configs.Current.Api.BaseUrlPath}/communities?search=developers"">{Configs.Current.Api.BaseUrlPath}/communities?search=developers</a></p>
+                    <p style=""margin-left: 40px;""><a href=""{Configs.Current.Api.BaseUrlPath}/{Constants.LatestApiVersion}/communities?search=developers"">{Configs.Current.Api.BaseUrlPath}/{Constants.LatestApiVersion}/communities?search=developers</a></p>
                     <p style=""margin-left: 40px;""><a href=""{Configs.Current.Api.BaseUrlPath}/users/me"">{Configs.Current.Api.BaseUrlPath}/users/me</a></p>
                 </div>";
 
