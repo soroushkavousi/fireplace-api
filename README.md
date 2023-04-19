@@ -1,8 +1,8 @@
 # Welcome to Fireplace API
 
-Fireplace API is a **Reddit API clone** that has communities, posts, and nested comments. This project is just an individual effort to create a real-world Web API sample with some advanced features.
+Fireplace API is **a fully-featured sample of the ASP&#46;NET Core Web API**. And it is also a **Reddit API clone** that has communities, posts, and nested comments.
 
-The API is developed via ASP&#46;NET Core framework and has many features such as DDD structure, Swagger UI, Integration Testing, various Sign-Up Methods, Error Handling, Logging System, Security Features, CICD, and Docker Deployment. <br/>
+The API supports many features such as DDD structure, Swagger UI, integration testing, various authentication methods, error handling, logging system, caching system, security features, CICD, and Docker deployment. <br/>
 
 Stack: REST API, GraphQL, ASP&#46;NET Core (7.0), PostgreSQL, Redis, Swagger, Nginx, CICD, Docker, GitHub Actions, Google OAuth 2.0, Gmail API, NLog, xUnit <br/>
 
