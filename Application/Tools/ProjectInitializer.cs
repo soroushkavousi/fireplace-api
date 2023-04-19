@@ -77,7 +77,7 @@ namespace FireplaceApi.Application.Tools
 
         private static void LoadConfigsFromTheDatabase()
         {
-            var dbContext = new FireplaceApiDbContext(EnvironmentVariable.ConnectionString.Value);
+            var dbContext = new ProjectDbContext(EnvironmentVariable.ConnectionString.Value);
             var environmentName = EnvironmentVariable.EnvironmentName.Value;
 
             ConfigsEntity.Current = dbContext.ConfigsEntities

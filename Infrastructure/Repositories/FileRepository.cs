@@ -18,13 +18,13 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class FileRepository : IFileRepository
     {
         private readonly ILogger<FileRepository> _logger;
-        private readonly FireplaceApiDbContext _dbContext;
+        private readonly ProjectDbContext _dbContext;
         private readonly DbSet<FileEntity> _fileEntities;
         private readonly FileConverter _fileConverter;
 
 
         public FileRepository(ILogger<FileRepository> logger,
-            FireplaceApiDbContext dbContext, FileConverter fileConverter)
+            ProjectDbContext dbContext, FileConverter fileConverter)
         {
             _logger = logger;
             _dbContext = dbContext;

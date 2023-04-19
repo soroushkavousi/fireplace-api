@@ -21,12 +21,12 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class SessionRepository : ISessionRepository
     {
         private readonly ILogger<SessionRepository> _logger;
-        private readonly FireplaceApiDbContext _dbContext;
+        private readonly ProjectDbContext _dbContext;
         private readonly DbSet<SessionEntity> _sessionEntities;
         private readonly SessionConverter _sessionConverter;
 
         public SessionRepository(ILogger<SessionRepository> logger,
-            FireplaceApiDbContext dbContext, SessionConverter sessionConverter)
+            ProjectDbContext dbContext, SessionConverter sessionConverter)
         {
             _logger = logger;
             _dbContext = dbContext;

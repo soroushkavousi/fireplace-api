@@ -19,12 +19,12 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class CommunityRepository : ICommunityRepository
     {
         private readonly ILogger<CommunityRepository> _logger;
-        private readonly FireplaceApiDbContext _dbContext;
+        private readonly ProjectDbContext _dbContext;
         private readonly DbSet<CommunityEntity> _communityEntities;
         private readonly CommunityConverter _communityConverter;
 
         public CommunityRepository(ILogger<CommunityRepository> logger,
-            FireplaceApiDbContext dbContext, CommunityConverter communityConverter)
+            ProjectDbContext dbContext, CommunityConverter communityConverter)
         {
             _logger = logger;
             _dbContext = dbContext;

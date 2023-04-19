@@ -17,12 +17,12 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class ConfigsRepository : IConfigsRepository
     {
         private readonly ILogger<ConfigsRepository> _logger;
-        private readonly FireplaceApiDbContext _dbContext;
+        private readonly ProjectDbContext _dbContext;
         private readonly DbSet<ConfigsEntity> _configsEntities;
         private readonly ConfigsConverter _configsConverter;
 
         public ConfigsRepository(ILogger<ConfigsRepository> logger,
-            FireplaceApiDbContext dbContext, ConfigsConverter configsConverter)
+            ProjectDbContext dbContext, ConfigsConverter configsConverter)
         {
             _logger = logger;
             _dbContext = dbContext;

@@ -20,12 +20,12 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class RequestTraceRepository : IRequestTraceRepository
     {
         private readonly ILogger<RequestTraceRepository> _logger;
-        private readonly FireplaceApiDbContext _dbContext;
+        private readonly ProjectDbContext _dbContext;
         private readonly DbSet<RequestTraceEntity> _requestTraceEntities;
         private readonly RequestTraceConverter _requestTraceConverter;
 
         public RequestTraceRepository(ILogger<RequestTraceRepository> logger,
-            FireplaceApiDbContext dbContext, RequestTraceConverter requestTraceConverter)
+            ProjectDbContext dbContext, RequestTraceConverter requestTraceConverter)
         {
             _logger = logger;
             _dbContext = dbContext;

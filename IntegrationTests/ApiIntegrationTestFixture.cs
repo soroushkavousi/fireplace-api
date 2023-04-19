@@ -25,7 +25,7 @@ namespace FireplaceApi.Application.IntegrationTests
     {
         private string _databaseName;
         private string _databaseConnectionString;
-        private readonly FireplaceApiDbContext _dbContext;
+        private readonly ProjectDbContext _dbContext;
         private readonly static Logger _logger;
         private static List<ConfigsEntity> _configsEntities;
         private static List<ErrorEntity> _errorEntities;
@@ -68,7 +68,7 @@ namespace FireplaceApi.Application.IntegrationTests
 
         private static void ReadDatabaseInitialData()
         {
-            var mainDbContext = new FireplaceApiDbContext(EnvironmentVariable.ConnectionString.Value);
+            var mainDbContext = new ProjectDbContext(EnvironmentVariable.ConnectionString.Value);
 
             if (mainDbContext.Database.GetPendingMigrations().Any())
             {
@@ -100,7 +100,7 @@ namespace FireplaceApi.Application.IntegrationTests
             CreateDatabaseClone();
             InitializeApiFactory();
             InitializeServiceProvider();
-            _dbContext = ServiceProvider.GetRequiredService<FireplaceApiDbContext>();
+            _dbContext = ServiceProvider.GetRequiredService<ProjectDbContext>();
             TestUtils = new TestUtils(this);
             ClientPool = new ClientPool(this);
 
@@ -113,7 +113,7 @@ namespace FireplaceApi.Application.IntegrationTests
             try
             {
                 _databaseConnectionString = GenerateRandomConnectionString();
-                var newDbContext = new FireplaceApiDbContext(_databaseConnectionString);
+                var newDbContext = new ProjectDbContext(_databaseConnectionString);
                 newDbContext.Database.EnsureDeleted();
                 newDbContext.Database.EnsureCreated();
                 newDbContext.ConfigsEntities.AddRange(_configsEntities);
@@ -158,12 +158,12 @@ namespace FireplaceApi.Application.IntegrationTests
         private void ReplaceMainDatabaseWithTestDatabase(IServiceCollection services)
         {
             var descriptor = services.SingleOrDefault(d =>
-                d.ServiceType == typeof(DbContextOptions<FireplaceApiDbContext>));
+                d.ServiceType == typeof(DbContextOptions<ProjectDbContext>));
 
             if (descriptor != null)
                 services.Remove(descriptor);
 
-            services.AddDbContext<FireplaceApiDbContext>(
+            services.AddDbContext<ProjectDbContext>(
                 optionsBuilder => optionsBuilder.UseNpgsql(_databaseConnectionString)
             );
         }

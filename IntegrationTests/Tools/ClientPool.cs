@@ -23,7 +23,7 @@ namespace FireplaceApi.Application.IntegrationTests.Tools
         private readonly ILogger<ClientPool> _logger;
         private readonly WebApplicationFactory<Program> _apiFactory;
         private readonly WebApplicationFactoryClientOptions _clientOptions;
-        private readonly FireplaceApiDbContext _dbContext;
+        private readonly ProjectDbContext _dbContext;
         private readonly IUserRepository _userRepository;
         private readonly IEmailRepository _emailRepository;
         private readonly IAccessTokenRepository _accessTokenRepository;
@@ -44,7 +44,7 @@ namespace FireplaceApi.Application.IntegrationTests.Tools
                 HandleCookies = true,
                 MaxAutomaticRedirections = 7
             };
-            _dbContext = testFixture.ServiceProvider.GetRequiredService<FireplaceApiDbContext>();
+            _dbContext = testFixture.ServiceProvider.GetRequiredService<ProjectDbContext>();
             _userRepository = testFixture.ServiceProvider.GetRequiredService<IUserRepository>();
             _emailRepository = testFixture.ServiceProvider.GetRequiredService<IEmailRepository>();
             _accessTokenRepository = testFixture.ServiceProvider.GetRequiredService<IAccessTokenRepository>();

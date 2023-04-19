@@ -18,12 +18,12 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class CommunityMembershipRepository : ICommunityMembershipRepository
     {
         private readonly ILogger<CommunityMembershipRepository> _logger;
-        private readonly FireplaceApiDbContext _dbContext;
+        private readonly ProjectDbContext _dbContext;
         private readonly DbSet<CommunityMembershipEntity> _communityMembershipEntities;
         private readonly CommunityMembershipConverter _communityMembershipConverter;
 
         public CommunityMembershipRepository(ILogger<CommunityMembershipRepository> logger,
-            FireplaceApiDbContext dbContext, CommunityMembershipConverter communityMembershipConverter)
+            ProjectDbContext dbContext, CommunityMembershipConverter communityMembershipConverter)
         {
             _logger = logger;
             _dbContext = dbContext;

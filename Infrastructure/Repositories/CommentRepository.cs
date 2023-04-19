@@ -19,12 +19,12 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class CommentRepository : ICommentRepository
     {
         private readonly ILogger<CommentRepository> _logger;
-        private readonly FireplaceApiDbContext _dbContext;
+        private readonly ProjectDbContext _dbContext;
         private readonly DbSet<CommentEntity> _commentEntities;
         private readonly CommentConverter _commentConverter;
 
         public CommentRepository(ILogger<CommentRepository> logger,
-            FireplaceApiDbContext dbContext, CommentConverter commentConverter)
+            ProjectDbContext dbContext, CommentConverter commentConverter)
         {
             _logger = logger;
             _dbContext = dbContext;
