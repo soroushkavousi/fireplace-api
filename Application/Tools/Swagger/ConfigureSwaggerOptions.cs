@@ -46,30 +46,25 @@ namespace FireplaceApi.Application.Tools
 
             description_html += $@"
                 <div>
-                    <p><strong><i>Welcome</i></strong>! Fireplace API is a Reddit API clone that has communities, posts, and nested comments.</p>
-                    <p>This project is just an individual effort to create a real-world Web API sample with ASP.NET Core framework. </p>
-                    <p><strong><i>Note:</i></strong> After logging in, your access token will automatically be saved in cookies, and you are not needed to use headers for authentication.</p>
-                    <br />
-                    <p>Check the <a target=""_blank"" href=""https://github.com/soroushkavousi/fireplace-api""><b><i>Fireplace API GitHub Repository</i></b></a></p>
-                    <p>Check the <a target=""_blank"" href=""{Configs.Current.Api.BaseUrlPath}/graphql""><b><i>The GraphQL Playground</i></b></a></p>
-                </div><br />";
-
-            description_html += $@"
-                <div>
-                    <div>Sample urls:</div>
-                    <p style=""margin-left: 40px;""><a href=""{Configs.Current.Api.BaseUrlPath}/communities?search=developers"">{Configs.Current.Api.BaseUrlPath}/communities?search=developers</a></p>
-                    <p style=""margin-left: 40px;""><a href=""{Configs.Current.Api.BaseUrlPath}/{Constants.LatestApiVersion}/communities?search=developers"">{Configs.Current.Api.BaseUrlPath}/{Constants.LatestApiVersion}/communities?search=developers</a></p>
-                    <p style=""margin-left: 40px;""><a href=""{Configs.Current.Api.BaseUrlPath}/users/me"">{Configs.Current.Api.BaseUrlPath}/users/me</a></p>
+                    <p>Fireplace API is <strong>a fully-featured sample of the ASP.NET Core Web API</strong>. And it is also a <strong>Reddit API clone</strong> that has communities, posts, and nested comments.</p>
+                    <p>Check <a target=""_blank"" href=""https://github.com/soroushkavousi/fireplace-api""><b><i>The GitHub Repository</i></b></a></p>
+                    <p>Check <a target=""_blank"" href=""{Configs.Current.Api.BaseUrlPath}/graphql""><b><i>The GraphQL Playground</i></b></a></p>
                 </div>";
 
             description_html += $@"
-                <a id=""google-btn"" target=""_blank"" href=""{Configs.Current.Api.BaseUrlPath}/users/open-google-log-in-page"">
-                    <div id=""google-icon-wrapper"">
-                        <img id=""google-icon"" src=""https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg""/>
-                    </div>
-                    <p id=""btn-text""><b>Log in with Google</b></p>
-                </a> 
-                ";
+                <div id=""sample-urls"">
+                    <div>Sample urls:</div>
+                    <ul>
+                        <li><a href=""{Configs.Current.Api.BaseUrlPath}/communities?search=developers"">{Configs.Current.Api.BaseUrlPath}/communities?search=developers</a></li>
+                        <li><a href=""{Configs.Current.Api.BaseUrlPath}/{Constants.LatestApiVersion}/communities?search=developers"">{Configs.Current.Api.BaseUrlPath}/{Constants.LatestApiVersion}/communities?search=developers</a></li>
+                        <li><a href=""{Configs.Current.Api.BaseUrlPath}/users/me"">{Configs.Current.Api.BaseUrlPath}/users/me</a></li>
+                    </ul>
+                </div>";
+
+            description_html += $@"
+                <div>
+                    <p><strong><i>Note:</i></strong> On this page, your access token will be automatically stored in cookies after logging in, and you do not need to use the Authorize button for authentication.</p>
+                </div>";
 
             if (Configs.Current == Configs.Default)
             {
@@ -78,11 +73,19 @@ namespace FireplaceApi.Application.Tools
                 </div> <br />";
             }
 
-            description_html += "</div> <br />";
+            description_html += $@"
+                <a id=""google-btn"" target=""_blank"" href=""{Configs.Current.Api.BaseUrlPath}/users/open-google-log-in-page"">
+                    <div id=""google-icon-wrapper"">
+                        <img id=""google-icon"" src=""https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg""/>
+                    </div>
+                    <p id=""btn-text""><b>Log in with Google</b></p>
+                </a>";
+
+            description_html += "</div>";
 
             var info = new OpenApiInfo()
             {
-                Title = "Fireplace Api",
+                Title = "Welcome to Fireplace API",
                 Version = description.ApiVersion.ToString(),
                 Description = description_html,
                 Contact = new OpenApiContact

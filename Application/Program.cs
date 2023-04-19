@@ -232,7 +232,7 @@ namespace FireplaceApi.Application
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
-                options.DocumentTitle = "Fireplace Api Docs";
+                options.DocumentTitle = "Fireplace API Swagger UI";
                 options.EnableDeepLinking();
                 options.SwaggerEndpoint($"/swagger/{Constants.LatestApiVersion}/swagger.json", Constants.LatestApiVersion.ToUpper());
                 options.DocExpansion(DocExpansion.List);
