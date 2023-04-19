@@ -19,12 +19,12 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class EmailRepository : IEmailRepository
     {
         private readonly ILogger<EmailRepository> _logger;
-        private readonly FireplaceApiDbContext _dbContext;
+        private readonly ProjectDbContext _dbContext;
         private readonly DbSet<EmailEntity> _emailEntities;
         private readonly EmailConverter _emailConverter;
 
         public EmailRepository(ILogger<EmailRepository> logger,
-            FireplaceApiDbContext dbContext, EmailConverter emailConverter)
+            ProjectDbContext dbContext, EmailConverter emailConverter)
         {
             _logger = logger;
             _dbContext = dbContext;

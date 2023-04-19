@@ -10,13 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Tools\Swagger\api-swagger.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Tools\Swagger\api-swagger.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
     <EmbeddedResource Include="wwwroot\swagger-ui\custom-swagger-ui.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>

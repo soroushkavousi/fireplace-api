@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Entities
 {
-    public class FireplaceApiDbContext : DbContext
+    public class ProjectDbContext : DbContext
     {
-        private readonly ILogger<FireplaceApiDbContext> _logger;
+        private readonly ILogger<ProjectDbContext> _logger;
 
         public DbSet<CommentEntity> CommentEntities { get; set; }
         public DbSet<CommentVoteEntity> CommentVoteEntities { get; set; }
@@ -34,14 +34,14 @@ namespace FireplaceApi.Infrastructure.Entities
 
         public DbSet<RequestTraceEntity> RequestTraceEntities { get; set; }
 
-        public FireplaceApiDbContext(ILogger<FireplaceApiDbContext> logger, DbContextOptions<FireplaceApiDbContext> options)
+        public ProjectDbContext(ILogger<ProjectDbContext> logger, DbContextOptions<ProjectDbContext> options)
             : base(options)
         {
             _logger = logger;
             ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
-        public FireplaceApiDbContext(string connectionString)
+        public ProjectDbContext(string connectionString)
             : base(CreateOptionsFromConnectionString(connectionString))
         {
 
@@ -105,9 +105,9 @@ namespace FireplaceApi.Infrastructure.Entities
             }
         }
 
-        public static DbContextOptions<FireplaceApiDbContext> CreateOptionsFromConnectionString(string connectionString)
+        public static DbContextOptions<ProjectDbContext> CreateOptionsFromConnectionString(string connectionString)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<FireplaceApiDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<ProjectDbContext>();
             optionsBuilder.UseNpgsql(connectionString);
             return optionsBuilder.Options;
         }

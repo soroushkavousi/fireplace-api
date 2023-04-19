@@ -17,12 +17,12 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class AccessTokenRepository : IAccessTokenRepository
     {
         private readonly ILogger<AccessTokenRepository> _logger;
-        private readonly FireplaceApiDbContext _dbContext;
+        private readonly ProjectDbContext _dbContext;
         private readonly DbSet<AccessTokenEntity> _accessTokenEntities;
         private readonly AccessTokenConverter _accessTokenConverter;
 
         public AccessTokenRepository(ILogger<AccessTokenRepository> logger,
-            FireplaceApiDbContext dbContext, AccessTokenConverter accessTokenConverter)
+            ProjectDbContext dbContext, AccessTokenConverter accessTokenConverter)
         {
             _logger = logger;
             _dbContext = dbContext;

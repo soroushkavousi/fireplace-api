@@ -91,7 +91,7 @@ namespace FireplaceApi.Application
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddSingleton<IObjectModelValidator, NullObjectModelValidator>();
             var infrastructureAssemblyName = $"{nameof(FireplaceApi)}.{nameof(FireplaceApi.Infrastructure)}";
-            builder.Services.AddDbContext<FireplaceApiDbContext>(
+            builder.Services.AddDbContext<ProjectDbContext>(
                 optionsBuilder => optionsBuilder.UseNpgsql(
                     EnvironmentVariable.ConnectionString.Value,
                     optionsBuilder => optionsBuilder.MigrationsAssembly(infrastructureAssemblyName))
@@ -232,7 +232,7 @@ namespace FireplaceApi.Application
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
-                options.DocumentTitle = "Fireplace Api Docs";
+                options.DocumentTitle = "Fireplace API Swagger UI";
                 options.EnableDeepLinking();
                 options.SwaggerEndpoint($"/swagger/{Constants.LatestApiVersion}/swagger.json", Constants.LatestApiVersion.ToUpper());
                 options.DocExpansion(DocExpansion.List);

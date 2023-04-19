@@ -18,12 +18,12 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class PostVoteRepository : IPostVoteRepository
     {
         private readonly ILogger<PostVoteRepository> _logger;
-        private readonly FireplaceApiDbContext _dbContext;
+        private readonly ProjectDbContext _dbContext;
         private readonly DbSet<PostVoteEntity> _postVoteEntities;
         private readonly PostVoteConverter _postVoteConverter;
 
         public PostVoteRepository(ILogger<PostVoteRepository> logger,
-            FireplaceApiDbContext dbContext, PostVoteConverter postVoteConverter)
+            ProjectDbContext dbContext, PostVoteConverter postVoteConverter)
         {
             _logger = logger;
             _dbContext = dbContext;

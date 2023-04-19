@@ -32,7 +32,7 @@ namespace FireplaceApi.Application.Tools
         {
             using IServiceScope scope = _serviceProvider.CreateScope();
             var dbContext = scope.ServiceProvider
-                .GetRequiredService<FireplaceApiDbContext>();
+                .GetRequiredService<ProjectDbContext>();
 
             var pendingMigrations = dbContext.Database.GetPendingMigrations();
             var databaseName = dbContext.Database.GetDbConnection().Database;

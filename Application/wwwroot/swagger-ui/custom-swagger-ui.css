@@ -1,4 +1,8 @@
-﻿.scheme-container {
+﻿p {
+    font-size: 2.5rem;
+}
+
+.scheme-container {
     padding-top: 0 !important;
 }
 
@@ -7,7 +11,17 @@
 }
 
 .description {
-    margin-bottom: 20px !important;
+    margin-bottom: 0px !important;
+}
+
+#sample-urls li {
+    color: green;
+    margin: 0px 0px 3px 0px
+}
+
+#sample-urls {
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .parameters-col_name {
@@ -19,7 +33,8 @@
 }
 
 #google-btn {
-    margin-top: 15px;
+    margin-top: 54px;
+    margin-bottom: 20px;
     float: right;
     width: 184px;
     height: 42px;
@@ -65,4 +80,16 @@
 
 #configs-error {
     color: red;
+}
+
+.scheme-container {
+    background-color: inherit !important;
+}
+
+.swagger-ui .auth-wrapper .authorize {
+    margin: 0px !important;
+}
+
+.main {
+    margin-bottom: 30px !important;
 }

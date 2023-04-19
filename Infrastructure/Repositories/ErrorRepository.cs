@@ -19,13 +19,13 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class ErrorRepository : IErrorRepository
     {
         private readonly ILogger<ErrorRepository> _logger;
-        private readonly FireplaceApiDbContext _dbContext;
+        private readonly ProjectDbContext _dbContext;
         private readonly DbSet<ErrorEntity> _errorEntities;
         private readonly ErrorConverter _errorConverter;
         private static readonly Dictionary<string, Error> _cache = new();
 
         public ErrorRepository(ILogger<ErrorRepository> logger,
-            FireplaceApiDbContext dbContext, ErrorConverter errorConverter)
+            ProjectDbContext dbContext, ErrorConverter errorConverter)
         {
             _logger = logger;
             _dbContext = dbContext;

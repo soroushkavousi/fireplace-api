@@ -18,12 +18,12 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class GoogleUserRepository : IGoogleUserRepository
     {
         private readonly ILogger<GoogleUserRepository> _logger;
-        private readonly FireplaceApiDbContext _dbContext;
+        private readonly ProjectDbContext _dbContext;
         private readonly DbSet<GoogleUserEntity> _googleUserEntities;
         private readonly GoogleUserConverter _googleUserConverter;
 
         public GoogleUserRepository(ILogger<GoogleUserRepository> logger,
-            FireplaceApiDbContext dbContext, GoogleUserConverter googleUserConverter)
+            ProjectDbContext dbContext, GoogleUserConverter googleUserConverter)
         {
             _logger = logger;
             _dbContext = dbContext;

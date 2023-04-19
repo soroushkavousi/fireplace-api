@@ -19,12 +19,12 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class PostRepository : IPostRepository
     {
         private readonly ILogger<PostRepository> _logger;
-        private readonly FireplaceApiDbContext _dbContext;
+        private readonly ProjectDbContext _dbContext;
         private readonly DbSet<PostEntity> _postEntities;
         private readonly PostConverter _postConverter;
 
         public PostRepository(ILogger<PostRepository> logger,
-            FireplaceApiDbContext dbContext, PostConverter postConverter)
+            ProjectDbContext dbContext, PostConverter postConverter)
         {
             _logger = logger;
             _dbContext = dbContext;

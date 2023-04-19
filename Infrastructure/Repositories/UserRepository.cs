@@ -20,12 +20,12 @@ namespace FireplaceApi.Infrastructure.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly ILogger<UserRepository> _logger;
-        private readonly FireplaceApiDbContext _dbContext;
+        private readonly ProjectDbContext _dbContext;
         private readonly DbSet<UserEntity> _userEntities;
         private readonly UserConverter _userConverter;
 
         public UserRepository(ILogger<UserRepository> logger,
-                    FireplaceApiDbContext dbContext, UserConverter userConverter)
+                    ProjectDbContext dbContext, UserConverter userConverter)
         {
             _logger = logger;
             _dbContext = dbContext;

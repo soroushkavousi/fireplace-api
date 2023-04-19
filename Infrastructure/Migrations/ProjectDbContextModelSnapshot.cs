@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FireplaceApi.Infrastructure.Migrations
 {
-    [DbContext(typeof(FireplaceApiDbContext))]
-    partial class FireplaceApiDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ProjectDbContext))]
+    partial class ProjectDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
