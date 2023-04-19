@@ -84,7 +84,7 @@ namespace FireplaceApi.Domain.Models
                 CookieMaxAgeInDays = 30,
                 RequestLimitionPeriodInMinutes = 60,
                 MaxRequestPerIP = 50,
-                RedisConnectionString = null
+                RedisConnectionString = "localhost:6379,password=StrongPassword,abortConnect=false" // abortConnect=false: do not throw exception if failed
             },
             file: new FileConfigs
             {

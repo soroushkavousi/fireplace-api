@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Domain.Enums;
-using FireplaceApi.Domain.Exceptions;
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Infrastructure.Entities;
@@ -80,15 +79,26 @@ namespace FireplaceApi.Application.Tools
             var dbContext = new ProjectDbContext(EnvironmentVariable.ConnectionString.Value);
             var environmentName = EnvironmentVariable.EnvironmentName.Value;
 
-            ConfigsEntity.Current = dbContext.ConfigsEntities
-                .AsNoTracking()
-                .SingleOrDefault(e => e.EnvironmentName == environmentName);
+            try
+            {
+                ConfigsEntity.Current = dbContext.ConfigsEntities
+                    .AsNoTracking()
+                    .SingleOrDefault(e => e.EnvironmentName == environmentName);
+            }
+            catch (Exception ex)
+            {
+                var serverMessage = "Can not get the configs from the database!!!";
+                Logger.LogAppCritical(serverMessage, parameters: new { environmentName }, ex: ex);
+                Configs.Current = Configs.Default;
+                return;
+            }
 
             if (ConfigsEntity.Current == null)
             {
                 var serverMessage = "No configs are found in the database!!!";
-                Logger.LogAppCritical(serverMessage);
-                throw new InternalServerException(serverMessage, parameters: new { environmentName });
+                Logger.LogAppCritical(serverMessage, parameters: new { environmentName });
+                Configs.Current = Configs.Default;
+                return;
             }
 
             Configs.Current = new Configs(ConfigsEntity.Current.Id,
