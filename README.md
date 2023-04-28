@@ -1,6 +1,6 @@
 # Welcome to Fireplace API
 
-Fireplace API is **a fully-featured sample of the ASP&#46;NET Core Web API**. And it is also a **Reddit API clone** that has communities, posts, and nested comments.
+Fireplace API is **a fully-featured ASP&#46;NET Core Web API** sample that is also a **Reddit API clone** with communities, posts, and nested comments.
 
 The API supports many features such as DDD structure, Swagger UI, integration testing, various authentication methods, error handling, logging system, caching system, security features, CICD, and Docker deployment. <br/>
 
@@ -132,7 +132,7 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 - Each test class has its own database clone
 - Each test function is independent
 
-**8. Database wih PostgreSQL**
+**8. Database with PostgreSQL**
 
 - Has a repository for each entity
 - Use Fluent API
@@ -168,7 +168,7 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 - Error field refers to the item that caused the error
 - Error client messages are stored in the database
 - Error codes can be changed freely in the database without changing the production codes
-- Exception middleware catches ApiException, and the other Exceptions occured in the code
+- Exception middleware catches ApiExceptions, and the other Exceptions occurred in the code
 - Server Message is for the logging, and Client Message is for the users
 
 **13. Has logging system**
@@ -211,7 +211,7 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 
 # The Swagger
 
-With the **_swagger UI_**, you can easily interact with the API and learn it. It shows all routes, inputs, outputs, models, and errors. It also generates a _[swagger.json](https://api.fireplace.bitiano.com/swagger/v1/swagger.json)_, which describes the schema of the API that can be imported into your app.
+With the **_swagger UI_**, you can interact with the API and discover it. It shows all routes, inputs, outputs, models, and errors. It also provides a _[swagger.json](https://api.fireplace.bitiano.com/swagger/v1/swagger.json)_, which describes the schema of the API that can be imported to your project.
 
 [Check the **Swagger UI** website](https://api.fireplace.bitiano.com/swagger)
 
@@ -305,7 +305,7 @@ Linux:
 ```
 
 ```
-Windows powershell:
+Windows PowerShell:
 > $env:ASPNETCORE_ENVIRONMENT = 'Development'
 > $env:FIREPLACE_API_LOG_DIRECTORY = 'path/to/logs'
 > $env:FIREPLACE_API_CONNECTION_STRING = '<connection-string>'
@@ -335,7 +335,7 @@ Option 2: Via launchSettings.json
 
 Copy the json to a file at this path: `Application\Properties\launchSettings.json`
 
-Note: In this project, the file 'launchSettings.json' will not be pushed to the git repository because it is placed in the .gitignore file. You can freely customize envrionment variables in it.
+Note: In this project, the file 'launchSettings.json' will not be pushed to the git repository because it is placed in the .gitignore file. You can freely customize environment variables in it.
 
 <br/>
 
@@ -388,4 +388,4 @@ Congratulations, you have almost run a clone.
 
 **8. Customize the configs data**
 
-Global variables and sensitive data are stored in a table in the database. You fed sample config data at step 6, but you need to alter it with your project specifications. For instance, generate and set your own google client-id and client-secret to use Google OAuth 2.0.
+Global variables and sensitive data are stored in a table in the database. You fed sample config data at step 6, but you need to alter it with your project specifications. For instance, generate and set your own Google client-id and client-secret to use Google OAuth 2.0.
