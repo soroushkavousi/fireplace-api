@@ -46,7 +46,7 @@ namespace FireplaceApi.Application.Tools
 
             description_html += $@"
                 <div>
-                    <p>Fireplace API is <strong>a fully-featured sample of the ASP.NET Core Web API</strong>. And it is also a <strong>Reddit API clone</strong> that has communities, posts, and nested comments.</p>
+                    <p>Fireplace API is <strong>a fully-featured ASP.NET Core Web API sample</strong>, and also <strong>a Reddit API clone</strong> that has communities, posts, and nested comments.</p>
                     <p>Check <a target=""_blank"" href=""https://github.com/soroushkavousi/fireplace-api""><b><i>The GitHub Repository</i></b></a></p>
                     <p>Check <a target=""_blank"" href=""{Configs.Current.Api.BaseUrlPath}/graphql""><b><i>The GraphQL Playground</i></b></a></p>
                 </div>";
