@@ -1,6 +1,6 @@
 # Welcome to Fireplace API
 
-Fireplace API is **a fully-featured ASP&#46;NET Core Web API** sample that is also a **Reddit API clone** with communities, posts, and nested comments.
+Fireplace API is **a fully-featured ASP&#46;NET Core Web API sample**, and also **a Reddit API clone** that has communities, posts, and nested comments.
 
 The API supports many features such as DDD structure, Swagger UI, integration testing, various authentication methods, error handling, logging system, caching system, security features, CICD, and Docker deployment. <br/>
 
