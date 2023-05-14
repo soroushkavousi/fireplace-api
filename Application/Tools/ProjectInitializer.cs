@@ -24,18 +24,10 @@ namespace FireplaceApi.Application.Tools
                 return;
 
             _initialized = true;
-            ReadEnvironmentVariables();
             ReadAppSettings();
             SetupLogger();
             CheckConnectionString();
             LoadConfigsFromTheDatabase();
-        }
-
-        private static void ReadEnvironmentVariables()
-        {
-            EnvironmentVariable.EnvironmentName.ReadValue();
-            EnvironmentVariable.LogDirectory.ReadValue();
-            EnvironmentVariable.ConnectionString.ReadValue();
         }
 
         private static void ReadAppSettings()
