@@ -6,7 +6,7 @@ public class CoreJsonSerializerSettings : JsonSerializerSettings
 {
     public static readonly CoreJsonSerializerSettings Instance = new();
 
-    public CoreJsonSerializerSettings() : base()
+    protected CoreJsonSerializerSettings() : base()
     {
         ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
         ContractResolver = CoreContractResolver.Instance;

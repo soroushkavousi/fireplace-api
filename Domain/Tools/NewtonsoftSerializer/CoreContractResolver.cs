@@ -8,7 +8,7 @@ public class CoreContractResolver : DefaultContractResolver
 {
     public static readonly CoreContractResolver Instance = new();
 
-    public CoreContractResolver()
+    protected CoreContractResolver()
     {
         NamingStrategy = new SnakeCaseNamingStrategy();
     }

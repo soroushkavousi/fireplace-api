@@ -9,7 +9,7 @@ public class SensitiveContractResolver : CoreContractResolver
 {
     public static new readonly SensitiveContractResolver Instance = new();
 
-    public SensitiveContractResolver() : base() { }
+    protected SensitiveContractResolver() : base() { }
 
     protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
     {
@@ -27,7 +27,7 @@ public class SensitiveContractResolver : CoreContractResolver
         return jsonProperty;
     }
 
-    public class SensitiveValueProvider : IValueProvider
+    private class SensitiveValueProvider : IValueProvider
     {
         private readonly PropertyInfo _propertyInfo;
         private readonly string _value;
