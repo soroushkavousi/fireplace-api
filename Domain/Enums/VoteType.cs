@@ -1,9 +1,8 @@
-﻿namespace FireplaceApi.Domain.Enums
+﻿namespace FireplaceApi.Domain.Enums;
+
+public enum VoteType
 {
-    public enum VoteType
-    {
-        NEUTRAL = 0,
-        UPVOTE = 1,
-        DOWNVOTE = -1
-    }
+    NEUTRAL = 0,
+    UPVOTE = 1,
+    DOWNVOTE = -1
 }

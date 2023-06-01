@@ -9,21 +9,20 @@ using HotChocolate.Types;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Application.Resolvers
+namespace FireplaceApi.Application.Resolvers;
+
+[ExtendObjectType(typeof(GraphQLQuery))]
+public class UserQueryResolvers
 {
-    [ExtendObjectType(typeof(GraphQLQuery))]
-    public class UserQueryResolvers
+    [AllowAnonymous]
+    public async Task<UserDto> GetMeAsync(
+        [Service(ServiceKind.Resolver)] UserService userService,
+        [Service(ServiceKind.Resolver)] UserValidator userValidator,
+        [Service] UserConverter userConverter,
+        [User] User requestingUser)
     {
-        [AllowAnonymous]
-        public async Task<UserDto> GetMeAsync(
-            [Service(ServiceKind.Resolver)] UserService userService,
-            [Service(ServiceKind.Resolver)] UserValidator userValidator,
-            [Service] UserConverter userConverter,
-            [User] User requestingUser)
-        {
-            var user = await userService.GetRequestingUserAsync(requestingUser, true, true);
-            var userDto = userConverter.ConvertToDto(user);
-            return userDto;
-        }
+        var user = await userService.GetRequestingUserAsync(requestingUser, true, true);
+        var userDto = userConverter.ConvertToDto(user);
+        return userDto;
     }
 }

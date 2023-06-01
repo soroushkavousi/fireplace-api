@@ -1,8 +1,7 @@
-﻿namespace FireplaceApi.Domain.Enums
+﻿namespace FireplaceApi.Domain.Enums;
+
+public enum UserState
 {
-    public enum UserState
-    {
-        NOT_VERIFIED,
-        VERIFIED,
-    }
+    NOT_VERIFIED,
+    VERIFIED,
 }

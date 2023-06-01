@@ -1,9 +1,8 @@
-﻿namespace FireplaceApi.Domain.Enums
+﻿namespace FireplaceApi.Domain.Enums;
+
+public enum StringFormat
 {
-    public enum StringFormat
-    {
-        EmailAddress,
-        MobileNumber,
-        Username
-    }
+    EmailAddress,
+    MobileNumber,
+    Username
 }

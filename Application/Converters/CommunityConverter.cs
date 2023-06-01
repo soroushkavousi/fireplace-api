@@ -6,38 +6,37 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 
-namespace FireplaceApi.Application.Converters
+namespace FireplaceApi.Application.Converters;
+
+public class CommunityConverter : BaseConverter<Community, CommunityDto>
 {
-    public class CommunityConverter : BaseConverter<Community, CommunityDto>
+    private readonly ILogger<CommunityConverter> _logger;
+    private readonly IServiceProvider _serviceProvider;
+
+    public CommunityConverter(ILogger<CommunityConverter> logger, IServiceProvider serviceProvider)
     {
-        private readonly ILogger<CommunityConverter> _logger;
-        private readonly IServiceProvider _serviceProvider;
+        _logger = logger;
+        _serviceProvider = serviceProvider;
+    }
 
-        public CommunityConverter(ILogger<CommunityConverter> logger, IServiceProvider serviceProvider)
+    public override CommunityDto ConvertToDto(Community community)
+    {
+        if (community == null)
+            return null;
+
+        QueryResultDto<PostDto> postDtos = null;
+        if (community.Posts != null)
         {
-            _logger = logger;
-            _serviceProvider = serviceProvider;
+            community.Posts.Items = community.Posts.Items
+                .Select(comment => comment.PureCopy()).ToList();
+            postDtos = _serviceProvider.GetService<PostConverter>()
+                .ConvertToDto(community.Posts);
         }
 
-        public override CommunityDto ConvertToDto(Community community)
-        {
-            if (community == null)
-                return null;
+        var communityDto = new CommunityDto(community.Id.IdEncode(), community.Name,
+            community.CreatorId.IdEncode(), community.CreatorUsername,
+            community.CreationDate, postDtos);
 
-            QueryResultDto<PostDto> postDtos = null;
-            if (community.Posts != null)
-            {
-                community.Posts.Items = community.Posts.Items
-                    .Select(comment => comment.PureCopy()).ToList();
-                postDtos = _serviceProvider.GetService<PostConverter>()
-                    .ConvertToDto(community.Posts);
-            }
-
-            var communityDto = new CommunityDto(community.Id.IdEncode(), community.Name,
-                community.CreatorId.IdEncode(), community.CreatorUsername,
-                community.CreationDate, postDtos);
-
-            return communityDto;
-        }
+        return communityDto;
     }
 }

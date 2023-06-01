@@ -6,23 +6,22 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FireplaceApi.Application.Controllers
+namespace FireplaceApi.Application.Controllers;
+
+public class RevokeSessionInputRouteParameters
 {
-    public class RevokeSessionInputRouteParameters
+    [Required]
+    [FromRoute(Name = "id")]
+    public string EncodedId { get; set; }
+
+    [BindNever]
+    public ulong Id { get; set; }
+
+    public void Validate(IServiceProvider serviceProvider)
     {
-        [Required]
-        [FromRoute(Name = "id")]
-        public string EncodedId { get; set; }
+        var applicationValidator = serviceProvider.GetService<SessionValidator>();
+        var domainValidator = applicationValidator.DomainValidator;
 
-        [BindNever]
-        public ulong Id { get; set; }
-
-        public void Validate(IServiceProvider serviceProvider)
-        {
-            var applicationValidator = serviceProvider.GetService<SessionValidator>();
-            var domainValidator = applicationValidator.DomainValidator;
-
-            Id = applicationValidator.ValidateEncodedIdFormat(EncodedId, FieldName.POST_ID).Value;
-        }
+        Id = applicationValidator.ValidateEncodedIdFormat(EncodedId, FieldName.POST_ID).Value;
     }
 }

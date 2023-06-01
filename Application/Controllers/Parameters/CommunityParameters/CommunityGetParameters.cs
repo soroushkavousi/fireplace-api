@@ -10,73 +10,72 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace FireplaceApi.Application.Controllers
+namespace FireplaceApi.Application.Controllers;
+
+public class ListCommunitiesInputQueryParameters : IValidator
 {
-    public class ListCommunitiesInputQueryParameters : IValidator
+    [FromQuery(Name = "search")]
+    public string Search { get; set; }
+
+    [FromQuery(Name = "sort")]
+    [SwaggerEnum(Type = typeof(CommunitySortType))]
+    public string SortString { get; set; }
+
+    [FromQuery(Name = "ids")]
+    public string EncodedIds { get; set; }
+
+
+    [BindNever]
+    public CommunitySortType? Sort { get; set; }
+    [BindNever]
+    public List<ulong> Ids { get; private set; }
+
+    public void Validate(IServiceProvider serviceProvider)
     {
-        [FromQuery(Name = "search")]
-        public string Search { get; set; }
+        var applicationValidator = serviceProvider.GetService<CommunityValidator>();
+        var domainValidator = applicationValidator.DomainValidator;
 
-        [FromQuery(Name = "sort")]
-        [SwaggerEnum(Type = typeof(CommunitySortType))]
-        public string SortString { get; set; }
+        if (string.IsNullOrWhiteSpace(EncodedIds))
+            applicationValidator.ValidateFieldIsNotMissing(Search, FieldName.SEARCH);
 
-        [FromQuery(Name = "ids")]
-        public string EncodedIds { get; set; }
+        Sort = applicationValidator.ValidateInputEnum<CommunitySortType>(SortString);
 
-
-        [BindNever]
-        public CommunitySortType? Sort { get; set; }
-        [BindNever]
-        public List<ulong> Ids { get; private set; }
-
-        public void Validate(IServiceProvider serviceProvider)
-        {
-            var applicationValidator = serviceProvider.GetService<CommunityValidator>();
-            var domainValidator = applicationValidator.DomainValidator;
-
-            if (string.IsNullOrWhiteSpace(EncodedIds))
-                applicationValidator.ValidateFieldIsNotMissing(Search, FieldName.SEARCH);
-
-            Sort = applicationValidator.ValidateInputEnum<CommunitySortType>(SortString);
-
-            Ids = applicationValidator.ValidateIdsFormat(EncodedIds);
-        }
+        Ids = applicationValidator.ValidateIdsFormat(EncodedIds);
     }
+}
 
-    public class ListJoinedCommunitiesInputQueryParameters : IValidator
+public class ListJoinedCommunitiesInputQueryParameters : IValidator
+{
+    [FromQuery(Name = "sort")]
+    [SwaggerEnum(Type = typeof(CommunitySortType))]
+    public string SortString { get; set; }
+
+    [BindNever]
+    public CommunitySortType? Sort { get; set; }
+
+    public void Validate(IServiceProvider serviceProvider)
     {
-        [FromQuery(Name = "sort")]
-        [SwaggerEnum(Type = typeof(CommunitySortType))]
-        public string SortString { get; set; }
+        var applicationValidator = serviceProvider.GetService<CommunityValidator>();
+        var domainValidator = applicationValidator.DomainValidator;
 
-        [BindNever]
-        public CommunitySortType? Sort { get; set; }
-
-        public void Validate(IServiceProvider serviceProvider)
-        {
-            var applicationValidator = serviceProvider.GetService<CommunityValidator>();
-            var domainValidator = applicationValidator.DomainValidator;
-
-            Sort = applicationValidator.ValidateInputEnum<CommunitySortType>(SortString);
-        }
+        Sort = applicationValidator.ValidateInputEnum<CommunitySortType>(SortString);
     }
+}
 
-    public class GetCommunityByIdOrNameInputRouteParameters : IValidator
+public class GetCommunityByIdOrNameInputRouteParameters : IValidator
+{
+    [Required]
+    [FromRoute(Name = "id-or-name")]
+    public string EncodedIdOrName { get; set; }
+
+    [BindNever]
+    public CommunityIdentifier Identifier { get; set; }
+
+    public void Validate(IServiceProvider serviceProvider)
     {
-        [Required]
-        [FromRoute(Name = "id-or-name")]
-        public string EncodedIdOrName { get; set; }
+        var applicationValidator = serviceProvider.GetService<CommunityValidator>();
+        var domainValidator = applicationValidator.DomainValidator;
 
-        [BindNever]
-        public CommunityIdentifier Identifier { get; set; }
-
-        public void Validate(IServiceProvider serviceProvider)
-        {
-            var applicationValidator = serviceProvider.GetService<CommunityValidator>();
-            var domainValidator = applicationValidator.DomainValidator;
-
-            Identifier = applicationValidator.ValidateEncodedIdOrName(EncodedIdOrName);
-        }
+        Identifier = applicationValidator.ValidateEncodedIdOrName(EncodedIdOrName);
     }
 }

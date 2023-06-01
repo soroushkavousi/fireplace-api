@@ -10,136 +10,135 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Application.Controllers
+namespace FireplaceApi.Application.Controllers;
+
+[ApiController]
+[ApiVersion("1.0")]
+[Route("v{version:apiVersion}/communities")]
+[Produces("application/json")]
+public class CommunityController : ApiController
 {
-    [ApiController]
-    [ApiVersion("1.0")]
-    [Route("v{version:apiVersion}/communities")]
-    [Produces("application/json")]
-    public class CommunityController : ApiController
+    private readonly ILogger<CommunityController> _logger;
+    private readonly CommunityConverter _communityConverter;
+    private readonly CommunityService _communityService;
+
+    public CommunityController(ILogger<CommunityController> logger,
+        CommunityConverter communityConverter, CommunityService communityService)
     {
-        private readonly ILogger<CommunityController> _logger;
-        private readonly CommunityConverter _communityConverter;
-        private readonly CommunityService _communityService;
+        _logger = logger;
+        _communityConverter = communityConverter;
+        _communityService = communityService;
+    }
 
-        public CommunityController(ILogger<CommunityController> logger,
-            CommunityConverter communityConverter, CommunityService communityService)
+    /// <summary>
+    /// List communities.
+    /// </summary>
+    /// <returns>List of communities</returns>
+    /// <response code="200">The communities was successfully retrieved.</response>
+    [AllowAnonymous]
+    [HttpGet]
+    [ProducesResponseType(typeof(QueryResultDto<CommunityDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<QueryResultDto<CommunityDto>>> ListCommunitiesAsync(
+        [FromQuery] ListCommunitiesInputQueryParameters inputQueryParameters)
+    {
+        var queryResult = new QueryResult<Community>(null, null);
+        if (!inputQueryParameters.EncodedIds.IsNullOrEmpty())
         {
-            _logger = logger;
-            _communityConverter = communityConverter;
-            _communityService = communityService;
+            queryResult.Items = await _communityService.ListCommunitiesByIdsAsync(
+                inputQueryParameters.Ids);
         }
-
-        /// <summary>
-        /// List communities.
-        /// </summary>
-        /// <returns>List of communities</returns>
-        /// <response code="200">The communities was successfully retrieved.</response>
-        [AllowAnonymous]
-        [HttpGet]
-        [ProducesResponseType(typeof(QueryResultDto<CommunityDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<QueryResultDto<CommunityDto>>> ListCommunitiesAsync(
-            [FromQuery] ListCommunitiesInputQueryParameters inputQueryParameters)
+        else
         {
-            var queryResult = new QueryResult<Community>(null, null);
-            if (!inputQueryParameters.EncodedIds.IsNullOrEmpty())
-            {
-                queryResult.Items = await _communityService.ListCommunitiesByIdsAsync(
-                    inputQueryParameters.Ids);
-            }
-            else
-            {
-                queryResult = await _communityService.ListCommunitiesAsync(inputQueryParameters.Search,
-                    inputQueryParameters.Sort);
-            }
-            var queryResultDto = _communityConverter.ConvertToDto(queryResult);
-            return queryResultDto;
-        }
-
-        /// <summary>
-        /// List joined communities.
-        /// </summary>
-        /// <returns>List of communities</returns>
-        /// <response code="200">The communities was successfully retrieved.</response>
-        [HttpGet("joined")]
-        [ProducesResponseType(typeof(QueryResultDto<CommunityDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<QueryResultDto<CommunityDto>>> ListJoinedCommunitiesAsync(
-            [BindNever][FromHeader] User requestingUser,
-            [FromQuery] ListJoinedCommunitiesInputQueryParameters inputQueryParameters)
-        {
-            var queryResult = await _communityService.ListJoinedCommunitiesAsync(requestingUser,
+            queryResult = await _communityService.ListCommunitiesAsync(inputQueryParameters.Search,
                 inputQueryParameters.Sort);
-            var queryResultDto = _communityConverter.ConvertToDto(queryResult);
-            return queryResultDto;
         }
+        var queryResultDto = _communityConverter.ConvertToDto(queryResult);
+        return queryResultDto;
+    }
 
-        /// <summary>
-        /// Get a single community by id or name.
-        /// </summary>
-        /// <returns>Requested community</returns>
-        /// <response code="200">The community was successfully retrieved.</response>
-        [AllowAnonymous]
-        [HttpGet("{id-or-name}")]
-        [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<CommunityDto>> GetCommunityByIdOrNameAsync(
-            [FromRoute] GetCommunityByIdOrNameInputRouteParameters inputRouteParameters)
-        {
-            var community = await _communityService.GetCommunityByIdentifierAsync(
-                inputRouteParameters.Identifier);
-            var communityDto = _communityConverter.ConvertToDto(community);
-            return communityDto;
-        }
+    /// <summary>
+    /// List joined communities.
+    /// </summary>
+    /// <returns>List of communities</returns>
+    /// <response code="200">The communities was successfully retrieved.</response>
+    [HttpGet("joined")]
+    [ProducesResponseType(typeof(QueryResultDto<CommunityDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<QueryResultDto<CommunityDto>>> ListJoinedCommunitiesAsync(
+        [BindNever][FromHeader] User requestingUser,
+        [FromQuery] ListJoinedCommunitiesInputQueryParameters inputQueryParameters)
+    {
+        var queryResult = await _communityService.ListJoinedCommunitiesAsync(requestingUser,
+            inputQueryParameters.Sort);
+        var queryResultDto = _communityConverter.ConvertToDto(queryResult);
+        return queryResultDto;
+    }
 
-        /// <summary>
-        /// Create a community.
-        /// </summary>
-        /// <returns>Created community</returns>
-        /// <response code="200">Returns the newly created item</response>
-        [HttpPost]
-        [Consumes("application/json")]
-        [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<CommunityDto>> CreateCommunityAsync(
-            [BindNever][FromHeader] User requestingUser,
-            [FromBody] CreateCommunityInputBodyParameters inputBodyParameters)
-        {
-            var community = await _communityService.CreateCommunityAsync(requestingUser,
-                inputBodyParameters.Name);
-            var communityDto = _communityConverter.ConvertToDto(community);
-            return communityDto;
-        }
+    /// <summary>
+    /// Get a single community by id or name.
+    /// </summary>
+    /// <returns>Requested community</returns>
+    /// <response code="200">The community was successfully retrieved.</response>
+    [AllowAnonymous]
+    [HttpGet("{id-or-name}")]
+    [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
+    public async Task<ActionResult<CommunityDto>> GetCommunityByIdOrNameAsync(
+        [FromRoute] GetCommunityByIdOrNameInputRouteParameters inputRouteParameters)
+    {
+        var community = await _communityService.GetCommunityByIdentifierAsync(
+            inputRouteParameters.Identifier);
+        var communityDto = _communityConverter.ConvertToDto(community);
+        return communityDto;
+    }
 
-        /// <summary>
-        /// Update a single community by id or name.
-        /// </summary>
-        /// <returns>Updated community</returns>
-        /// <response code="200">The community was successfully updated.</response>
-        [HttpPatch("{id-or-name}")]
-        [Consumes("application/json")]
-        [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<CommunityDto>> PatchCommunityByEncodedIdOrNameAsync(
-            [BindNever][FromHeader] User requestingUser,
-            [FromRoute] PatchCommunityByEncodedIdOrNameInputRouteParameters inputRouteParameters,
-            [FromBody] PatchCommunityInputBodyParameters inputBodyParameters)
-        {
-            var community = await _communityService.PatchCommunityByIdentifierAsync(requestingUser,
-                inputRouteParameters.Identifier, inputBodyParameters.NewName);
-            var communityDto = _communityConverter.ConvertToDto(community);
-            return communityDto;
-        }
+    /// <summary>
+    /// Create a community.
+    /// </summary>
+    /// <returns>Created community</returns>
+    /// <response code="200">Returns the newly created item</response>
+    [HttpPost]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
+    public async Task<ActionResult<CommunityDto>> CreateCommunityAsync(
+        [BindNever][FromHeader] User requestingUser,
+        [FromBody] CreateCommunityInputBodyParameters inputBodyParameters)
+    {
+        var community = await _communityService.CreateCommunityAsync(requestingUser,
+            inputBodyParameters.Name);
+        var communityDto = _communityConverter.ConvertToDto(community);
+        return communityDto;
+    }
 
-        /// <summary>
-        /// Delete a single community by id or name.
-        /// </summary>
-        /// <returns>No content</returns>
-        /// <response code="200">The community was successfully deleted.</response>
-        [HttpDelete("{id-or-name}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteCommunityByIdOrNameAsync(
-            [BindNever][FromHeader] User requestingUser,
-            [FromRoute] DeleteCommunityByEncodedIdOrNameInputRouteParameters inputRouteParameters)
-        {
-            await _communityService.DeleteCommunityByIdentifierAsync(requestingUser, inputRouteParameters.Identifier);
-            return Ok();
-        }
+    /// <summary>
+    /// Update a single community by id or name.
+    /// </summary>
+    /// <returns>Updated community</returns>
+    /// <response code="200">The community was successfully updated.</response>
+    [HttpPatch("{id-or-name}")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
+    public async Task<ActionResult<CommunityDto>> PatchCommunityByEncodedIdOrNameAsync(
+        [BindNever][FromHeader] User requestingUser,
+        [FromRoute] PatchCommunityByEncodedIdOrNameInputRouteParameters inputRouteParameters,
+        [FromBody] PatchCommunityInputBodyParameters inputBodyParameters)
+    {
+        var community = await _communityService.PatchCommunityByIdentifierAsync(requestingUser,
+            inputRouteParameters.Identifier, inputBodyParameters.NewName);
+        var communityDto = _communityConverter.ConvertToDto(community);
+        return communityDto;
+    }
+
+    /// <summary>
+    /// Delete a single community by id or name.
+    /// </summary>
+    /// <returns>No content</returns>
+    /// <response code="200">The community was successfully deleted.</response>
+    [HttpDelete("{id-or-name}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> DeleteCommunityByIdOrNameAsync(
+        [BindNever][FromHeader] User requestingUser,
+        [FromRoute] DeleteCommunityByEncodedIdOrNameInputRouteParameters inputRouteParameters)
+    {
+        await _communityService.DeleteCommunityByIdentifierAsync(requestingUser, inputRouteParameters.Identifier);
+        return Ok();
     }
 }

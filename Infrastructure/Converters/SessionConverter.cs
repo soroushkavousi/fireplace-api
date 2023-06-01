@@ -6,51 +6,50 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace FireplaceApi.Infrastructure.Converters
+namespace FireplaceApi.Infrastructure.Converters;
+
+public class SessionConverter
 {
-    public class SessionConverter
+    private readonly ILogger<SessionConverter> _logger;
+    private readonly IServiceProvider _serviceProvider;
+
+    public SessionConverter(ILogger<SessionConverter> logger, IServiceProvider serviceProvider)
     {
-        private readonly ILogger<SessionConverter> _logger;
-        private readonly IServiceProvider _serviceProvider;
+        _logger = logger;
+        _serviceProvider = serviceProvider;
+    }
 
-        public SessionConverter(ILogger<SessionConverter> logger, IServiceProvider serviceProvider)
-        {
-            _logger = logger;
-            _serviceProvider = serviceProvider;
-        }
+    public SessionEntity ConvertToEntity(Session session)
+    {
+        if (session == null)
+            return null;
 
-        public SessionEntity ConvertToEntity(Session session)
-        {
-            if (session == null)
-                return null;
+        UserEntity userEntity = null;
+        if (session.User != null)
+            userEntity = _serviceProvider.GetService<UserConverter>()
+                .ConvertToEntity(session.User.PureCopy());
 
-            UserEntity userEntity = null;
-            if (session.User != null)
-                userEntity = _serviceProvider.GetService<UserConverter>()
-                    .ConvertToEntity(session.User.PureCopy());
+        var sessionEntity = new SessionEntity(session.Id, session.UserId,
+            session.IpAddress.ToString(), session.State.ToString(),
+            session.CreationDate, session.ModifiedDate, userEntity);
 
-            var sessionEntity = new SessionEntity(session.Id, session.UserId,
-                session.IpAddress.ToString(), session.State.ToString(),
-                session.CreationDate, session.ModifiedDate, userEntity);
+        return sessionEntity;
+    }
 
-            return sessionEntity;
-        }
+    public Session ConvertToModel(SessionEntity sessionEntity)
+    {
+        if (sessionEntity == null)
+            return null;
 
-        public Session ConvertToModel(SessionEntity sessionEntity)
-        {
-            if (sessionEntity == null)
-                return null;
+        User user = null;
+        if (sessionEntity.UserEntity != null)
+            user = _serviceProvider.GetService<UserConverter>()
+                .ConvertToModel(sessionEntity.UserEntity.PureCopy());
 
-            User user = null;
-            if (sessionEntity.UserEntity != null)
-                user = _serviceProvider.GetService<UserConverter>()
-                    .ConvertToModel(sessionEntity.UserEntity.PureCopy());
+        var session = new Session(sessionEntity.Id, sessionEntity.UserEntityId,
+            sessionEntity.IpAddress.ToIPAddress(), sessionEntity.State.ToEnum<SessionState>(),
+            sessionEntity.CreationDate, sessionEntity.ModifiedDate, user);
 
-            var session = new Session(sessionEntity.Id, sessionEntity.UserEntityId,
-                sessionEntity.IpAddress.ToIPAddress(), sessionEntity.State.ToEnum<SessionState>(),
-                sessionEntity.CreationDate, sessionEntity.ModifiedDate, user);
-
-            return session;
-        }
+        return session;
     }
 }

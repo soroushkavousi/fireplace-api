@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace FireplaceApi.Domain.Attributes
-{
-    [AttributeUsage(AttributeTargets.Property)]
-    public class SensitiveAttribute : Attribute
-    {
+namespace FireplaceApi.Domain.Attributes;
 
-    }
+[AttributeUsage(AttributeTargets.Property)]
+public class SensitiveAttribute : Attribute
+{
+
 }

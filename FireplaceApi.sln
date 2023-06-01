@@ -24,7 +24,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Guides", "Guides", "{2B8681
 	ProjectSection(SolutionItems) = preProject
 		Guides\db-initial-data.txt = Guides\db-initial-data.txt
 		Guides\id-generation-and-encoding.md = Guides\id-generation-and-encoding.md
-		Guides\launchSettings.sample.json = Guides\launchSettings.sample.json
 	EndProjectSection
 EndProject
 Global

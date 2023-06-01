@@ -2,15 +2,15 @@
 
 #nullable disable
 
-namespace FireplaceApi.Infrastructure.Migrations
+namespace FireplaceApi.Infrastructure.Migrations;
+
+/// <inheritdoc />
+public partial class ManualUpdateCommunityName : Migration
 {
     /// <inheritdoc />
-    public partial class ManualUpdateCommunityName : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            var sql = @"
+        var sql = @"
                 CREATE OR REPLACE PROCEDURE public.""UpdateCommunityName""(
 	                ""CommunityId"" numeric,
 	                ""NewCommunityName"" text)
@@ -21,17 +21,16 @@ namespace FireplaceApi.Infrastructure.Migrations
                 WHERE ""Id"" = ""CommunityId"";
                 $BODY$;";
 
-            migrationBuilder.Sql(sql);
-        }
+        migrationBuilder.Sql(sql);
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            var sql = @"
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        var sql = @"
                 DROP PROCEDURE public.""UpdateCommunityName"";
                 ";
 
-            migrationBuilder.Sql(sql);
-        }
+        migrationBuilder.Sql(sql);
     }
 }

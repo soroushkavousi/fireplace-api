@@ -4,52 +4,51 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace FireplaceApi.Infrastructure.Converters
+namespace FireplaceApi.Infrastructure.Converters;
+
+public class CommunityConverter
 {
-    public class CommunityConverter
+    private readonly ILogger<CommunityConverter> _logger;
+    private readonly IServiceProvider _serviceProvider;
+
+    public CommunityConverter(ILogger<CommunityConverter> logger, IServiceProvider serviceProvider)
     {
-        private readonly ILogger<CommunityConverter> _logger;
-        private readonly IServiceProvider _serviceProvider;
+        _logger = logger;
+        _serviceProvider = serviceProvider;
+    }
 
-        public CommunityConverter(ILogger<CommunityConverter> logger, IServiceProvider serviceProvider)
-        {
-            _logger = logger;
-            _serviceProvider = serviceProvider;
-        }
+    // Entity
 
-        // Entity
+    public CommunityEntity ConvertToEntity(Community community)
+    {
+        if (community == null)
+            return null;
 
-        public CommunityEntity ConvertToEntity(Community community)
-        {
-            if (community == null)
-                return null;
+        UserEntity creatorEntity = null;
+        if (community.Creator != null)
+            creatorEntity = _serviceProvider.GetService<UserConverter>()
+                .ConvertToEntity(community.Creator.PureCopy());
 
-            UserEntity creatorEntity = null;
-            if (community.Creator != null)
-                creatorEntity = _serviceProvider.GetService<UserConverter>()
-                    .ConvertToEntity(community.Creator.PureCopy());
+        var communityEntity = new CommunityEntity(community.Id, community.Name,
+            community.CreatorId, community.CreatorUsername, community.CreationDate,
+            community.ModifiedDate, creatorEntity);
 
-            var communityEntity = new CommunityEntity(community.Id, community.Name,
-                community.CreatorId, community.CreatorUsername, community.CreationDate,
-                community.ModifiedDate, creatorEntity);
+        return communityEntity;
+    }
 
-            return communityEntity;
-        }
+    public Community ConvertToModel(CommunityEntity communityEntity)
+    {
+        if (communityEntity == null)
+            return null;
 
-        public Community ConvertToModel(CommunityEntity communityEntity)
-        {
-            if (communityEntity == null)
-                return null;
+        User creator = null;
+        if (communityEntity.CreatorEntity != null)
+            creator = _serviceProvider.GetService<UserConverter>().ConvertToModel(communityEntity.CreatorEntity.PureCopy());
 
-            User creator = null;
-            if (communityEntity.CreatorEntity != null)
-                creator = _serviceProvider.GetService<UserConverter>().ConvertToModel(communityEntity.CreatorEntity.PureCopy());
+        var community = new Community(communityEntity.Id, communityEntity.Name,
+            communityEntity.CreatorEntityId, communityEntity.CreatorEntityUsername,
+            communityEntity.CreationDate, communityEntity.ModifiedDate, creator);
 
-            var community = new Community(communityEntity.Id, communityEntity.Name,
-                communityEntity.CreatorEntityId, communityEntity.CreatorEntityUsername,
-                communityEntity.CreationDate, communityEntity.ModifiedDate, creator);
-
-            return community;
-        }
+        return community;
     }
 }

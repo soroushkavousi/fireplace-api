@@ -9,81 +9,80 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace FireplaceApi.Application.Tools
+namespace FireplaceApi.Application.Tools;
+
+public class ActionResponseExampleProvider : IOperationFilter
 {
-    public class ActionResponseExampleProvider : IOperationFilter
+    private readonly ILogger<ActionResponseExampleProvider> _logger;
+    private readonly IServiceProvider _serviceProvider;
+
+    public ActionResponseExampleProvider(ILogger<ActionResponseExampleProvider> logger,
+        IServiceProvider serviceProvider)
     {
-        private readonly ILogger<ActionResponseExampleProvider> _logger;
-        private readonly IServiceProvider _serviceProvider;
+        _logger = logger;
+        _serviceProvider = serviceProvider;
+    }
 
-        public ActionResponseExampleProvider(ILogger<ActionResponseExampleProvider> logger,
-            IServiceProvider serviceProvider)
+    public void Apply(OpenApiOperation operation, OperationFilterContext context)
+    {
+        var bodyParametersType = ExtractResponseBodyParametersType(context);
+        if (bodyParametersType == null)
+            return;
+        IOpenApiAny example = ExtractExample(bodyParametersType, context.MethodInfo.Name);
+        if (bodyParametersType.Name.Contains("Error"))
         {
-            _logger = logger;
-            _serviceProvider = serviceProvider;
-        }
-
-        public void Apply(OpenApiOperation operation, OperationFilterContext context)
-        {
-            var bodyParametersType = ExtractResponseBodyParametersType(context);
-            if (bodyParametersType == null)
-                return;
-            IOpenApiAny example = ExtractExample(bodyParametersType, context.MethodInfo.Name);
-            if (bodyParametersType.Name.Contains("Error"))
+            switch (example)
             {
-                switch (example)
-                {
-                    case OpenApiArray errorExampleList:
-                        for (int i = 0; i < errorExampleList.Count; i++)
-                        {
-                            var errorExample = errorExampleList[i].To<OpenApiObject>();
-                            if (errorExample.ContainsKey("message") == false)
-                                errorExample = TypeExampleProvider.FillErrorExample(errorExample, _serviceProvider, _logger).GetAwaiter().GetResult();
-                            errorExampleList[i] = errorExample;
-                        }
-                        example = errorExampleList;
-                        break;
-
-                    case OpenApiObject errorExample:
+                case OpenApiArray errorExampleList:
+                    for (int i = 0; i < errorExampleList.Count; i++)
+                    {
+                        var errorExample = errorExampleList[i].To<OpenApiObject>();
                         if (errorExample.ContainsKey("message") == false)
                             errorExample = TypeExampleProvider.FillErrorExample(errorExample, _serviceProvider, _logger).GetAwaiter().GetResult();
-                        example = errorExample;
-                        break;
-                }
+                        errorExampleList[i] = errorExample;
+                    }
+                    example = errorExampleList;
+                    break;
+
+                case OpenApiObject errorExample:
+                    if (errorExample.ContainsKey("message") == false)
+                        errorExample = TypeExampleProvider.FillErrorExample(errorExample, _serviceProvider, _logger).GetAwaiter().GetResult();
+                    example = errorExample;
+                    break;
             }
-            if (!operation.Responses.ContainsKey("200"))
-                return;
-            var successResponse = operation.Responses["200"];
-            successResponse.Content["application/json"].Example = example;
         }
+        if (!operation.Responses.ContainsKey("200"))
+            return;
+        var successResponse = operation.Responses["200"];
+        successResponse.Content["application/json"].Example = example;
+    }
 
-        public Type ExtractResponseBodyParametersType(OperationFilterContext context)
+    public Type ExtractResponseBodyParametersType(OperationFilterContext context)
+    {
+        var taskType = context.MethodInfo.ReturnType;
+        var resultActionType = taskType.GetGenericArguments()[0];
+        if (resultActionType.IsGenericType == false)
+            return null;
+        var bodyParametersType = resultActionType.GetGenericArguments()[0];
+        if (bodyParametersType.IsEnumerable())
         {
-            var taskType = context.MethodInfo.ReturnType;
-            var resultActionType = taskType.GetGenericArguments()[0];
-            if (resultActionType.IsGenericType == false)
-                return null;
-            var bodyParametersType = resultActionType.GetGenericArguments()[0];
-            if (bodyParametersType.IsEnumerable())
-            {
-                bodyParametersType = bodyParametersType.GetGenericArguments()[0];
-            }
-            return bodyParametersType;
+            bodyParametersType = bodyParametersType.GetGenericArguments()[0];
         }
+        return bodyParametersType;
+    }
 
-        public IOpenApiAny ExtractExample(Type type, string actionName)
-        {
-            if (type.IsGenericType)
-                type = type.GenericTypeArguments[0];
-            var exampleProperty = type.GetProperty(Constants.ActionExamplesPropertyName, BindingFlags.Public | BindingFlags.Static);
-            if (exampleProperty == null)
-                throw new InternalServerException("Type doesn't have an example for the action!", new { type, actionName });
+    public IOpenApiAny ExtractExample(Type type, string actionName)
+    {
+        if (type.IsGenericType)
+            type = type.GenericTypeArguments[0];
+        var exampleProperty = type.GetProperty(Constants.ActionExamplesPropertyName, BindingFlags.Public | BindingFlags.Static);
+        if (exampleProperty == null)
+            throw new InternalServerException("Type doesn't have an example for the action!", new { type, actionName });
 
-            var actionExamples = exampleProperty.GetValue(null)?.To<Dictionary<string, IOpenApiAny>>();
-            if (actionExamples == null || actionExamples.Count == 0 || actionExamples.ContainsKey(actionName) == false)
-                throw new InternalServerException("Type doesn't have an example for the action!", new { type, actionName });
+        var actionExamples = exampleProperty.GetValue(null)?.To<Dictionary<string, IOpenApiAny>>();
+        if (actionExamples == null || actionExamples.Count == 0 || actionExamples.ContainsKey(actionName) == false)
+            throw new InternalServerException("Type doesn't have an example for the action!", new { type, actionName });
 
-            return actionExamples[actionName];
-        }
+        return actionExamples[actionName];
     }
 }

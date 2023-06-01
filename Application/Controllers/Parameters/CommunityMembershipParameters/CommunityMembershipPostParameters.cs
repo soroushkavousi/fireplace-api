@@ -7,23 +7,22 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FireplaceApi.Application.Controllers
+namespace FireplaceApi.Application.Controllers;
+
+public class CreateCommunityMembershipInputRouteParameters : IValidator
 {
-    public class CreateCommunityMembershipInputRouteParameters : IValidator
+    [Required]
+    [FromRoute(Name = "id-or-name")]
+    public string CommunityEncodedIdOrName { get; set; }
+
+    [BindNever]
+    public CommunityIdentifier CommunityIdentifier { get; set; }
+
+    public void Validate(IServiceProvider serviceProvider)
     {
-        [Required]
-        [FromRoute(Name = "id-or-name")]
-        public string CommunityEncodedIdOrName { get; set; }
+        var applicationValidator = serviceProvider.GetService<CommunityValidator>();
+        var domainValidator = applicationValidator.DomainValidator;
 
-        [BindNever]
-        public CommunityIdentifier CommunityIdentifier { get; set; }
-
-        public void Validate(IServiceProvider serviceProvider)
-        {
-            var applicationValidator = serviceProvider.GetService<CommunityValidator>();
-            var domainValidator = applicationValidator.DomainValidator;
-
-            CommunityIdentifier = applicationValidator.ValidateEncodedIdOrName(CommunityEncodedIdOrName);
-        }
+        CommunityIdentifier = applicationValidator.ValidateEncodedIdOrName(CommunityEncodedIdOrName);
     }
 }

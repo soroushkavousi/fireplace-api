@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace FireplaceApi.Application.Interfaces
+namespace FireplaceApi.Application.Interfaces;
+
+public interface IValidator
 {
-    public interface IValidator
-    {
-        public void Validate(IServiceProvider serviceProvider);
-    }
+    public void Validate(IServiceProvider serviceProvider);
 }

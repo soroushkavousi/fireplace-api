@@ -7,44 +7,43 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Domain.Operators
+namespace FireplaceApi.Domain.Operators;
+
+public class ConfigsOperator
 {
-    public class ConfigsOperator
+    private readonly ILogger<ConfigsOperator> _logger;
+    private readonly IConfigsRepository _configsRepository;
+    private readonly IWebHostEnvironment _webHostEnvironment;
+
+    public ConfigsOperator(ILogger<ConfigsOperator> logger,
+        IConfigsRepository configsRepository, IWebHostEnvironment webHostEnvironment)
     {
-        private readonly ILogger<ConfigsOperator> _logger;
-        private readonly IConfigsRepository _configsRepository;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        _logger = logger;
+        _configsRepository = configsRepository;
+        _webHostEnvironment = webHostEnvironment;
+    }
 
-        public ConfigsOperator(ILogger<ConfigsOperator> logger,
-            IConfigsRepository configsRepository, IWebHostEnvironment webHostEnvironment)
+    public async Task LoadConfigsAsync()
+    {
+        var environmentName = _webHostEnvironment.EnvironmentName.ToUpper().ToEnum<Enums.EnvironmentName>();
+        var identifier = ConfigsIdentifier.OfEnvironmentName(environmentName);
+        try
         {
-            _logger = logger;
-            _configsRepository = configsRepository;
-            _webHostEnvironment = webHostEnvironment;
+            Configs.Current = await _configsRepository.GetConfigsByIdentifierAsync(identifier);
         }
-
-        public async Task LoadConfigsAsync()
+        catch (Exception ex)
         {
-            var environmentName = _webHostEnvironment.EnvironmentName.ToUpper().ToEnum<Enums.EnvironmentName>();
-            var identifier = ConfigsIdentifier.OfEnvironmentName(environmentName);
-            try
+            _logger.LogAppCritical("Could not load configs from the database!", ex: ex);
+        }
+        finally
+        {
+            if (Configs.Current == null || Configs.Current.Api == null)
             {
-                Configs.Current = await _configsRepository.GetConfigsByIdentifierAsync(identifier);
+                _logger.LogAppCritical("No configs are found in the database!");
+                Configs.Current = Configs.Default;
             }
-            catch (Exception ex)
-            {
-                _logger.LogAppCritical("Could not load configs from the database!", ex: ex);
-            }
-            finally
-            {
-                if (Configs.Current == null || Configs.Current.Api == null)
-                {
-                    _logger.LogAppCritical("No configs are found in the database!");
-                    Configs.Current = Configs.Default;
-                }
-                else
-                    _logger.LogAppInformation($"The configs of environment {environmentName} were successfully retrieved from the database.");
-            }
+            else
+                _logger.LogAppInformation($"The configs of environment {environmentName} were successfully retrieved from the database.");
         }
     }
 }

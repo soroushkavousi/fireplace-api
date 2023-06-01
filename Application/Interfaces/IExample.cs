@@ -1,9 +1,8 @@
 ﻿using Microsoft.OpenApi.Any;
 
-namespace FireplaceApi.Application.Interfaces
+namespace FireplaceApi.Application.Interfaces;
+
+public interface IExample
 {
-    public interface IExample
-    {
-        public IOpenApiAny GetExample();
-    }
+    public IOpenApiAny GetExample();
 }

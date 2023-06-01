@@ -9,26 +9,25 @@ using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FireplaceApi.Application.Controllers
+namespace FireplaceApi.Application.Controllers;
+
+[SwaggerSchemaFilter(typeof(TypeExampleProvider))]
+public class CreateCommunityInputBodyParameters : IValidator
 {
-    [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
-    public class CreateCommunityInputBodyParameters : IValidator
+    [Required]
+    public string Name { get; set; }
+
+    public static IOpenApiAny Example { get; } = new OpenApiObject
     {
-        [Required]
-        public string Name { get; set; }
+        [nameof(Name).ToSnakeCase()] = CommunityDto.PureExample1[nameof(CommunityDto.Name).ToSnakeCase()],
+    };
 
-        public static IOpenApiAny Example { get; } = new OpenApiObject
-        {
-            [nameof(Name).ToSnakeCase()] = CommunityDto.PureExample1[nameof(CommunityDto.Name).ToSnakeCase()],
-        };
+    public void Validate(IServiceProvider serviceProvider)
+    {
+        var applicationValidator = serviceProvider.GetService<CommunityValidator>();
+        var domainValidator = applicationValidator.DomainValidator;
 
-        public void Validate(IServiceProvider serviceProvider)
-        {
-            var applicationValidator = serviceProvider.GetService<CommunityValidator>();
-            var domainValidator = applicationValidator.DomainValidator;
-
-            applicationValidator.ValidateFieldIsNotMissing(Name, FieldName.COMMUNITY_NAME);
-            domainValidator.ValidateCommunityNameFormat(Name);
-        }
+        applicationValidator.ValidateFieldIsNotMissing(Name, FieldName.COMMUNITY_NAME);
+        domainValidator.ValidateCommunityNameFormat(Name);
     }
 }

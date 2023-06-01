@@ -1,12 +1,11 @@
-﻿namespace FireplaceApi.Application.Validators
-{
-    public class CommentValidator : ApplicationValidator
-    {
-        public Domain.Validators.CommentValidator DomainValidator { get; set; }
+﻿namespace FireplaceApi.Application.Validators;
 
-        public CommentValidator(Domain.Validators.CommentValidator domainValidator)
-        {
-            DomainValidator = domainValidator;
-        }
+public class CommentValidator : ApplicationValidator
+{
+    public Domain.Validators.CommentValidator DomainValidator { get; set; }
+
+    public CommentValidator(Domain.Validators.CommentValidator domainValidator)
+    {
+        DomainValidator = domainValidator;
     }
 }

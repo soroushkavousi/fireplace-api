@@ -4,16 +4,15 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FireplaceApi.Application.Controllers
+namespace FireplaceApi.Application.Controllers;
+
+public class PostFileInputFormParameters : IValidator
 {
-    public class PostFileInputFormParameters : IValidator
+    [Required, FromForm(Name = "file")]
+    public IFormFile FormFile { get; set; }
+
+    public void Validate(IServiceProvider serviceProvider)
     {
-        [Required, FromForm(Name = "file")]
-        public IFormFile FormFile { get; set; }
 
-        public void Validate(IServiceProvider serviceProvider)
-        {
-
-        }
     }
 }

@@ -12,44 +12,43 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace FireplaceApi.Application.Controllers
+namespace FireplaceApi.Application.Controllers;
+
+public class PatchCommunityByEncodedIdOrNameInputRouteParameters : IValidator
 {
-    public class PatchCommunityByEncodedIdOrNameInputRouteParameters : IValidator
+    [Required]
+    [FromRoute(Name = "id-or-name")]
+    public string EncodedIdOrName { get; set; }
+
+    [BindNever]
+    public CommunityIdentifier Identifier { get; set; }
+
+    public void Validate(IServiceProvider serviceProvider)
     {
-        [Required]
-        [FromRoute(Name = "id-or-name")]
-        public string EncodedIdOrName { get; set; }
+        var applicationValidator = serviceProvider.GetService<CommunityValidator>();
+        var domainValidator = applicationValidator.DomainValidator;
 
-        [BindNever]
-        public CommunityIdentifier Identifier { get; set; }
-
-        public void Validate(IServiceProvider serviceProvider)
-        {
-            var applicationValidator = serviceProvider.GetService<CommunityValidator>();
-            var domainValidator = applicationValidator.DomainValidator;
-
-            Identifier = applicationValidator.ValidateEncodedIdOrName(EncodedIdOrName);
-        }
+        Identifier = applicationValidator.ValidateEncodedIdOrName(EncodedIdOrName);
     }
+}
 
-    [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
-    public class PatchCommunityInputBodyParameters : IValidator
+[SwaggerSchemaFilter(typeof(TypeExampleProvider))]
+public class PatchCommunityInputBodyParameters : IValidator
+{
+    [JsonPropertyName("name")]
+    public string NewName { get; set; }
+
+    public static IOpenApiAny Example { get; } = new OpenApiObject
     {
-        [JsonPropertyName("name")]
-        public string NewName { get; set; }
+        ["name"] = new OpenApiString("new-name"),
+    };
 
-        public static IOpenApiAny Example { get; } = new OpenApiObject
-        {
-            ["name"] = new OpenApiString("new-name"),
-        };
+    public void Validate(IServiceProvider serviceProvider)
+    {
+        var applicationValidator = serviceProvider.GetService<CommunityValidator>();
+        var domainValidator = applicationValidator.DomainValidator;
 
-        public void Validate(IServiceProvider serviceProvider)
-        {
-            var applicationValidator = serviceProvider.GetService<CommunityValidator>();
-            var domainValidator = applicationValidator.DomainValidator;
-
-            applicationValidator.ValidateFieldIsNotMissing(NewName, field: FieldName.COMMUNITY_NAME);
-            domainValidator.ValidateCommunityNameFormat(NewName);
-        }
+        applicationValidator.ValidateFieldIsNotMissing(NewName, field: FieldName.COMMUNITY_NAME);
+        domainValidator.ValidateCommunityNameFormat(NewName);
     }
 }

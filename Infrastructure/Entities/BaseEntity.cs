@@ -4,42 +4,41 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FireplaceApi.Infrastructure.Entities
+namespace FireplaceApi.Infrastructure.Entities;
+
+public class BaseEntity
 {
-    public class BaseEntity
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+    public ulong Id { get; set; }
+    public DateTime CreationDate { get; set; }
+    public DateTime? ModifiedDate { get; set; }
+
+    protected BaseEntity()
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public ulong Id { get; set; }
-        public DateTime CreationDate { get; set; }
-        public DateTime? ModifiedDate { get; set; }
-
-        protected BaseEntity()
-        {
-            CreationDate = DateTime.UtcNow;
-        }
-
-        public BaseEntity(ulong id, DateTime? creationDate = null, DateTime? modifiedDate = null) : this()
-        {
-            Id = id;
-            if (creationDate.HasValue)
-                CreationDate = creationDate.Value;
-            ModifiedDate = modifiedDate;
-        }
+        CreationDate = DateTime.UtcNow;
     }
 
-    public static class BaseEntityExtensions
+    public BaseEntity(ulong id, DateTime? creationDate = null, DateTime? modifiedDate = null) : this()
     {
-        public static void DoBaseConfiguration<T>(this EntityTypeBuilder<T> modelBuilder) where T : BaseEntity
-        {
-            // p => principal / d => dependent / e => entity
+        Id = id;
+        if (creationDate.HasValue)
+            CreationDate = creationDate.Value;
+        ModifiedDate = modifiedDate;
+    }
+}
 
-            modelBuilder
-               .Property(e => e.Id)
-               .ValueGeneratedNever();
+public static class BaseEntityExtensions
+{
+    public static void DoBaseConfiguration<T>(this EntityTypeBuilder<T> modelBuilder) where T : BaseEntity
+    {
+        // p => principal / d => dependent / e => entity
 
-            modelBuilder
-               .Property(e => e.CreationDate)
-               .HasDefaultValueSql("now() at time zone 'utc'");
-        }
+        modelBuilder
+           .Property(e => e.Id)
+           .ValueGeneratedNever();
+
+        modelBuilder
+           .Property(e => e.CreationDate)
+           .HasDefaultValueSql("now() at time zone 'utc'");
     }
 }

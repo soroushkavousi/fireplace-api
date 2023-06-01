@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "FireplaceApi": {
+      "commandName": "Project",
+      "applicationUrl": "http://localhost:5000",
+      "launchBrowser": true,
+      "launchUrl": "swagger"
+    }
+  }
+}

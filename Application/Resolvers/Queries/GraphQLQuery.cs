@@ -1,7 +1,6 @@
-﻿namespace FireplaceApi.Application.Resolvers
-{
-    public class GraphQLQuery
-    {
+﻿namespace FireplaceApi.Application.Resolvers;
 
-    }
+public class GraphQLQuery
+{
+
 }
