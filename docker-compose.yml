@@ -10,7 +10,7 @@ services:
       - ./logs:/logs
       - /bitiano/files/files.fireplace.bitiano.com:/files
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - FIREPLACE_API_ASPNETCORE_ENVIRONMENT=Production
       - FIREPLACE_API_LOG_DIRECTORY=/logs
       - FIREPLACE_API_CONNECTION_STRING
     networks:

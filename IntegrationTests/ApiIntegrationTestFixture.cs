@@ -8,14 +8,11 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using NLog;
 using NLog.Web;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -37,32 +34,8 @@ public class ApiIntegrationTestFixture : IDisposable
     static ApiIntegrationTestFixture()
     {
         _logger = LogManager.GetCurrentClassLogger();
-        LoadLaunchSettingEnvironmentVariables();
         ProjectInitializer.Start();
         ReadDatabaseInitialData();
-    }
-
-    private static void LoadLaunchSettingEnvironmentVariables()
-    {
-        var launchSettingsPath = @"Properties/launchSettings.json";
-        if (!File.Exists(launchSettingsPath))
-            return;
-        using var file = File.OpenText("Properties/launchSettings.json");
-        var reader = new JsonTextReader(file);
-        var jObject = JObject.Load(reader);
-
-        var variables = jObject
-            .GetValue("profiles")
-            .SelectMany(profiles => profiles.Children())
-            .SelectMany(profile => profile.Children<JProperty>())
-            .Where(prop => prop.Name == "environmentVariables")
-            .SelectMany(prop => prop.Value.Children<JProperty>())
-            .ToList();
-
-        foreach (var variable in variables)
-        {
-            Environment.SetEnvironmentVariable(variable.Name, variable.Value.ToString());
-        }
     }
 
     private static void ReadDatabaseInitialData()

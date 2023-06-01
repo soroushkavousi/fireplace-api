@@ -284,58 +284,11 @@ Host=<server-address>;Port=1234;Username=<username>;Password=<password>;Database
 
 <br/>
 
-| Environment Key                 |             Value             |    Default    | Required |
-| ------------------------------- | :---------------------------: | :-----------: | :------: |
-| FIREPLACE_API_CONNECTION_STRING |    &#60;connection-string>    |       -       | &#10004; |
-| FIREPLACE_API_LOG_DIRECTORY     |         path/to/logs          | Project Root  | &#10006; |
-| ASPNETCORE_ENVIRONMENT          | 'Development' or 'Production' | 'Development' | &#10006; |
-
-<br/>
-
-- **How to set?**
-  <br/>
-
-Option 1: Directly in shell
-
-```
-Linux:
-> export ASPNETCORE_ENVIRONMENT='Development'
-> export FIREPLACE_API_LOG_DIRECTORY='path/to/logs'
-> export FIREPLACE_API_CONNECTION_STRING='<connection-string>'
-```
-
-```
-Windows PowerShell:
-> $env:ASPNETCORE_ENVIRONMENT = 'Development'
-> $env:FIREPLACE_API_LOG_DIRECTORY = 'path/to/logs'
-> $env:FIREPLACE_API_CONNECTION_STRING = '<connection-string>'
-```
-
-<br/>
-
-Option 2: Via launchSettings.json
-
-```json
-{
-  "profiles": {
-    "FireplaceApi": {
-      "commandName": "Project",
-      "applicationUrl": "http://localhost:5000",
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "FIREPLACE_API_LOG_DIRECTORY": "path/to/logs",
-        "FIREPLACE_API_CONNECTION_STRING": "<connection-string>"
-      }
-    }
-  }
-}
-```
-
-Copy the json to a file at this path: `Application\Properties\launchSettings.json`
-
-Note: In this project, the file 'launchSettings.json' will not be pushed to the git repository because it is placed in the .gitignore file. You can freely customize environment variables in it.
+| Environment Key                      |             Value             |    Default    | Required |
+| :----------------------------------: | :---------------------------: | :-----------: | :------: |
+| FIREPLACE_API_CONNECTION_STRING      |    &#60;connection-string>    |       -       | &#10004; |
+| FIREPLACE_API_LOG_DIRECTORY          |         path/to/logs          | Project Root  | &#10006; |
+| FIREPLACE_API_ASPNETCORE_ENVIRONMENT | 'Development' or 'Production' | 'Development' | &#10006; |
 
 <br/>
 

@@ -1,8 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
 
 namespace FireplaceApi.Application.Tools;
 
@@ -18,11 +15,7 @@ public class EnvironmentVariable
         Key = key;
         Default = @default;
 
-        IsProvided = TryReadValueFromLaunchVariables();
-        if (IsProvided)
-            return;
-
-        IsProvided = TryReadValueFromSystem();
+        IsProvided = TryReadValue();
         if (IsProvided)
             return;
 
@@ -31,7 +24,7 @@ public class EnvironmentVariable
 
     public static EnvironmentVariable EnvironmentName { get; } = new
     (
-        key: "ASPNETCORE_ENVIRONMENT",
+        key: "FIREPLACE_API_ASPNETCORE_ENVIRONMENT",
         @default: "Development"
     );
 
@@ -47,28 +40,7 @@ public class EnvironmentVariable
         @default: ""
     );
 
-    private bool TryReadValueFromLaunchVariables()
-    {
-        var profilePath = Path.Combine(Directory.GetCurrentDirectory(), "Properties", "launchSettings.json");
-        if (!File.Exists(profilePath))
-            return false;
-
-        var launchVariables = new ConfigurationBuilder()
-            .AddJsonFile(profilePath, optional: false, reloadOnChange: false)
-            .Build().AsEnumerable();
-
-        var theVariable = launchVariables.FirstOrDefault(v => v.Key.Contains(Key, StringComparison.OrdinalIgnoreCase));
-        if (!theVariable.Equals(default(KeyValuePair<string, string>)))
-        {
-            Value = theVariable.Value;
-            if (!string.IsNullOrWhiteSpace(Value))
-                return true;
-        }
-
-        return false;
-    }
-
-    private bool TryReadValueFromSystem()
+    private bool TryReadValue()
     {
         Value = Environment.GetEnvironmentVariable(Key, EnvironmentVariableTarget.Process);
         if (!string.IsNullOrWhiteSpace(Value))
