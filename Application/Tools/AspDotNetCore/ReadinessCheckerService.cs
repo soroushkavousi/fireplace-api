@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Application.Tools
 {
-    public class StatusCheckerService : IHostedService
+    public class ReadinessCheckerService : IHostedService
     {
-        private readonly ILogger<StatusCheckerService> _logger;
+        private readonly ILogger<ReadinessCheckerService> _logger;
         private readonly IServiceProvider _serviceProvider;
 
-        public StatusCheckerService(ILogger<StatusCheckerService> logger,
+        public ReadinessCheckerService(ILogger<ReadinessCheckerService> logger,
             IServiceProvider serviceProvider)
         {
             _logger = logger;

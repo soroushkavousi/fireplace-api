@@ -8,7 +8,8 @@ using System.Reflection;
 
 namespace FireplaceApi.Application.Tools
 {
-    public class SwaggerSecurityFilter : IOperationFilter
+    // Fix security sign, and add csrf token to input headers
+    public class SwaggerSecurityConfigurator : IOperationFilter
     {
         private readonly static OpenApiSecurityRequirement _securityRequirement = new()
         {

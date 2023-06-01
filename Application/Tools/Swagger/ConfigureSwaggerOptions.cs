@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Domain.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -16,17 +15,14 @@ namespace FireplaceApi.Application.Tools
     public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     {
         readonly IApiVersionDescriptionProvider _provider;
-        readonly IWebHostEnvironment _env;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigureSwaggerOptions"/> class.
         /// </summary>
         /// <param name="provider">The <see cref="IApiVersionDescriptionProvider">provider</see> used to generate Swagger documents.</param>
-        /// <param name="env"></param>
-        public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider, IWebHostEnvironment env)
+        public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider)
         {
             _provider = provider;
-            _env = env;
         }
 
         /// <inheritdoc />
@@ -36,11 +32,11 @@ namespace FireplaceApi.Application.Tools
             // note: you might choose to skip or document deprecated API versions differently
             foreach (var description in _provider.ApiVersionDescriptions)
             {
-                options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description, _env));
+                options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
             }
         }
 
-        static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description, IWebHostEnvironment env)
+        static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
         {
             var description_html = "<div>";
 

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace FireplaceApi.Application.Tools
 {
-    public class SwaggerDefaultValueFilter : IOperationFilter
+    public class SwaggerDefaultValueProvider : IOperationFilter
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {

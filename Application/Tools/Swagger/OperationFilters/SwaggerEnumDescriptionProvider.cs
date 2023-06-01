@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace FireplaceApi.Application.Tools
 {
-    public class SwaggerEnumFilter : IOperationFilter
+    public class SwaggerEnumDescriptionProvider : IOperationFilter
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
