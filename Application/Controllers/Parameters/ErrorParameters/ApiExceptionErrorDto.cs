@@ -10,7 +10,7 @@ namespace FireplaceApi.Application.Controllers
     public class ApiExceptionErrorDto
     {
         [Required]
-        public int Code { get; set; }
+        public int? Code { get; set; }
         [Required]
         public string Type { get; set; }
         [Required]
@@ -33,7 +33,7 @@ namespace FireplaceApi.Application.Controllers
         //    [nameof(FileController.PostFileAsync)] = ApiExceptionErrorExample1,
         //};
 
-        public ApiExceptionErrorDto(int code, string type, string field, string message)
+        public ApiExceptionErrorDto(int? code, string type, string field, string message)
         {
             Code = code;
             Type = type;
