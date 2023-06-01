@@ -11,7 +11,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace FireplaceApi.IntegrationTests.UserTests;
+namespace FireplaceApi.IntegrationTests.Tests.UserTests;
 
 [Collection("User")]
 public class UserTests

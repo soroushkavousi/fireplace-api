@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace FireplaceApi.IntegrationTests.CommunityTests;
+namespace FireplaceApi.IntegrationTests.Tests.CommunityTests;
 
 public static class CommunityUtils
 {

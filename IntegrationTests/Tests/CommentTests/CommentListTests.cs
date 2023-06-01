@@ -12,7 +12,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace FireplaceApi.IntegrationTests.CommentTests;
+namespace FireplaceApi.IntegrationTests.Tests.CommentTests;
 
 [Collection("Comment")]
 public class CommentListTests

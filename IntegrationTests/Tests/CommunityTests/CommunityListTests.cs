@@ -8,27 +8,27 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace FireplaceApi.IntegrationTests.CommunityTests;
+namespace FireplaceApi.IntegrationTests.Tests.CommunityTests;
 
 [Collection("Community")]
-public class CommunityCreateTests
+public class CommunityListTests
 {
     private readonly ApiIntegrationTestFixture _fixture;
-    private readonly ILogger<CommunityCreateTests> _logger;
+    private readonly ILogger<CommunityListTests> _logger;
     private readonly ClientPool _clientPool;
     private readonly CommunityOperator _communityOperator;
 
-    public CommunityCreateTests(ApiIntegrationTestFixture fixture)
+    public CommunityListTests(ApiIntegrationTestFixture fixture)
     {
         _fixture = fixture;
         _fixture.CleanDatabase();
-        _logger = _fixture.ServiceProvider.GetRequiredService<ILogger<CommunityCreateTests>>();
+        _logger = _fixture.ServiceProvider.GetRequiredService<ILogger<CommunityListTests>>();
         _clientPool = _fixture.ClientPool;
         _communityOperator = _fixture.ServiceProvider.GetRequiredService<CommunityOperator>();
     }
 
     [Fact]
-    public async Task CreateCommunity_WhenCreatingACommunity_ShouldReturnCreatedCommunity()
+    public async Task ListCommunities_WhenSearchingCommunitiesByName_ShouldReturnFilteredCommunities()
     {
         var sw = Stopwatch.StartNew();
         try
@@ -37,14 +37,15 @@ public class CommunityCreateTests
 
             //Given
             var narutoUser = await _clientPool.CreateNarutoUserAsync();
-            var communityName = "test-community-name";
+            var backendDevelopersCommunity = await _communityOperator.CreateCommunityAsync(narutoUser, "backend-developers");
+            var gamersCommunity = await _communityOperator.CreateCommunityAsync(narutoUser, "gamers");
 
             //When
-            var createdCommunity = await CommunityUtils.CreateCommunityWithApiAsync(narutoUser, communityName);
+            var communityQueryResult = await CommunityUtils.ListCommunitiesWithApiAsync(narutoUser, "dev");
 
             //Then
-            var retrievedCommunity = await CommunityUtils.GetCommunityWithApiAsync(narutoUser, communityName);
-            Assert.Equal(createdCommunity.Id, retrievedCommunity.Id);
+            Assert.Single(communityQueryResult.Items);
+            Assert.Equal(backendDevelopersCommunity.Name, communityQueryResult.Items[0].Name);
 
             _logger.LogAppInformation(title: "TEST_END", sw: sw);
         }
