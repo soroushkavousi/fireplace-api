@@ -34,25 +34,35 @@ namespace FireplaceApi.Application.Tools
             var dbContext = scope.ServiceProvider
                 .GetRequiredService<ProjectDbContext>();
 
-            var pendingMigrations = dbContext.Database.GetPendingMigrations();
-            var databaseName = dbContext.Database.GetDbConnection().Database;
-            var isTestDatabase = databaseName.Contains("test", StringComparison.OrdinalIgnoreCase);
-            if (pendingMigrations.Any() && !isTestDatabase)
+            try
             {
-                _logger.LogAppCritical($"Database migrations are not applied!!!",
-                    parameters: new { PendingMigrations = $"[ {string.Join(", ", pendingMigrations)} ]" });
-            }
-            else
-            {
-                if (await dbContext.ConfigsEntities.AnyAsync(cancellationToken: cancellationToken) == false)
+                var pendingMigrations = dbContext.Database.GetPendingMigrations();
+                var databaseName = dbContext.Database.GetDbConnection().Database;
+                var isTestDatabase = databaseName.Contains("test", StringComparison.OrdinalIgnoreCase);
+                if (pendingMigrations.Any() && !isTestDatabase)
                 {
-                    _logger.LogAppCritical("No configs are found in the database!!!");
+                    _logger.LogAppCritical($"Database migrations are not applied!!!",
+                        parameters: new { PendingMigrations = $"[ {string.Join(", ", pendingMigrations)} ]" });
                 }
+                else
+                {
+                    if (await dbContext.ConfigsEntities.AnyAsync(cancellationToken: cancellationToken) == false)
+                    {
+                        _logger.LogAppCritical("No configs are found in the database!!!");
+                    }
 
-                if (await dbContext.ErrorEntities.AnyAsync(cancellationToken: cancellationToken) == false)
-                {
-                    _logger.LogAppCritical("No errors are found in the database!!!");
+                    if (await dbContext.ErrorEntities.AnyAsync(cancellationToken: cancellationToken) == false)
+                    {
+                        _logger.LogAppCritical("No errors are found in the database!!!");
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                var serverMessage = $"Could not connect to the database!!!";
+                _logger.LogAppCritical(serverMessage);
+                await Console.Out.WriteLineAsync(serverMessage);
+                throw;
             }
         }
 
