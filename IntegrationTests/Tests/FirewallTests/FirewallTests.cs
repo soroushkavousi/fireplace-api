@@ -11,7 +11,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace FireplaceApi.IntegrationTests.FirewallTests;
+namespace FireplaceApi.IntegrationTests.Tests.FirewallTests;
 
 [Collection("Firewall")]
 public class FirewallTests

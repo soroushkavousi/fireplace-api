@@ -1,6 +1,7 @@
-﻿using Xunit;
+﻿using FireplaceApi.IntegrationTests.Tools;
+using Xunit;
 
-namespace FireplaceApi.IntegrationTests.CommentTests;
+namespace FireplaceApi.IntegrationTests.Tests.UserTests;
 
 [CollectionDefinition("User")]
 public class UserCollectionFixture : ICollectionFixture<ApiIntegrationTestFixture> { }

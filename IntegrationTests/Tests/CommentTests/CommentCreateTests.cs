@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace FireplaceApi.IntegrationTests.CommentTests;
+namespace FireplaceApi.IntegrationTests.Tests.CommentTests;
 
 [Collection("Comment")]
 public class CommentCreateTests

@@ -9,7 +9,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace FireplaceApi.IntegrationTests.CommentTests;
+namespace FireplaceApi.IntegrationTests.Tests.CommentTests;
 
 public static class CommentUtils
 {

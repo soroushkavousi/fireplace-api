@@ -2,7 +2,6 @@
 using FireplaceApi.Domain.Exceptions;
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Infrastructure.Entities;
-using FireplaceApi.IntegrationTests.Tools;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +15,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace FireplaceApi.IntegrationTests;
+namespace FireplaceApi.IntegrationTests.Tools;
 
 public class ApiIntegrationTestFixture : IDisposable
 {

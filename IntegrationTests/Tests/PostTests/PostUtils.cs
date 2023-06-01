@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace FireplaceApi.IntegrationTests.PostTests;
+namespace FireplaceApi.IntegrationTests.Tests.PostTests;
 
 public static class PostUtils
 {
