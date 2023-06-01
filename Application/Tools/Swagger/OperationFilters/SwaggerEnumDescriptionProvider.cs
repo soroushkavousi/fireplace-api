@@ -3,29 +3,28 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Linq;
 
-namespace FireplaceApi.Application.Tools
+namespace FireplaceApi.Application.Tools;
+
+public class SwaggerEnumDescriptionProvider : IOperationFilter
 {
-    public class SwaggerEnumDescriptionProvider : IOperationFilter
+    public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        public void Apply(OpenApiOperation operation, OperationFilterContext context)
-        {
-            context.ApiDescription.ParameterDescriptions
-                .Where(d => d.Source.Id == "Query").ToList()
-                .ForEach(param =>
-                {
-                    var swaggerEnumAttributeObject = param.CustomAttributes()
-                        .FirstOrDefault(attr => attr.GetType() == typeof(SwaggerEnumAttribute));
+        context.ApiDescription.ParameterDescriptions
+            .Where(d => d.Source.Id == "Query").ToList()
+            .ForEach(param =>
+            {
+                var swaggerEnumAttributeObject = param.CustomAttributes()
+                    .FirstOrDefault(attr => attr.GetType() == typeof(SwaggerEnumAttribute));
 
-                    if (swaggerEnumAttributeObject == null)
-                        return;
+                if (swaggerEnumAttributeObject == null)
+                    return;
 
-                    var swaggerEnumAttribute = (SwaggerEnumAttribute)swaggerEnumAttributeObject;
+                var swaggerEnumAttribute = (SwaggerEnumAttribute)swaggerEnumAttributeObject;
 
-                    var enumType = swaggerEnumAttribute.Type;
-                    var description = string.Join(", ", Enum.GetNames(enumType));
-                    description = $"<i>Enum Values:</i> {description}";
-                    operation.Parameters.First(p => p.Name == param.Name).Description = description;
-                });
-        }
+                var enumType = swaggerEnumAttribute.Type;
+                var description = string.Join(", ", Enum.GetNames(enumType));
+                description = $"<i>Enum Values:</i> {description}";
+                operation.Parameters.First(p => p.Name == param.Name).Description = description;
+            });
     }
 }

@@ -2,50 +2,49 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FireplaceApi.Domain.ValueObjects
+namespace FireplaceApi.Domain.ValueObjects;
+
+public class ExpirableCollection<T> where T : ExpirableData
 {
-    public class ExpirableCollection<T> where T : ExpirableData
+    private List<T> _items = new();
+    public TimeSpan LifeSpan { get; set; }
+    public List<T> Items => GetNotExpiredItems();
+
+    public ExpirableCollection(TimeSpan lifeSpan)
     {
-        private List<T> _items = new();
-        public TimeSpan LifeSpan { get; set; }
-        public List<T> Items => GetNotExpiredItems();
-
-        public ExpirableCollection(TimeSpan lifeSpan)
-        {
-            LifeSpan = lifeSpan;
-        }
-
-        public List<T> GetNotExpiredItems()
-        {
-            var currentDate = DateTime.UtcNow;
-            _items = _items.Where(item => !item.IsExpired(LifeSpan)).ToList();
-            return _items;
-        }
+        LifeSpan = lifeSpan;
     }
 
-    public class ExpirableData
+    public List<T> GetNotExpiredItems()
     {
-        public DateTime CreationDate { get; set; }
+        var currentDate = DateTime.UtcNow;
+        _items = _items.Where(item => !item.IsExpired(LifeSpan)).ToList();
+        return _items;
+    }
+}
 
-        public ExpirableData()
-        {
-            CreationDate = DateTime.UtcNow;
-        }
+public class ExpirableData
+{
+    public DateTime CreationDate { get; set; }
 
-        public bool IsExpired(TimeSpan lifeSpan)
-        {
-            var expirationDate = CreationDate.Add(lifeSpan);
-            return expirationDate < DateTime.UtcNow;
-        }
+    public ExpirableData()
+    {
+        CreationDate = DateTime.UtcNow;
     }
 
-    public class ExpirableData<T> : ExpirableData
+    public bool IsExpired(TimeSpan lifeSpan)
     {
-        public T Data { get; set; }
+        var expirationDate = CreationDate.Add(lifeSpan);
+        return expirationDate < DateTime.UtcNow;
+    }
+}
 
-        public ExpirableData(T data) : base()
-        {
-            Data = data;
-        }
+public class ExpirableData<T> : ExpirableData
+{
+    public T Data { get; set; }
+
+    public ExpirableData(T data) : base()
+    {
+        Data = data;
     }
 }

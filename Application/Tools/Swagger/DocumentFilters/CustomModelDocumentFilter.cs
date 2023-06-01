@@ -2,20 +2,19 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace FireplaceApi.Application.Tools
+namespace FireplaceApi.Application.Tools;
+
+public class CustomModelDocumentFilter<T> : IDocumentFilter where T : class
 {
-    public class CustomModelDocumentFilter<T> : IDocumentFilter where T : class
+    private readonly ILogger<CustomModelDocumentFilter<T>> _logger;
+
+    public CustomModelDocumentFilter(ILogger<CustomModelDocumentFilter<T>> logger)
     {
-        private readonly ILogger<CustomModelDocumentFilter<T>> _logger;
+        _logger = logger;
+    }
 
-        public CustomModelDocumentFilter(ILogger<CustomModelDocumentFilter<T>> logger)
-        {
-            _logger = logger;
-        }
-
-        public void Apply(OpenApiDocument openapiDoc, DocumentFilterContext context)
-        {
-            context.SchemaGenerator.GenerateSchema(typeof(T), context.SchemaRepository);
-        }
+    public void Apply(OpenApiDocument openapiDoc, DocumentFilterContext context)
+    {
+        context.SchemaGenerator.GenerateSchema(typeof(T), context.SchemaRepository);
     }
 }

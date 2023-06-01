@@ -2,25 +2,24 @@
 using Newtonsoft.Json.Serialization;
 using System.Reflection;
 
-namespace FireplaceApi.Domain.Tools
+namespace FireplaceApi.Domain.Tools;
+
+public class CoreContractResolver : DefaultContractResolver
 {
-    public class CoreContractResolver : DefaultContractResolver
+    public static readonly CoreContractResolver Instance = new();
+
+    public CoreContractResolver()
     {
-        public static readonly CoreContractResolver Instance = new();
+        NamingStrategy = new SnakeCaseNamingStrategy();
+    }
 
-        public CoreContractResolver()
-        {
-            NamingStrategy = new SnakeCaseNamingStrategy();
-        }
+    protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+    {
+        JsonProperty jsonProperty = base.CreateProperty(member, memberSerialization);
 
-        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
-        {
-            JsonProperty jsonProperty = base.CreateProperty(member, memberSerialization);
+        if (member.GetCustomAttribute<System.Text.Json.Serialization.JsonIgnoreAttribute>() != null)
+            jsonProperty.Ignored = true;
 
-            if (member.GetCustomAttribute<System.Text.Json.Serialization.JsonIgnoreAttribute>() != null)
-                jsonProperty.Ignored = true;
-
-            return jsonProperty;
-        }
+        return jsonProperty;
     }
 }

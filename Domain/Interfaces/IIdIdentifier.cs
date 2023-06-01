@@ -1,7 +1,6 @@
-﻿namespace FireplaceApi.Domain.Interfaces
+﻿namespace FireplaceApi.Domain.Interfaces;
+
+public interface IIdIdentifier
 {
-    public interface IIdIdentifier
-    {
-        public ulong Id { get; set; }
-    }
+    public ulong Id { get; set; }
 }

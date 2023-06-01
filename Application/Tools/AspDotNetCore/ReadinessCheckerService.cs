@@ -9,66 +9,65 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Application.Tools
+namespace FireplaceApi.Application.Tools;
+
+public class ReadinessCheckerService : IHostedService
 {
-    public class ReadinessCheckerService : IHostedService
+    private readonly ILogger<ReadinessCheckerService> _logger;
+    private readonly IServiceProvider _serviceProvider;
+
+    public ReadinessCheckerService(ILogger<ReadinessCheckerService> logger,
+        IServiceProvider serviceProvider)
     {
-        private readonly ILogger<ReadinessCheckerService> _logger;
-        private readonly IServiceProvider _serviceProvider;
+        _logger = logger;
+        _serviceProvider = serviceProvider;
+    }
 
-        public ReadinessCheckerService(ILogger<ReadinessCheckerService> logger,
-            IServiceProvider serviceProvider)
+    public async Task StartAsync(CancellationToken cancellationToken)
+    {
+        await CheckDatabase(cancellationToken);
+    }
+
+    private async Task CheckDatabase(CancellationToken cancellationToken)
+    {
+        using IServiceScope scope = _serviceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider
+            .GetRequiredService<ProjectDbContext>();
+
+        try
         {
-            _logger = logger;
-            _serviceProvider = serviceProvider;
-        }
-
-        public async Task StartAsync(CancellationToken cancellationToken)
-        {
-            await CheckDatabase(cancellationToken);
-        }
-
-        private async Task CheckDatabase(CancellationToken cancellationToken)
-        {
-            using IServiceScope scope = _serviceProvider.CreateScope();
-            var dbContext = scope.ServiceProvider
-                .GetRequiredService<ProjectDbContext>();
-
-            try
+            var pendingMigrations = dbContext.Database.GetPendingMigrations();
+            var databaseName = dbContext.Database.GetDbConnection().Database;
+            var isTestDatabase = databaseName.Contains("test", StringComparison.OrdinalIgnoreCase);
+            if (pendingMigrations.Any() && !isTestDatabase)
             {
-                var pendingMigrations = dbContext.Database.GetPendingMigrations();
-                var databaseName = dbContext.Database.GetDbConnection().Database;
-                var isTestDatabase = databaseName.Contains("test", StringComparison.OrdinalIgnoreCase);
-                if (pendingMigrations.Any() && !isTestDatabase)
+                _logger.LogAppCritical($"Database migrations are not applied!!!",
+                    parameters: new { PendingMigrations = $"[ {string.Join(", ", pendingMigrations)} ]" });
+            }
+            else
+            {
+                if (await dbContext.ConfigsEntities.AnyAsync(cancellationToken: cancellationToken) == false)
                 {
-                    _logger.LogAppCritical($"Database migrations are not applied!!!",
-                        parameters: new { PendingMigrations = $"[ {string.Join(", ", pendingMigrations)} ]" });
+                    _logger.LogAppCritical("No configs are found in the database!!!");
                 }
-                else
-                {
-                    if (await dbContext.ConfigsEntities.AnyAsync(cancellationToken: cancellationToken) == false)
-                    {
-                        _logger.LogAppCritical("No configs are found in the database!!!");
-                    }
 
-                    if (await dbContext.ErrorEntities.AnyAsync(cancellationToken: cancellationToken) == false)
-                    {
-                        _logger.LogAppCritical("No errors are found in the database!!!");
-                    }
+                if (await dbContext.ErrorEntities.AnyAsync(cancellationToken: cancellationToken) == false)
+                {
+                    _logger.LogAppCritical("No errors are found in the database!!!");
                 }
             }
-            catch (Exception)
-            {
-                var serverMessage = $"Could not connect to the database!!!";
-                _logger.LogAppCritical(serverMessage);
-                await Console.Out.WriteLineAsync(serverMessage);
-                throw;
-            }
         }
-
-        public async Task StopAsync(CancellationToken cancellationToken)
+        catch (Exception)
         {
-            await Task.CompletedTask;
+            var serverMessage = $"Could not connect to the database!!!";
+            _logger.LogAppCritical(serverMessage);
+            await Console.Out.WriteLineAsync(serverMessage);
+            throw;
         }
+    }
+
+    public async Task StopAsync(CancellationToken cancellationToken)
+    {
+        await Task.CompletedTask;
     }
 }

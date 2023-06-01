@@ -4,29 +4,28 @@ using FireplaceApi.Domain.Tools;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace FireplaceApi.Application.Converters
+namespace FireplaceApi.Application.Converters;
+
+public class FileConverter : BaseConverter<File, FileDto>
 {
-    public class FileConverter : BaseConverter<File, FileDto>
+    private readonly ILogger<FileConverter> _logger;
+    private readonly Uri _baseUri;
+    private readonly string _basePhysicalPath;
+
+    public FileConverter(ILogger<FileConverter> logger)
     {
-        private readonly ILogger<FileConverter> _logger;
-        private readonly Uri _baseUri;
-        private readonly string _basePhysicalPath;
+        _logger = logger;
+        _baseUri = new Uri(Configs.Current.File.BaseUrlPath);
+        _basePhysicalPath = Configs.Current.File.BasePhysicalPath;
+    }
 
-        public FileConverter(ILogger<FileConverter> logger)
-        {
-            _logger = logger;
-            _baseUri = new Uri(Configs.Current.File.BaseUrlPath);
-            _basePhysicalPath = Configs.Current.File.BasePhysicalPath;
-        }
+    public override FileDto ConvertToDto(File file)
+    {
+        if (file == null)
+            return null;
 
-        public override FileDto ConvertToDto(File file)
-        {
-            if (file == null)
-                return null;
+        var fileDto = new FileDto(file.Id.IdEncode(), file.Uri.AbsoluteUri, file.CreationDate);
 
-            var fileDto = new FileDto(file.Id.IdEncode(), file.Uri.AbsoluteUri, file.CreationDate);
-
-            return fileDto;
-        }
+        return fileDto;
     }
 }

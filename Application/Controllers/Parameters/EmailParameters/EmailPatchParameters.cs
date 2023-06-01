@@ -8,25 +8,24 @@ using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 
-namespace FireplaceApi.Application.Controllers
+namespace FireplaceApi.Application.Controllers;
+
+[SwaggerSchemaFilter(typeof(TypeExampleProvider))]
+public class PatchEmailInputBodyParameters : IValidator
 {
-    [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
-    public class PatchEmailInputBodyParameters : IValidator
+    public string NewAddress { get; set; }
+
+    public static IOpenApiAny Example { get; } = new OpenApiObject
     {
-        public string NewAddress { get; set; }
+        [nameof(NewAddress).ToSnakeCase()] = new OpenApiString("NewEmailAddress"),
+    };
 
-        public static IOpenApiAny Example { get; } = new OpenApiObject
-        {
-            [nameof(NewAddress).ToSnakeCase()] = new OpenApiString("NewEmailAddress"),
-        };
+    public void Validate(IServiceProvider serviceProvider)
+    {
+        var applicationValidator = serviceProvider.GetService<EmailValidator>();
+        var domainValidator = applicationValidator.DomainValidator;
 
-        public void Validate(IServiceProvider serviceProvider)
-        {
-            var applicationValidator = serviceProvider.GetService<EmailValidator>();
-            var domainValidator = applicationValidator.DomainValidator;
-
-            applicationValidator.ValidateFieldIsNotMissing(NewAddress, FieldName.EMAIL_ADDRESS);
-            domainValidator.ValidateEmailAddressFormat(NewAddress);
-        }
+        applicationValidator.ValidateFieldIsNotMissing(NewAddress, FieldName.EMAIL_ADDRESS);
+        domainValidator.ValidateEmailAddressFormat(NewAddress);
     }
 }

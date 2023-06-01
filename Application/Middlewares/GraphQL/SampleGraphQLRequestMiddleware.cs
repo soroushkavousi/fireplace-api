@@ -4,27 +4,26 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Application.Middlewares
+namespace FireplaceApi.Application.Middlewares;
+
+public class SampleGraphQLRequestMiddleware
 {
-    public class SampleGraphQLRequestMiddleware
+    private readonly RequestDelegate _next;
+
+    public SampleGraphQLRequestMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
-
-        public SampleGraphQLRequestMiddleware(RequestDelegate next)
-        {
-            _next = next ?? throw new ArgumentNullException(nameof(next));
-        }
-
-        public async ValueTask InvokeAsync(IRequestContext context)
-        {
-            await _next(context).ConfigureAwait(false);
-        }
+        _next = next ?? throw new ArgumentNullException(nameof(next));
     }
 
-    public static class SampleGraphQLRequestMiddlewareExntension
+    public async ValueTask InvokeAsync(IRequestContext context)
     {
-        public static IRequestExecutorBuilder UseSampleGraphQLRequestMiddleware(
-            this IRequestExecutorBuilder builder) =>
-            builder.UseRequest<SampleGraphQLRequestMiddleware>();
+        await _next(context).ConfigureAwait(false);
     }
+}
+
+public static class SampleGraphQLRequestMiddlewareExntension
+{
+    public static IRequestExecutorBuilder UseSampleGraphQLRequestMiddleware(
+        this IRequestExecutorBuilder builder) =>
+        builder.UseRequest<SampleGraphQLRequestMiddleware>();
 }

@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace FireplaceApi.Application.Interfaces
+namespace FireplaceApi.Application.Interfaces;
+
+public interface IOutputHeaderParameters
 {
-    public interface IOutputHeaderParameters
-    {
-        public HeaderDictionary GetHeaderDictionary();
-    }
+    public HeaderDictionary GetHeaderDictionary();
 }

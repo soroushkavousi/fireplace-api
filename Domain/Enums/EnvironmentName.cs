@@ -1,8 +1,7 @@
-﻿namespace FireplaceApi.Domain.Enums
+﻿namespace FireplaceApi.Domain.Enums;
+
+public enum EnvironmentName
 {
-    public enum EnvironmentName
-    {
-        DEVELOPMENT,
-        PRODUCTION,
-    }
+    DEVELOPMENT,
+    PRODUCTION,
 }

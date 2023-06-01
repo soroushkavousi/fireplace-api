@@ -8,49 +8,48 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Application.Middlewares
+namespace FireplaceApi.Application.Middlewares;
+
+public class ApiExceptionFieldMiddleware
 {
-    public class ApiExceptionFieldMiddleware
+    private readonly FieldDelegate _next;
+    private readonly ILogger<ApiExceptionFieldMiddleware> _logger;
+    private readonly ErrorOperator _errorOperator;
+
+    public ApiExceptionFieldMiddleware(FieldDelegate next,
+        ILogger<ApiExceptionFieldMiddleware> logger,
+        ErrorOperator errorOperator)
     {
-        private readonly FieldDelegate _next;
-        private readonly ILogger<ApiExceptionFieldMiddleware> _logger;
-        private readonly ErrorOperator _errorOperator;
+        _next = next;
+        _logger = logger;
+        _errorOperator = errorOperator;
+    }
 
-        public ApiExceptionFieldMiddleware(FieldDelegate next,
-            ILogger<ApiExceptionFieldMiddleware> logger,
-            ErrorOperator errorOperator)
+    public async Task InvokeAsync(IMiddlewareContext context)
+    {
+        if (!context.IsApiResolver())
         {
-            _next = next;
-            _logger = logger;
-            _errorOperator = errorOperator;
+            await _next(context);
+            return;
         }
-
-        public async Task InvokeAsync(IMiddlewareContext context)
+        var sw = Stopwatch.StartNew();
+        try
         {
-            if (!context.IsApiResolver())
-            {
-                await _next(context);
-                return;
-            }
-            var sw = Stopwatch.StartNew();
-            try
-            {
-                await _next(context);
-            }
-            catch (GraphQLException) { throw; }
-            catch (Exception ex)
-            {
-                var error = await _errorOperator.GetErrorAsync(ex);
-                var graphQLError = new Error(
-                    message: error.ClientMessage,
-                    code: error.Code.ToString(),
-                    extensions: new Dictionary<string, object>
-                    {
-                        ["type"] = error.Type.Name,
-                        ["field"] = error.Field.Name,
-                    });
-                throw new GraphQLException(graphQLError);
-            }
+            await _next(context);
+        }
+        catch (GraphQLException) { throw; }
+        catch (Exception ex)
+        {
+            var error = await _errorOperator.GetErrorAsync(ex);
+            var graphQLError = new Error(
+                message: error.ClientMessage,
+                code: error.Code.ToString(),
+                extensions: new Dictionary<string, object>
+                {
+                    ["type"] = error.Type.Name,
+                    ["field"] = error.Field.Name,
+                });
+            throw new GraphQLException(graphQLError);
         }
     }
 }

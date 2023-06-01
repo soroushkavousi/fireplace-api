@@ -7,24 +7,23 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FireplaceApi.Application.Controllers
+namespace FireplaceApi.Application.Controllers;
+
+public class GetErrorByCodeInputRouteParameters : IValidator
 {
-    public class GetErrorByCodeInputRouteParameters : IValidator
+    [Required]
+    [FromRoute(Name = "code")]
+    public int Code { get; set; }
+
+    [BindNever]
+    public ErrorIdentifier Identifier { get; set; }
+
+    public void Validate(IServiceProvider serviceProvider)
     {
-        [Required]
-        [FromRoute(Name = "code")]
-        public int Code { get; set; }
+        var applicationValidator = serviceProvider.GetService<ErrorValidator>();
+        var domainValidator = applicationValidator.DomainValidator;
 
-        [BindNever]
-        public ErrorIdentifier Identifier { get; set; }
-
-        public void Validate(IServiceProvider serviceProvider)
-        {
-            var applicationValidator = serviceProvider.GetService<ErrorValidator>();
-            var domainValidator = applicationValidator.DomainValidator;
-
-            domainValidator.ValidateErrorCodeFormat(Code);
-            Identifier = ErrorIdentifier.OfCode(Code);
-        }
+        domainValidator.ValidateErrorCodeFormat(Code);
+        Identifier = ErrorIdentifier.OfCode(Code);
     }
 }

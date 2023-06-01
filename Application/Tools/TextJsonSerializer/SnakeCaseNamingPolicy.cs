@@ -1,17 +1,16 @@
 ﻿using Newtonsoft.Json.Serialization;
 using System.Text.Json;
 
-namespace FireplaceApi.Application.Tools
+namespace FireplaceApi.Application.Tools;
+
+public class SnakeCaseNamingPolicy : JsonNamingPolicy
 {
-    public class SnakeCaseNamingPolicy : JsonNamingPolicy
+    private readonly SnakeCaseNamingStrategy _newtonsoftSnakeCaseNamingStrategy = new();
+
+    public static SnakeCaseNamingPolicy Instance { get; } = new SnakeCaseNamingPolicy();
+
+    public override string ConvertName(string name)
     {
-        private readonly SnakeCaseNamingStrategy _newtonsoftSnakeCaseNamingStrategy = new();
-
-        public static SnakeCaseNamingPolicy Instance { get; } = new SnakeCaseNamingPolicy();
-
-        public override string ConvertName(string name)
-        {
-            return _newtonsoftSnakeCaseNamingStrategy.GetPropertyName(name, false);
-        }
+        return _newtonsoftSnakeCaseNamingStrategy.GetPropertyName(name, false);
     }
 }

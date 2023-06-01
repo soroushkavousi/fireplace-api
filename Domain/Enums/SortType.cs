@@ -1,15 +1,14 @@
-﻿namespace FireplaceApi.Domain.Enums
-{
-    public enum SortType
-    {
-        TOP,
-        OLD,
-        NEW,
-    }
+﻿namespace FireplaceApi.Domain.Enums;
 
-    public enum CommunitySortType
-    {
-        OLD,
-        NEW,
-    }
+public enum SortType
+{
+    TOP,
+    OLD,
+    NEW,
+}
+
+public enum CommunitySortType
+{
+    OLD,
+    NEW,
 }

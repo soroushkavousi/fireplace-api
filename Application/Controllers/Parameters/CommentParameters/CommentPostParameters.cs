@@ -11,122 +11,121 @@ using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FireplaceApi.Application.Controllers
+namespace FireplaceApi.Application.Controllers;
+
+public class ReplyToPostInputRouteParameters : IValidator
 {
-    public class ReplyToPostInputRouteParameters : IValidator
+    [Required]
+    [FromRoute(Name = "id")]
+    public string PostEncodedId { get; set; }
+
+    [BindNever]
+    public ulong PostId { get; set; }
+
+    public void Validate(IServiceProvider serviceProvider)
     {
-        [Required]
-        [FromRoute(Name = "id")]
-        public string PostEncodedId { get; set; }
+        var applicationValidator = serviceProvider.GetService<CommentValidator>();
+        var domainValidator = applicationValidator.DomainValidator;
 
-        [BindNever]
-        public ulong PostId { get; set; }
-
-        public void Validate(IServiceProvider serviceProvider)
-        {
-            var applicationValidator = serviceProvider.GetService<CommentValidator>();
-            var domainValidator = applicationValidator.DomainValidator;
-
-            PostId = applicationValidator.ValidateEncodedIdFormat(PostEncodedId, FieldName.POST_ID).Value;
-        }
+        PostId = applicationValidator.ValidateEncodedIdFormat(PostEncodedId, FieldName.POST_ID).Value;
     }
+}
 
-    [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
-    public class ReplyToPostInputBodyParameters : IValidator
+[SwaggerSchemaFilter(typeof(TypeExampleProvider))]
+public class ReplyToPostInputBodyParameters : IValidator
+{
+    [Required]
+    public string Content { get; set; }
+
+    public static IOpenApiAny Example { get; } = new OpenApiObject
     {
-        [Required]
-        public string Content { get; set; }
+        [nameof(Content).ToSnakeCase()] = CommentDto.PureExample1[nameof(CommentDto.Content).ToSnakeCase()],
+    };
 
-        public static IOpenApiAny Example { get; } = new OpenApiObject
-        {
-            [nameof(Content).ToSnakeCase()] = CommentDto.PureExample1[nameof(CommentDto.Content).ToSnakeCase()],
-        };
+    public void Validate(IServiceProvider serviceProvider)
+    {
+        var applicationValidator = serviceProvider.GetService<CommentValidator>();
+        var domainValidator = applicationValidator.DomainValidator;
 
-        public void Validate(IServiceProvider serviceProvider)
-        {
-            var applicationValidator = serviceProvider.GetService<CommentValidator>();
-            var domainValidator = applicationValidator.DomainValidator;
-
-            applicationValidator.ValidateFieldIsNotMissing(Content, FieldName.COMMENT_CONTENT);
-            domainValidator.ValidateCommentContentFormat(Content);
-        }
+        applicationValidator.ValidateFieldIsNotMissing(Content, FieldName.COMMENT_CONTENT);
+        domainValidator.ValidateCommentContentFormat(Content);
     }
+}
 
 
-    public class ReplyToCommentInputRouteParameters : IValidator
+public class ReplyToCommentInputRouteParameters : IValidator
+{
+    [Required]
+    [FromRoute(Name = "id")]
+    public string ParentCommentEncodedId { get; set; }
+
+    [BindNever]
+    public ulong ParentCommentId { get; set; }
+
+    public void Validate(IServiceProvider serviceProvider)
     {
-        [Required]
-        [FromRoute(Name = "id")]
-        public string ParentCommentEncodedId { get; set; }
+        var applicationValidator = serviceProvider.GetService<CommentValidator>();
+        var domainValidator = applicationValidator.DomainValidator;
 
-        [BindNever]
-        public ulong ParentCommentId { get; set; }
-
-        public void Validate(IServiceProvider serviceProvider)
-        {
-            var applicationValidator = serviceProvider.GetService<CommentValidator>();
-            var domainValidator = applicationValidator.DomainValidator;
-
-            ParentCommentId = applicationValidator.ValidateEncodedIdFormat(ParentCommentEncodedId, FieldName.COMMENT_ID).Value;
-        }
+        ParentCommentId = applicationValidator.ValidateEncodedIdFormat(ParentCommentEncodedId, FieldName.COMMENT_ID).Value;
     }
+}
 
-    [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
-    public class ReplyToCommentInputBodyParameters : IValidator
+[SwaggerSchemaFilter(typeof(TypeExampleProvider))]
+public class ReplyToCommentInputBodyParameters : IValidator
+{
+    [Required]
+    public string Content { get; set; }
+
+    public static IOpenApiAny Example { get; } = new OpenApiObject
     {
-        [Required]
-        public string Content { get; set; }
+        [nameof(Content).ToSnakeCase()] = CommentDto.PureExample1[nameof(CommentDto.Content).ToSnakeCase()],
+    };
 
-        public static IOpenApiAny Example { get; } = new OpenApiObject
-        {
-            [nameof(Content).ToSnakeCase()] = CommentDto.PureExample1[nameof(CommentDto.Content).ToSnakeCase()],
-        };
+    public void Validate(IServiceProvider serviceProvider)
+    {
+        var applicationValidator = serviceProvider.GetService<CommentValidator>();
+        var domainValidator = applicationValidator.DomainValidator;
 
-        public void Validate(IServiceProvider serviceProvider)
-        {
-            var applicationValidator = serviceProvider.GetService<CommentValidator>();
-            var domainValidator = applicationValidator.DomainValidator;
-
-            applicationValidator.ValidateFieldIsNotMissing(Content, FieldName.COMMENT_CONTENT);
-            domainValidator.ValidateCommentContentFormat(Content);
-        }
+        applicationValidator.ValidateFieldIsNotMissing(Content, FieldName.COMMENT_CONTENT);
+        domainValidator.ValidateCommentContentFormat(Content);
     }
+}
 
-    public class VoteCommentInputRouteParameters : IValidator
+public class VoteCommentInputRouteParameters : IValidator
+{
+    [Required]
+    [FromRoute(Name = "id")]
+    public string EncodedId { get; set; }
+
+    [BindNever]
+    public ulong Id { get; set; }
+
+    public void Validate(IServiceProvider serviceProvider)
     {
-        [Required]
-        [FromRoute(Name = "id")]
-        public string EncodedId { get; set; }
+        var applicationValidator = serviceProvider.GetService<CommentValidator>();
+        var domainValidator = applicationValidator.DomainValidator;
 
-        [BindNever]
-        public ulong Id { get; set; }
-
-        public void Validate(IServiceProvider serviceProvider)
-        {
-            var applicationValidator = serviceProvider.GetService<CommentValidator>();
-            var domainValidator = applicationValidator.DomainValidator;
-
-            Id = applicationValidator.ValidateEncodedIdFormat(EncodedId, FieldName.COMMENT_ID).Value;
-        }
+        Id = applicationValidator.ValidateEncodedIdFormat(EncodedId, FieldName.COMMENT_ID).Value;
     }
+}
 
-    [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
-    public class VoteCommentInputBodyParameters : IValidator
+[SwaggerSchemaFilter(typeof(TypeExampleProvider))]
+public class VoteCommentInputBodyParameters : IValidator
+{
+    [Required]
+    public bool? IsUpvote { get; set; }
+
+    public static IOpenApiAny Example { get; } = new OpenApiObject
     {
-        [Required]
-        public bool? IsUpvote { get; set; }
+        [nameof(IsUpvote).ToSnakeCase()] = new OpenApiBoolean(true),
+    };
 
-        public static IOpenApiAny Example { get; } = new OpenApiObject
-        {
-            [nameof(IsUpvote).ToSnakeCase()] = new OpenApiBoolean(true),
-        };
+    public void Validate(IServiceProvider serviceProvider)
+    {
+        var applicationValidator = serviceProvider.GetService<CommentValidator>();
+        var domainValidator = applicationValidator.DomainValidator;
 
-        public void Validate(IServiceProvider serviceProvider)
-        {
-            var applicationValidator = serviceProvider.GetService<CommentValidator>();
-            var domainValidator = applicationValidator.DomainValidator;
-
-            applicationValidator.ValidateFieldIsNotMissing(IsUpvote, FieldName.IS_UPVOTE);
-        }
+        applicationValidator.ValidateFieldIsNotMissing(IsUpvote, FieldName.IS_UPVOTE);
     }
 }

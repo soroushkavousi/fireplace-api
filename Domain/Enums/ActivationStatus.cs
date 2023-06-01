@@ -1,9 +1,8 @@
-﻿namespace FireplaceApi.Domain.Enums
+﻿namespace FireplaceApi.Domain.Enums;
+
+public enum ActivationStatus
 {
-    public enum ActivationStatus
-    {
-        CREATED,
-        SENT,
-        COMPLETED,
-    }
+    CREATED,
+    SENT,
+    COMPLETED,
 }

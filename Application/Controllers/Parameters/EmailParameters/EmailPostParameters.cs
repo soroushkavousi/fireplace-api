@@ -9,39 +9,38 @@ using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FireplaceApi.Application.Controllers
+namespace FireplaceApi.Application.Controllers;
+
+[SwaggerSchemaFilter(typeof(TypeExampleProvider))]
+public class ActivateRequestingUserEmailInputBodyParameters : IValidator
 {
-    [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
-    public class ActivateRequestingUserEmailInputBodyParameters : IValidator
+    [Required]
+    public int? ActivationCode { get; set; }
+
+    public static IOpenApiAny Example { get; } = new OpenApiObject
     {
-        [Required]
-        public int? ActivationCode { get; set; }
+        [nameof(ActivationCode).ToSnakeCase()] = new OpenApiLong(11111),
+    };
 
-        public static IOpenApiAny Example { get; } = new OpenApiObject
-        {
-            [nameof(ActivationCode).ToSnakeCase()] = new OpenApiLong(11111),
-        };
+    public void Validate(IServiceProvider serviceProvider)
+    {
+        var applicationValidator = serviceProvider.GetService<EmailValidator>();
+        var domainValidator = applicationValidator.DomainValidator;
 
-        public void Validate(IServiceProvider serviceProvider)
-        {
-            var applicationValidator = serviceProvider.GetService<EmailValidator>();
-            var domainValidator = applicationValidator.DomainValidator;
-
-            applicationValidator.ValidateFieldIsNotMissing(ActivationCode, FieldName.ACTIVATION_CODE);
-            domainValidator.ValidateActivateCodeFormat(ActivationCode.Value);
-        }
+        applicationValidator.ValidateFieldIsNotMissing(ActivationCode, FieldName.ACTIVATION_CODE);
+        domainValidator.ValidateActivateCodeFormat(ActivationCode.Value);
     }
+}
 
-    [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
-    public class ResendActivationCodeAsyncInputBodyParameters : IValidator
+[SwaggerSchemaFilter(typeof(TypeExampleProvider))]
+public class ResendActivationCodeAsyncInputBodyParameters : IValidator
+{
+    public static IOpenApiAny Example { get; } = new OpenApiObject
     {
-        public static IOpenApiAny Example { get; } = new OpenApiObject
-        {
 
-        };
-        public void Validate(IServiceProvider serviceProvider)
-        {
+    };
+    public void Validate(IServiceProvider serviceProvider)
+    {
 
-        }
     }
 }

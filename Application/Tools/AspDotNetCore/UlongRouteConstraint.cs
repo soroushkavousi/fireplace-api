@@ -1,23 +1,22 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace FireplaceApi.Application.Tools
-{
-    public class UlongRouteConstraint : IRouteConstraint
-    {
-        public static string Name = "ulong";
+namespace FireplaceApi.Application.Tools;
 
-        public bool Match(HttpContext httpContext, IRouter route, string routeKey,
-            RouteValueDictionary values, RouteDirection routeDirection)
+public class UlongRouteConstraint : IRouteConstraint
+{
+    public static readonly string Name = "ulong";
+
+    public bool Match(HttpContext httpContext, IRouter route, string routeKey,
+        RouteValueDictionary values, RouteDirection routeDirection)
+    {
+        if (values.TryGetValue(routeKey, out object value))
         {
-            if (values.TryGetValue(routeKey, out object value))
+            if (ulong.TryParse(value.ToString(), out ulong ulongNumber))
             {
-                if (ulong.TryParse(value.ToString(), out ulong ulongNumber))
-                {
-                    return true;
-                }
+                return true;
             }
-            return false;
         }
+        return false;
     }
 }

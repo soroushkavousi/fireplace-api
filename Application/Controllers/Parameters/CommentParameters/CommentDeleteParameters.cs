@@ -7,41 +7,40 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FireplaceApi.Application.Controllers
+namespace FireplaceApi.Application.Controllers;
+
+public class DeleteCommentByIdInputRouteParameters : IValidator
 {
-    public class DeleteCommentByIdInputRouteParameters : IValidator
+    [Required]
+    [FromRoute(Name = "id")]
+    public string EncodedId { get; set; }
+
+    [BindNever]
+    public ulong Id { get; set; }
+
+    public void Validate(IServiceProvider serviceProvider)
     {
-        [Required]
-        [FromRoute(Name = "id")]
-        public string EncodedId { get; set; }
+        var applicationValidator = serviceProvider.GetService<CommentValidator>();
+        var domainValidator = applicationValidator.DomainValidator;
 
-        [BindNever]
-        public ulong Id { get; set; }
-
-        public void Validate(IServiceProvider serviceProvider)
-        {
-            var applicationValidator = serviceProvider.GetService<CommentValidator>();
-            var domainValidator = applicationValidator.DomainValidator;
-
-            Id = applicationValidator.ValidateEncodedIdFormat(EncodedId, FieldName.COMMENT_ID).Value;
-        }
+        Id = applicationValidator.ValidateEncodedIdFormat(EncodedId, FieldName.COMMENT_ID).Value;
     }
+}
 
-    public class DeleteVoteForCommentInputRouteParameters : IValidator
+public class DeleteVoteForCommentInputRouteParameters : IValidator
+{
+    [Required]
+    [FromRoute(Name = "id")]
+    public string EncodedId { get; set; }
+
+    [BindNever]
+    public ulong Id { get; set; }
+
+    public void Validate(IServiceProvider serviceProvider)
     {
-        [Required]
-        [FromRoute(Name = "id")]
-        public string EncodedId { get; set; }
+        var applicationValidator = serviceProvider.GetService<CommentValidator>();
+        var domainValidator = applicationValidator.DomainValidator;
 
-        [BindNever]
-        public ulong Id { get; set; }
-
-        public void Validate(IServiceProvider serviceProvider)
-        {
-            var applicationValidator = serviceProvider.GetService<CommentValidator>();
-            var domainValidator = applicationValidator.DomainValidator;
-
-            Id = applicationValidator.ValidateEncodedIdFormat(EncodedId, FieldName.COMMENT_ID).Value;
-        }
+        Id = applicationValidator.ValidateEncodedIdFormat(EncodedId, FieldName.COMMENT_ID).Value;
     }
 }
