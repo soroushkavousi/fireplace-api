@@ -21,15 +21,12 @@ public class CommunityRepository : ICommunityRepository
     private readonly ILogger<CommunityRepository> _logger;
     private readonly ProjectDbContext _dbContext;
     private readonly DbSet<CommunityEntity> _communityEntities;
-    private readonly CommunityConverter _communityConverter;
 
-    public CommunityRepository(ILogger<CommunityRepository> logger,
-        ProjectDbContext dbContext, CommunityConverter communityConverter)
+    public CommunityRepository(ILogger<CommunityRepository> logger, ProjectDbContext dbContext)
     {
         _logger = logger;
         _dbContext = dbContext;
         _communityEntities = dbContext.CommunityEntities;
-        _communityConverter = communityConverter;
     }
 
     public async Task<List<Community>> ListCommunitiesAsync(string search, CommunitySortType sort)
@@ -48,7 +45,7 @@ public class CommunityRepository : ICommunityRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { communityEntities = communityEntities.Select(e => e.Id) });
-        return communityEntities.Select(_communityConverter.ConvertToModel).ToList();
+        return communityEntities.Select(CommunityConverter.ToModel).ToList();
     }
 
     public async Task<List<Community>> ListCommunitiesByIdsAsync(List<ulong> Ids)
@@ -67,7 +64,7 @@ public class CommunityRepository : ICommunityRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { communityEntities = communityEntities.Select(e => e.Id) });
-        return communityEntities.Select(_communityConverter.ConvertToModel).ToList();
+        return communityEntities.Select(CommunityConverter.ToModel).ToList();
     }
 
     public async Task<Community> GetCommunityByIdentifierAsync(CommunityIdentifier identifier,
@@ -87,7 +84,7 @@ public class CommunityRepository : ICommunityRepository
             .SingleOrDefaultAsync();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntity });
-        return _communityConverter.ConvertToModel(communityEntity);
+        return communityEntity.ToModel();
     }
 
     public async Task<string> GetNameByIdAsync(ulong id)
@@ -130,14 +127,14 @@ public class CommunityRepository : ICommunityRepository
         _dbContext.DetachAllEntries();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntity });
-        return _communityConverter.ConvertToModel(communityEntity);
+        return communityEntity.ToModel();
     }
 
     public async Task<Community> UpdateCommunityAsync(Community community)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { community });
         var sw = Stopwatch.StartNew();
-        var communityEntity = _communityConverter.ConvertToEntity(community);
+        var communityEntity = community.ToEntity();
         _communityEntities.Update(communityEntity);
         try
         {
@@ -151,7 +148,7 @@ public class CommunityRepository : ICommunityRepository
         }
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntity });
-        return _communityConverter.ConvertToModel(communityEntity);
+        return communityEntity.ToModel();
     }
 
     public async Task UpdateCommunityNameAsync(ulong id, string newCommunityName)

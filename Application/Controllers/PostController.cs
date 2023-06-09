@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Application.Converters;
+using FireplaceApi.Application.Dtos;
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Services;
@@ -7,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Application.Controllers;
@@ -18,16 +18,10 @@ namespace FireplaceApi.Application.Controllers;
 [Produces("application/json")]
 public class PostController : ApiController
 {
-    private readonly ILogger<PostController> _logger;
-    private readonly PostConverter _postConverter;
     private readonly PostService _postService;
 
-    public PostController(ILogger<PostController> logger,
-        PostConverter postConverter,
-        PostService postService)
+    public PostController(PostService postService)
     {
-        _logger = logger;
-        _postConverter = postConverter;
         _postService = postService;
     }
 
@@ -41,12 +35,12 @@ public class PostController : ApiController
     [ProducesResponseType(typeof(QueryResultDto<PostDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<QueryResultDto<PostDto>>> ListCommunityPostsAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] ListCommunityPostsInputRouteParameters inputRouteParameters,
-        [FromQuery] ListCommunityPostsInputQueryParameters inputQueryParameters)
+        [FromRoute] ListCommunityPostsInputRouteDto inputRouteDto,
+        [FromQuery] ListCommunityPostsInputQueryDto inputQueryDto)
     {
         var queryResult = await _postService.ListCommunityPostsAsync(
-            inputRouteParameters.CommunityIdentifier, inputQueryParameters.Sort, requestingUser);
-        var queryResultDto = _postConverter.ConvertToDto(queryResult);
+            inputRouteDto.CommunityIdentifier, inputQueryDto.Sort, requestingUser);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 
@@ -61,20 +55,20 @@ public class PostController : ApiController
     [ProducesResponseType(typeof(QueryResultDto<PostDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<QueryResultDto<PostDto>>> ListPostsAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromQuery] ListPostsInputQueryParameters inputQueryParameters)
+        [FromQuery] ListPostsInputQueryDto inputQueryDto)
     {
         var queryResult = new QueryResult<Post>(null, null);
-        if (!inputQueryParameters.Ids.IsNullOrEmpty())
+        if (!inputQueryDto.Ids.IsNullOrEmpty())
         {
             queryResult.Items = await _postService.ListPostsByIdsAsync(
-                inputQueryParameters.Ids, requestingUser);
+                inputQueryDto.Ids, requestingUser);
         }
         else
         {
-            queryResult = await _postService.ListPostsAsync(inputQueryParameters.Search,
-                inputQueryParameters.Sort, requestingUser);
+            queryResult = await _postService.ListPostsAsync(inputQueryDto.Search,
+                inputQueryDto.Sort, requestingUser);
         }
-        var queryResultDto = _postConverter.ConvertToDto(queryResult);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 
@@ -87,11 +81,11 @@ public class PostController : ApiController
     [ProducesResponseType(typeof(QueryResultDto<PostDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<QueryResultDto<PostDto>>> ListSelfPostsAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromQuery] ListSelfPostsInputQueryParameters inputQueryParameters)
+        [FromQuery] ListSelfPostsInputQueryDto inputQueryDto)
     {
         var queryResult = await _postService.ListSelfPostsAsync(requestingUser,
-            inputQueryParameters.Sort);
-        var queryResultDto = _postConverter.ConvertToDto(queryResult);
+            inputQueryDto.Sort);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 
@@ -105,13 +99,13 @@ public class PostController : ApiController
     [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<PostDto>> GetPostByIdAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] GetPostByIdInputRouteParameters inputRouteParameters,
-        [FromQuery] GetPostByIdInputQueryParameters inputQueryParameters)
+        [FromRoute] GetPostByIdInputRouteDto inputRouteDto,
+        [FromQuery] GetPostByIdInputQueryDto inputQueryDto)
     {
-        var post = await _postService.GetPostByIdAsync(inputRouteParameters.Id,
-            inputQueryParameters.IncludeAuthor, inputQueryParameters.IncludeCommunity,
+        var post = await _postService.GetPostByIdAsync(inputRouteDto.Id,
+            inputQueryDto.IncludeAuthor, inputQueryDto.IncludeCommunity,
             requestingUser);
-        var postDto = _postConverter.ConvertToDto(post);
+        var postDto = post.ToDto();
         return postDto;
     }
 
@@ -125,12 +119,12 @@ public class PostController : ApiController
     [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<PostDto>> CreatePostAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] CreatePostInputRouteParameters inputRouteParameters,
-        [FromBody] CreatePostInputBodyParameters inputBodyParameters)
+        [FromRoute] CreatePostInputRouteDto inputRouteDto,
+        [FromBody] CreatePostInputBodyDto inputBodyDto)
     {
         var post = await _postService.CreatePostAsync(requestingUser,
-            inputRouteParameters.CommunityIdentifier, inputBodyParameters.Content);
-        var postDto = _postConverter.ConvertToDto(post);
+            inputRouteDto.CommunityIdentifier, inputBodyDto.Content);
+        var postDto = post.ToDto();
         return postDto;
     }
 
@@ -144,12 +138,12 @@ public class PostController : ApiController
     [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<PostDto>> VotePostAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] VotePostInputRouteParameters inputRouteParameters,
-        [FromBody] VotePostInputBodyParameters inputBodyParameters)
+        [FromRoute] VotePostInputRouteDto inputRouteDto,
+        [FromBody] VotePostInputBodyDto inputBodyDto)
     {
         var post = await _postService.VotePostAsync(
-            requestingUser, inputRouteParameters.Id, inputBodyParameters.IsUpvote.Value);
-        var postDto = _postConverter.ConvertToDto(post);
+            requestingUser, inputRouteDto.Id, inputBodyDto.IsUpvote.Value);
+        var postDto = post.ToDto();
         return postDto;
     }
 
@@ -163,11 +157,11 @@ public class PostController : ApiController
     [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<PostDto>> ToggleVoteForPostAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] ToggleVoteForPostInputRouteParameters inputRouteParameters)
+        [FromRoute] ToggleVoteForPostInputRouteDto inputRouteDto)
     {
         var post = await _postService.ToggleVoteForPostAsync(
-            requestingUser, inputRouteParameters.Id);
-        var postDto = _postConverter.ConvertToDto(post);
+            requestingUser, inputRouteDto.Id);
+        var postDto = post.ToDto();
         return postDto;
     }
 
@@ -181,11 +175,11 @@ public class PostController : ApiController
     [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<PostDto>> DeleteVoteForPostAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] DeleteVoteForPostInputRouteParameters inputRouteParameters)
+        [FromRoute] DeleteVoteForPostInputRouteDto inputRouteDto)
     {
         var post = await _postService.DeleteVoteForPostAsync(
-            requestingUser, inputRouteParameters.Id);
-        var postDto = _postConverter.ConvertToDto(post);
+            requestingUser, inputRouteDto.Id);
+        var postDto = post.ToDto();
         return postDto;
     }
 
@@ -199,12 +193,12 @@ public class PostController : ApiController
     [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<PostDto>> PatchPostByIdAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] PatchPostByIdInputRouteParameters inputRouteParameters,
-        [FromBody] PatchPostInputBodyParameters inputBodyParameters)
+        [FromRoute] PatchPostByIdInputRouteDto inputRouteDto,
+        [FromBody] PatchPostInputBodyDto inputBodyDto)
     {
         var post = await _postService.PatchPostByIdAsync(requestingUser,
-            inputRouteParameters.Id, inputBodyParameters.Content);
-        var postDto = _postConverter.ConvertToDto(post);
+            inputRouteDto.Id, inputBodyDto.Content);
+        var postDto = post.ToDto();
         return postDto;
     }
 
@@ -217,10 +211,10 @@ public class PostController : ApiController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> DeletePostByIdAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] DeletePostByIdInputRouteParameters inputRouteParameters)
+        [FromRoute] DeletePostByIdInputRouteDto inputRouteDto)
     {
         await _postService.DeletePostByIdAsync(requestingUser,
-            inputRouteParameters.Id);
+            inputRouteDto.Id);
         return Ok();
     }
 }

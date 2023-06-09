@@ -4,16 +4,16 @@ using System.Linq;
 
 namespace FireplaceApi.Application.Attributes;
 
-public class InputCookieParametersInjectorAttribute : ActionFilterAttribute
+public class InputCookieDtoInjectorAttribute : ActionFilterAttribute
 {
-    private readonly string _key = "inputCookieParameters";
+    private readonly string _key = "inputCookieDto";
 
     public override void OnActionExecuting(ActionExecutingContext context)
     {
-        var doesActionHaveInputCookieParameters = context.ActionDescriptor.Parameters
+        var doesActionHaveInputCookieDto = context.ActionDescriptor.Parameters
             .Any(parameterDescriptor => parameterDescriptor.Name == _key);
-        if (doesActionHaveInputCookieParameters == false)
+        if (doesActionHaveInputCookieDto == false)
             return;
-        context.ActionArguments[_key] = context.HttpContext.GetInputCookieParameters();
+        context.ActionArguments[_key] = context.HttpContext.GetInputCookieDto();
     }
 }

@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Application.Controllers;
-using FireplaceApi.Application.Converters;
+﻿using FireplaceApi.Application.Converters;
+using FireplaceApi.Application.Dtos;
 using FireplaceApi.Application.Tool;
 using FireplaceApi.Application.Validators;
 using FireplaceApi.Domain.Enums;
@@ -20,13 +20,12 @@ public class CommentQueryResolvers
     public async Task<CommentDto> GetCommentAsync(
         [Service(ServiceKind.Resolver)] CommentService commentService,
         [Service(ServiceKind.Resolver)] CommentValidator commentValidator,
-        [Service] CommentConverter commentConverter,
         [User] User requestingUser,
         [GraphQLNonNullType] string id)
     {
         var ulongId = commentValidator.ValidateEncodedIdFormat(id, FieldName.COMMENT_ID).Value;
         var comment = await commentService.GetCommentByIdAsync(ulongId, false, true, requestingUser);
-        var commentDto = commentConverter.ConvertToDto(comment);
+        var commentDto = comment.ToDto();
         return commentDto;
     }
 }
@@ -38,12 +37,11 @@ public class PostCommentsQueryResolvers
     public async Task<QueryResultDto<CommentDto>> GetCommentsAsync(
         [Service(ServiceKind.Resolver)] CommentService commentService,
         [Service(ServiceKind.Resolver)] CommentValidator commentValidator,
-        [Service] CommentConverter commentConverter,
         [User] User requestingUser, [Parent] PostDto post,
         SortType? sort = null)
     {
         var queryResult = await commentService.ListPostCommentsAsync(post.Id.IdDecode(), sort, requestingUser);
-        var queryResultDto = commentConverter.ConvertToDto(queryResult);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 }
@@ -55,12 +53,11 @@ public class UserCommentsQueryResolvers
     public async Task<QueryResultDto<CommentDto>> GetCommentsAsync(
         [Service(ServiceKind.Resolver)] CommentService commentService,
         [Service(ServiceKind.Resolver)] CommentValidator commentValidator,
-        [Service] CommentConverter commentConverter,
         [User] User requestingUser, [Parent] UserDto user,
         SortType? sort = null)
     {
         var queryResult = await commentService.ListSelfCommentsAsync(requestingUser, sort);
-        var queryResultDto = commentConverter.ConvertToDto(queryResult);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 }

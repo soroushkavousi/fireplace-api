@@ -8,9 +8,9 @@ namespace FireplaceApi.Application.Controllers;
 
 public class ApiController : ControllerBase
 {
-    protected void SetOutputHeaderParameters(IOutputHeaderParameters outputHeaderParameters)
+    protected void SetOutputHeaderDto(IOutputHeaderDto outputHeaderDto)
     {
-        var headerDictionary = outputHeaderParameters.GetHeaderDictionary();
+        var headerDictionary = outputHeaderDto.GetHeaderDictionary();
         if (headerDictionary == null || headerDictionary.Count == 0)
             return;
 
@@ -20,9 +20,9 @@ public class ApiController : ControllerBase
         }
     }
 
-    protected void SetOutputCookieParameters(IOutputCookieParameters outputCookieParameters)
+    protected void SetOutputCookieDto(IOutputCookieDto outputCookieDto)
     {
-        var cookieCollection = outputCookieParameters.GetCookieCollection();
+        var cookieCollection = outputCookieDto.GetCookieCollection();
         if (cookieCollection == null || cookieCollection.Count == 0)
             return;
 

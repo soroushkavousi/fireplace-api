@@ -1,23 +1,12 @@
 ﻿using FireplaceApi.Domain.Models;
 using FireplaceApi.Infrastructure.Entities;
 using FireplaceApi.Infrastructure.Enums;
-using Microsoft.Extensions.Logging;
-using System;
 
 namespace FireplaceApi.Infrastructure.Converters;
 
-public class ErrorConverter
+public static class ErrorConverter
 {
-    private readonly ILogger<ErrorConverter> _logger;
-    private readonly IServiceProvider _serviceProvider;
-
-    public ErrorConverter(ILogger<ErrorConverter> logger, IServiceProvider serviceProvider)
-    {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
-    }
-
-    public ErrorEntity ConvertToEntity(Error error)
+    public static ErrorEntity ToEntity(this Error error)
     {
         if (error == null)
             return null;
@@ -29,7 +18,7 @@ public class ErrorConverter
         return errorEntity;
     }
 
-    public Error ConvertToModel(ErrorEntity errorEntity)
+    public static Error ToModel(this ErrorEntity errorEntity)
     {
         if (errorEntity == null)
             return null;

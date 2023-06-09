@@ -22,15 +22,13 @@ public class UserRepository : IUserRepository
     private readonly ILogger<UserRepository> _logger;
     private readonly ProjectDbContext _dbContext;
     private readonly DbSet<UserEntity> _userEntities;
-    private readonly UserConverter _userConverter;
 
     public UserRepository(ILogger<UserRepository> logger,
-                ProjectDbContext dbContext, UserConverter userConverter)
+        ProjectDbContext dbContext)
     {
         _logger = logger;
         _dbContext = dbContext;
         _userEntities = dbContext.UserEntities;
-        _userConverter = userConverter;
     }
 
     public async Task<List<User>> ListUsersAsync(
@@ -52,7 +50,7 @@ public class UserRepository : IUserRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { userEntities = userEntities.Select(e => e.Id) });
-        return userEntities.Select(_userConverter.ConvertToModel).ToList();
+        return userEntities.Select(UserConverter.ToModel).ToList();
     }
 
     public async Task<User> GetUserByIdentifierAsync(UserIdentifier identifier,
@@ -84,7 +82,7 @@ public class UserRepository : IUserRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { userEntity });
-        return _userConverter.ConvertToModel(userEntity);
+        return userEntity.ToModel();
     }
 
     public async Task<string> GetUsernameByIdAsync(ulong id)
@@ -140,14 +138,14 @@ public class UserRepository : IUserRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { userEntity });
-        return _userConverter.ConvertToModel(userEntity);
+        return userEntity.ToModel();
     }
 
     public async Task<User> UpdateUserAsync(User user)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { user });
         var sw = Stopwatch.StartNew();
-        var userEntity = _userConverter.ConvertToEntity(user);
+        var userEntity = user.ToEntity();
         _userEntities.Update(userEntity);
         try
         {
@@ -161,7 +159,7 @@ public class UserRepository : IUserRepository
         }
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { userEntity });
-        return _userConverter.ConvertToModel(userEntity);
+        return userEntity.ToModel();
     }
 
     public async Task UpdateUsernameAsync(ulong id, string newUsername)

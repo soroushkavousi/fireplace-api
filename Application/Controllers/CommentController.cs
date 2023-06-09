@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Application.Converters;
+using FireplaceApi.Application.Dtos;
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Services;
@@ -7,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Application.Controllers;
@@ -18,16 +18,10 @@ namespace FireplaceApi.Application.Controllers;
 [Produces("application/json")]
 public class CommentController : ApiController
 {
-    private readonly ILogger<CommentController> _logger;
-    private readonly CommentConverter _commentConverter;
     private readonly CommentService _commentService;
 
-    public CommentController(ILogger<CommentController> logger,
-        CommentConverter commentConverter,
-        CommentService commentService)
+    public CommentController(CommentService commentService)
     {
-        _logger = logger;
-        _commentConverter = commentConverter;
         _commentService = commentService;
     }
 
@@ -41,12 +35,12 @@ public class CommentController : ApiController
     [ProducesResponseType(typeof(QueryResultDto<CommentDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<QueryResultDto<CommentDto>>> ListPostCommentsAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] ListPostCommentsInputRouteParameters inputRouteParameters,
-        [FromQuery] ListPostCommentsInputQueryParameters inputQueryParameters)
+        [FromRoute] ListPostCommentsInputRouteDto inputRouteDto,
+        [FromQuery] ListPostCommentsInputQueryDto inputQueryDto)
     {
         var queryResult = await _commentService.ListPostCommentsAsync(
-            inputRouteParameters.PostId, inputQueryParameters.Sort, requestingUser);
-        var queryResultDto = _commentConverter.ConvertToDto(queryResult);
+            inputRouteDto.PostId, inputQueryDto.Sort, requestingUser);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 
@@ -60,16 +54,16 @@ public class CommentController : ApiController
     [ProducesResponseType(typeof(QueryResultDto<CommentDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<QueryResultDto<CommentDto>>> ListCommentsAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromQuery] ListCommentsInputQueryParameters inputQueryParameters)
+        [FromQuery] ListCommentsInputQueryDto inputQueryDto)
     {
         var queryResult = new QueryResult<Comment>(null, null);
-        if (!inputQueryParameters.EncodedIds.IsNullOrEmpty())
+        if (!inputQueryDto.EncodedIds.IsNullOrEmpty())
         {
             queryResult.Items = await _commentService.ListCommentsByIdsAsync(
-                inputQueryParameters.Ids, inputQueryParameters.Sort, requestingUser);
+                inputQueryDto.Ids, inputQueryDto.Sort, requestingUser);
         }
 
-        var queryResultDto = _commentConverter.ConvertToDto(queryResult);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 
@@ -82,11 +76,11 @@ public class CommentController : ApiController
     [ProducesResponseType(typeof(QueryResultDto<CommentDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<QueryResultDto<CommentDto>>> ListSelfCommentsAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromQuery] ListSelfCommentsInputQueryParameters inputQueryParameters)
+        [FromQuery] ListSelfCommentsInputQueryDto inputQueryDto)
     {
         var queryResult = await _commentService.ListSelfCommentsAsync(requestingUser,
-            inputQueryParameters.Sort);
-        var queryResultDto = _commentConverter.ConvertToDto(queryResult);
+            inputQueryDto.Sort);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 
@@ -100,12 +94,12 @@ public class CommentController : ApiController
     [ProducesResponseType(typeof(QueryResultDto<CommentDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<QueryResultDto<CommentDto>>> ListChildCommentsAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] ListChildCommentsInputRouteParameters inputRouteParameters,
-        [FromQuery] ListChildCommentsInputQueryParameters inputQueryParameters)
+        [FromRoute] ListChildCommentsInputRouteDto inputRouteDto,
+        [FromQuery] ListChildCommentsInputQueryDto inputQueryDto)
     {
         var queryResult = await _commentService.ListChildCommentsAsync(
-            inputRouteParameters.ParentId, inputQueryParameters.Sort, requestingUser);
-        var queryResultDto = _commentConverter.ConvertToDto(queryResult);
+            inputRouteDto.ParentId, inputQueryDto.Sort, requestingUser);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 
@@ -119,13 +113,13 @@ public class CommentController : ApiController
     [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<CommentDto>> GetCommentByIdAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] GetCommentByIdInputRouteParameters inputRouteParameters,
-        [FromQuery] GetCommentInputQueryParameters inputQueryParameters)
+        [FromRoute] GetCommentByIdInputRouteDto inputRouteDto,
+        [FromQuery] GetCommentInputQueryDto inputQueryDto)
     {
-        var comment = await _commentService.GetCommentByIdAsync(inputRouteParameters.Id,
-                inputQueryParameters.IncludeAuthor, inputQueryParameters.IncludePost,
+        var comment = await _commentService.GetCommentByIdAsync(inputRouteDto.Id,
+                inputQueryDto.IncludeAuthor, inputQueryDto.IncludePost,
                 requestingUser);
-        var commentDto = _commentConverter.ConvertToDto(comment);
+        var commentDto = comment.ToDto();
         return commentDto;
     }
 
@@ -139,13 +133,13 @@ public class CommentController : ApiController
     [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<CommentDto>> ReplyToPostAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] ReplyToPostInputRouteParameters inputRouteParameters,
-        [FromBody] ReplyToPostInputBodyParameters inputBodyParameters)
+        [FromRoute] ReplyToPostInputRouteDto inputRouteDto,
+        [FromBody] ReplyToPostInputBodyDto inputBodyDto)
     {
         var comment = await _commentService.ReplyToPostAsync(
-            requestingUser, inputRouteParameters.PostId,
-            inputBodyParameters.Content);
-        var commentDto = _commentConverter.ConvertToDto(comment);
+            requestingUser, inputRouteDto.PostId,
+            inputBodyDto.Content);
+        var commentDto = comment.ToDto();
         return commentDto;
     }
 
@@ -159,13 +153,13 @@ public class CommentController : ApiController
     [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<CommentDto>> ReplyToCommentAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] ReplyToCommentInputRouteParameters inputRouteParameters,
-        [FromBody] ReplyToCommentInputBodyParameters inputBodyParameters)
+        [FromRoute] ReplyToCommentInputRouteDto inputRouteDto,
+        [FromBody] ReplyToCommentInputBodyDto inputBodyDto)
     {
         var comment = await _commentService.ReplyToCommentAsync(
-            requestingUser, inputRouteParameters.ParentCommentId,
-            inputBodyParameters.Content);
-        var commentDto = _commentConverter.ConvertToDto(comment);
+            requestingUser, inputRouteDto.ParentCommentId,
+            inputBodyDto.Content);
+        var commentDto = comment.ToDto();
         return commentDto;
     }
 
@@ -179,12 +173,12 @@ public class CommentController : ApiController
     [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<CommentDto>> VoteCommentAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] VoteCommentInputRouteParameters inputRouteParameters,
-        [FromBody] VoteCommentInputBodyParameters inputBodyParameters)
+        [FromRoute] VoteCommentInputRouteDto inputRouteDto,
+        [FromBody] VoteCommentInputBodyDto inputBodyDto)
     {
         var comment = await _commentService.VoteCommentAsync(
-            requestingUser, inputRouteParameters.Id, inputBodyParameters.IsUpvote);
-        var commentDto = _commentConverter.ConvertToDto(comment);
+            requestingUser, inputRouteDto.Id, inputBodyDto.IsUpvote);
+        var commentDto = comment.ToDto();
         return commentDto;
     }
 
@@ -198,11 +192,11 @@ public class CommentController : ApiController
     [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<CommentDto>> ToggleVoteForCommentAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] ToggleVoteForCommentInputRouteParameters inputRouteParameters)
+        [FromRoute] ToggleVoteForCommentInputRouteDto inputRouteDto)
     {
         var comment = await _commentService.ToggleVoteForCommentAsync(
-            requestingUser, inputRouteParameters.Id);
-        var commentDto = _commentConverter.ConvertToDto(comment);
+            requestingUser, inputRouteDto.Id);
+        var commentDto = comment.ToDto();
         return commentDto;
     }
 
@@ -216,11 +210,11 @@ public class CommentController : ApiController
     [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<CommentDto>> DeleteVoteForCommentAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] DeleteVoteForCommentInputRouteParameters inputRouteParameters)
+        [FromRoute] DeleteVoteForCommentInputRouteDto inputRouteDto)
     {
         var comment = await _commentService.DeleteVoteForCommentAsync(
-            requestingUser, inputRouteParameters.Id);
-        var commentDto = _commentConverter.ConvertToDto(comment);
+            requestingUser, inputRouteDto.Id);
+        var commentDto = comment.ToDto();
         return commentDto;
     }
 
@@ -234,12 +228,12 @@ public class CommentController : ApiController
     [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<CommentDto>> PatchCommentByIdAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] PatchCommentByIdInputRouteParameters inputRouteParameters,
-        [FromBody] PatchCommentInputBodyParameters inputBodyParameters)
+        [FromRoute] PatchCommentByIdInputRouteDto inputRouteDto,
+        [FromBody] PatchCommentInputBodyDto inputBodyDto)
     {
         var comment = await _commentService.PatchCommentByIdAsync(requestingUser,
-            inputRouteParameters.Id, inputBodyParameters.Content);
-        var commentDto = _commentConverter.ConvertToDto(comment);
+            inputRouteDto.Id, inputBodyDto.Content);
+        var commentDto = comment.ToDto();
         return commentDto;
     }
 
@@ -252,10 +246,10 @@ public class CommentController : ApiController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> DeleteCommentByIdAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] DeleteCommentByIdInputRouteParameters inputRouteParameters)
+        [FromRoute] DeleteCommentByIdInputRouteDto inputRouteDto)
     {
         await _commentService.DeleteCommentByIdAsync(requestingUser,
-            inputRouteParameters.Id);
+            inputRouteDto.Id);
         return Ok();
     }
 }

@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Application.Controllers;
-using FireplaceApi.Application.Converters;
+﻿using FireplaceApi.Application.Converters;
+using FireplaceApi.Application.Dtos;
 using FireplaceApi.Application.Tool;
 using FireplaceApi.Application.Validators;
 using FireplaceApi.Domain.Enums;
@@ -21,11 +21,11 @@ public class PostQueryResolvers
     public async Task<QueryResultDto<PostDto>> GetPostsAsync(
         [Service(ServiceKind.Resolver)] PostService postService,
         [Service(ServiceKind.Resolver)] PostValidator postValidator,
-        [Service] PostConverter postConverter, [User] User requestingUser,
-        [GraphQLNonNullType] string search, SortType? sort = null)
+        [User] User requestingUser, [GraphQLNonNullType] string search,
+        SortType? sort = null)
     {
         var queryResult = await postService.ListPostsAsync(search, sort, requestingUser);
-        var queryResultDto = postConverter.ConvertToDto(queryResult);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 
@@ -33,12 +33,11 @@ public class PostQueryResolvers
     public async Task<PostDto> GetPostAsync(
         [Service(ServiceKind.Resolver)] PostService postService,
         [Service(ServiceKind.Resolver)] PostValidator postValidator,
-        [Service] PostConverter postConverter, [User] User requestingUser,
-        [GraphQLNonNullType] string id)
+        [User] User requestingUser, [GraphQLNonNullType] string id)
     {
         var ulongId = postValidator.ValidateEncodedIdFormat(id, FieldName.POST_ID).Value;
         var post = await postService.GetPostByIdAsync(ulongId, false, false, requestingUser);
-        var postDto = postConverter.ConvertToDto(post);
+        var postDto = post.ToDto();
         return postDto;
     }
 }
@@ -50,12 +49,12 @@ public class CommunityPostsQueryResolvers
     public async Task<QueryResultDto<PostDto>> GetPostsAsync(
         [Service(ServiceKind.Resolver)] PostService postService,
         [Service(ServiceKind.Resolver)] PostValidator postValidator,
-        [Service] PostConverter postConverter, [User] User requestingUser,
-        [Parent] CommunityDto community, SortType? sort = null)
+        [User] User requestingUser, [Parent] CommunityDto community,
+        SortType? sort = null)
     {
         var communityIdentifier = CommunityIdentifier.OfId(community.Id.IdDecode());
         var queryResult = await postService.ListCommunityPostsAsync(communityIdentifier, sort, requestingUser);
-        var queryResultDto = postConverter.ConvertToDto(queryResult);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 }
@@ -67,11 +66,10 @@ public class CommentPostQueryResolvers
     public async Task<PostDto> GetPostAsync(
         [Service(ServiceKind.Resolver)] PostService postService,
         [Service(ServiceKind.Resolver)] PostValidator postValidator,
-        [Service] PostConverter postConverter, [User] User requestingUser,
-        [Parent] CommentDto comment)
+        [User] User requestingUser, [Parent] CommentDto comment)
     {
         var post = await postService.GetPostByIdAsync(comment.PostId.IdDecode(), false, false, requestingUser);
-        var postDto = postConverter.ConvertToDto(post);
+        var postDto = post.ToDto();
         return postDto;
     }
 }
@@ -83,12 +81,11 @@ public class UserPostsQueryResolvers
     public async Task<QueryResultDto<PostDto>> GetPostsAsync(
         [Service(ServiceKind.Resolver)] PostService postService,
         [Service(ServiceKind.Resolver)] PostValidator postValidator,
-        [Service] PostConverter postConverter,
         [User] User requestingUser, [Parent] UserDto user,
         SortType? sort = null)
     {
         var queryResult = await postService.ListSelfPostsAsync(requestingUser, sort);
-        var queryResultDto = postConverter.ConvertToDto(queryResult);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 }

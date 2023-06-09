@@ -3,47 +3,35 @@ using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.ValueObjects;
 using FireplaceApi.Infrastructure.Entities;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace FireplaceApi.Infrastructure.Converters;
 
-public class UserConverter
+public static class UserConverter
 {
-    private readonly ILogger<UserConverter> _logger;
-    private readonly IServiceProvider _serviceProvider;
-
-    public UserConverter(ILogger<UserConverter> logger, IServiceProvider serviceProvider)
-    {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
-    }
-
-    public UserEntity ConvertToEntity(User user)
+    public static UserEntity ToEntity(this User user)
     {
         if (user == null)
             return null;
 
         EmailEntity emailEntity = null;
         if (user.Email != null)
-            emailEntity = _serviceProvider.GetService<EmailConverter>().ConvertToEntity(user.Email.PureCopy());
+            emailEntity = user.Email.PureCopy().ToEntity();
 
         GoogleUserEntity googleUserEntity = null;
         if (user.GoogleUser != null)
-            googleUserEntity = _serviceProvider.GetService<GoogleUserConverter>().ConvertToEntity(user.GoogleUser.PureCopy());
+            googleUserEntity = user.GoogleUser.PureCopy().ToEntity();
 
         List<AccessTokenEntity> accessTokenEntities = null;
         if (user.AccessTokens != null && user.AccessTokens.Count != 0)
             accessTokenEntities = user.AccessTokens.Select(
-                accessToken => _serviceProvider.GetService<AccessTokenConverter>().ConvertToEntity(accessToken.PureCopy())).ToList();
+                accessToken => accessToken.PureCopy().ToEntity()).ToList();
 
         List<SessionEntity> sessionEntities = null;
         if (user.Sessions != null && user.Sessions.Count != 0)
             sessionEntities = user.Sessions.Select(
-                session => _serviceProvider.GetService<SessionConverter>().ConvertToEntity(session.PureCopy())).ToList();
+                session => session.PureCopy().ToEntity()).ToList();
 
         var userEntity = new UserEntity(user.Id, user.Username, user.State.ToString(),
             user.CreationDate, user.DisplayName, user.About, user.AvatarUrl, user.BannerUrl,
@@ -53,28 +41,28 @@ public class UserConverter
         return userEntity;
     }
 
-    public User ConvertToModel(UserEntity userEntity)
+    public static User ToModel(this UserEntity userEntity)
     {
         if (userEntity == null)
             return null;
 
         Email email = null;
         if (userEntity.EmailEntity != null)
-            email = _serviceProvider.GetService<EmailConverter>().ConvertToModel(userEntity.EmailEntity.PureCopy());
+            email = userEntity.EmailEntity.PureCopy().ToModel();
 
         GoogleUser googleUser = null;
         if (userEntity.GoogleUserEntity != null)
-            googleUser = _serviceProvider.GetService<GoogleUserConverter>().ConvertToModel(userEntity.GoogleUserEntity.PureCopy());
+            googleUser = userEntity.GoogleUserEntity.PureCopy().ToModel();
 
         List<AccessToken> accessTokens = null;
         if (userEntity.AccessTokenEntities != null && userEntity.AccessTokenEntities.Count != 0)
             accessTokens = userEntity.AccessTokenEntities.Select(
-                accessTokenEntity => _serviceProvider.GetService<AccessTokenConverter>().ConvertToModel(accessTokenEntity.PureCopy())).ToList();
+                accessTokenEntity => accessTokenEntity.PureCopy().ToModel()).ToList();
 
         List<Session> sessions = null;
         if (userEntity.SessionEntities != null && userEntity.SessionEntities.Count != 0)
             sessions = userEntity.SessionEntities.Select(
-                sessionEntity => _serviceProvider.GetService<SessionConverter>().ConvertToModel(sessionEntity.PureCopy())).ToList();
+                sessionEntity => sessionEntity.PureCopy().ToModel()).ToList();
 
         var user = new User(userEntity.Id, userEntity.Username, userEntity.State.ToEnum<UserState>(),
             userEntity.CreationDate, userEntity.DisplayName, userEntity.About, userEntity.AvatarUrl,

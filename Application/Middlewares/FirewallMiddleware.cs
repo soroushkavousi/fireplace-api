@@ -41,8 +41,8 @@ public class FirewallMiddleware
         await ControlRequestBody(httpContext, firewall);
 
         var accessTokenValue = httpContext.GetAccessTokenValue();
-        var inputHeaderParameters = httpContext.GetInputHeaderParameters();
-        var ipAddress = inputHeaderParameters.IpAddress;
+        var inputHeaderDto = httpContext.GetInputHeaderDto();
+        var ipAddress = inputHeaderDto.IpAddress;
 
         User requestingUser = null;
         AccessToken accessToken = null;

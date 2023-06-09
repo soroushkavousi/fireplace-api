@@ -20,16 +20,12 @@ public class FileRepository : IFileRepository
     private readonly ILogger<FileRepository> _logger;
     private readonly ProjectDbContext _dbContext;
     private readonly DbSet<FileEntity> _fileEntities;
-    private readonly FileConverter _fileConverter;
 
-
-    public FileRepository(ILogger<FileRepository> logger,
-        ProjectDbContext dbContext, FileConverter fileConverter)
+    public FileRepository(ILogger<FileRepository> logger, ProjectDbContext dbContext)
     {
         _logger = logger;
         _dbContext = dbContext;
         _fileEntities = dbContext.FileEntities;
-        _fileConverter = fileConverter;
     }
 
     public async Task<List<File>> ListFilesAsync()
@@ -44,7 +40,7 @@ public class FileRepository : IFileRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { fileEntities = fileEntities.Select(e => e.Id) });
-        return fileEntities.Select(_fileConverter.ConvertToModel).ToList();
+        return fileEntities.Select(FileConverter.ToModel).ToList();
     }
 
     public async Task<File> GetFileByIdAsync(ulong id)
@@ -59,7 +55,7 @@ public class FileRepository : IFileRepository
             .SingleOrDefaultAsync();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { fileEntity });
-        return _fileConverter.ConvertToModel(fileEntity);
+        return FileConverter.ToModel(fileEntity);
     }
 
     public async Task<File> CreateFileAsync(ulong id, string name, string realName,
@@ -68,22 +64,22 @@ public class FileRepository : IFileRepository
         _logger.LogAppInformation(title: "DATABASE_INPUT",
             parameters: new { id, name, realName, uri, physicalPath });
         var sw = Stopwatch.StartNew();
-        var relativeUri = _fileConverter.GetRelativeUri(uri).ToString();
-        var relativePhysicalPath = _fileConverter.GetRelativePhysicalPath(physicalPath);
+        var relativeUri = uri.ToRelativeUri().ToString();
+        var relativePhysicalPath = physicalPath.ToRelativePhysicalPath();
         var fileEntity = new FileEntity(id, name, realName, relativeUri, relativePhysicalPath);
         _fileEntities.Add(fileEntity);
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { fileEntity });
-        return _fileConverter.ConvertToModel(fileEntity);
+        return FileConverter.ToModel(fileEntity);
     }
 
     public async Task<File> UpdateFileAsync(File file)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { file });
         var sw = Stopwatch.StartNew();
-        var fileEntity = _fileConverter.ConvertToEntity(file);
+        var fileEntity = file.ToEntity();
         _fileEntities.Update(fileEntity);
         try
         {
@@ -97,7 +93,7 @@ public class FileRepository : IFileRepository
         }
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { fileEntity });
-        return _fileConverter.ConvertToModel(fileEntity);
+        return FileConverter.ToModel(fileEntity);
     }
 
     public async Task DeleteFileAsync(ulong id)

@@ -1,10 +1,10 @@
 ﻿using FireplaceApi.Application.Converters;
+using FireplaceApi.Application.Dtos;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Application.Controllers;
@@ -15,16 +15,10 @@ namespace FireplaceApi.Application.Controllers;
 [Produces("application/json")]
 public class CommunityMembershipController : ApiController
 {
-    private readonly ILogger<CommunityMembershipController> _logger;
-    private readonly CommunityMembershipConverter _communityMembershipConverter;
     private readonly CommunityMembershipService _communityMembershipService;
 
-    public CommunityMembershipController(ILogger<CommunityMembershipController> logger,
-        CommunityMembershipConverter communityMembershipConverter,
-        CommunityMembershipService communityMembershipService)
+    public CommunityMembershipController(CommunityMembershipService communityMembershipService)
     {
-        _logger = logger;
-        _communityMembershipConverter = communityMembershipConverter;
         _communityMembershipService = communityMembershipService;
     }
 
@@ -38,11 +32,11 @@ public class CommunityMembershipController : ApiController
     [ProducesResponseType(typeof(CommunityMembershipDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<CommunityMembershipDto>> CreateCommunityMembershipAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] CreateCommunityMembershipInputRouteParameters inputRouteParameters)
+        [FromRoute] CreateCommunityMembershipInputRouteDto inputRouteDto)
     {
         var communityMembership = await _communityMembershipService.CreateCommunityMembershipAsync(
-            requestingUser, inputRouteParameters.CommunityIdentifier);
-        var communityMembershipDto = _communityMembershipConverter.ConvertToDto(communityMembership);
+            requestingUser, inputRouteDto.CommunityIdentifier);
+        var communityMembershipDto = communityMembership.ToDto();
         return communityMembershipDto;
     }
 
@@ -55,10 +49,10 @@ public class CommunityMembershipController : ApiController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> DeleteCommunityMembershipByCommunityIdentifierAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] DeleteCommunityMembershipByCommunityIdentifierInputRouteParameters inputRouteParameters)
+        [FromRoute] DeleteCommunityMembershipByCommunityIdentifierInputRouteDto inputRouteDto)
     {
         await _communityMembershipService.DeleteCommunityMembershipAsync(requestingUser,
-            inputRouteParameters.CommunityIdentifier);
+            inputRouteDto.CommunityIdentifier);
         return Ok();
     }
 }

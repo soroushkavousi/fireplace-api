@@ -1,39 +1,26 @@
-﻿using FireplaceApi.Application.Controllers;
+﻿using FireplaceApi.Application.Dtos;
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Tools;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
+using FireplaceApi.Domain.ValueObjects;
 using System.Collections.Generic;
 
 namespace FireplaceApi.Application.Converters;
 
-public class CommentConverter : BaseConverter<Comment, CommentDto>
+public static class CommentConverter
 {
-    private readonly ILogger<CommentConverter> _logger;
-    private readonly IServiceProvider _serviceProvider;
-
-    public CommentConverter(ILogger<CommentConverter> logger, IServiceProvider serviceProvider)
-    {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
-    }
-
-    public override CommentDto ConvertToDto(Comment comment)
+    public static CommentDto ToDto(this Comment comment)
     {
         if (comment == null)
             return null;
 
         ProfileDto authorDto = null;
         if (comment.Author != null)
-            authorDto = _serviceProvider.GetService<UserConverter>()
-                .ConvertToProfileDto(comment.Author.PureCopy());
+            authorDto = comment.Author.PureCopy().ToProfileDto();
 
         PostDto postDto = null;
         if (comment.Post != null)
-            postDto = _serviceProvider.GetService<PostConverter>()
-                .ConvertToDto(comment.Post.PureCopy());
+            postDto = comment.Post.PureCopy().ToDto();
 
         List<CommentDto> childCommentDtos = null;
         if (!comment.ChildComments.IsNullOrEmpty())
@@ -41,8 +28,7 @@ public class CommentConverter : BaseConverter<Comment, CommentDto>
             childCommentDtos = new List<CommentDto>();
             foreach (var childComment in comment.ChildComments)
             {
-                var childCommentDto = ConvertToDto(
-                    childComment.PureCopy());
+                var childCommentDto = childComment.PureCopy().ToDto();
                 childCommentDtos.Add(childCommentDto);
             }
         }
@@ -68,4 +54,7 @@ public class CommentConverter : BaseConverter<Comment, CommentDto>
 
         return commentDto;
     }
+
+    public static QueryResultDto<CommentDto> ToDto(this QueryResult<Comment> queryResult)
+        => queryResult.ToDto(ToDto);
 }

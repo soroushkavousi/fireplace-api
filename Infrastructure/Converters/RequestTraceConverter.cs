@@ -2,24 +2,13 @@
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Infrastructure.Entities;
 using FireplaceApi.Infrastructure.Enums;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Net;
 
 namespace FireplaceApi.Infrastructure.Converters;
 
-public class RequestTraceConverter
+public static class RequestTraceConverter
 {
-    private readonly ILogger<RequestTraceConverter> _logger;
-    private readonly IServiceProvider _serviceProvider;
-
-    public RequestTraceConverter(ILogger<RequestTraceConverter> logger, IServiceProvider serviceProvider)
-    {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
-    }
-
-    public RequestTraceEntity ConvertToEntity(RequestTrace requestTrace)
+    public static RequestTraceEntity ToEntity(this RequestTrace requestTrace)
     {
         if (requestTrace == null)
             return null;
@@ -33,7 +22,7 @@ public class RequestTraceConverter
         return requestTraceEntity;
     }
 
-    public RequestTrace ConvertToModel(RequestTraceEntity requestTraceEntity)
+    public static RequestTrace ToModel(this RequestTraceEntity requestTraceEntity)
     {
         if (requestTraceEntity == null)
             return null;

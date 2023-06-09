@@ -1,43 +1,24 @@
 ﻿using FireplaceApi.Domain.Models;
 using FireplaceApi.Infrastructure.Entities;
-using Microsoft.Extensions.Logging;
-using System;
 
 namespace FireplaceApi.Infrastructure.Converters;
 
-public class CommentVoteConverter
+public static class CommentVoteConverter
 {
-    private readonly ILogger<CommentVoteConverter> _logger;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly UserConverter _voterConverter;
-    private readonly CommentConverter _commentConverter;
-
-    public CommentVoteConverter(ILogger<CommentVoteConverter> logger,
-        IServiceProvider serviceProvider, UserConverter voterConverter,
-        CommentConverter commentConverter)
-    {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
-        _voterConverter = voterConverter;
-        _commentConverter = commentConverter;
-    }
-
     // Entity
 
-    public CommentVoteEntity ConvertToEntity(CommentVote commentVote)
+    public static CommentVoteEntity ToEntity(this CommentVote commentVote)
     {
         if (commentVote == null)
             return null;
 
         UserEntity voterEntity = null;
         if (commentVote.Voter != null)
-            voterEntity = _voterConverter
-                .ConvertToEntity(commentVote.Voter.PureCopy());
+            voterEntity = commentVote.Voter.PureCopy().ToEntity();
 
         CommentEntity commentEntity = null;
         if (commentVote.Comment != null)
-            commentEntity = _commentConverter
-                .ConvertToEntity(commentVote.Comment.PureCopy());
+            commentEntity = commentVote.Comment.PureCopy().ToEntity();
 
         var commentVoteEntity = new CommentVoteEntity(
             commentVote.Id, commentVote.VoterId,
@@ -48,19 +29,18 @@ public class CommentVoteConverter
         return commentVoteEntity;
     }
 
-    public CommentVote ConvertToModel(CommentVoteEntity commentVoteEntity)
+    public static CommentVote ToModel(this CommentVoteEntity commentVoteEntity)
     {
         if (commentVoteEntity == null)
             return null;
 
         User voter = null;
         if (commentVoteEntity.VoterEntity != null)
-            voter = _voterConverter.ConvertToModel(commentVoteEntity.VoterEntity.PureCopy());
+            voter = commentVoteEntity.VoterEntity.PureCopy().ToModel();
 
         Comment comment = null;
         if (commentVoteEntity.CommentEntity != null)
-            comment = _commentConverter
-                .ConvertToModel(commentVoteEntity.CommentEntity.PureCopy());
+            comment = commentVoteEntity.CommentEntity.PureCopy().ToModel();
 
         var commentVote = new CommentVote(commentVoteEntity.Id,
             commentVoteEntity.VoterEntityId, commentVoteEntity.VoterEntityUsername,

@@ -1,5 +1,5 @@
 using FireplaceApi.Application.Attributes;
-using FireplaceApi.Application.Controllers;
+using FireplaceApi.Application.Dtos;
 using FireplaceApi.Application.Extensions;
 using FireplaceApi.Application.Middlewares;
 using FireplaceApi.Application.Tool;
@@ -74,12 +74,10 @@ public partial class Program
     void ConfigureBuilderServices(WebApplicationBuilder builder)
     {
         // Dependency injection items
-        builder.Services.AddApiConverters();
         builder.Services.AddServices();
         builder.Services.AddValidators();
         builder.Services.AddOperators();
         builder.Services.AddTools();
-        builder.Services.AddInfrastructurConverters();
         builder.Services.AddGateways();
         builder.Services.AddRepositories();
         builder.Services.AddCacheServices();
@@ -118,8 +116,8 @@ public partial class Program
         builder.Services.AddControllers(options =>
         {
             options.Filters.Add<RequestingUserInjectorAttribute>();
-            options.Filters.Add<InputHeaderParametersInjectorAttribute>();
-            options.Filters.Add<InputCookieParametersInjectorAttribute>();
+            options.Filters.Add<InputHeaderDtoInjectorAttribute>();
+            options.Filters.Add<InputCookieDtoInjectorAttribute>();
             options.Filters.Add<ActionLoggingAttribute>();
             options.Filters.Add<ActionInputValidatorAttribute>();
         }).AddJsonOptions(options =>

@@ -1,34 +1,22 @@
-﻿using FireplaceApi.Application.Controllers;
+﻿using FireplaceApi.Application.Dtos;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Tools;
 using FireplaceApi.Domain.ValueObjects;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace FireplaceApi.Application.Converters;
 
-public class UserConverter : BaseConverter<User, UserDto>
+public static class UserConverter
 {
-    private readonly ILogger<UserConverter> _logger;
-    private readonly IServiceProvider _serviceProvider;
-
-    public UserConverter(ILogger<UserConverter> logger, IServiceProvider serviceProvider)
-    {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
-    }
-
-    public override UserDto ConvertToDto(User user)
+    public static UserDto ToDto(this User user)
     {
         if (user == null)
             return null;
 
         EmailDto emailDto = null;
         if (user.Email != null)
-            emailDto = _serviceProvider.GetService<EmailConverter>().ConvertToDto(user.Email.PureCopy());
+            emailDto = user.Email.PureCopy().ToDto();
 
         string accessTokenValue = null;
         if (user.AccessTokens != null && user.AccessTokens.Count != 0)
@@ -37,7 +25,7 @@ public class UserConverter : BaseConverter<User, UserDto>
         List<SessionDto> sessionDtos = null;
         if (user.Sessions != null && user.Sessions.Count != 0)
             sessionDtos = user.Sessions.Select(
-                session => _serviceProvider.GetService<SessionConverter>().ConvertToDto(session.PureCopy())).ToList();
+                session => session.PureCopy().ToDto()).ToList();
 
         var userDto = new UserDto(user.Id.IdEncode(), user.Username, user.State.ToString(),
             user.CreationDate, user.DisplayName, user.About, user.AvatarUrl, user.BannerUrl,
@@ -46,7 +34,7 @@ public class UserConverter : BaseConverter<User, UserDto>
         return userDto;
     }
 
-    public ProfileDto ConvertToProfileDto(User user)
+    public static ProfileDto ToProfileDto(this User user)
     {
         if (user == null)
             return null;
@@ -57,7 +45,7 @@ public class UserConverter : BaseConverter<User, UserDto>
         return profileDto;
     }
 
-    public ProfileDto ConvertToDto(Profile profile)
+    public static ProfileDto ToDto(this Profile profile)
     {
         if (profile == null)
             return null;

@@ -25,11 +25,11 @@ public class ActionResponseExampleProvider : IOperationFilter
 
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        var bodyParametersType = ExtractResponseBodyParametersType(context);
-        if (bodyParametersType == null)
+        var bodyDtoType = ExtractResponseBodyDtoType(context);
+        if (bodyDtoType == null)
             return;
-        IOpenApiAny example = ExtractExample(bodyParametersType, context.MethodInfo.Name);
-        if (bodyParametersType.Name.Contains("Error"))
+        IOpenApiAny example = ExtractExample(bodyDtoType, context.MethodInfo.Name);
+        if (bodyDtoType.Name.Contains("Error"))
         {
             switch (example)
             {
@@ -57,18 +57,18 @@ public class ActionResponseExampleProvider : IOperationFilter
         successResponse.Content["application/json"].Example = example;
     }
 
-    public Type ExtractResponseBodyParametersType(OperationFilterContext context)
+    public Type ExtractResponseBodyDtoType(OperationFilterContext context)
     {
         var taskType = context.MethodInfo.ReturnType;
         var resultActionType = taskType.GetGenericArguments()[0];
         if (resultActionType.IsGenericType == false)
             return null;
-        var bodyParametersType = resultActionType.GetGenericArguments()[0];
-        if (bodyParametersType.IsEnumerable())
+        var bodyDtoType = resultActionType.GetGenericArguments()[0];
+        if (bodyDtoType.IsEnumerable())
         {
-            bodyParametersType = bodyParametersType.GetGenericArguments()[0];
+            bodyDtoType = bodyDtoType.GetGenericArguments()[0];
         }
-        return bodyParametersType;
+        return bodyDtoType;
     }
 
     public IOpenApiAny ExtractExample(Type type, string actionName)

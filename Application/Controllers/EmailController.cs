@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Application.Converters;
+using FireplaceApi.Application.Dtos;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Services;
 using Microsoft.AspNetCore.Http;
@@ -14,12 +15,10 @@ namespace FireplaceApi.Application.Controllers;
 [Produces("application/json")]
 public class EmailController : ApiController
 {
-    private readonly EmailConverter _emailConverter;
     private readonly EmailService _emailService;
 
-    public EmailController(EmailConverter emailConverter, EmailService emailService)
+    public EmailController(EmailService emailService)
     {
-        _emailConverter = emailConverter;
         _emailService = emailService;
     }
 
@@ -33,11 +32,11 @@ public class EmailController : ApiController
     [ProducesResponseType(typeof(EmailDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<EmailDto>> ActivateRequestingUserEmailAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromBody] ActivateRequestingUserEmailInputBodyParameters inputBodyParameters)
+        [FromBody] ActivateRequestingUserEmailInputBodyDto inputBodyDto)
     {
         var email = await _emailService.ActivateRequestingUserEmailAsync(requestingUser,
-            inputBodyParameters.ActivationCode.Value);
-        var emailDto = _emailConverter.ConvertToDto(email);
+            inputBodyDto.ActivationCode.Value);
+        var emailDto = email.ToDto();
         return emailDto;
     }
 
@@ -51,7 +50,7 @@ public class EmailController : ApiController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult> ResendActivationCodeAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromBody] ResendActivationCodeAsyncInputBodyParameters inputBodyParameters)
+        [FromBody] ResendActivationCodeAsyncInputBodyDto inputBodyDto)
     {
         await _emailService.ResendActivationCodeAsync(requestingUser);
         return Ok();
@@ -68,7 +67,7 @@ public class EmailController : ApiController
         [BindNever][FromHeader] User requestingUser)
     {
         var email = await _emailService.GetRequestingUserEmailAsync(requestingUser);
-        var emailDto = _emailConverter.ConvertToDto(email);
+        var emailDto = email.ToDto();
         return emailDto;
     }
 
@@ -82,11 +81,11 @@ public class EmailController : ApiController
     [ProducesResponseType(typeof(EmailDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<EmailDto>> PatchEmailAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromBody] PatchEmailInputBodyParameters inputBodyParameters)
+        [FromBody] PatchEmailInputBodyDto inputBodyDto)
     {
         var email = await _emailService.PatchEmailAsync(requestingUser,
-            inputBodyParameters.NewAddress);
-        var emailDto = _emailConverter.ConvertToDto(email);
+            inputBodyDto.NewAddress);
+        var emailDto = email.ToDto();
         return emailDto;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Application.Converters;
+using FireplaceApi.Application.Dtos;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Services;
 using Microsoft.AspNetCore.Http;
@@ -14,12 +15,10 @@ namespace FireplaceApi.Application.Controllers;
 [Produces("application/json")]
 public class ErrorController : ApiController
 {
-    private readonly ErrorConverter _errorConverter;
     private readonly ErrorService _errorService;
 
-    public ErrorController(ErrorConverter errorConverter, ErrorService errorService)
+    public ErrorController(ErrorService errorService)
     {
-        _errorConverter = errorConverter;
         _errorService = errorService;
     }
 
@@ -32,10 +31,10 @@ public class ErrorController : ApiController
     [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<ErrorDto>> GetErrorByCodeAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] GetErrorByCodeInputRouteParameters inputRouteParameters)
+        [FromRoute] GetErrorByCodeInputRouteDto inputRouteDto)
     {
-        var error = await _errorService.GetErrorAsync(requestingUser, inputRouteParameters.Identifier);
-        var errorDto = _errorConverter.ConvertToDto(error);
+        var error = await _errorService.GetErrorAsync(requestingUser, inputRouteDto.Identifier);
+        var errorDto = error.ToDto();
         return errorDto;
     }
 }

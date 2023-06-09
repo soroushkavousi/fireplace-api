@@ -25,8 +25,7 @@ public class ExceptionMiddleware
         _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext httpContext, ErrorConverter errorConverter,
-        ErrorOperator errorOperator)
+    public async Task InvokeAsync(HttpContext httpContext, ErrorOperator errorOperator)
     {
         var sw = Stopwatch.StartNew();
         try
@@ -37,12 +36,12 @@ public class ExceptionMiddleware
         {
             var error = await errorOperator.GetErrorAsync(ex);
             httpContext.Items[Constants.ErrorKey] = error;
-            await ReportError(error, errorConverter, httpContext);
+            await ReportError(error, httpContext);
         }
         _logger.LogAppTrace(sw: sw, title: "EXCEPTION_MIDDLEWARE");
     }
 
-    private async Task ReportError(Error error, ErrorConverter errorConverter, HttpContext httpContext)
+    private async Task ReportError(Error error, HttpContext httpContext)
     {
         httpContext.Response.ContentType = "application/json";
         httpContext.Response.StatusCode = error.HttpStatusCode;
@@ -57,7 +56,7 @@ public class ExceptionMiddleware
                 _logger.LogAppCritical($"{error.Type}: {error.ServerMessage}", title: "UNKNOWN_ERROR", parameters: new { error.Field, error.Parameters }, ex: error.Exception);
         }
 
-        var apiExceptionErrorDto = errorConverter.ConvertToApiExceptionDto(error);
+        var apiExceptionErrorDto = error.ToApiExceptionDto();
         await httpContext.Response.WriteAsync(apiExceptionErrorDto.ToJson(ignoreSensitiveLimit: true));
     }
 }

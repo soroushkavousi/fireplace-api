@@ -1,34 +1,21 @@
 ﻿using FireplaceApi.Domain.Models;
 using FireplaceApi.Infrastructure.Entities;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using System;
 
 namespace FireplaceApi.Infrastructure.Converters;
 
-public class FileConverter
+public static class FileConverter
 {
-    private readonly ILogger<FileConverter> _logger;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly Uri _baseUri;
-    private readonly string _basePhysicalPath;
+    private static readonly Uri _baseUri = new(Configs.Current.File.BaseUrlPath);
+    private static readonly string _basePhysicalPath = Configs.Current.File.BasePhysicalPath;
 
-    public FileConverter(ILogger<FileConverter> logger,
-        IServiceProvider serviceProvider, IConfiguration configuration)
-    {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
-        _baseUri = new Uri(Configs.Current.File.BaseUrlPath);
-        _basePhysicalPath = Configs.Current.File.BasePhysicalPath;
-    }
-
-    public FileEntity ConvertToEntity(File file)
+    public static FileEntity ToEntity(this File file)
     {
         if (file == null)
             return null;
 
-        var relativeUri = GetRelativeUri(file.Uri).ToString();
-        var relativePhysicalPath = GetRelativePhysicalPath(file.PhysicalPath);
+        var relativeUri = file.Uri.ToRelativeUri().ToString();
+        var relativePhysicalPath = file.PhysicalPath.ToRelativePhysicalPath();
 
         var fileEntity = new FileEntity(file.Id, file.Name, file.RealName,
             relativeUri, relativePhysicalPath, file.CreationDate,
@@ -37,13 +24,13 @@ public class FileConverter
         return fileEntity;
     }
 
-    public File ConvertToModel(FileEntity fileEntity)
+    public static File ToModel(this FileEntity fileEntity)
     {
         if (fileEntity == null)
             return null;
 
-        var uri = GetAbsoluteUri(new Uri(fileEntity.RelativeUri, UriKind.Relative));
-        var physicalPath = GetAbsolutePhysicalPath(fileEntity.RelativePhysicalPath);
+        var uri = new Uri(fileEntity.RelativeUri, UriKind.Relative).ToAbsoluteUri();
+        var physicalPath = fileEntity.RelativePhysicalPath.ToAbsolutePhysicalPath();
 
         var file = new File(fileEntity.Id, fileEntity.Name, fileEntity.RealName,
             uri, physicalPath, fileEntity.CreationDate, fileEntity.ModifiedDate);
@@ -51,25 +38,25 @@ public class FileConverter
         return file;
     }
 
-    public Uri GetRelativeUri(Uri absoluteUri)
+    public static Uri ToRelativeUri(this Uri absoluteUri)
     {
         var relativeUri = _baseUri.MakeRelativeUri(absoluteUri);
         return relativeUri;
     }
 
-    public Uri GetAbsoluteUri(Uri relativeUri)
+    public static Uri ToAbsoluteUri(this Uri relativeUri)
     {
         var absoluteUri = new Uri(_baseUri, relativeUri);
         return absoluteUri;
     }
 
-    public string GetRelativePhysicalPath(string absolutePhysicalPath)
+    public static string ToRelativePhysicalPath(this string absolutePhysicalPath)
     {
         var relativePhysicalPath = System.IO.Path.GetRelativePath(_basePhysicalPath, absolutePhysicalPath);
         return relativePhysicalPath;
     }
 
-    public string GetAbsolutePhysicalPath(string relativePhysicalPath)
+    public static string ToAbsolutePhysicalPath(this string relativePhysicalPath)
     {
         var absolutePhysicalPath = System.IO.Path.GetFullPath(relativePhysicalPath, _basePhysicalPath);
         return absolutePhysicalPath;

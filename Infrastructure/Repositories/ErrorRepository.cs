@@ -21,16 +21,13 @@ public class ErrorRepository : IErrorRepository
     private readonly ILogger<ErrorRepository> _logger;
     private readonly ProjectDbContext _dbContext;
     private readonly DbSet<ErrorEntity> _errorEntities;
-    private readonly ErrorConverter _errorConverter;
     private static readonly Dictionary<string, Error> _cache = new();
 
-    public ErrorRepository(ILogger<ErrorRepository> logger,
-        ProjectDbContext dbContext, ErrorConverter errorConverter)
+    public ErrorRepository(ILogger<ErrorRepository> logger, ProjectDbContext dbContext)
     {
         _logger = logger;
         _dbContext = dbContext;
         _errorEntities = dbContext.ErrorEntities;
-        _errorConverter = errorConverter;
     }
 
     public async Task<List<Error>> ListErrorsAsync()
@@ -49,7 +46,7 @@ public class ErrorRepository : IErrorRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { errorEntites = errorEntites.Select(e => e.Id) });
-        return errorEntites.Select(_errorConverter.ConvertToModel).ToList();
+        return errorEntites.Select(ErrorConverter.ToModel).ToList();
     }
 
     public async Task<Error> GetErrorAsync(ErrorIdentifier identifier)
@@ -71,7 +68,7 @@ public class ErrorRepository : IErrorRepository
             .SingleOrDefaultAsync();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { errorEntity });
-        var error = _errorConverter.ConvertToModel(errorEntity);
+        var error = errorEntity.ToModel();
         _cache.Add(identifier.Key, error);
         return error;
     }
@@ -89,14 +86,14 @@ public class ErrorRepository : IErrorRepository
         _dbContext.DetachAllEntries();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { errorEntity });
-        return _errorConverter.ConvertToModel(errorEntity);
+        return errorEntity.ToModel();
     }
 
     public async Task<Error> UpdateErrorAsync(Error error)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { error });
         var sw = Stopwatch.StartNew();
-        var errorEntity = _errorConverter.ConvertToEntity(error);
+        var errorEntity = error.ToEntity();
         _errorEntities.Update(errorEntity);
         try
         {
@@ -110,7 +107,7 @@ public class ErrorRepository : IErrorRepository
         }
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { errorEntity });
-        return _errorConverter.ConvertToModel(errorEntity);
+        return errorEntity.ToModel();
     }
 
     public async Task DeleteErrorAsync(ErrorIdentifier identifier)

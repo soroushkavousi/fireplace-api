@@ -20,15 +20,12 @@ public class PostVoteRepository : IPostVoteRepository
     private readonly ILogger<PostVoteRepository> _logger;
     private readonly ProjectDbContext _dbContext;
     private readonly DbSet<PostVoteEntity> _postVoteEntities;
-    private readonly PostVoteConverter _postVoteConverter;
 
-    public PostVoteRepository(ILogger<PostVoteRepository> logger,
-        ProjectDbContext dbContext, PostVoteConverter postVoteConverter)
+    public PostVoteRepository(ILogger<PostVoteRepository> logger, ProjectDbContext dbContext)
     {
         _logger = logger;
         _dbContext = dbContext;
         _postVoteEntities = dbContext.PostVoteEntities;
-        _postVoteConverter = postVoteConverter;
     }
 
     public async Task<List<PostVote>> ListPostVotesAsync(List<ulong> Ids)
@@ -47,7 +44,7 @@ public class PostVoteRepository : IPostVoteRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { postEntities = postEntities.Select(e => e.Id) });
-        return postEntities.Select(_postVoteConverter.ConvertToModel).ToList();
+        return postEntities.Select(PostVoteConverter.ToModel).ToList();
     }
 
     public async Task<PostVote> GetPostVoteByIdAsync(ulong id,
@@ -70,7 +67,7 @@ public class PostVoteRepository : IPostVoteRepository
             .SingleOrDefaultAsync();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
-        return _postVoteConverter.ConvertToModel(postEntity);
+        return postEntity.ToModel();
     }
 
     public async Task<PostVote> GetPostVoteAsync(ulong voterId,
@@ -95,7 +92,7 @@ public class PostVoteRepository : IPostVoteRepository
             .SingleOrDefaultAsync();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
-        return _postVoteConverter.ConvertToModel(postEntity);
+        return postEntity.ToModel();
     }
 
     public async Task<PostVote> CreatePostVoteAsync(ulong id, ulong voterUserId,
@@ -118,14 +115,14 @@ public class PostVoteRepository : IPostVoteRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { postEntity });
-        return _postVoteConverter.ConvertToModel(postEntity);
+        return postEntity.ToModel();
     }
 
     public async Task<PostVote> UpdatePostVoteAsync(PostVote postvote)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { postvote });
         var sw = Stopwatch.StartNew();
-        var postEntity = _postVoteConverter.ConvertToEntity(postvote);
+        var postEntity = postvote.ToEntity();
         _postVoteEntities.Update(postEntity);
         try
         {
@@ -139,7 +136,7 @@ public class PostVoteRepository : IPostVoteRepository
         }
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
-        return _postVoteConverter.ConvertToModel(postEntity);
+        return postEntity.ToModel();
     }
 
     public async Task DeletePostVoteByIdAsync(ulong id)

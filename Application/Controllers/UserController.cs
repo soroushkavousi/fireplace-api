@@ -1,12 +1,12 @@
 ﻿using FireplaceApi.Application.Attributes;
 using FireplaceApi.Application.Converters;
+using FireplaceApi.Application.Dtos;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Application.Controllers;
@@ -17,14 +17,10 @@ namespace FireplaceApi.Application.Controllers;
 [Produces("application/json")]
 public class UserController : ApiController
 {
-    private readonly ILogger<UserController> _logger;
-    private readonly UserConverter _userConverter;
     private readonly UserService _userService;
 
-    public UserController(ILogger<UserController> logger, UserConverter userConverter, UserService userService)
+    public UserController(UserService userService)
     {
-        _logger = logger;
-        _userConverter = userConverter;
         _userService = userService;
     }
 
@@ -40,9 +36,9 @@ public class UserController : ApiController
     [HttpGet("open-google-log-in-page")]
     [ProducesResponseType(StatusCodes.Status308PermanentRedirect)]
     public async Task<ActionResult> OpenGoogleLogInPage(
-        [BindNever][FromHeader] InputHeaderParameters inputHeaderParameters)
+        [BindNever][FromHeader] InputHeaderDto inputHeaderDto)
     {
-        var googleLogInPageUrl = await _userService.GetGoogleAuthUrlAsync(inputHeaderParameters.IpAddress);
+        var googleLogInPageUrl = await _userService.GetGoogleAuthUrlAsync(inputHeaderDto.IpAddress);
         return Redirect(googleLogInPageUrl);
     }
 
@@ -56,14 +52,14 @@ public class UserController : ApiController
     [Consumes("application/json")]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<UserDto>> SignUpWithEmailAsync(
-        [BindNever][FromHeader] InputHeaderParameters inputHeaderParameters,
-        [FromBody] SignUpWithEmailInputBodyParameters inputBodyParameters)
+        [BindNever][FromHeader] InputHeaderDto inputHeaderDto,
+        [FromBody] SignUpWithEmailInputBodyDto inputBodyDto)
     {
-        var user = await _userService.SignUpWithEmailAsync(inputHeaderParameters.IpAddress,
-            inputBodyParameters.EmailAddress, inputBodyParameters.Username, inputBodyParameters.PasswordValueObject);
-        var userDto = _userConverter.ConvertToDto(user);
-        var outputCookieParameters = new SignUpWithEmailOutputCookieParameters(userDto.AccessToken);
-        SetOutputCookieParameters(outputCookieParameters);
+        var user = await _userService.SignUpWithEmailAsync(inputHeaderDto.IpAddress,
+            inputBodyDto.EmailAddress, inputBodyDto.Username, inputBodyDto.PasswordValueObject);
+        var userDto = user.ToDto();
+        var outputCookieDto = new SignUpWithEmailOutputCookieDto(userDto.AccessToken);
+        SetOutputCookieDto(outputCookieDto);
         return userDto;
     }
 
@@ -77,15 +73,15 @@ public class UserController : ApiController
     [HttpGet("log-in-with-google")]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<UserDto>> LogInWithGoogleAsync(
-        [BindNever][FromHeader] InputHeaderParameters inputHeaderParameters,
-        [FromQuery] LogInWithGoogleInputQueryParameters inputQueryParameters)
+        [BindNever][FromHeader] InputHeaderDto inputHeaderDto,
+        [FromQuery] LogInWithGoogleInputQueryDto inputQueryDto)
     {
-        var user = await _userService.LogInWithGoogleAsync(inputHeaderParameters.IpAddress,
-            inputQueryParameters.State, inputQueryParameters.Code, inputQueryParameters.Scope,
-            inputQueryParameters.AuthUser, inputQueryParameters.Prompt, inputQueryParameters.Error);
-        var userDto = _userConverter.ConvertToDto(user);
-        var outputCookieParameters = new SignUpWithEmailOutputCookieParameters(userDto?.AccessToken);
-        SetOutputCookieParameters(outputCookieParameters);
+        var user = await _userService.LogInWithGoogleAsync(inputHeaderDto.IpAddress,
+            inputQueryDto.State, inputQueryDto.Code, inputQueryDto.Scope,
+            inputQueryDto.AuthUser, inputQueryDto.Prompt, inputQueryDto.Error);
+        var userDto = user.ToDto();
+        var outputCookieDto = new SignUpWithEmailOutputCookieDto(userDto?.AccessToken);
+        SetOutputCookieDto(outputCookieDto);
         if (string.IsNullOrWhiteSpace(user.GoogleUser.RedirectToUserUrl))
             return userDto;
         else
@@ -102,14 +98,14 @@ public class UserController : ApiController
     [Consumes("application/json")]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<UserDto>> LogInWithEmailAsync(
-        [BindNever][FromHeader] InputHeaderParameters inputHeaderParameters,
-        [FromBody] LogInWithEmailInputBodyParameters inputBodyParameters)
+        [BindNever][FromHeader] InputHeaderDto inputHeaderDto,
+        [FromBody] LogInWithEmailInputBodyDto inputBodyDto)
     {
-        var user = await _userService.LogInWithEmailAsync(inputHeaderParameters.IpAddress,
-            inputBodyParameters.EmailAddress, inputBodyParameters.PasswordValueObject);
-        var userDto = _userConverter.ConvertToDto(user);
-        var outputCookieParameters = new SignUpWithEmailOutputCookieParameters(userDto.AccessToken);
-        SetOutputCookieParameters(outputCookieParameters);
+        var user = await _userService.LogInWithEmailAsync(inputHeaderDto.IpAddress,
+            inputBodyDto.EmailAddress, inputBodyDto.PasswordValueObject);
+        var userDto = user.ToDto();
+        var outputCookieDto = new SignUpWithEmailOutputCookieDto(userDto.AccessToken);
+        SetOutputCookieDto(outputCookieDto);
         return userDto;
     }
 
@@ -123,14 +119,14 @@ public class UserController : ApiController
     [Consumes("application/json")]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<UserDto>> LogInWithUsernameAsync(
-        [BindNever][FromHeader] InputHeaderParameters inputHeaderParameters,
-        [FromBody] LogInWithUsernameInputBodyParameters inputBodyParameters)
+        [BindNever][FromHeader] InputHeaderDto inputHeaderDto,
+        [FromBody] LogInWithUsernameInputBodyDto inputBodyDto)
     {
-        var user = await _userService.LogInWithUsernameAsync(inputHeaderParameters.IpAddress,
-            inputBodyParameters.Username, inputBodyParameters.PasswordValueObject);
-        var userDto = _userConverter.ConvertToDto(user);
-        var outputCookieParameters = new SignUpWithEmailOutputCookieParameters(userDto.AccessToken);
-        SetOutputCookieParameters(outputCookieParameters);
+        var user = await _userService.LogInWithUsernameAsync(inputHeaderDto.IpAddress,
+            inputBodyDto.Username, inputBodyDto.PasswordValueObject);
+        var userDto = user.ToDto();
+        var outputCookieDto = new SignUpWithEmailOutputCookieDto(userDto.AccessToken);
+        SetOutputCookieDto(outputCookieDto);
         return userDto;
     }
 
@@ -143,11 +139,11 @@ public class UserController : ApiController
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<UserDto>> GetRequestingUserAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromQuery] GetUserInputQueryParameters inputQueryParameters)
+        [FromQuery] GetUserInputQueryDto inputQueryDto)
     {
         var user = await _userService.GetRequestingUserAsync(requestingUser,
-            inputQueryParameters.IncludeEmail, inputQueryParameters.IncludeSessions);
-        var userDto = _userConverter.ConvertToDto(user);
+            inputQueryDto.IncludeEmail, inputQueryDto.IncludeSessions);
+        var userDto = user.ToDto();
         return userDto;
     }
 
@@ -160,11 +156,11 @@ public class UserController : ApiController
     [ProducesResponseType(typeof(ProfileDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<ProfileDto>> GetUserProfileAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] GetUserProfileInputRouteParameters inputRouteParameters)
+        [FromRoute] GetUserProfileInputRouteDto inputRouteDto)
     {
         var profile = await _userService.GetUserProfileAsync(requestingUser,
-            inputRouteParameters.Identifier);
-        var profileDto = _userConverter.ConvertToDto(profile);
+            inputRouteDto.Identifier);
+        var profileDto = profile.ToDto();
         return profileDto;
     }
 
@@ -178,10 +174,10 @@ public class UserController : ApiController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> CreateRequestingUserPasswordAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromBody] CreateRequestingUserPasswordInputBodyParameters inputBodyParameters)
+        [FromBody] CreateRequestingUserPasswordInputBodyDto inputBodyDto)
     {
         await _userService.CreateRequestingUserPasswordAsync(requestingUser,
-            inputBodyParameters.PasswordValueObject);
+            inputBodyDto.PasswordValueObject);
         return Ok();
     }
 
@@ -195,11 +191,11 @@ public class UserController : ApiController
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> SendResetPasswordCodeAsync(
-        [FromBody] SendResetPasswordCodeInputBodyParameters inputBodyParameters)
+        [FromBody] SendResetPasswordCodeInputBodyDto inputBodyDto)
     {
         var resetPasswordUrl = $"{Configs.Current.Api.BaseUrlPath}/swagger" +
             $"#/User/post_{Tools.Constants.LatestApiVersion}_users_reset_password_with_code";
-        await _userService.SendResetPasswordCodeAsync(inputBodyParameters.EmailAddress, resetPasswordUrl);
+        await _userService.SendResetPasswordCodeAsync(inputBodyDto.EmailAddress, resetPasswordUrl);
         return Ok();
     }
 
@@ -213,10 +209,10 @@ public class UserController : ApiController
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> ResetPasswordWithCodeAsync(
-        [FromBody] ResetPasswordWithCodeInputBodyParameters inputBodyParameters)
+        [FromBody] ResetPasswordWithCodeInputBodyDto inputBodyDto)
     {
-        await _userService.ResetPasswordWithCodeAsync(inputBodyParameters.EmailAddress,
-            inputBodyParameters.ResetPasswordCode, inputBodyParameters.PasswordValueObject);
+        await _userService.ResetPasswordWithCodeAsync(inputBodyDto.EmailAddress,
+            inputBodyDto.ResetPasswordCode, inputBodyDto.PasswordValueObject);
         return Ok();
     }
 
@@ -230,12 +226,12 @@ public class UserController : ApiController
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<UserDto>> PatchRequestingUserAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromBody] PatchUserInputBodyParameters inputBodyParameters)
+        [FromBody] PatchUserInputBodyDto inputBodyDto)
     {
-        var user = await _userService.PatchRequestingUserAsync(requestingUser, inputBodyParameters.DisplayName,
-            inputBodyParameters.About, inputBodyParameters.AvatarUrl, inputBodyParameters.BannerUrl,
-            inputBodyParameters.Username);
-        var userDto = _userConverter.ConvertToDto(user);
+        var user = await _userService.PatchRequestingUserAsync(requestingUser, inputBodyDto.DisplayName,
+            inputBodyDto.About, inputBodyDto.AvatarUrl, inputBodyDto.BannerUrl,
+            inputBodyDto.Username);
+        var userDto = user.ToDto();
         return userDto;
     }
 
@@ -249,10 +245,10 @@ public class UserController : ApiController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> PatchRequestingUserPasswordAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromBody] PatchRequestingUserPasswordInputBodyParameters inputBodyParameters)
+        [FromBody] PatchRequestingUserPasswordInputBodyDto inputBodyDto)
     {
         await _userService.PatchRequestingUserPasswordAsync(requestingUser,
-            inputBodyParameters.PasswordValueObject, inputBodyParameters.NewPasswordValueObject);
+            inputBodyDto.PasswordValueObject, inputBodyDto.NewPasswordValueObject);
         return Ok();
     }
 

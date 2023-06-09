@@ -6,9 +6,9 @@ using FireplaceApi.Infrastructure.ValueObjects;
 
 namespace FireplaceApi.Infrastructure.Converters;
 
-public class ConfigsConverter
+public static class ConfigsConverter
 {
-    public ConfigsEntity ConvertToEntity(Configs configs)
+    public static ConfigsEntity ToEntity(this Configs configs)
     {
         if (configs == null)
             return null;
@@ -21,7 +21,7 @@ public class ConfigsConverter
         return configsEntity;
     }
 
-    public Configs ConvertToModel(ConfigsEntity configsEntity)
+    public static Configs ToModel(this ConfigsEntity configsEntity)
     {
         if (configsEntity == null)
             return null;

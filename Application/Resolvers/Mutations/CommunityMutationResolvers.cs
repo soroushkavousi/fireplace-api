@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Application.Controllers;
-using FireplaceApi.Application.Converters;
+﻿using FireplaceApi.Application.Converters;
+using FireplaceApi.Application.Dtos;
 using FireplaceApi.Application.Interfaces;
 using FireplaceApi.Application.Tool;
 using FireplaceApi.Application.Validators;
@@ -19,14 +19,13 @@ public class CommunityMutationResolvers
 {
     public async Task<CommunityDto> CreateCommunitiesAsync(
         [Service(ServiceKind.Resolver)] CommunityService communityService,
-        [Service(ServiceKind.Resolver)] CommunityConverter communityConverter,
         [Service] IServiceProvider serviceProvider,
         [User] User requestingUser,
         [GraphQLNonNullType] CreateCommunityInput input)
     {
         input.Validate(serviceProvider);
         var community = await communityService.CreateCommunityAsync(requestingUser, input.Name);
-        var communityDto = communityConverter.ConvertToDto(community);
+        var communityDto = community.ToDto();
         return communityDto;
     }
 }

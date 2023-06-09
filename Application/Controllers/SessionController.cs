@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Application.Converters;
+using FireplaceApi.Application.Dtos;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Services;
 using Microsoft.AspNetCore.Http;
@@ -16,12 +17,10 @@ namespace FireplaceApi.Application.Controllers;
 [Produces("application/json")]
 public class SessionController : ApiController
 {
-    private readonly SessionConverter _sessionConverter;
     private readonly SessionService _sessionService;
 
-    public SessionController(SessionConverter sessionConverter, SessionService sessionService)
+    public SessionController(SessionService sessionService)
     {
-        _sessionConverter = sessionConverter;
         _sessionService = sessionService;
     }
 
@@ -36,8 +35,8 @@ public class SessionController : ApiController
         [BindNever][FromHeader] User requestingUser)
     {
         var sessions = await _sessionService.ListSessionsAsync(requestingUser);
-        var sessionDtos = sessions.Select(session => _sessionConverter.ConvertToDto(session)).ToList();
-        //SetOutputHeaderParameters(sessionDtos.HeaderParameters);
+        var sessionDtos = sessions.Select(session => session.ToDto()).ToList();
+        //SetOutputHeaderDto(sessionDtos.HeaderDto);
         return sessionDtos;
     }
 
@@ -50,9 +49,9 @@ public class SessionController : ApiController
     [ProducesResponseType(typeof(SessionDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> RevokeSession(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] RevokeSessionInputRouteParameters inputRouteParameters)
+        [FromRoute] RevokeSessionInputRouteDto inputRouteDto)
     {
-        await _sessionService.RevokeSessionByIdAsync(requestingUser, inputRouteParameters.Id);
+        await _sessionService.RevokeSessionByIdAsync(requestingUser, inputRouteDto.Id);
         return Ok();
     }
 }

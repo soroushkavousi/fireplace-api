@@ -66,7 +66,7 @@ public class SwaggerDefaultValueProvider : IOperationFilter
     // Just for knowledge
 
     //var openApiObject = new OpenApiObject();
-    //foreach (var example in ApiExceptionErrorOutputBodyParameters.Examples)
+    //foreach (var example in ApiExceptionErrorOutputBodyDto.Examples)
     //{
     //    openApiObject[example.Key.ToSnakeCase()] = example.Value;
     //}
