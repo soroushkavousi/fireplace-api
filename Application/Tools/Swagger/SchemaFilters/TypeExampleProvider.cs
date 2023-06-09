@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Application.Controllers;
+﻿using FireplaceApi.Application.Dtos;
 using FireplaceApi.Application.Enums;
 using FireplaceApi.Application.Extensions;
 using FireplaceApi.Domain.Extensions;

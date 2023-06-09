@@ -40,7 +40,7 @@ public class RequestTracerMiddleware
         var method = context.Request.Method;
         var action = context.FindActionName();
         var url = context.Request.GetDisplayUrl();
-        var ip = context.GetInputHeaderParameters()?.IpAddress;
+        var ip = context.GetInputHeaderDto()?.IpAddress;
         var userAgent = context.Request.Headers.UserAgent.ToString();
         var userId = context.GetRequestingUser()?.Id;
         var statusCode = context.Response.StatusCode;
@@ -61,7 +61,7 @@ public static class RequestTracerMiddlewareExtensions
 
     public static string CreateRequestInfoMessage(this HttpContext context)
     {
-        var ip = context.GetInputHeaderParameters()?.IpAddress;
+        var ip = context.GetInputHeaderDto()?.IpAddress;
         var request = context.Request;
         var method = request.Method;
         var url = $"{request.Scheme}://{request.Host}{request.Path}";

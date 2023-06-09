@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Application.Converters;
+using FireplaceApi.Application.Dtos;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Services;
 using Microsoft.AspNetCore.Http;
@@ -31,10 +32,10 @@ public class CommunityMembershipController : ApiController
     [ProducesResponseType(typeof(CommunityMembershipDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<CommunityMembershipDto>> CreateCommunityMembershipAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] CreateCommunityMembershipInputRouteParameters inputRouteParameters)
+        [FromRoute] CreateCommunityMembershipInputRouteDto inputRouteDto)
     {
         var communityMembership = await _communityMembershipService.CreateCommunityMembershipAsync(
-            requestingUser, inputRouteParameters.CommunityIdentifier);
+            requestingUser, inputRouteDto.CommunityIdentifier);
         var communityMembershipDto = communityMembership.ToDto();
         return communityMembershipDto;
     }
@@ -48,10 +49,10 @@ public class CommunityMembershipController : ApiController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> DeleteCommunityMembershipByCommunityIdentifierAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] DeleteCommunityMembershipByCommunityIdentifierInputRouteParameters inputRouteParameters)
+        [FromRoute] DeleteCommunityMembershipByCommunityIdentifierInputRouteDto inputRouteDto)
     {
         await _communityMembershipService.DeleteCommunityMembershipAsync(requestingUser,
-            inputRouteParameters.CommunityIdentifier);
+            inputRouteDto.CommunityIdentifier);
         return Ok();
     }
 }

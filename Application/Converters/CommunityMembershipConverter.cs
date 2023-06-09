@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Application.Controllers;
+﻿using FireplaceApi.Application.Dtos;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Tools;
 using FireplaceApi.Domain.ValueObjects;

@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Application.Controllers;
+﻿using FireplaceApi.Application.Dtos;
 using FireplaceApi.Application.Tools;
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Models;
@@ -11,28 +11,28 @@ namespace FireplaceApi.Application.Extensions;
 
 public static class HttpContextExtensions
 {
-    private static readonly string _inputHeaderParametersKey = "InputHeaderParameters";
-    private static readonly string _inputCookieParametersKey = "InputCookieParameters";
+    private static readonly string _inputHeaderDtoKey = "InputHeaderDto";
+    private static readonly string _inputCookieDtoKey = "InputCookieDto";
     private static readonly string _accessTokenKey = "AccessToken";
 
-    public static InputHeaderParameters GetInputHeaderParameters(this HttpContext httpContext)
+    public static InputHeaderDto GetInputHeaderDto(this HttpContext httpContext)
     {
-        if (httpContext.Items.TryGetValue(_inputHeaderParametersKey, out object value))
-            return value.To<InputHeaderParameters>();
+        if (httpContext.Items.TryGetValue(_inputHeaderDtoKey, out object value))
+            return value.To<InputHeaderDto>();
 
-        var inputHeaderParameters = new InputHeaderParameters(httpContext);
-        httpContext.Items[_inputHeaderParametersKey] = inputHeaderParameters;
-        return inputHeaderParameters;
+        var inputHeaderDto = new InputHeaderDto(httpContext);
+        httpContext.Items[_inputHeaderDtoKey] = inputHeaderDto;
+        return inputHeaderDto;
     }
 
-    public static InputCookieParameters GetInputCookieParameters(this HttpContext httpContext)
+    public static InputCookieDTO GetInputCookieDto(this HttpContext httpContext)
     {
-        if (httpContext.Items.TryGetValue(_inputCookieParametersKey, out object value))
-            return value.To<InputCookieParameters>();
+        if (httpContext.Items.TryGetValue(_inputCookieDtoKey, out object value))
+            return value.To<InputCookieDTO>();
 
-        var inputCookieParameters = new InputCookieParameters(httpContext);
-        httpContext.Items[_inputCookieParametersKey] = inputCookieParameters;
-        return inputCookieParameters;
+        var inputCookieDto = new InputCookieDTO(httpContext);
+        httpContext.Items[_inputCookieDtoKey] = inputCookieDto;
+        return inputCookieDto;
     }
 
     public static string GetAccessTokenValue(this HttpContext httpContext)
@@ -40,12 +40,12 @@ public static class HttpContextExtensions
         if (httpContext.Items.TryGetValue(_accessTokenKey, out object value))
             return value.To<string>();
 
-        var inputHeaderParameters = httpContext.GetInputHeaderParameters();
-        var inputCookieParameters = httpContext.GetInputCookieParameters();
+        var inputHeaderDto = httpContext.GetInputHeaderDto();
+        var inputCookieDto = httpContext.GetInputCookieDto();
 
-        var accessTokenValue = inputHeaderParameters.AccessTokenValue;
+        var accessTokenValue = inputHeaderDto.AccessTokenValue;
         if (string.IsNullOrWhiteSpace(accessTokenValue))
-            accessTokenValue = inputCookieParameters.AccessTokenValue;
+            accessTokenValue = inputCookieDto.AccessTokenValue;
 
         httpContext.Items[_accessTokenKey] = accessTokenValue;
         return accessTokenValue;

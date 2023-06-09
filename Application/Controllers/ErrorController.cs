@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Application.Converters;
+using FireplaceApi.Application.Dtos;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Services;
 using Microsoft.AspNetCore.Http;
@@ -30,9 +31,9 @@ public class ErrorController : ApiController
     [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<ErrorDto>> GetErrorByCodeAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] GetErrorByCodeInputRouteParameters inputRouteParameters)
+        [FromRoute] GetErrorByCodeInputRouteDto inputRouteDto)
     {
-        var error = await _errorService.GetErrorAsync(requestingUser, inputRouteParameters.Identifier);
+        var error = await _errorService.GetErrorAsync(requestingUser, inputRouteDto.Identifier);
         var errorDto = error.ToDto();
         return errorDto;
     }

@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Application.Converters;
+using FireplaceApi.Application.Dtos;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Services;
 using Microsoft.AspNetCore.Http;
@@ -32,9 +33,9 @@ public class FileController : ApiController
     [RequestSizeLimit(268435456)] // For kestrel
     public async Task<ActionResult<FileDto>> PostFileAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromForm] PostFileInputFormParameters inputBodyParameters)
+        [FromForm] PostFileInputFormDto inputBodyDto)
     {
-        var file = await _fileService.CreateFileAsync(requestingUser, inputBodyParameters.FormFile);
+        var file = await _fileService.CreateFileAsync(requestingUser, inputBodyDto.FormFile);
         var fileDto = file.ToDto();
         return fileDto;
     }

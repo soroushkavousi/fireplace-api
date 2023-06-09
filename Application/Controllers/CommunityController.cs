@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Application.Converters;
+using FireplaceApi.Application.Dtos;
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Services;
@@ -33,18 +34,18 @@ public class CommunityController : ApiController
     [HttpGet]
     [ProducesResponseType(typeof(QueryResultDto<CommunityDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<QueryResultDto<CommunityDto>>> ListCommunitiesAsync(
-        [FromQuery] ListCommunitiesInputQueryParameters inputQueryParameters)
+        [FromQuery] ListCommunitiesInputQueryDto inputQueryDto)
     {
         var queryResult = new QueryResult<Community>(null, null);
-        if (!inputQueryParameters.EncodedIds.IsNullOrEmpty())
+        if (!inputQueryDto.EncodedIds.IsNullOrEmpty())
         {
             queryResult.Items = await _communityService.ListCommunitiesByIdsAsync(
-                inputQueryParameters.Ids);
+                inputQueryDto.Ids);
         }
         else
         {
-            queryResult = await _communityService.ListCommunitiesAsync(inputQueryParameters.Search,
-                inputQueryParameters.Sort);
+            queryResult = await _communityService.ListCommunitiesAsync(inputQueryDto.Search,
+                inputQueryDto.Sort);
         }
         var queryResultDto = queryResult.ToDto();
         return queryResultDto;
@@ -59,10 +60,10 @@ public class CommunityController : ApiController
     [ProducesResponseType(typeof(QueryResultDto<CommunityDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<QueryResultDto<CommunityDto>>> ListJoinedCommunitiesAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromQuery] ListJoinedCommunitiesInputQueryParameters inputQueryParameters)
+        [FromQuery] ListJoinedCommunitiesInputQueryDto inputQueryDto)
     {
         var queryResult = await _communityService.ListJoinedCommunitiesAsync(requestingUser,
-            inputQueryParameters.Sort);
+            inputQueryDto.Sort);
         var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
@@ -76,10 +77,10 @@ public class CommunityController : ApiController
     [HttpGet("{id-or-name}")]
     [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<CommunityDto>> GetCommunityByIdOrNameAsync(
-        [FromRoute] GetCommunityByIdOrNameInputRouteParameters inputRouteParameters)
+        [FromRoute] GetCommunityByIdOrNameInputRouteDto inputRouteDto)
     {
         var community = await _communityService.GetCommunityByIdentifierAsync(
-            inputRouteParameters.Identifier);
+            inputRouteDto.Identifier);
         var communityDto = community.ToDto();
         return communityDto;
     }
@@ -94,10 +95,10 @@ public class CommunityController : ApiController
     [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<CommunityDto>> CreateCommunityAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromBody] CreateCommunityInputBodyParameters inputBodyParameters)
+        [FromBody] CreateCommunityInputBodyDto inputBodyDto)
     {
         var community = await _communityService.CreateCommunityAsync(requestingUser,
-            inputBodyParameters.Name);
+            inputBodyDto.Name);
         var communityDto = community.ToDto();
         return communityDto;
     }
@@ -112,11 +113,11 @@ public class CommunityController : ApiController
     [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<CommunityDto>> PatchCommunityByEncodedIdOrNameAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] PatchCommunityByEncodedIdOrNameInputRouteParameters inputRouteParameters,
-        [FromBody] PatchCommunityInputBodyParameters inputBodyParameters)
+        [FromRoute] PatchCommunityByEncodedIdOrNameInputRouteDto inputRouteDto,
+        [FromBody] PatchCommunityInputBodyDto inputBodyDto)
     {
         var community = await _communityService.PatchCommunityByIdentifierAsync(requestingUser,
-            inputRouteParameters.Identifier, inputBodyParameters.NewName);
+            inputRouteDto.Identifier, inputBodyDto.NewName);
         var communityDto = community.ToDto();
         return communityDto;
     }
@@ -130,9 +131,9 @@ public class CommunityController : ApiController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> DeleteCommunityByIdOrNameAsync(
         [BindNever][FromHeader] User requestingUser,
-        [FromRoute] DeleteCommunityByEncodedIdOrNameInputRouteParameters inputRouteParameters)
+        [FromRoute] DeleteCommunityByEncodedIdOrNameInputRouteDto inputRouteDto)
     {
-        await _communityService.DeleteCommunityByIdentifierAsync(requestingUser, inputRouteParameters.Identifier);
+        await _communityService.DeleteCommunityByIdentifierAsync(requestingUser, inputRouteDto.Identifier);
         return Ok();
     }
 }

@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Application.Controllers;
-using FireplaceApi.Application.Converters;
+﻿using FireplaceApi.Application.Converters;
+using FireplaceApi.Application.Dtos;
 using FireplaceApi.Application.Tool;
 using FireplaceApi.Application.Validators;
 using FireplaceApi.Domain.Enums;
