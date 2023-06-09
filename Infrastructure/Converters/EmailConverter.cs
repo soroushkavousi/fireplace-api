@@ -3,34 +3,19 @@ using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.ValueObjects;
 using FireplaceApi.Infrastructure.Entities;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
 
 namespace FireplaceApi.Infrastructure.Converters;
 
-public class EmailConverter
+public static class EmailConverter
 {
-    private readonly ILogger<EmailConverter> _logger;
-    private readonly IServiceProvider _serviceProvider;
-
-    public EmailConverter(ILogger<EmailConverter> logger, IServiceProvider serviceProvider)
-    {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
-    }
-
-    // Entity
-
-    public EmailEntity ConvertToEntity(Email email)
+    public static EmailEntity ToEntity(this Email email)
     {
         if (email == null)
             return null;
 
         UserEntity userEntity = null;
         if (email.User != null)
-            userEntity = _serviceProvider.GetService<UserConverter>()
-                .ConvertToEntity(email.User.PureCopy());
+            userEntity = email.User.PureCopy().ToEntity();
 
         var emailEntity = new EmailEntity(email.Id, email.UserId, email.Address,
             email.Activation.Status.ToString(), email.CreationDate,
@@ -39,14 +24,14 @@ public class EmailConverter
         return emailEntity;
     }
 
-    public Email ConvertToModel(EmailEntity emailEntity)
+    public static Email ToModel(this EmailEntity emailEntity)
     {
         if (emailEntity == null)
             return null;
 
         User user = null;
         if (emailEntity.UserEntity != null)
-            user = _serviceProvider.GetService<UserConverter>().ConvertToModel(emailEntity.UserEntity.PureCopy());
+            user = emailEntity.UserEntity.PureCopy().ToModel();
 
         var activation = new Activation(emailEntity.ActivationStatus.ToEnum<ActivationStatus>(),
             emailEntity.ActivationCode);

@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Application.Converters;
-using FireplaceApi.Domain.Interfaces;
+﻿using FireplaceApi.Domain.Interfaces;
 using FireplaceApi.Domain.Operators;
 using FireplaceApi.Domain.Services;
 using FireplaceApi.Domain.Tools;
@@ -19,26 +18,6 @@ public static class AspNetCoreExtensions
     public static IEnumerable<string> GetErrorMessages(this ModelStateDictionary modelState)
     {
         return modelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-    }
-
-    public static IServiceCollection AddInfrastructurConverters(this IServiceCollection services)
-    {
-        services.AddScoped<Infrastructure.Converters.AccessTokenConverter>();
-        services.AddScoped<Infrastructure.Converters.CommentConverter>();
-        services.AddScoped<Infrastructure.Converters.CommentVoteConverter>();
-        services.AddScoped<Infrastructure.Converters.CommunityConverter>();
-        services.AddScoped<Infrastructure.Converters.CommunityMembershipConverter>();
-        services.AddScoped<Infrastructure.Converters.ConfigsConverter>();
-        services.AddScoped<Infrastructure.Converters.EmailConverter>();
-        services.AddScoped<Infrastructure.Converters.ErrorConverter>();
-        services.AddScoped<Infrastructure.Converters.FileConverter>();
-        services.AddScoped<Infrastructure.Converters.GoogleUserConverter>();
-        services.AddScoped<Infrastructure.Converters.PostConverter>();
-        services.AddScoped<Infrastructure.Converters.RequestTraceConverter>();
-        services.AddScoped<Infrastructure.Converters.PostVoteConverter>();
-        services.AddScoped<Infrastructure.Converters.SessionConverter>();
-        services.AddScoped<Infrastructure.Converters.UserConverter>();
-        return services;
     }
 
     public static IServiceCollection AddRepositories(this IServiceCollection services)
@@ -136,20 +115,6 @@ public static class AspNetCoreExtensions
         services.AddScoped<PostService>();
         services.AddScoped<SessionService>();
         services.AddScoped<UserService>();
-        return services;
-    }
-
-    public static IServiceCollection AddApiConverters(this IServiceCollection services)
-    {
-        services.AddScoped<CommentConverter>();
-        services.AddScoped<CommunityConverter>();
-        services.AddScoped<CommunityMembershipConverter>();
-        services.AddScoped<EmailConverter>();
-        services.AddScoped<ErrorConverter>();
-        services.AddScoped<FileConverter>();
-        services.AddScoped<PostConverter>();
-        services.AddScoped<SessionConverter>();
-        services.AddScoped<UserConverter>();
         return services;
     }
 

@@ -1,22 +1,12 @@
 ﻿using FireplaceApi.Application.Controllers;
 using FireplaceApi.Domain.Models;
-using Microsoft.Extensions.Logging;
-using System;
+using FireplaceApi.Domain.ValueObjects;
 
 namespace FireplaceApi.Application.Converters;
 
-public class ErrorConverter : BaseConverter<Error, ErrorDto>
+public static class ErrorConverter
 {
-    private readonly ILogger<ErrorConverter> _logger;
-    private readonly IServiceProvider _serviceProvider;
-
-    public ErrorConverter(ILogger<ErrorConverter> logger, IServiceProvider serviceProvider)
-    {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
-    }
-
-    public override ErrorDto ConvertToDto(Error error)
+    public static ErrorDto ToDto(this Error error)
     {
         if (error == null)
             return null;
@@ -27,7 +17,7 @@ public class ErrorConverter : BaseConverter<Error, ErrorDto>
         return errorDto;
     }
 
-    public ApiExceptionErrorDto ConvertToApiExceptionDto(Error error)
+    public static ApiExceptionErrorDto ToApiExceptionDto(this Error error)
     {
         if (error == null)
             return null;
@@ -37,4 +27,7 @@ public class ErrorConverter : BaseConverter<Error, ErrorDto>
 
         return errorDto;
     }
+
+    public static QueryResultDto<ErrorDto> ToDto(this QueryResult<Error> queryResult)
+        => queryResult.ToDto(ToDto);
 }

@@ -14,12 +14,10 @@ namespace FireplaceApi.Application.Controllers;
 [Produces("application/json")]
 public class EmailController : ApiController
 {
-    private readonly EmailConverter _emailConverter;
     private readonly EmailService _emailService;
 
-    public EmailController(EmailConverter emailConverter, EmailService emailService)
+    public EmailController(EmailService emailService)
     {
-        _emailConverter = emailConverter;
         _emailService = emailService;
     }
 
@@ -37,7 +35,7 @@ public class EmailController : ApiController
     {
         var email = await _emailService.ActivateRequestingUserEmailAsync(requestingUser,
             inputBodyParameters.ActivationCode.Value);
-        var emailDto = _emailConverter.ConvertToDto(email);
+        var emailDto = email.ToDto();
         return emailDto;
     }
 
@@ -68,7 +66,7 @@ public class EmailController : ApiController
         [BindNever][FromHeader] User requestingUser)
     {
         var email = await _emailService.GetRequestingUserEmailAsync(requestingUser);
-        var emailDto = _emailConverter.ConvertToDto(email);
+        var emailDto = email.ToDto();
         return emailDto;
     }
 
@@ -86,7 +84,7 @@ public class EmailController : ApiController
     {
         var email = await _emailService.PatchEmailAsync(requestingUser,
             inputBodyParameters.NewAddress);
-        var emailDto = _emailConverter.ConvertToDto(email);
+        var emailDto = email.ToDto();
         return emailDto;
     }
 }

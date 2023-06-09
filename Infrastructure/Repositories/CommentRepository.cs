@@ -21,15 +21,12 @@ public class CommentRepository : ICommentRepository
     private readonly ILogger<CommentRepository> _logger;
     private readonly ProjectDbContext _dbContext;
     private readonly DbSet<CommentEntity> _commentEntities;
-    private readonly CommentConverter _commentConverter;
 
-    public CommentRepository(ILogger<CommentRepository> logger,
-        ProjectDbContext dbContext, CommentConverter commentConverter)
+    public CommentRepository(ILogger<CommentRepository> logger, ProjectDbContext dbContext)
     {
         _logger = logger;
         _dbContext = dbContext;
         _commentEntities = dbContext.CommentEntities;
-        _commentConverter = commentConverter;
     }
 
     public async Task<List<Comment>> ListPostCommentsAsync(ulong postId,
@@ -66,7 +63,7 @@ public class CommentRepository : ICommentRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { commentEntities = commentEntities.Select(e => e.Id) });
-        return commentEntities.Select(_commentConverter.ConvertToModel).ToList();
+        return commentEntities.Select(CommentConverter.ToModel).ToList();
     }
 
     public async Task<List<Comment>> ListChildCommentAsync(ulong id, SortType sort,
@@ -97,7 +94,7 @@ public class CommentRepository : ICommentRepository
         var childCommentEntities = commentEntity?.ChildCommentEntities;
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { childCommentEntities = childCommentEntities?.Select(e => e.Id) });
-        return childCommentEntities.Select(_commentConverter.ConvertToModel).ToList();
+        return childCommentEntities.Select(CommentConverter.ToModel).ToList();
     }
 
     public async Task<List<Comment>> ListCommentsByIdsAsync(List<ulong> Ids,
@@ -134,7 +131,7 @@ public class CommentRepository : ICommentRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { commentEntities = commentEntities.Select(e => e.Id) });
-        return commentEntities.Select(_commentConverter.ConvertToModel).ToList();
+        return commentEntities.Select(CommentConverter.ToModel).ToList();
     }
 
     public async Task<List<Comment>> ListSelfCommentsAsync(User author,
@@ -169,7 +166,7 @@ public class CommentRepository : ICommentRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { commentEntities = commentEntities.Select(e => e.Id) });
-        return commentEntities.Select(_commentConverter.ConvertToModel).ToList();
+        return commentEntities.Select(CommentConverter.ToModel).ToList();
     }
 
     public async Task<Comment> GetCommentByIdAsync(ulong id,
@@ -200,7 +197,7 @@ public class CommentRepository : ICommentRepository
             commentEntity.CheckRequestingUserVote(requestingUser);
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntity });
-        return _commentConverter.ConvertToModel(commentEntity);
+        return commentEntity.ToModel();
     }
 
     public async Task<Comment> CreateCommentAsync(ulong id, ulong authorUserId,
@@ -225,14 +222,14 @@ public class CommentRepository : ICommentRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { commentEntity });
-        return _commentConverter.ConvertToModel(commentEntity);
+        return commentEntity.ToModel();
     }
 
     public async Task<Comment> UpdateCommentAsync(Comment comment)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { comment });
         var sw = Stopwatch.StartNew();
-        var commentEntity = _commentConverter.ConvertToEntity(comment);
+        var commentEntity = comment.ToEntity();
         _commentEntities.Update(commentEntity);
         try
         {
@@ -246,7 +243,7 @@ public class CommentRepository : ICommentRepository
         }
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntity });
-        return _commentConverter.ConvertToModel(commentEntity);
+        return commentEntity.ToModel();
     }
 
     public async Task DeleteCommentByIdAsync(ulong id)

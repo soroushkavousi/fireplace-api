@@ -20,15 +20,13 @@ public class CommentVoteRepository : ICommentVoteRepository
     private readonly ILogger<CommentVoteRepository> _logger;
     private readonly ProjectDbContext _dbContext;
     private readonly DbSet<CommentVoteEntity> _commentVoteEntities;
-    private readonly CommentVoteConverter _commentVoteConverter;
 
     public CommentVoteRepository(ILogger<CommentVoteRepository> logger,
-        ProjectDbContext dbContext, CommentVoteConverter commentVoteConverter)
+        ProjectDbContext dbContext)
     {
         _logger = logger;
         _dbContext = dbContext;
         _commentVoteEntities = dbContext.CommentVoteEntities;
-        _commentVoteConverter = commentVoteConverter;
     }
 
     public async Task<List<CommentVote>> ListCommentVotesAsync(List<ulong> Ids)
@@ -47,7 +45,7 @@ public class CommentVoteRepository : ICommentVoteRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { commentEntities = commentVoteEntities.Select(e => e.Id) });
-        return commentVoteEntities.Select(_commentVoteConverter.ConvertToModel).ToList();
+        return commentVoteEntities.Select(CommentVoteConverter.ToModel).ToList();
     }
 
     public async Task<CommentVote> GetCommentVoteByIdAsync(ulong id,
@@ -70,7 +68,7 @@ public class CommentVoteRepository : ICommentVoteRepository
             .SingleOrDefaultAsync();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentVoteEntity });
-        return _commentVoteConverter.ConvertToModel(commentVoteEntity);
+        return commentVoteEntity.ToModel();
     }
 
     public async Task<CommentVote> GetCommentVoteAsync(ulong voterId,
@@ -95,7 +93,7 @@ public class CommentVoteRepository : ICommentVoteRepository
             .SingleOrDefaultAsync();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentVoteEntity });
-        return _commentVoteConverter.ConvertToModel(commentVoteEntity);
+        return commentVoteEntity.ToModel();
     }
 
     public async Task<CommentVote> CreateCommentVoteAsync(ulong id, ulong voterUserId,
@@ -118,14 +116,14 @@ public class CommentVoteRepository : ICommentVoteRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { commentVoteEntity });
-        return _commentVoteConverter.ConvertToModel(commentVoteEntity);
+        return commentVoteEntity.ToModel();
     }
 
     public async Task<CommentVote> UpdateCommentVoteAsync(CommentVote commentvote)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { commentvote });
         var sw = Stopwatch.StartNew();
-        var commentVoteEntity = _commentVoteConverter.ConvertToEntity(commentvote);
+        var commentVoteEntity = commentvote.ToEntity();
         _commentVoteEntities.Update(commentVoteEntity);
         try
         {
@@ -139,7 +137,7 @@ public class CommentVoteRepository : ICommentVoteRepository
         }
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentVoteEntity });
-        return _commentVoteConverter.ConvertToModel(commentVoteEntity);
+        return commentVoteEntity.ToModel();
     }
 
     public async Task DeleteCommentVoteByIdAsync(ulong id)

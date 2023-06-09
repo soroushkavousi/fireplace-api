@@ -21,11 +21,10 @@ public class CommunityQueryResolvers
     public async Task<QueryResultDto<CommunityDto>> GetCommunitiesAsync(
         [Service(ServiceKind.Resolver)] CommunityService communityService,
         [Service(ServiceKind.Resolver)] CommunityValidator communityValidator,
-        [Service] CommunityConverter communityConverter,
         [GraphQLNonNullType] string search, CommunitySortType? sort = null)
     {
         var queryResult = await communityService.ListCommunitiesAsync(search, sort);
-        var queryResultDto = communityConverter.ConvertToDto(queryResult);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 
@@ -33,12 +32,11 @@ public class CommunityQueryResolvers
     public async Task<CommunityDto> GetCommunityAsync(
         [Service(ServiceKind.Resolver)] CommunityService communityService,
         [Service(ServiceKind.Resolver)] CommunityValidator communityValidator,
-        [Service] CommunityConverter communityConverter,
         [GraphQLNonNullType] string idOrName)
     {
         var communityIdentifier = communityValidator.ValidateEncodedIdOrName(idOrName);
         var community = await communityService.GetCommunityByIdentifierAsync(communityIdentifier);
-        var communityDto = communityConverter.ConvertToDto(community);
+        var communityDto = community.ToDto();
         return communityDto;
     }
 }
@@ -50,12 +48,11 @@ public class PostCommunityQueryResolvers
     public async Task<CommunityDto> GetCommunityAsync(
         [Service(ServiceKind.Resolver)] CommunityService communityService,
         [Service(ServiceKind.Resolver)] CommunityValidator communityValidator,
-        [Service] CommunityConverter communityConverter, [User] User requestingUser,
-        [Parent] PostDto post)
+        [User] User requestingUser, [Parent] PostDto post)
     {
         var communityIdentifier = CommunityIdentifier.OfId(post.CommunityId.IdDecode());
         var community = await communityService.GetCommunityByIdentifierAsync(communityIdentifier);
-        var communityDto = communityConverter.ConvertToDto(community);
+        var communityDto = community.ToDto();
         return communityDto;
     }
 }
@@ -67,12 +64,11 @@ public class UserCommunitiesQueryResolvers
     public async Task<QueryResultDto<CommunityDto>> GetJoinedCommunitiesAsync(
         [Service(ServiceKind.Resolver)] CommunityService communityService,
         [Service(ServiceKind.Resolver)] CommunityValidator communityValidator,
-        [Service] CommunityConverter communityConverter,
         [User] User requestingUser, [Parent] UserDto user,
         CommunitySortType? sort = null)
     {
         var queryResult = await communityService.ListJoinedCommunitiesAsync(requestingUser, sort);
-        var queryResultDto = communityConverter.ConvertToDto(queryResult);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 }

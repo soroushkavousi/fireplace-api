@@ -20,15 +20,13 @@ public class CommunityMembershipRepository : ICommunityMembershipRepository
     private readonly ILogger<CommunityMembershipRepository> _logger;
     private readonly ProjectDbContext _dbContext;
     private readonly DbSet<CommunityMembershipEntity> _communityMembershipEntities;
-    private readonly CommunityMembershipConverter _communityMembershipConverter;
 
     public CommunityMembershipRepository(ILogger<CommunityMembershipRepository> logger,
-        ProjectDbContext dbContext, CommunityMembershipConverter communityMembershipConverter)
+        ProjectDbContext dbContext)
     {
         _logger = logger;
         _dbContext = dbContext;
         _communityMembershipEntities = dbContext.CommunityMembershipEntities;
-        _communityMembershipConverter = communityMembershipConverter;
     }
 
     public async Task<List<CommunityMembership>> SearchCommunityMembershipsAsync(
@@ -55,7 +53,7 @@ public class CommunityMembershipRepository : ICommunityMembershipRepository
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { ids = communityMembershipEntity.Select(e => e.Id) });
         return communityMembershipEntity.Select(
-            _communityMembershipConverter.ConvertToModel).ToList();
+            CommunityMembershipConverter.ToModel).ToList();
     }
 
     public async Task<CommunityMembership> GetCommunityMembershipByIdentifierAsync(
@@ -80,7 +78,7 @@ public class CommunityMembershipRepository : ICommunityMembershipRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { communityMembershipEntity });
-        return _communityMembershipConverter.ConvertToModel(communityMembershipEntity);
+        return communityMembershipEntity.ToModel();
     }
 
     public async Task<CommunityMembership> CreateCommunityMembershipAsync(ulong id,
@@ -96,7 +94,7 @@ public class CommunityMembershipRepository : ICommunityMembershipRepository
         _dbContext.DetachAllEntries();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityMembershipEntity });
-        return _communityMembershipConverter.ConvertToModel(communityMembershipEntity);
+        return communityMembershipEntity.ToModel();
     }
 
     public async Task<CommunityMembership> UpdateCommunityMembershipAsync(
@@ -104,7 +102,7 @@ public class CommunityMembershipRepository : ICommunityMembershipRepository
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { communityMembership });
         var sw = Stopwatch.StartNew();
-        var communityMembershipEntity = _communityMembershipConverter.ConvertToEntity(communityMembership);
+        var communityMembershipEntity = communityMembership.ToEntity();
         _communityMembershipEntities.Update(communityMembershipEntity);
         try
         {
@@ -118,7 +116,7 @@ public class CommunityMembershipRepository : ICommunityMembershipRepository
         }
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityMembershipEntity });
-        return _communityMembershipConverter.ConvertToModel(communityMembershipEntity);
+        return communityMembershipEntity.ToModel();
     }
 
     public async Task DeleteCommunityMembershipByIdentifierAsync(CommunityMembershipIdentifier identifier)

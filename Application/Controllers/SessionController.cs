@@ -16,12 +16,10 @@ namespace FireplaceApi.Application.Controllers;
 [Produces("application/json")]
 public class SessionController : ApiController
 {
-    private readonly SessionConverter _sessionConverter;
     private readonly SessionService _sessionService;
 
-    public SessionController(SessionConverter sessionConverter, SessionService sessionService)
+    public SessionController(SessionService sessionService)
     {
-        _sessionConverter = sessionConverter;
         _sessionService = sessionService;
     }
 
@@ -36,7 +34,7 @@ public class SessionController : ApiController
         [BindNever][FromHeader] User requestingUser)
     {
         var sessions = await _sessionService.ListSessionsAsync(requestingUser);
-        var sessionDtos = sessions.Select(session => _sessionConverter.ConvertToDto(session)).ToList();
+        var sessionDtos = sessions.Select(session => session.ToDto()).ToList();
         //SetOutputHeaderParameters(sessionDtos.HeaderParameters);
         return sessionDtos;
     }

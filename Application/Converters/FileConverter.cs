@@ -1,25 +1,13 @@
 ﻿using FireplaceApi.Application.Controllers;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Tools;
-using Microsoft.Extensions.Logging;
-using System;
+using FireplaceApi.Domain.ValueObjects;
 
 namespace FireplaceApi.Application.Converters;
 
-public class FileConverter : BaseConverter<File, FileDto>
+public static class FileConverter
 {
-    private readonly ILogger<FileConverter> _logger;
-    private readonly Uri _baseUri;
-    private readonly string _basePhysicalPath;
-
-    public FileConverter(ILogger<FileConverter> logger)
-    {
-        _logger = logger;
-        _baseUri = new Uri(Configs.Current.File.BaseUrlPath);
-        _basePhysicalPath = Configs.Current.File.BasePhysicalPath;
-    }
-
-    public override FileDto ConvertToDto(File file)
+    public static FileDto ToDto(this File file)
     {
         if (file == null)
             return null;
@@ -28,4 +16,7 @@ public class FileConverter : BaseConverter<File, FileDto>
 
         return fileDto;
     }
+
+    public static QueryResultDto<FileDto> ToDto(this QueryResult<File> queryResult)
+        => queryResult.ToDto(ToDto);
 }

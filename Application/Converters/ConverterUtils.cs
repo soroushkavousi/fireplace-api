@@ -2,26 +2,23 @@
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Tools;
 using FireplaceApi.Domain.ValueObjects;
+using System;
 using System.Linq;
 
 namespace FireplaceApi.Application.Converters;
 
-public abstract class BaseConverter<M, DTO>
-    where M : BaseModel
-    where DTO : class
+public static class ConverterUtils
 {
-    public abstract DTO ConvertToDto(M model);
-
-    public QueryResultDto<DTO> ConvertToDto(QueryResult<M> queryResult)
+    public static QueryResultDto<DTO> ToDto<M, DTO>(this QueryResult<M> queryResult, Func<M, DTO> ToDtoFunction)
+        where M : BaseModel
     {
         if (queryResult == null)
             return null;
 
-        var itemDtos = queryResult.Items?.Select(model => ConvertToDto(model))?.ToList();
+        var itemDtos = queryResult.Items?.Select(model => ToDtoFunction(model))?.ToList();
         var moreItemIds = queryResult.MoreItemIds?.Select(id => id.IdEncode())?.ToList();
 
         var queryResultDto = new QueryResultDto<DTO>(itemDtos, moreItemIds);
         return queryResultDto;
-
     }
 }

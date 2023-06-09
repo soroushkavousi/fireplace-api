@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Application.Controllers;
@@ -18,15 +17,10 @@ namespace FireplaceApi.Application.Controllers;
 [Produces("application/json")]
 public class CommunityController : ApiController
 {
-    private readonly ILogger<CommunityController> _logger;
-    private readonly CommunityConverter _communityConverter;
     private readonly CommunityService _communityService;
 
-    public CommunityController(ILogger<CommunityController> logger,
-        CommunityConverter communityConverter, CommunityService communityService)
+    public CommunityController(CommunityService communityService)
     {
-        _logger = logger;
-        _communityConverter = communityConverter;
         _communityService = communityService;
     }
 
@@ -52,7 +46,7 @@ public class CommunityController : ApiController
             queryResult = await _communityService.ListCommunitiesAsync(inputQueryParameters.Search,
                 inputQueryParameters.Sort);
         }
-        var queryResultDto = _communityConverter.ConvertToDto(queryResult);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 
@@ -69,7 +63,7 @@ public class CommunityController : ApiController
     {
         var queryResult = await _communityService.ListJoinedCommunitiesAsync(requestingUser,
             inputQueryParameters.Sort);
-        var queryResultDto = _communityConverter.ConvertToDto(queryResult);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 
@@ -86,7 +80,7 @@ public class CommunityController : ApiController
     {
         var community = await _communityService.GetCommunityByIdentifierAsync(
             inputRouteParameters.Identifier);
-        var communityDto = _communityConverter.ConvertToDto(community);
+        var communityDto = community.ToDto();
         return communityDto;
     }
 
@@ -104,7 +98,7 @@ public class CommunityController : ApiController
     {
         var community = await _communityService.CreateCommunityAsync(requestingUser,
             inputBodyParameters.Name);
-        var communityDto = _communityConverter.ConvertToDto(community);
+        var communityDto = community.ToDto();
         return communityDto;
     }
 
@@ -123,7 +117,7 @@ public class CommunityController : ApiController
     {
         var community = await _communityService.PatchCommunityByIdentifierAsync(requestingUser,
             inputRouteParameters.Identifier, inputBodyParameters.NewName);
-        var communityDto = _communityConverter.ConvertToDto(community);
+        var communityDto = community.ToDto();
         return communityDto;
     }
 

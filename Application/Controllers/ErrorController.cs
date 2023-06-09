@@ -14,12 +14,10 @@ namespace FireplaceApi.Application.Controllers;
 [Produces("application/json")]
 public class ErrorController : ApiController
 {
-    private readonly ErrorConverter _errorConverter;
     private readonly ErrorService _errorService;
 
-    public ErrorController(ErrorConverter errorConverter, ErrorService errorService)
+    public ErrorController(ErrorService errorService)
     {
-        _errorConverter = errorConverter;
         _errorService = errorService;
     }
 
@@ -35,7 +33,7 @@ public class ErrorController : ApiController
         [FromRoute] GetErrorByCodeInputRouteParameters inputRouteParameters)
     {
         var error = await _errorService.GetErrorAsync(requestingUser, inputRouteParameters.Identifier);
-        var errorDto = _errorConverter.ConvertToDto(error);
+        var errorDto = error.ToDto();
         return errorDto;
     }
 }

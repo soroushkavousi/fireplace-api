@@ -19,15 +19,12 @@ public class ConfigsRepository : IConfigsRepository
     private readonly ILogger<ConfigsRepository> _logger;
     private readonly ProjectDbContext _dbContext;
     private readonly DbSet<ConfigsEntity> _configsEntities;
-    private readonly ConfigsConverter _configsConverter;
 
-    public ConfigsRepository(ILogger<ConfigsRepository> logger,
-        ProjectDbContext dbContext, ConfigsConverter configsConverter)
+    public ConfigsRepository(ILogger<ConfigsRepository> logger, ProjectDbContext dbContext)
     {
         _logger = logger;
         _dbContext = dbContext;
         _configsEntities = dbContext.ConfigsEntities;
-        _configsConverter = configsConverter;
     }
 
     public async Task<Configs> GetConfigsByIdentifierAsync(ConfigsIdentifier identifier)
@@ -42,7 +39,7 @@ public class ConfigsRepository : IConfigsRepository
             .SingleOrDefaultAsync();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { configsEntity });
-        return _configsConverter.ConvertToModel(configsEntity);
+        return configsEntity.ToModel();
     }
 
     public async Task<Configs> CreateConfigsAsync(Configs configs)
@@ -50,20 +47,20 @@ public class ConfigsRepository : IConfigsRepository
         _logger.LogAppInformation(title: "DATABASE_INPUT",
             parameters: new { configs });
         var sw = Stopwatch.StartNew();
-        var configsEntity = _configsConverter.ConvertToEntity(configs);
+        var configsEntity = configs.ToEntity();
         _configsEntities.Add(configsEntity);
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { configsEntity });
-        return _configsConverter.ConvertToModel(configsEntity);
+        return configsEntity.ToModel();
     }
 
     public async Task<Configs> UpdateConfigsAsync(Configs configs)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { configs });
         var sw = Stopwatch.StartNew();
-        var configsEntity = _configsConverter.ConvertToEntity(configs);
+        var configsEntity = configs.ToEntity();
         _configsEntities.Update(configsEntity);
         try
         {
@@ -77,7 +74,7 @@ public class ConfigsRepository : IConfigsRepository
         }
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { configsEntity });
-        return _configsConverter.ConvertToModel(configsEntity);
+        return configsEntity.ToModel();
     }
 
     public async Task<bool> DoesConfigsIdentifierExistAsync(ConfigsIdentifier identifier)

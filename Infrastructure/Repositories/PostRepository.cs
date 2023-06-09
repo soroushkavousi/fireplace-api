@@ -21,15 +21,12 @@ public class PostRepository : IPostRepository
     private readonly ILogger<PostRepository> _logger;
     private readonly ProjectDbContext _dbContext;
     private readonly DbSet<PostEntity> _postEntities;
-    private readonly PostConverter _postConverter;
 
-    public PostRepository(ILogger<PostRepository> logger,
-        ProjectDbContext dbContext, PostConverter postConverter)
+    public PostRepository(ILogger<PostRepository> logger, ProjectDbContext dbContext)
     {
         _logger = logger;
         _dbContext = dbContext;
         _postEntities = dbContext.PostEntities;
-        _postConverter = postConverter;
     }
 
     public async Task<List<Post>> ListCommunityPostsAsync(CommunityIdentifier communityIdentifier,
@@ -64,7 +61,7 @@ public class PostRepository : IPostRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { postEntities = postEntities.Select(e => e.Id) });
-        return postEntities.Select(_postConverter.ConvertToModel).ToList();
+        return postEntities.Select(PostConverter.ToModel).ToList();
     }
 
     public async Task<List<Post>> ListPostsAsync(string search, SortType sort,
@@ -99,7 +96,7 @@ public class PostRepository : IPostRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { postEntities = postEntities.Select(e => e.Id) });
-        return postEntities.Select(_postConverter.ConvertToModel).ToList();
+        return postEntities.Select(PostConverter.ToModel).ToList();
     }
 
     public async Task<List<Post>> ListPostsByIdsAsync(List<ulong> Ids,
@@ -131,7 +128,7 @@ public class PostRepository : IPostRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { postEntities = postEntities.Select(e => e.Id) });
-        return postEntities.Select(_postConverter.ConvertToModel).ToList();
+        return postEntities.Select(PostConverter.ToModel).ToList();
     }
 
     public async Task<List<Post>> ListSelfPostsAsync(User author,
@@ -164,7 +161,7 @@ public class PostRepository : IPostRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { postEntities = postEntities.Select(e => e.Id) });
-        return postEntities.Select(_postConverter.ConvertToModel).ToList();
+        return postEntities.Select(PostConverter.ToModel).ToList();
     }
 
     public async Task<Post> GetPostByIdAsync(ulong id,
@@ -193,7 +190,7 @@ public class PostRepository : IPostRepository
             postEntity.CheckRequestingUserVote(requestingUser);
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
-        return _postConverter.ConvertToModel(postEntity);
+        return postEntity.ToModel();
     }
 
     public async Task<Post> CreatePostAsync(ulong id, ulong authorUserId,
@@ -218,14 +215,14 @@ public class PostRepository : IPostRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { postEntity });
-        return _postConverter.ConvertToModel(postEntity);
+        return postEntity.ToModel();
     }
 
     public async Task<Post> UpdatePostAsync(Post post)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { post });
         var sw = Stopwatch.StartNew();
-        var postEntity = _postConverter.ConvertToEntity(post);
+        var postEntity = post.ToEntity();
         _postEntities.Update(postEntity);
         try
         {
@@ -239,7 +236,7 @@ public class PostRepository : IPostRepository
         }
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
-        return _postConverter.ConvertToModel(postEntity);
+        return PostConverter.ToModel(postEntity);
     }
 
     public async Task DeletePostByIdAsync(ulong id)

@@ -1,33 +1,18 @@
 ﻿using FireplaceApi.Domain.Models;
 using FireplaceApi.Infrastructure.Entities;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
 
 namespace FireplaceApi.Infrastructure.Converters;
 
-public class GoogleUserConverter
+public static class GoogleUserConverter
 {
-    private readonly ILogger<GoogleUserConverter> _logger;
-    private readonly IServiceProvider _serviceProvider;
-
-    public GoogleUserConverter(ILogger<GoogleUserConverter> logger, IServiceProvider serviceProvider)
-    {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
-    }
-
-    // Entity
-
-    public GoogleUserEntity ConvertToEntity(GoogleUser googleUser)
+    public static GoogleUserEntity ToEntity(this GoogleUser googleUser)
     {
         if (googleUser == null)
             return null;
 
         UserEntity userEntity = null;
         if (googleUser.User != null)
-            userEntity = _serviceProvider.GetService<UserConverter>()
-                .ConvertToEntity(googleUser.User.PureCopy());
+            userEntity = googleUser.User.PureCopy().ToEntity();
 
         var googleUserEntity = new GoogleUserEntity(googleUser.Id, googleUser.UserId, googleUser.Code,
             googleUser.AccessToken, googleUser.TokenType, googleUser.AccessTokenExpiresInSeconds,
@@ -41,15 +26,14 @@ public class GoogleUserConverter
         return googleUserEntity;
     }
 
-    public GoogleUser ConvertToModel(GoogleUserEntity googleUserEntity)
+    public static GoogleUser ToModel(this GoogleUserEntity googleUserEntity)
     {
         if (googleUserEntity == null)
             return null;
 
         User user = null;
         if (googleUserEntity.UserEntity != null)
-            user = _serviceProvider.GetService<UserConverter>()
-                .ConvertToModel(googleUserEntity.UserEntity.PureCopy());
+            user = googleUserEntity.UserEntity.PureCopy().ToModel();
 
         var googleUser = new GoogleUser(googleUserEntity.Id, googleUserEntity.UserEntityId,
             googleUserEntity.Code, googleUserEntity.AccessToken, googleUserEntity.TokenType,

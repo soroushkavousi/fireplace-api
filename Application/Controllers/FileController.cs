@@ -14,12 +14,10 @@ namespace FireplaceApi.Application.Controllers;
 [Produces("application/json")]
 public class FileController : ApiController
 {
-    private readonly FileConverter _fileConverter;
     private readonly FileService _fileService;
 
-    public FileController(FileConverter fileConverter, FileService fileService)
+    public FileController(FileService fileService)
     {
-        _fileConverter = fileConverter;
         _fileService = fileService;
     }
 
@@ -37,7 +35,7 @@ public class FileController : ApiController
         [FromForm] PostFileInputFormParameters inputBodyParameters)
     {
         var file = await _fileService.CreateFileAsync(requestingUser, inputBodyParameters.FormFile);
-        var fileDto = _fileConverter.ConvertToDto(file);
+        var fileDto = file.ToDto();
         return fileDto;
     }
 }

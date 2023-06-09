@@ -1,23 +1,13 @@
 ﻿using FireplaceApi.Application.Controllers;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Tools;
-using Microsoft.Extensions.Logging;
-using System;
+using FireplaceApi.Domain.ValueObjects;
 
 namespace FireplaceApi.Application.Converters;
 
-public class SessionConverter : BaseConverter<Session, SessionDto>
+public static class SessionConverter
 {
-    private readonly ILogger<SessionConverter> _logger;
-    private readonly IServiceProvider _serviceProvider;
-
-    public SessionConverter(ILogger<SessionConverter> logger, IServiceProvider serviceProvider)
-    {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
-    }
-
-    public override SessionDto ConvertToDto(Session session)
+    public static SessionDto ToDto(this Session session)
     {
         if (session == null)
             return null;
@@ -27,4 +17,7 @@ public class SessionConverter : BaseConverter<Session, SessionDto>
 
         return sessionDto;
     }
+
+    public static QueryResultDto<SessionDto> ToDto(this QueryResult<Session> queryResult)
+        => queryResult.ToDto(ToDto);
 }

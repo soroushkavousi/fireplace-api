@@ -74,12 +74,10 @@ public partial class Program
     void ConfigureBuilderServices(WebApplicationBuilder builder)
     {
         // Dependency injection items
-        builder.Services.AddApiConverters();
         builder.Services.AddServices();
         builder.Services.AddValidators();
         builder.Services.AddOperators();
         builder.Services.AddTools();
-        builder.Services.AddInfrastructurConverters();
         builder.Services.AddGateways();
         builder.Services.AddRepositories();
         builder.Services.AddCacheServices();

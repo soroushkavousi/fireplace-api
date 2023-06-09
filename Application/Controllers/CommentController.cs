@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Application.Controllers;
@@ -18,16 +17,10 @@ namespace FireplaceApi.Application.Controllers;
 [Produces("application/json")]
 public class CommentController : ApiController
 {
-    private readonly ILogger<CommentController> _logger;
-    private readonly CommentConverter _commentConverter;
     private readonly CommentService _commentService;
 
-    public CommentController(ILogger<CommentController> logger,
-        CommentConverter commentConverter,
-        CommentService commentService)
+    public CommentController(CommentService commentService)
     {
-        _logger = logger;
-        _commentConverter = commentConverter;
         _commentService = commentService;
     }
 
@@ -46,7 +39,7 @@ public class CommentController : ApiController
     {
         var queryResult = await _commentService.ListPostCommentsAsync(
             inputRouteParameters.PostId, inputQueryParameters.Sort, requestingUser);
-        var queryResultDto = _commentConverter.ConvertToDto(queryResult);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 
@@ -69,7 +62,7 @@ public class CommentController : ApiController
                 inputQueryParameters.Ids, inputQueryParameters.Sort, requestingUser);
         }
 
-        var queryResultDto = _commentConverter.ConvertToDto(queryResult);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 
@@ -86,7 +79,7 @@ public class CommentController : ApiController
     {
         var queryResult = await _commentService.ListSelfCommentsAsync(requestingUser,
             inputQueryParameters.Sort);
-        var queryResultDto = _commentConverter.ConvertToDto(queryResult);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 
@@ -105,7 +98,7 @@ public class CommentController : ApiController
     {
         var queryResult = await _commentService.ListChildCommentsAsync(
             inputRouteParameters.ParentId, inputQueryParameters.Sort, requestingUser);
-        var queryResultDto = _commentConverter.ConvertToDto(queryResult);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 
@@ -125,7 +118,7 @@ public class CommentController : ApiController
         var comment = await _commentService.GetCommentByIdAsync(inputRouteParameters.Id,
                 inputQueryParameters.IncludeAuthor, inputQueryParameters.IncludePost,
                 requestingUser);
-        var commentDto = _commentConverter.ConvertToDto(comment);
+        var commentDto = comment.ToDto();
         return commentDto;
     }
 
@@ -145,7 +138,7 @@ public class CommentController : ApiController
         var comment = await _commentService.ReplyToPostAsync(
             requestingUser, inputRouteParameters.PostId,
             inputBodyParameters.Content);
-        var commentDto = _commentConverter.ConvertToDto(comment);
+        var commentDto = comment.ToDto();
         return commentDto;
     }
 
@@ -165,7 +158,7 @@ public class CommentController : ApiController
         var comment = await _commentService.ReplyToCommentAsync(
             requestingUser, inputRouteParameters.ParentCommentId,
             inputBodyParameters.Content);
-        var commentDto = _commentConverter.ConvertToDto(comment);
+        var commentDto = comment.ToDto();
         return commentDto;
     }
 
@@ -184,7 +177,7 @@ public class CommentController : ApiController
     {
         var comment = await _commentService.VoteCommentAsync(
             requestingUser, inputRouteParameters.Id, inputBodyParameters.IsUpvote);
-        var commentDto = _commentConverter.ConvertToDto(comment);
+        var commentDto = comment.ToDto();
         return commentDto;
     }
 
@@ -202,7 +195,7 @@ public class CommentController : ApiController
     {
         var comment = await _commentService.ToggleVoteForCommentAsync(
             requestingUser, inputRouteParameters.Id);
-        var commentDto = _commentConverter.ConvertToDto(comment);
+        var commentDto = comment.ToDto();
         return commentDto;
     }
 
@@ -220,7 +213,7 @@ public class CommentController : ApiController
     {
         var comment = await _commentService.DeleteVoteForCommentAsync(
             requestingUser, inputRouteParameters.Id);
-        var commentDto = _commentConverter.ConvertToDto(comment);
+        var commentDto = comment.ToDto();
         return commentDto;
     }
 
@@ -239,7 +232,7 @@ public class CommentController : ApiController
     {
         var comment = await _commentService.PatchCommentByIdAsync(requestingUser,
             inputRouteParameters.Id, inputBodyParameters.Content);
-        var commentDto = _commentConverter.ConvertToDto(comment);
+        var commentDto = comment.ToDto();
         return commentDto;
     }
 

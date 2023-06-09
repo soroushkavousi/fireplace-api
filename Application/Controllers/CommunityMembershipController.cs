@@ -4,7 +4,6 @@ using FireplaceApi.Domain.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Application.Controllers;
@@ -15,16 +14,10 @@ namespace FireplaceApi.Application.Controllers;
 [Produces("application/json")]
 public class CommunityMembershipController : ApiController
 {
-    private readonly ILogger<CommunityMembershipController> _logger;
-    private readonly CommunityMembershipConverter _communityMembershipConverter;
     private readonly CommunityMembershipService _communityMembershipService;
 
-    public CommunityMembershipController(ILogger<CommunityMembershipController> logger,
-        CommunityMembershipConverter communityMembershipConverter,
-        CommunityMembershipService communityMembershipService)
+    public CommunityMembershipController(CommunityMembershipService communityMembershipService)
     {
-        _logger = logger;
-        _communityMembershipConverter = communityMembershipConverter;
         _communityMembershipService = communityMembershipService;
     }
 
@@ -42,7 +35,7 @@ public class CommunityMembershipController : ApiController
     {
         var communityMembership = await _communityMembershipService.CreateCommunityMembershipAsync(
             requestingUser, inputRouteParameters.CommunityIdentifier);
-        var communityMembershipDto = _communityMembershipConverter.ConvertToDto(communityMembership);
+        var communityMembershipDto = communityMembership.ToDto();
         return communityMembershipDto;
     }
 

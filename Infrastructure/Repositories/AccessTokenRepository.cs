@@ -19,15 +19,12 @@ public class AccessTokenRepository : IAccessTokenRepository
     private readonly ILogger<AccessTokenRepository> _logger;
     private readonly ProjectDbContext _dbContext;
     private readonly DbSet<AccessTokenEntity> _accessTokenEntities;
-    private readonly AccessTokenConverter _accessTokenConverter;
 
-    public AccessTokenRepository(ILogger<AccessTokenRepository> logger,
-        ProjectDbContext dbContext, AccessTokenConverter accessTokenConverter)
+    public AccessTokenRepository(ILogger<AccessTokenRepository> logger, ProjectDbContext dbContext)
     {
         _logger = logger;
         _dbContext = dbContext;
         _accessTokenEntities = dbContext.AccessTokenEntities;
-        _accessTokenConverter = accessTokenConverter;
     }
 
     public async Task<List<AccessToken>> ListAccessTokensAsync(
@@ -44,7 +41,7 @@ public class AccessTokenRepository : IAccessTokenRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { accessTokenEntities = accessTokenEntities.Select(e => e.Id) });
-        return accessTokenEntities.Select(_accessTokenConverter.ConvertToModel).ToList();
+        return accessTokenEntities.Select(AccessTokenConverter.ToModel).ToList();
     }
 
     public async Task<AccessToken> GetAccessTokenByIdAsync(ulong id, bool includeUser = false)
@@ -60,7 +57,7 @@ public class AccessTokenRepository : IAccessTokenRepository
             .SingleOrDefaultAsync();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { accessTokenEntity });
-        return _accessTokenConverter.ConvertToModel(accessTokenEntity);
+        return accessTokenEntity.ToModel();
     }
 
     public async Task<AccessToken> GetAccessTokenByValueAsync(string value, bool includeUser = false)
@@ -76,7 +73,7 @@ public class AccessTokenRepository : IAccessTokenRepository
             .SingleOrDefaultAsync();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { accessTokenEntity });
-        return _accessTokenConverter.ConvertToModel(accessTokenEntity);
+        return accessTokenEntity.ToModel();
     }
 
     public async Task<AccessToken> CreateAccessTokenAsync(ulong id, ulong userId, string value)
@@ -89,14 +86,14 @@ public class AccessTokenRepository : IAccessTokenRepository
         _dbContext.DetachAllEntries();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { accessTokenEntity });
-        return _accessTokenConverter.ConvertToModel(accessTokenEntity);
+        return accessTokenEntity.ToModel();
     }
 
     public async Task<AccessToken> UpdateAccessTokenAsync(AccessToken accessToken)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { accessToken });
         var sw = Stopwatch.StartNew();
-        var accessTokenEntity = _accessTokenConverter.ConvertToEntity(accessToken);
+        var accessTokenEntity = accessToken.ToEntity();
         _accessTokenEntities.Update(accessTokenEntity);
         try
         {
@@ -110,7 +107,7 @@ public class AccessTokenRepository : IAccessTokenRepository
         }
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { accessTokenEntity });
-        return _accessTokenConverter.ConvertToModel(accessTokenEntity);
+        return accessTokenEntity.ToModel();
     }
 
     public async Task DeleteAccessTokenAsync(ulong id)

@@ -1,25 +1,14 @@
 ﻿using FireplaceApi.Application.Controllers;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Tools;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
+using FireplaceApi.Domain.ValueObjects;
 using System.Linq;
 
 namespace FireplaceApi.Application.Converters;
 
-public class CommunityConverter : BaseConverter<Community, CommunityDto>
+public static class CommunityConverter
 {
-    private readonly ILogger<CommunityConverter> _logger;
-    private readonly IServiceProvider _serviceProvider;
-
-    public CommunityConverter(ILogger<CommunityConverter> logger, IServiceProvider serviceProvider)
-    {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
-    }
-
-    public override CommunityDto ConvertToDto(Community community)
+    public static CommunityDto ToDto(this Community community)
     {
         if (community == null)
             return null;
@@ -29,8 +18,7 @@ public class CommunityConverter : BaseConverter<Community, CommunityDto>
         {
             community.Posts.Items = community.Posts.Items
                 .Select(comment => comment.PureCopy()).ToList();
-            postDtos = _serviceProvider.GetService<PostConverter>()
-                .ConvertToDto(community.Posts);
+            postDtos = community.Posts.ToDto(PostConverter.ToDto);
         }
 
         var communityDto = new CommunityDto(community.Id.IdEncode(), community.Name,
@@ -39,4 +27,7 @@ public class CommunityConverter : BaseConverter<Community, CommunityDto>
 
         return communityDto;
     }
+
+    public static QueryResultDto<CommunityDto> ToDto(this QueryResult<Community> queryResult)
+        => queryResult.ToDto(ToDto);
 }

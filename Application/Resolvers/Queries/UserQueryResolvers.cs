@@ -18,11 +18,10 @@ public class UserQueryResolvers
     public async Task<UserDto> GetMeAsync(
         [Service(ServiceKind.Resolver)] UserService userService,
         [Service(ServiceKind.Resolver)] UserValidator userValidator,
-        [Service] UserConverter userConverter,
         [User] User requestingUser)
     {
         var user = await userService.GetRequestingUserAsync(requestingUser, true, true);
-        var userDto = userConverter.ConvertToDto(user);
+        var userDto = user.ToDto();
         return userDto;
     }
 }

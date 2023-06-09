@@ -22,15 +22,12 @@ public class RequestTraceRepository : IRequestTraceRepository
     private readonly ILogger<RequestTraceRepository> _logger;
     private readonly ProjectDbContext _dbContext;
     private readonly DbSet<RequestTraceEntity> _requestTraceEntities;
-    private readonly RequestTraceConverter _requestTraceConverter;
 
-    public RequestTraceRepository(ILogger<RequestTraceRepository> logger,
-        ProjectDbContext dbContext, RequestTraceConverter requestTraceConverter)
+    public RequestTraceRepository(ILogger<RequestTraceRepository> logger, ProjectDbContext dbContext)
     {
         _logger = logger;
         _dbContext = dbContext;
         _requestTraceEntities = dbContext.RequestTraceEntities;
-        _requestTraceConverter = requestTraceConverter;
     }
 
     public async Task<List<RequestTrace>> ListRequestTracesAsync(string method = null,
@@ -80,7 +77,7 @@ public class RequestTraceRepository : IRequestTraceRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { requestTraceEntities = requestTraceEntities.Select(e => e.Id) });
-        return requestTraceEntities.Select(_requestTraceConverter.ConvertToModel).ToList();
+        return requestTraceEntities.Select(RequestTraceConverter.ToModel).ToList();
     }
 
     public async Task<int> CountRequestTracesAsync(string method = null,
@@ -141,7 +138,7 @@ public class RequestTraceRepository : IRequestTraceRepository
             .SingleOrDefaultAsync();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { requestTraceEntity });
-        return _requestTraceConverter.ConvertToModel(requestTraceEntity);
+        return requestTraceEntity.ToModel();
     }
 
     public async Task<RequestTrace> CreateRequestTraceAsync(ulong id, string method,
@@ -174,14 +171,14 @@ public class RequestTraceRepository : IRequestTraceRepository
         _dbContext.DetachAllEntries();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { requestTraceEntity });
-        return _requestTraceConverter.ConvertToModel(requestTraceEntity);
+        return requestTraceEntity.ToModel();
     }
 
     public async Task<RequestTrace> UpdateRequestTraceAsync(RequestTrace requestTrace)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { requestTrace });
         var sw = Stopwatch.StartNew();
-        var requestTraceEntity = _requestTraceConverter.ConvertToEntity(requestTrace);
+        var requestTraceEntity = requestTrace.ToEntity();
         _requestTraceEntities.Update(requestTraceEntity);
         try
         {
@@ -195,7 +192,7 @@ public class RequestTraceRepository : IRequestTraceRepository
         }
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { requestTraceEntity });
-        return _requestTraceConverter.ConvertToModel(requestTraceEntity);
+        return requestTraceEntity.ToModel();
     }
 
     public async Task DeleteRequestTraceAsync(ulong id)

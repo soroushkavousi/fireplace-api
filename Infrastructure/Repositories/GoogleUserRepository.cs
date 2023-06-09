@@ -20,15 +20,12 @@ public class GoogleUserRepository : IGoogleUserRepository
     private readonly ILogger<GoogleUserRepository> _logger;
     private readonly ProjectDbContext _dbContext;
     private readonly DbSet<GoogleUserEntity> _googleUserEntities;
-    private readonly GoogleUserConverter _googleUserConverter;
 
-    public GoogleUserRepository(ILogger<GoogleUserRepository> logger,
-        ProjectDbContext dbContext, GoogleUserConverter googleUserConverter)
+    public GoogleUserRepository(ILogger<GoogleUserRepository> logger, ProjectDbContext dbContext)
     {
         _logger = logger;
         _dbContext = dbContext;
         _googleUserEntities = dbContext.GoogleUserEntities;
-        _googleUserConverter = googleUserConverter;
     }
 
     public async Task<List<GoogleUser>> ListGoogleUsersAsync(
@@ -45,7 +42,7 @@ public class GoogleUserRepository : IGoogleUserRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { googleUserEntities = googleUserEntities.Select(e => e.Id) });
-        return googleUserEntities.Select(_googleUserConverter.ConvertToModel).ToList();
+        return googleUserEntities.Select(GoogleUserConverter.ToModel).ToList();
     }
 
     public async Task<GoogleUser> GetGoogleUserByIdAsync(ulong id, bool includeUser = false)
@@ -61,7 +58,7 @@ public class GoogleUserRepository : IGoogleUserRepository
             .SingleOrDefaultAsync();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
-        return _googleUserConverter.ConvertToModel(googleUserEntity);
+        return googleUserEntity.ToModel();
     }
 
     public async Task<GoogleUser> GetGoogleUserByGmailAddressAsync(string gmailAddress,
@@ -78,7 +75,7 @@ public class GoogleUserRepository : IGoogleUserRepository
             .SingleOrDefaultAsync();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
-        return _googleUserConverter.ConvertToModel(googleUserEntity);
+        return googleUserEntity.ToModel();
     }
 
     public async Task<GoogleUser> CreateGoogleUserAsync(ulong id, ulong userId,
@@ -126,14 +123,14 @@ public class GoogleUserRepository : IGoogleUserRepository
         _dbContext.DetachAllEntries();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
-        return _googleUserConverter.ConvertToModel(googleUserEntity);
+        return googleUserEntity.ToModel();
     }
 
     public async Task<GoogleUser> UpdateGoogleUserAsync(GoogleUser googleUser)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { googleUser });
         var sw = Stopwatch.StartNew();
-        var googleUserEntity = _googleUserConverter.ConvertToEntity(googleUser);
+        var googleUserEntity = googleUser.ToEntity();
         _googleUserEntities.Update(googleUserEntity);
         try
         {
@@ -147,7 +144,7 @@ public class GoogleUserRepository : IGoogleUserRepository
         }
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
-        return _googleUserConverter.ConvertToModel(googleUserEntity);
+        return googleUserEntity.ToModel();
     }
 
     public async Task DeleteGoogleUserAsync(ulong id)

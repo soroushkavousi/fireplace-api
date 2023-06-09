@@ -1,43 +1,22 @@
 ﻿using FireplaceApi.Domain.Models;
 using FireplaceApi.Infrastructure.Entities;
-using Microsoft.Extensions.Logging;
-using System;
 
 namespace FireplaceApi.Infrastructure.Converters;
 
-public class PostConverter
+public static class PostConverter
 {
-    private readonly ILogger<PostConverter> _logger;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly UserConverter _authorConverter;
-    private readonly CommunityConverter _communityConverter;
-
-    public PostConverter(ILogger<PostConverter> logger,
-        IServiceProvider serviceProvider, UserConverter authorConverter,
-        CommunityConverter communityConverter)
-    {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
-        _authorConverter = authorConverter;
-        _communityConverter = communityConverter;
-    }
-
-    // Entity
-
-    public PostEntity ConvertToEntity(Post post)
+    public static PostEntity ToEntity(this Post post)
     {
         if (post == null)
             return null;
 
         UserEntity authorEntity = null;
         if (post.Author != null)
-            authorEntity = _authorConverter
-                .ConvertToEntity(post.Author.PureCopy());
+            authorEntity = post.Author.PureCopy().ToEntity();
 
         CommunityEntity communityEntity = null;
         if (post.Community != null)
-            communityEntity = _communityConverter
-                .ConvertToEntity(post.Community.PureCopy());
+            communityEntity = post.Community.PureCopy().ToEntity();
 
         var postEntity = new PostEntity(post.Id, post.AuthorId,
             post.AuthorUsername, post.CommunityId,
@@ -49,19 +28,18 @@ public class PostConverter
         return postEntity;
     }
 
-    public Post ConvertToModel(PostEntity postEntity)
+    public static Post ToModel(this PostEntity postEntity)
     {
         if (postEntity == null)
             return null;
 
         User author = null;
         if (postEntity.AuthorEntity != null)
-            author = _authorConverter.ConvertToModel(postEntity.AuthorEntity.PureCopy());
+            author = postEntity.AuthorEntity.PureCopy().ToModel();
 
         Community community = null;
         if (postEntity.CommunityEntity != null)
-            community = _communityConverter
-                .ConvertToModel(postEntity.CommunityEntity.PureCopy());
+            community = postEntity.CommunityEntity.PureCopy().ToModel();
 
         var post = new Post(postEntity.Id,
             postEntity.AuthorEntityId, postEntity.AuthorEntityUsername,

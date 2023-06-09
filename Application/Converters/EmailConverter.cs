@@ -1,23 +1,13 @@
 ﻿using FireplaceApi.Application.Controllers;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Tools;
-using Microsoft.Extensions.Logging;
-using System;
+using FireplaceApi.Domain.ValueObjects;
 
 namespace FireplaceApi.Application.Converters;
 
-public class EmailConverter : BaseConverter<Email, EmailDto>
+public static class EmailConverter
 {
-    private readonly ILogger<EmailConverter> _logger;
-    private readonly IServiceProvider _serviceProvider;
-
-    public EmailConverter(ILogger<EmailConverter> logger, IServiceProvider serviceProvider)
-    {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
-    }
-
-    public override EmailDto ConvertToDto(Email email)
+    public static EmailDto ToDto(this Email email)
     {
         if (email == null)
             return null;
@@ -27,4 +17,7 @@ public class EmailConverter : BaseConverter<Email, EmailDto>
 
         return emailDto;
     }
+
+    public static QueryResultDto<EmailDto> ToDto(this QueryResult<Email> queryResult)
+        => queryResult.ToDto(ToDto);
 }

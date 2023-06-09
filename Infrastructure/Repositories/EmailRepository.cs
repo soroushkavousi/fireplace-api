@@ -21,15 +21,12 @@ public class EmailRepository : IEmailRepository
     private readonly ILogger<EmailRepository> _logger;
     private readonly ProjectDbContext _dbContext;
     private readonly DbSet<EmailEntity> _emailEntities;
-    private readonly EmailConverter _emailConverter;
 
-    public EmailRepository(ILogger<EmailRepository> logger,
-        ProjectDbContext dbContext, EmailConverter emailConverter)
+    public EmailRepository(ILogger<EmailRepository> logger, ProjectDbContext dbContext)
     {
         _logger = logger;
         _dbContext = dbContext;
         _emailEntities = dbContext.EmailEntities;
-        _emailConverter = emailConverter;
     }
 
     public async Task<List<Email>> ListEmailsAsync(
@@ -46,7 +43,7 @@ public class EmailRepository : IEmailRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { emailEntities = emailEntities.Select(e => e.Id) });
-        return emailEntities.Select(_emailConverter.ConvertToModel).ToList();
+        return emailEntities.Select(EmailConverter.ToModel).ToList();
     }
 
     public async Task<Email> GetEmailByIdentifierAsync(EmailIdentifier identifier, bool includeUser = false)
@@ -64,7 +61,7 @@ public class EmailRepository : IEmailRepository
             .SingleOrDefaultAsync();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { emailEntity });
-        return _emailConverter.ConvertToModel(emailEntity);
+        return EmailConverter.ToModel(emailEntity);
     }
 
     public async Task<Email> CreateEmailAsync(ulong id, ulong userId,
@@ -80,14 +77,14 @@ public class EmailRepository : IEmailRepository
         _dbContext.DetachAllEntries();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { emailEntity });
-        return _emailConverter.ConvertToModel(emailEntity);
+        return EmailConverter.ToModel(emailEntity);
     }
 
     public async Task<Email> UpdateEmailAsync(Email email)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { email });
         var sw = Stopwatch.StartNew();
-        var emailEntity = _emailConverter.ConvertToEntity(email);
+        var emailEntity = email.ToEntity();
         _emailEntities.Update(emailEntity);
         try
         {
@@ -101,7 +98,7 @@ public class EmailRepository : IEmailRepository
         }
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { emailEntity });
-        return _emailConverter.ConvertToModel(emailEntity);
+        return emailEntity.ToModel();
     }
 
     public async Task DeleteEmailAsync(EmailIdentifier identifier)

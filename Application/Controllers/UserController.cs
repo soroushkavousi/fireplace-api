@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Application.Controllers;
@@ -17,14 +16,10 @@ namespace FireplaceApi.Application.Controllers;
 [Produces("application/json")]
 public class UserController : ApiController
 {
-    private readonly ILogger<UserController> _logger;
-    private readonly UserConverter _userConverter;
     private readonly UserService _userService;
 
-    public UserController(ILogger<UserController> logger, UserConverter userConverter, UserService userService)
+    public UserController(UserService userService)
     {
-        _logger = logger;
-        _userConverter = userConverter;
         _userService = userService;
     }
 
@@ -61,7 +56,7 @@ public class UserController : ApiController
     {
         var user = await _userService.SignUpWithEmailAsync(inputHeaderParameters.IpAddress,
             inputBodyParameters.EmailAddress, inputBodyParameters.Username, inputBodyParameters.PasswordValueObject);
-        var userDto = _userConverter.ConvertToDto(user);
+        var userDto = user.ToDto();
         var outputCookieParameters = new SignUpWithEmailOutputCookieParameters(userDto.AccessToken);
         SetOutputCookieParameters(outputCookieParameters);
         return userDto;
@@ -83,7 +78,7 @@ public class UserController : ApiController
         var user = await _userService.LogInWithGoogleAsync(inputHeaderParameters.IpAddress,
             inputQueryParameters.State, inputQueryParameters.Code, inputQueryParameters.Scope,
             inputQueryParameters.AuthUser, inputQueryParameters.Prompt, inputQueryParameters.Error);
-        var userDto = _userConverter.ConvertToDto(user);
+        var userDto = user.ToDto();
         var outputCookieParameters = new SignUpWithEmailOutputCookieParameters(userDto?.AccessToken);
         SetOutputCookieParameters(outputCookieParameters);
         if (string.IsNullOrWhiteSpace(user.GoogleUser.RedirectToUserUrl))
@@ -107,7 +102,7 @@ public class UserController : ApiController
     {
         var user = await _userService.LogInWithEmailAsync(inputHeaderParameters.IpAddress,
             inputBodyParameters.EmailAddress, inputBodyParameters.PasswordValueObject);
-        var userDto = _userConverter.ConvertToDto(user);
+        var userDto = user.ToDto();
         var outputCookieParameters = new SignUpWithEmailOutputCookieParameters(userDto.AccessToken);
         SetOutputCookieParameters(outputCookieParameters);
         return userDto;
@@ -128,7 +123,7 @@ public class UserController : ApiController
     {
         var user = await _userService.LogInWithUsernameAsync(inputHeaderParameters.IpAddress,
             inputBodyParameters.Username, inputBodyParameters.PasswordValueObject);
-        var userDto = _userConverter.ConvertToDto(user);
+        var userDto = user.ToDto();
         var outputCookieParameters = new SignUpWithEmailOutputCookieParameters(userDto.AccessToken);
         SetOutputCookieParameters(outputCookieParameters);
         return userDto;
@@ -147,7 +142,7 @@ public class UserController : ApiController
     {
         var user = await _userService.GetRequestingUserAsync(requestingUser,
             inputQueryParameters.IncludeEmail, inputQueryParameters.IncludeSessions);
-        var userDto = _userConverter.ConvertToDto(user);
+        var userDto = user.ToDto();
         return userDto;
     }
 
@@ -164,7 +159,7 @@ public class UserController : ApiController
     {
         var profile = await _userService.GetUserProfileAsync(requestingUser,
             inputRouteParameters.Identifier);
-        var profileDto = _userConverter.ConvertToDto(profile);
+        var profileDto = profile.ToDto();
         return profileDto;
     }
 
@@ -235,7 +230,7 @@ public class UserController : ApiController
         var user = await _userService.PatchRequestingUserAsync(requestingUser, inputBodyParameters.DisplayName,
             inputBodyParameters.About, inputBodyParameters.AvatarUrl, inputBodyParameters.BannerUrl,
             inputBodyParameters.Username);
-        var userDto = _userConverter.ConvertToDto(user);
+        var userDto = user.ToDto();
         return userDto;
     }
 

@@ -1,43 +1,22 @@
 ﻿using FireplaceApi.Domain.Models;
 using FireplaceApi.Infrastructure.Entities;
-using Microsoft.Extensions.Logging;
-using System;
 
 namespace FireplaceApi.Infrastructure.Converters;
 
-public class CommunityMembershipConverter
+public static class CommunityMembershipConverter
 {
-    private readonly ILogger<CommunityMembershipConverter> _logger;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly UserConverter _userConverter;
-    private readonly CommunityConverter _communityConverter;
-
-    public CommunityMembershipConverter(ILogger<CommunityMembershipConverter> logger,
-        IServiceProvider serviceProvider, UserConverter userConverter,
-        CommunityConverter communityConverter)
-    {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
-        _userConverter = userConverter;
-        _communityConverter = communityConverter;
-    }
-
-    // Entity
-
-    public CommunityMembershipEntity ConvertToEntity(CommunityMembership communityMembership)
+    public static CommunityMembershipEntity ToEntity(this CommunityMembership communityMembership)
     {
         if (communityMembership == null)
             return null;
 
         UserEntity userEntity = null;
         if (communityMembership.User != null)
-            userEntity = _userConverter
-                .ConvertToEntity(communityMembership.User.PureCopy());
+            userEntity = communityMembership.User.PureCopy().ToEntity();
 
         CommunityEntity communityEntity = null;
         if (communityMembership.Community != null)
-            communityEntity = _communityConverter
-                .ConvertToEntity(communityMembership.Community.PureCopy());
+            communityEntity = communityMembership.Community.PureCopy().ToEntity();
 
         var communityMembershipEntity = new CommunityMembershipEntity(
             communityMembership.Id, communityMembership.UserId,
@@ -48,19 +27,18 @@ public class CommunityMembershipConverter
         return communityMembershipEntity;
     }
 
-    public CommunityMembership ConvertToModel(CommunityMembershipEntity communityMembershipEntity)
+    public static CommunityMembership ToModel(this CommunityMembershipEntity communityMembershipEntity)
     {
         if (communityMembershipEntity == null)
             return null;
 
         User user = null;
         if (communityMembershipEntity.UserEntity != null)
-            user = _userConverter.ConvertToModel(communityMembershipEntity.UserEntity.PureCopy());
+            user = communityMembershipEntity.UserEntity.PureCopy().ToModel();
 
         Community community = null;
         if (communityMembershipEntity.CommunityEntity != null)
-            community = _communityConverter
-                .ConvertToModel(communityMembershipEntity.CommunityEntity.PureCopy());
+            community = communityMembershipEntity.CommunityEntity.PureCopy().ToModel();
 
         var communityMembership = new CommunityMembership(communityMembershipEntity.Id,
             communityMembershipEntity.UserEntityId, communityMembershipEntity.UserEntityUsername,

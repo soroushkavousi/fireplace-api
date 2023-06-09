@@ -2,32 +2,19 @@
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Infrastructure.Entities;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
 
 namespace FireplaceApi.Infrastructure.Converters;
 
-public class SessionConverter
+public static class SessionConverter
 {
-    private readonly ILogger<SessionConverter> _logger;
-    private readonly IServiceProvider _serviceProvider;
-
-    public SessionConverter(ILogger<SessionConverter> logger, IServiceProvider serviceProvider)
-    {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
-    }
-
-    public SessionEntity ConvertToEntity(Session session)
+    public static SessionEntity ToEntity(this Session session)
     {
         if (session == null)
             return null;
 
         UserEntity userEntity = null;
         if (session.User != null)
-            userEntity = _serviceProvider.GetService<UserConverter>()
-                .ConvertToEntity(session.User.PureCopy());
+            userEntity = session.User.PureCopy().ToEntity();
 
         var sessionEntity = new SessionEntity(session.Id, session.UserId,
             session.IpAddress.ToString(), session.State.ToString(),
@@ -36,15 +23,14 @@ public class SessionConverter
         return sessionEntity;
     }
 
-    public Session ConvertToModel(SessionEntity sessionEntity)
+    public static Session ToModel(this SessionEntity sessionEntity)
     {
         if (sessionEntity == null)
             return null;
 
         User user = null;
         if (sessionEntity.UserEntity != null)
-            user = _serviceProvider.GetService<UserConverter>()
-                .ConvertToModel(sessionEntity.UserEntity.PureCopy());
+            user = sessionEntity.UserEntity.PureCopy().ToModel();
 
         var session = new Session(sessionEntity.Id, sessionEntity.UserEntityId,
             sessionEntity.IpAddress.ToIPAddress(), sessionEntity.State.ToEnum<SessionState>(),

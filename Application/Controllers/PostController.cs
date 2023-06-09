@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Application.Controllers;
@@ -18,16 +17,10 @@ namespace FireplaceApi.Application.Controllers;
 [Produces("application/json")]
 public class PostController : ApiController
 {
-    private readonly ILogger<PostController> _logger;
-    private readonly PostConverter _postConverter;
     private readonly PostService _postService;
 
-    public PostController(ILogger<PostController> logger,
-        PostConverter postConverter,
-        PostService postService)
+    public PostController(PostService postService)
     {
-        _logger = logger;
-        _postConverter = postConverter;
         _postService = postService;
     }
 
@@ -46,7 +39,7 @@ public class PostController : ApiController
     {
         var queryResult = await _postService.ListCommunityPostsAsync(
             inputRouteParameters.CommunityIdentifier, inputQueryParameters.Sort, requestingUser);
-        var queryResultDto = _postConverter.ConvertToDto(queryResult);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 
@@ -74,7 +67,7 @@ public class PostController : ApiController
             queryResult = await _postService.ListPostsAsync(inputQueryParameters.Search,
                 inputQueryParameters.Sort, requestingUser);
         }
-        var queryResultDto = _postConverter.ConvertToDto(queryResult);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 
@@ -91,7 +84,7 @@ public class PostController : ApiController
     {
         var queryResult = await _postService.ListSelfPostsAsync(requestingUser,
             inputQueryParameters.Sort);
-        var queryResultDto = _postConverter.ConvertToDto(queryResult);
+        var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 
@@ -111,7 +104,7 @@ public class PostController : ApiController
         var post = await _postService.GetPostByIdAsync(inputRouteParameters.Id,
             inputQueryParameters.IncludeAuthor, inputQueryParameters.IncludeCommunity,
             requestingUser);
-        var postDto = _postConverter.ConvertToDto(post);
+        var postDto = post.ToDto();
         return postDto;
     }
 
@@ -130,7 +123,7 @@ public class PostController : ApiController
     {
         var post = await _postService.CreatePostAsync(requestingUser,
             inputRouteParameters.CommunityIdentifier, inputBodyParameters.Content);
-        var postDto = _postConverter.ConvertToDto(post);
+        var postDto = post.ToDto();
         return postDto;
     }
 
@@ -149,7 +142,7 @@ public class PostController : ApiController
     {
         var post = await _postService.VotePostAsync(
             requestingUser, inputRouteParameters.Id, inputBodyParameters.IsUpvote.Value);
-        var postDto = _postConverter.ConvertToDto(post);
+        var postDto = post.ToDto();
         return postDto;
     }
 
@@ -167,7 +160,7 @@ public class PostController : ApiController
     {
         var post = await _postService.ToggleVoteForPostAsync(
             requestingUser, inputRouteParameters.Id);
-        var postDto = _postConverter.ConvertToDto(post);
+        var postDto = post.ToDto();
         return postDto;
     }
 
@@ -185,7 +178,7 @@ public class PostController : ApiController
     {
         var post = await _postService.DeleteVoteForPostAsync(
             requestingUser, inputRouteParameters.Id);
-        var postDto = _postConverter.ConvertToDto(post);
+        var postDto = post.ToDto();
         return postDto;
     }
 
@@ -204,7 +197,7 @@ public class PostController : ApiController
     {
         var post = await _postService.PatchPostByIdAsync(requestingUser,
             inputRouteParameters.Id, inputBodyParameters.Content);
-        var postDto = _postConverter.ConvertToDto(post);
+        var postDto = post.ToDto();
         return postDto;
     }
 

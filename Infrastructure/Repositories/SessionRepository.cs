@@ -23,15 +23,12 @@ public class SessionRepository : ISessionRepository
     private readonly ILogger<SessionRepository> _logger;
     private readonly ProjectDbContext _dbContext;
     private readonly DbSet<SessionEntity> _sessionEntities;
-    private readonly SessionConverter _sessionConverter;
 
-    public SessionRepository(ILogger<SessionRepository> logger,
-        ProjectDbContext dbContext, SessionConverter sessionConverter)
+    public SessionRepository(ILogger<SessionRepository> logger, ProjectDbContext dbContext)
     {
         _logger = logger;
         _dbContext = dbContext;
         _sessionEntities = dbContext.SessionEntities;
-        _sessionConverter = sessionConverter;
     }
 
     public async Task<List<Session>> ListSessionsAsync(ulong userId,
@@ -57,7 +54,7 @@ public class SessionRepository : ISessionRepository
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { sessionEntities = sessionEntities.Select(e => e.Id) });
-        return sessionEntities.Select(_sessionConverter.ConvertToModel).ToList();
+        return sessionEntities.Select(SessionConverter.ToModel).ToList();
     }
 
     public async Task<Session> GetSessionByIdAsync(ulong id, bool includeUser = false)
@@ -73,7 +70,7 @@ public class SessionRepository : ISessionRepository
             .SingleOrDefaultAsync();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { sessionEntity });
-        return _sessionConverter.ConvertToModel(sessionEntity);
+        return sessionEntity.ToModel();
     }
 
     public async Task<Session> FindSessionAsync(ulong userId, IPAddress ipAddress,
@@ -91,7 +88,7 @@ public class SessionRepository : ISessionRepository
             .SingleOrDefaultAsync();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { sessionEntity });
-        return _sessionConverter.ConvertToModel(sessionEntity);
+        return sessionEntity.ToModel();
     }
 
     public async Task<Session> CreateSessionAsync(ulong id, ulong userId, IPAddress ipAddress,
@@ -107,14 +104,14 @@ public class SessionRepository : ISessionRepository
         _dbContext.DetachAllEntries();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { sessionEntity });
-        return _sessionConverter.ConvertToModel(sessionEntity);
+        return sessionEntity.ToModel();
     }
 
     public async Task<Session> UpdateSessionAsync(Session session)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { session });
         var sw = Stopwatch.StartNew();
-        var sessionEntity = _sessionConverter.ConvertToEntity(session);
+        var sessionEntity = session.ToEntity();
         _sessionEntities.Update(sessionEntity);
         try
         {
@@ -128,7 +125,7 @@ public class SessionRepository : ISessionRepository
         }
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { sessionEntity });
-        return _sessionConverter.ConvertToModel(sessionEntity);
+        return sessionEntity.ToModel();
     }
 
     public async Task DeleteSessionAsync(ulong id)
