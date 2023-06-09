@@ -128,9 +128,11 @@ _According to Eric Evans's book [Domain Driven Design](https://domainlanguage.co
 **7. Integration Testing**
 
 - With [xUnit](https://xunit.net/)
-- Parallelism for each test class
-- Each test class has its own database clone
-- Each test function is independent
+- Each test directory is dedicated to several test classes related to an item
+- Each test directory uses a collection name
+- Each test collection has its own database clone
+- Parallelism is used for each test collection
+- Each test function is isolated
 
 **8. Database with PostgreSQL**
 
