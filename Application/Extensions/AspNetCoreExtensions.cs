@@ -67,7 +67,6 @@ public static class AspNetCoreExtensions
         services.AddScoped<CommentOperator>();
         services.AddScoped<CommunityOperator>();
         services.AddScoped<CommunityMembershipOperator>();
-        services.AddScoped<ConfigsOperator>();
         services.AddScoped<EmailOperator>();
         services.AddScoped<ErrorOperator>();
         services.AddScoped<FileOperator>();
