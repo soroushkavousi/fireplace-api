@@ -1,7 +1,7 @@
 ﻿using FireplaceApi.Application.Tools;
 using FireplaceApi.Domain.Exceptions;
-using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Infrastructure.Entities;
+using FireplaceApi.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;

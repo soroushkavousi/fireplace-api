@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Application.Dtos;
 using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Extensions;
+using FireplaceApi.Infrastructure.Extensions;
 using NLog;
 using System.Net;
 using System.Net.Http;
