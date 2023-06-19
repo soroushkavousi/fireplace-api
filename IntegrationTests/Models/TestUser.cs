@@ -9,9 +9,10 @@ public class TestUser : User
 {
     public HttpClient HttpClient { get; set; }
 
-    public TestUser(User user, HttpClient httpClient) : base(user.Id, user.Username, user.State, user.CreationDate,
-            user.DisplayName, user.About, user.AvatarUrl, user.BannerUrl, user.ModifiedDate,
-            user.Password, user.ResetPasswordCode, user.Email, user.GoogleUser, user.AccessTokens, user.Sessions)
+    public TestUser(User user, HttpClient httpClient) : base(user.Id, user.Username, user.State,
+            user.Roles, user.DisplayName, user.About, user.AvatarUrl, user.BannerUrl, user.CreationDate,
+            user.ModifiedDate, user.Password, user.ResetPasswordCode, user.Email, user.GoogleUser,
+            user.Sessions)
     {
         HttpClient = httpClient;
     }

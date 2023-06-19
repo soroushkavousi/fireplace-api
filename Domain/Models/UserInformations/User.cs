@@ -9,6 +9,7 @@ public class User : BaseModel
 {
     public string Username { get; set; }
     public UserState State { get; set; }
+    public List<UserRole> Roles { get; set; }
     public string DisplayName { get; set; }
     public string About { get; set; }
     public string AvatarUrl { get; set; }
@@ -17,16 +18,16 @@ public class User : BaseModel
     public string ResetPasswordCode { get; set; }
     public Email Email { get; set; }
     public GoogleUser GoogleUser { get; set; }
-    public List<AccessToken> AccessTokens { get; set; }
     public List<Session> Sessions { get; set; }
 
-    public User(ulong id, string username, UserState state, DateTime creationDate,
+    public User(ulong id, string username, UserState state, List<UserRole> roles,
         string displayName, string about, string avatarUrl, string bannerUrl,
-        DateTime? modifiedDate = null, Password password = null, string resetPasswordCode = null,
-        Email email = null, GoogleUser googleUser = null, List<AccessToken> accessTokens = null,
+        DateTime creationDate, DateTime? modifiedDate = null, Password password = null,
+        string resetPasswordCode = null, Email email = null, GoogleUser googleUser = null,
         List<Session> sessions = null) : base(id, creationDate, modifiedDate)
     {
         Username = username ?? throw new ArgumentNullException(nameof(username));
+        Roles = roles;
         State = state;
         DisplayName = displayName;
         About = about;
@@ -36,20 +37,10 @@ public class User : BaseModel
         ResetPasswordCode = resetPasswordCode;
         Email = email;
         GoogleUser = googleUser;
-        AccessTokens = accessTokens;
         Sessions = sessions;
     }
 
-    public User PureCopy() => new(Id, Username, State, CreationDate,
-        DisplayName, About, AvatarUrl, BannerUrl, ModifiedDate, Password, ResetPasswordCode);
-
-    public void RemoveLoopReferencing()
-    {
-        Email = Email?.PureCopy();
-        GoogleUser = GoogleUser?.PureCopy();
-        AccessTokens?.ForEach(
-            accessToken => accessToken?.PureCopy());
-        Sessions?.ForEach(
-            session => session?.PureCopy());
-    }
+    public User PureCopy() => new(Id, Username, State, Roles,
+        DisplayName, About, AvatarUrl, BannerUrl, CreationDate,
+        ModifiedDate, Password, ResetPasswordCode);
 }

@@ -18,18 +18,14 @@ public static class UserConverter
         if (user.Email != null)
             emailDto = user.Email.PureCopy().ToDto();
 
-        string accessTokenValue = null;
-        if (user.AccessTokens != null && user.AccessTokens.Count != 0)
-            accessTokenValue = user.AccessTokens.Last().Value;
-
         List<SessionDto> sessionDtos = null;
         if (user.Sessions != null && user.Sessions.Count != 0)
             sessionDtos = user.Sessions.Select(
                 session => session.PureCopy().ToDto()).ToList();
 
         var userDto = new UserDto(user.Id.IdEncode(), user.Username, user.State.ToString(),
-            user.CreationDate, user.DisplayName, user.About, user.AvatarUrl, user.BannerUrl,
-            accessTokenValue, emailDto, sessionDtos);
+            user.Roles, user.CreationDate, user.DisplayName, user.About, user.AvatarUrl,
+            user.BannerUrl, emailDto, sessionDtos);
 
         return userDto;
     }

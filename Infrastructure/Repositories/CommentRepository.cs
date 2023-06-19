@@ -30,13 +30,13 @@ public class CommentRepository : ICommentRepository
     }
 
     public async Task<List<Comment>> ListPostCommentsAsync(ulong postId,
-        SortType sort, User requestingUser = null)
+        SortType sort, ulong? userId = null)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
         {
             postId,
             sort,
-            requestingUserId = requestingUser?.Id
+            userId
         });
         var sw = Stopwatch.StartNew();
         var commentEntities = await _commentEntities
@@ -51,15 +51,15 @@ public class CommentRepository : ICommentRepository
                 authorEntity: false,
                 postEntity: false,
                 childCommentEntities: true,
-                requestingUser: requestingUser,
+                userId: userId,
                 sort: sort
             )
             .Sort(sort)
             .Take(Configs.Current.QueryResult.TotalLimit)
             .ToListAsync();
 
-        if (requestingUser != null)
-            commentEntities.ForEach(e => e.CheckRequestingUserVote(requestingUser));
+        if (userId != null)
+            commentEntities.ForEach(e => e.CheckRequestingUserVote(userId));
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { commentEntities = commentEntities.Select(e => e.Id) });
@@ -67,13 +67,13 @@ public class CommentRepository : ICommentRepository
     }
 
     public async Task<List<Comment>> ListChildCommentAsync(ulong id, SortType sort,
-        User requestingUser = null)
+        ulong? userId = null)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
         {
             id,
             sort,
-            requestingUserId = requestingUser?.Id
+            userId
         });
         var sw = Stopwatch.StartNew();
         var commentEntity = await _commentEntities
@@ -83,13 +83,13 @@ public class CommentRepository : ICommentRepository
                 authorEntity: false,
                 postEntity: false,
                 childCommentEntities: true,
-                requestingUser: requestingUser,
+                userId: userId,
                 sort: sort
             )
             .SingleOrDefaultAsync();
 
-        if (commentEntity != null && requestingUser != null)
-            commentEntity.CheckRequestingUserVote(requestingUser);
+        if (commentEntity != null && userId != null)
+            commentEntity.CheckRequestingUserVote(userId);
 
         var childCommentEntities = commentEntity?.ChildCommentEntities;
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
@@ -98,14 +98,14 @@ public class CommentRepository : ICommentRepository
     }
 
     public async Task<List<Comment>> ListCommentsByIdsAsync(List<ulong> Ids,
-        SortType sort, User requestingUser = null)
+        SortType sort, ulong? userId = null)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT",
             parameters: new
             {
                 Ids,
                 sort,
-                requestingUserId = requestingUser?.Id
+                userId
             });
         var sw = Stopwatch.StartNew();
         var commentEntities = await _commentEntities
@@ -115,13 +115,13 @@ public class CommentRepository : ICommentRepository
                 authorEntity: false,
                 postEntity: false,
                 childCommentEntities: true,
-                requestingUser: requestingUser,
+                userId: userId,
                 sort: sort
             )
             .ToListAsync();
 
-        if (requestingUser != null)
-            commentEntities.ForEach(e => e.CheckRequestingUserVote(requestingUser));
+        if (userId != null)
+            commentEntities.ForEach(e => e.CheckRequestingUserVote(userId));
 
         // To preserve the order of input Ids
         var commentEntityDictionary = new Dictionary<ulong, CommentEntity>();
@@ -134,19 +134,19 @@ public class CommentRepository : ICommentRepository
         return commentEntities.Select(CommentConverter.ToModel).ToList();
     }
 
-    public async Task<List<Comment>> ListSelfCommentsAsync(User author,
+    public async Task<List<Comment>> ListSelfCommentsAsync(ulong authorId,
         SortType sort)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
         {
-            authorId = author.Id,
+            authorId,
             sort
         });
         var sw = Stopwatch.StartNew();
         var commentEntities = await _commentEntities
             .AsNoTracking()
             .Search(
-                authorId: author.Id,
+                authorId: authorId,
                 postId: null,
                 search: null,
                 isRoot: null
@@ -155,14 +155,14 @@ public class CommentRepository : ICommentRepository
                 authorEntity: false,
                 postEntity: false,
                 childCommentEntities: false,
-                requestingUser: author,
+                userId: authorId,
                 sort: sort
             )
             .Sort(sort)
             .Take(Configs.Current.QueryResult.TotalLimit)
             .ToListAsync();
 
-        commentEntities.ForEach(e => e.CheckRequestingUserVote(author));
+        commentEntities.ForEach(e => e.CheckRequestingUserVote(authorId));
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { commentEntities = commentEntities.Select(e => e.Id) });
@@ -171,14 +171,14 @@ public class CommentRepository : ICommentRepository
 
     public async Task<Comment> GetCommentByIdAsync(ulong id,
         bool includeAuthor = false, bool includePost = false,
-        User requestingUser = null)
+        ulong? userId = null)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
         {
             id,
             includeAuthor,
             includePost,
-            requestingUserId = requestingUser?.Id
+            userId
         });
         var sw = Stopwatch.StartNew();
         var commentEntity = await _commentEntities
@@ -188,13 +188,13 @@ public class CommentRepository : ICommentRepository
                 authorEntity: includeAuthor,
                 postEntity: includePost,
                 childCommentEntities: false,
-                requestingUser: requestingUser,
+                userId: userId,
                 sort: null
             )
             .SingleOrDefaultAsync();
 
-        if (commentEntity != null && requestingUser != null)
-            commentEntity.CheckRequestingUserVote(requestingUser);
+        if (commentEntity != null && userId != null)
+            commentEntity.CheckRequestingUserVote(userId);
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntity });
         return commentEntity.ToModel();
@@ -280,7 +280,7 @@ public static class CommentRepositoryExtensions
     public static IQueryable<CommentEntity> Include(
         [NotNull] this IQueryable<CommentEntity> q,
         bool authorEntity, bool postEntity, bool childCommentEntities,
-        User requestingUser, SortType? sort)
+        ulong? userId, SortType? sort)
     {
         if (authorEntity)
             q = q.Include(e => e.AuthorEntity);
@@ -332,21 +332,21 @@ public static class CommentRepositoryExtensions
                     }
                 }
 
-                if (requestingUser != null)
+                if (userId != null)
                 {
                     q = z.ThenInclude(e => e.CommentVoteEntities
-                                        .Where(cv => cv.VoterEntityId == requestingUser.Id));
+                                        .Where(cv => cv.VoterEntityId == userId));
                 }
                 else
                     q = z;
             }
         }
 
-        if (requestingUser != null)
+        if (userId != null)
         {
             q = q.Include(
                 c => c.CommentVoteEntities
-                    .Where(cv => cv.VoterEntityId == requestingUser.Id)
+                    .Where(cv => cv.VoterEntityId == userId)
             );
         }
 

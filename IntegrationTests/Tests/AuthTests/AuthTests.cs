@@ -13,18 +13,18 @@ using Xunit;
 
 namespace FireplaceApi.IntegrationTests.Tests.FirewallTests;
 
-[Collection("Firewall")]
-public class FirewallTests
+[Collection("Auth")]
+public class AuthTests
 {
     private readonly ApiIntegrationTestFixture _fixture;
-    private readonly ILogger<FirewallTests> _logger;
+    private readonly ILogger<AuthTests> _logger;
     private readonly ClientPool _clientPool;
 
-    public FirewallTests(ApiIntegrationTestFixture fixture)
+    public AuthTests(ApiIntegrationTestFixture fixture)
     {
         _fixture = fixture;
         _fixture.CleanDatabase();
-        _logger = _fixture.ServiceProvider.GetRequiredService<ILogger<FirewallTests>>();
+        _logger = _fixture.ServiceProvider.GetRequiredService<ILogger<AuthTests>>();
         _clientPool = _fixture.ClientPool;
     }
 
@@ -71,6 +71,7 @@ public class FirewallTests
             var response = await narutoUser.SendRequestAsync(request);
 
             //Then
+            response.EnsureSuccessStatusCode();
             await response.EnsureResponseIsNotTheErrorAsync(ErrorType.AUTHENTICATION_FAILED, FieldName.ACCESS_TOKEN);
 
             _logger.LogAppInformation(title: "TEST_END", sw: sw);

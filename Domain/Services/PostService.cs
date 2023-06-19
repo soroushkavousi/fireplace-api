@@ -25,98 +25,98 @@ public class PostService
     }
 
     public async Task<QueryResult<Post>> ListCommunityPostsAsync(CommunityIdentifier communityIdentifier,
-        SortType? sort, User requestingUser = null)
+        SortType? sort, ulong? userId = null)
     {
         await _postValidator.ValidateListCommunityPostsInputParametersAsync(
-            communityIdentifier, sort, requestingUser);
+            communityIdentifier, sort, userId);
         return await _postOperator.ListCommunityPostsAsync(communityIdentifier,
-            sort, requestingUser);
+            sort, userId);
     }
 
-    public async Task<QueryResult<Post>> ListPostsAsync(string search, SortType? sort, User requestingUser = null)
+    public async Task<QueryResult<Post>> ListPostsAsync(string search, SortType? sort, ulong? userId = null)
     {
-        await _postValidator.ValidateListPostsInputParametersAsync(search, sort, requestingUser);
-        return await _postOperator.ListPostsAsync(search, sort, requestingUser);
+        await _postValidator.ValidateListPostsInputParametersAsync(search, sort, userId);
+        return await _postOperator.ListPostsAsync(search, sort, userId);
     }
 
-    public async Task<List<Post>> ListPostsByIdsAsync(List<ulong> ids, User requestingUser = null)
+    public async Task<List<Post>> ListPostsByIdsAsync(List<ulong> ids, ulong? userId = null)
     {
-        await _postValidator.ValidateListPostsByIdsInputParametersAsync(ids, requestingUser);
-        var communities = await _postOperator.ListPostsByIdsAsync(ids, requestingUser);
+        await _postValidator.ValidateListPostsByIdsInputParametersAsync(ids, userId);
+        var communities = await _postOperator.ListPostsByIdsAsync(ids, userId);
         return communities;
     }
 
-    public async Task<QueryResult<Post>> ListSelfPostsAsync(User requestingUser,
+    public async Task<QueryResult<Post>> ListSelfPostsAsync(ulong userId,
         SortType? sort)
     {
-        await _postValidator.ValidateListSelfPostsInputParametersAsync(requestingUser, sort);
-        var queryResult = await _postOperator.ListSelfPostsAsync(requestingUser, sort);
+        await _postValidator.ValidateListSelfPostsInputParametersAsync(userId, sort);
+        var queryResult = await _postOperator.ListSelfPostsAsync(userId, sort);
         return queryResult;
     }
 
     public async Task<Post> GetPostByIdAsync(ulong id, bool? includeAuthor,
-        bool? includeCommunity, User requestingUser = null)
+        bool? includeCommunity, ulong? userId = null)
     {
         await _postValidator.ValidateGetPostByIdInputParametersAsync(
-            id, includeAuthor, includeCommunity, requestingUser);
+            id, includeAuthor, includeCommunity, userId);
         var post = await _postOperator.GetPostByIdAsync(id,
-            includeAuthor.Value, includeCommunity.Value, requestingUser);
+            includeAuthor.Value, includeCommunity.Value, userId);
         return post;
     }
 
-    public async Task<Post> CreatePostAsync(User requestingUser,
+    public async Task<Post> CreatePostAsync(ulong userId,
         CommunityIdentifier communityIdentifier, string content)
     {
         await _postValidator.ValidateCreatePostInputParametersAsync(
-                requestingUser, communityIdentifier, content);
-        return await _postOperator.CreatePostAsync(requestingUser,
+                userId, communityIdentifier, content);
+        return await _postOperator.CreatePostAsync(userId,
             communityIdentifier, content);
     }
 
-    public async Task<Post> VotePostAsync(User requestingUser,
+    public async Task<Post> VotePostAsync(ulong userId,
         ulong id, bool isUpvote)
     {
         await _postValidator.ValidateVotePostInputParametersAsync(
-            requestingUser, id, isUpvote);
+            userId, id, isUpvote);
         var post = await _postOperator.VotePostAsync(
-            requestingUser, id, isUpvote);
+            userId, id, isUpvote);
         return post;
     }
 
-    public async Task<Post> ToggleVoteForPostAsync(User requestingUser,
+    public async Task<Post> ToggleVoteForPostAsync(ulong userId,
         ulong id)
     {
         await _postValidator.ValidateToggleVoteForPostInputParametersAsync(
-            requestingUser, id);
+            userId, id);
         var post = await _postOperator.ToggleVoteForPostAsync(
-            requestingUser, id);
+            userId, id);
         return post;
     }
 
-    public async Task<Post> DeleteVoteForPostAsync(User requestingUser,
+    public async Task<Post> DeleteVoteForPostAsync(ulong userId,
         ulong id)
     {
         await _postValidator.ValidateDeleteVoteForPostInputParametersAsync(
-            requestingUser, id);
+            userId, id);
         var post = await _postOperator.DeleteVoteForPostAsync(
-            requestingUser, id);
+            userId, id);
         return post;
     }
 
-    public async Task<Post> PatchPostByIdAsync(User requestingUser,
+    public async Task<Post> PatchPostByIdAsync(ulong userId,
         ulong id, string content)
     {
         await _postValidator.ValidatePatchPostByIdInputParametersAsync(
-            requestingUser, id, content);
-        var post = await _postOperator.PatchPostByIdAsync(requestingUser,
+            userId, id, content);
+        var post = await _postOperator.PatchPostByIdAsync(userId,
             id, content, null);
         return post;
     }
 
-    public async Task DeletePostByIdAsync(User requestingUser, ulong id)
+    public async Task DeletePostByIdAsync(ulong userId, ulong id)
     {
         await _postValidator.ValidateDeletePostByIdInputParametersAsync(
-            requestingUser, id);
+            userId, id);
         await _postOperator.DeletePostByIdAsync(id);
     }
 }

@@ -1,6 +1,7 @@
-﻿using FireplaceApi.Application.Converters;
+﻿using FireplaceApi.Application.Auth;
+using FireplaceApi.Application.Converters;
 using FireplaceApi.Application.Dtos;
-using FireplaceApi.Application.Tool;
+using FireplaceApi.Application.Tools;
 using FireplaceApi.Application.Validators;
 using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Identifiers;
@@ -48,7 +49,7 @@ public class PostCommunityQueryResolvers
     public async Task<CommunityDto> GetCommunityAsync(
         [Service(ServiceKind.Resolver)] CommunityService communityService,
         [Service(ServiceKind.Resolver)] CommunityValidator communityValidator,
-        [User] User requestingUser, [Parent] PostDto post)
+        [User] RequestingUser requestingUser, [Parent] PostDto post)
     {
         var communityIdentifier = CommunityIdentifier.OfId(post.CommunityId.IdDecode());
         var community = await communityService.GetCommunityByIdentifierAsync(communityIdentifier);
@@ -64,10 +65,10 @@ public class UserCommunitiesQueryResolvers
     public async Task<QueryResultDto<CommunityDto>> GetJoinedCommunitiesAsync(
         [Service(ServiceKind.Resolver)] CommunityService communityService,
         [Service(ServiceKind.Resolver)] CommunityValidator communityValidator,
-        [User] User requestingUser, [Parent] UserDto user,
+        [User] RequestingUser requestingUser, [Parent] UserDto user,
         CommunitySortType? sort = null)
     {
-        var queryResult = await communityService.ListJoinedCommunitiesAsync(requestingUser, sort);
+        var queryResult = await communityService.ListJoinedCommunitiesAsync(requestingUser.Id.Value, sort);
         var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }

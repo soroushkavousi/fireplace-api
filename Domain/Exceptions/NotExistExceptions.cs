@@ -44,12 +44,12 @@ public class PostNotExistException : ApiException
 
 public class PostVoteNotExistException : ApiException
 {
-    public PostVoteNotExistException(ulong requestingUserId, ulong postId)
+    public PostVoteNotExistException(ulong userId, ulong postId)
         : base(
             errorType: ErrorType.NOT_EXIST_OR_ACCESS_DENIED,
             errorField: FieldName.POST_VOTE,
             errorServerMessage: "The post vote does not exist!",
-            parameters: new { requestingUserId, postId },
+            parameters: new { userId, postId },
             systemException: null
         )
     { }
@@ -70,12 +70,12 @@ public class CommentNotExistException : ApiException
 
 public class CommentVoteNotExistException : ApiException
 {
-    public CommentVoteNotExistException(ulong requestingUserId, ulong commentId)
+    public CommentVoteNotExistException(ulong userId, ulong commentId)
         : base(
             errorType: ErrorType.NOT_EXIST_OR_ACCESS_DENIED,
             errorField: FieldName.COMMENT_VOTE,
             errorServerMessage: "The comment vote does not exist!",
-            parameters: new { requestingUserId, commentId },
+            parameters: new { userId, commentId },
             systemException: null
         )
     { }
@@ -122,11 +122,12 @@ public class EmailNotExistException : ApiException
 
 public class AccessTokenNotExistException : ApiException
 {
-    public AccessTokenNotExistException(string accessToken)
+    public AccessTokenNotExistException(string accessToken,
+        string serverMessage = "The accessToken does not exist!")
         : base(
             errorType: ErrorType.NOT_EXIST_OR_ACCESS_DENIED,
             errorField: FieldName.ACCESS_TOKEN,
-            errorServerMessage: "The accessToken does not exist!",
+            errorServerMessage: serverMessage,
             parameters: new { accessToken },
             systemException: null
         )

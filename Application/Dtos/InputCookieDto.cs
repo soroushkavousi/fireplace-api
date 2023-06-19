@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Application.Tools;
+﻿using FireplaceApi.Application.Auth;
 using FireplaceApi.Domain.Attributes;
 using Microsoft.AspNetCore.Http;
 
@@ -17,7 +17,7 @@ public class InputCookieDTO
     private string ExtractAccessTokenValue(HttpContext httpContext)
     {
         var doesRequestHaveAccessToken = httpContext.Request.Cookies
-            .TryGetValue(Constants.ResponseAccessTokenCookieKey, out string accessTokenValue);
+            .TryGetValue(AuthConstants.AccessTokenCookieKey, out string accessTokenValue);
         if (!doesRequestHaveAccessToken)
             return null;
         else

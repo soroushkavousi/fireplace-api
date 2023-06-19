@@ -22,7 +22,6 @@ public class ProjectDbContext : DbContext
     public DbSet<PostEntity> PostEntities { get; set; }
     public DbSet<PostVoteEntity> PostVoteEntities { get; set; }
 
-    public DbSet<AccessTokenEntity> AccessTokenEntities { get; set; }
     public DbSet<EmailEntity> EmailEntities { get; set; }
     public DbSet<GoogleUserEntity> GoogleUserEntities { get; set; }
     public DbSet<SessionEntity> SessionEntities { get; set; }
@@ -69,7 +68,6 @@ public class ProjectDbContext : DbContext
         modelBuilder.ApplyConfiguration(new PostEntityConfiguration());
         modelBuilder.ApplyConfiguration(new PostVoteEntityConfiguration());
 
-        modelBuilder.ApplyConfiguration(new AccessTokenEntityConfiguration());
         modelBuilder.ApplyConfiguration(new EmailEntityConfiguration());
         modelBuilder.ApplyConfiguration(new GoogleUserEntityConfiguration());
         modelBuilder.ApplyConfiguration(new SessionEntityConfiguration());

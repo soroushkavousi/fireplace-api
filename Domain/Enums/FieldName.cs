@@ -45,12 +45,16 @@ public class FieldName : Enumeration<FieldName>
     public static readonly FieldName ERROR_MESSAGE = new();
     public static readonly FieldName SESSION = new();
     public static readonly FieldName SESSION_ID = new();
+    public static readonly FieldName EXPIRED_SESSION = new();
+    public static readonly FieldName REVOKED_SESSION = new();
     public static readonly FieldName IP = new();
     public static readonly FieldName MAX_REQUEST_PER_IP = new();
     public static readonly FieldName CSRF_TOKEN = new();
     public static readonly FieldName USERNAME_AND_PASSWORD = new();
     public static readonly FieldName EMAIL_AND_PASSWORD = new();
     public static readonly FieldName SEARCH = new();
+    public static readonly FieldName ROLE = new();
+    public static readonly FieldName USER_STATE = new();
 
     protected FieldName([CallerMemberName] string name = null) : base(name) { }
 }

@@ -46,26 +46,27 @@ public class CommentListTests
             //Given
             var narutoUser = await _clientPool.CreateNarutoUserAsync();
             var animeCommunityName = "anime-community";
-            var animeCommunity = await _communityOperator.CreateCommunityAsync(narutoUser, animeCommunityName);
+            var animeCommunity = await _communityOperator.CreateCommunityAsync(narutoUser.Id, animeCommunityName);
             var postContent = "Sample Post Content";
-            var post = await _postOperator.CreatePostAsync(narutoUser, animeCommunity.Id,
+            var post = await _postOperator.CreatePostAsync(narutoUser.Id, animeCommunity.Id,
                 animeCommunityName, postContent);
 
             //When
             var comments = new List<Comment>();
             for (int i = 0; i < Configs.Current.QueryResult.ViewLimit + 4; i++)
             {
-                var comment = await _commentOperator.ReplyToPostAsync(narutoUser, post.Id, $"comment {i}");
+                var comment = await _commentOperator.ReplyToPostAsync(narutoUser.Id, post.Id, $"comment {i}");
                 comments.Add(comment);
             }
 
             var comment10 = comments[9];
-            var comment10Vote = await _commentOperator.VoteCommentAsync(narutoUser, comment10.Id, isUp: true);
+            var comment10Vote = await _commentOperator.VoteCommentAsync(narutoUser.Id, comment10.Id, isUp: true);
 
             var comment10Childs = new List<Comment>();
             for (int i = 0; i < Configs.Current.QueryResult.ViewLimit + 6; i++)
             {
-                var comment = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment10.Id, $"comment 10, {i}");
+                var comment = await _commentOperator.ReplyToCommentAsync(narutoUser.Id, comment10.Id, $"comment 10, {i}",
+                    username: narutoUser.Username, postId: post.Id);
                 comment10Childs.Add(comment);
             }
 

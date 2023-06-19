@@ -32,7 +32,7 @@ public class CommunityValidator : DomainValidator
         await Task.CompletedTask;
     }
 
-    public async Task ValidateListJoinedCommunitiesInputParametersAsync(User requestingUser, CommunitySortType? sort)
+    public async Task ValidateListJoinedCommunitiesInputParametersAsync(ulong userId, CommunitySortType? sort)
     {
         await Task.CompletedTask;
     }
@@ -48,28 +48,28 @@ public class CommunityValidator : DomainValidator
         await ValidateCommunityIdentifierExistsAsync(identifier);
     }
 
-    public async Task ValidateCreateCommunityInputParametersAsync(User requestingUser, string name)
+    public async Task ValidateCreateCommunityInputParametersAsync(ulong userId, string name)
     {
         await ValidateCommunityIdentifierDoesNotExistAsync(CommunityIdentifier.OfName(name));
     }
 
-    public async Task ValidatePatchCommunityByIdentifierInputParametersAsync(User requestingUser,
+    public async Task ValidatePatchCommunityByIdentifierInputParametersAsync(ulong userId,
         CommunityIdentifier identifier, string newName)
     {
         await ValidateCommunityIdentifierExistsAsync(identifier);
         Community = await _communityOperator.GetCommunityByIdentifierAsync(
             identifier, false);
-        ValidateRequestingUserCanAlterCommunity(requestingUser, Community);
+        ValidateRequestingUserCanAlterCommunity(userId, Community);
         await ValidateCommunityIdentifierDoesNotExistAsync(CommunityIdentifier.OfName(newName));
     }
 
-    public async Task ValidateDeleteCommunityByIdentifierInputParametersAsync(User requestingUser,
+    public async Task ValidateDeleteCommunityByIdentifierInputParametersAsync(ulong userId,
         CommunityIdentifier identifier)
     {
         await ValidateCommunityIdentifierExistsAsync(identifier);
         Community = await _communityOperator.GetCommunityByIdentifierAsync(
             identifier, false);
-        ValidateRequestingUserCanAlterCommunity(requestingUser, Community);
+        ValidateRequestingUserCanAlterCommunity(userId, Community);
     }
 
     public bool ValidateCommunityNameFormat(string communityName, bool throwException = true)
@@ -122,10 +122,10 @@ public class CommunityValidator : DomainValidator
         return false;
     }
 
-    public void ValidateRequestingUserCanAlterCommunity(User requestingUser,
+    public void ValidateRequestingUserCanAlterCommunity(ulong userId,
         Community community)
     {
-        if (requestingUser.Id != community.CreatorId)
-            throw new CommunityAccessDeniedException(requestingUser.Id, community.Id);
+        if (userId != community.CreatorId)
+            throw new CommunityAccessDeniedException(userId, community.Id);
     }
 }

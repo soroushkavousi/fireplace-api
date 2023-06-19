@@ -14,12 +14,12 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Application.Middlewares;
 
-public class ExceptionMiddleware
+public class ApiExceptionHandlerMiddleware
 {
-    private readonly ILogger<ExceptionMiddleware> _logger;
+    private readonly ILogger<ApiExceptionHandlerMiddleware> _logger;
     private readonly RequestDelegate _next;
 
-    public ExceptionMiddleware(ILogger<ExceptionMiddleware> logger, RequestDelegate next)
+    public ApiExceptionHandlerMiddleware(ILogger<ApiExceptionHandlerMiddleware> logger, RequestDelegate next)
     {
         _logger = logger;
         _next = next;
@@ -61,10 +61,10 @@ public class ExceptionMiddleware
     }
 }
 
-public static class IApplicationBuilderExceptionMiddleware
+public static class IApplicationBuilderApiExceptionHandlerMiddleware
 {
-    public static IApplicationBuilder UseExceptionMiddleware(this IApplicationBuilder builder)
+    public static IApplicationBuilder UseApiExceptionHandler(this IApplicationBuilder builder)
     {
-        return builder.UseMiddleware<ExceptionMiddleware>();
+        return builder.UseMiddleware<ApiExceptionHandlerMiddleware>();
     }
 }

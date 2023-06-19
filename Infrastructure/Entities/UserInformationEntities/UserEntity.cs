@@ -13,6 +13,7 @@ public class UserEntity : BaseEntity
     public string Username { get; set; }
     [Required]
     public string State { get; set; }
+    public List<string> Roles { get; set; }
     public string DisplayName { get; set; }
     public string About { get; set; }
     public string AvatarUrl { get; set; }
@@ -21,7 +22,6 @@ public class UserEntity : BaseEntity
     public string ResetPasswordCode { get; set; }
     public EmailEntity EmailEntity { get; set; }
     public GoogleUserEntity GoogleUserEntity { get; set; }
-    public List<AccessTokenEntity> AccessTokenEntities { get; set; }
     public List<SessionEntity> SessionEntities { get; set; }
     public List<CommunityEntity> OwnCommunities { get; set; }
     public List<CommunityMembershipEntity> JoinedCommunities { get; set; }
@@ -32,19 +32,19 @@ public class UserEntity : BaseEntity
 
     private UserEntity() : base() { }
 
-    public UserEntity(ulong id, string username, string state, DateTime? creationDate = null,
-        string displayName = null, string about = null, string avatarUrl = null,
-        string bannerUrl = null, DateTime? modifiedDate = null, string passwordHash = null,
-        string resetPasswordCode = null, EmailEntity emailEntity = null,
-        GoogleUserEntity googleUserEntity = null, List<AccessTokenEntity> accessTokenEntities = null,
-        List<SessionEntity> sessionEntities = null, List<CommunityEntity> ownCommunities = null,
-        List<CommunityMembershipEntity> joinedCommunities = null,
+    public UserEntity(ulong id, string username, string state, List<string> roles,
+        DateTime? creationDate = null, string displayName = null, string about = null,
+        string avatarUrl = null, string bannerUrl = null, DateTime? modifiedDate = null,
+        string passwordHash = null, string resetPasswordCode = null, EmailEntity emailEntity = null,
+        GoogleUserEntity googleUserEntity = null, List<SessionEntity> sessionEntities = null,
+        List<CommunityEntity> ownCommunities = null, List<CommunityMembershipEntity> joinedCommunities = null,
         List<PostEntity> postEntities = null, List<PostVoteEntity> postVoteEntities = null,
         List<CommentEntity> commentEntities = null,
         List<CommentVoteEntity> commentVoteEntities = null) : base(id, creationDate, modifiedDate)
     {
         Username = username ?? throw new ArgumentNullException(nameof(username));
         State = state ?? throw new ArgumentNullException(nameof(state));
+        Roles = roles ?? throw new ArgumentNullException(nameof(roles));
         DisplayName = displayName;
         About = about;
         AvatarUrl = avatarUrl;
@@ -53,7 +53,6 @@ public class UserEntity : BaseEntity
         ResetPasswordCode = resetPasswordCode;
         EmailEntity = emailEntity;
         GoogleUserEntity = googleUserEntity;
-        AccessTokenEntities = accessTokenEntities;
         SessionEntities = sessionEntities;
         OwnCommunities = ownCommunities;
         JoinedCommunities = joinedCommunities;
@@ -63,7 +62,7 @@ public class UserEntity : BaseEntity
         CommentVoteEntities = commentVoteEntities;
     }
 
-    public UserEntity PureCopy() => new(Id, Username, State, CreationDate,
+    public UserEntity PureCopy() => new(Id, Username, State, Roles, CreationDate,
         DisplayName, About, AvatarUrl, BannerUrl, ModifiedDate, PasswordHash, ResetPasswordCode);
 
     //public void RemoveLoopReferencing()

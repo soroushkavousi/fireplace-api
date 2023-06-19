@@ -38,7 +38,8 @@ public class PostCreateTests
             //Given
             var narutoUser = await _clientPool.CreateNarutoUserAsync();
             var animeCommunityName = "anime-community";
-            var animeCommunity = await _communityOperator.CreateCommunityAsync(narutoUser, animeCommunityName);
+            var animeCommunity = await _communityOperator.CreateCommunityAsync(narutoUser.Id,
+                animeCommunityName, username: narutoUser.Username);
             var postContent = "Sample Post Content";
 
             //When

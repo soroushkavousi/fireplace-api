@@ -33,56 +33,56 @@ public class PostOperator
     }
 
     public async Task<QueryResult<Post>> ListCommunityPostsAsync(CommunityIdentifier communityIdentifier,
-        SortType? sort = null, User requestingUser = null)
+        SortType? sort = null, ulong? userId = null)
     {
         sort ??= default;
         var communityPosts = await _postRepository.ListCommunityPostsAsync(
-            communityIdentifier, sort.Value, requestingUser);
+            communityIdentifier, sort.Value, userId);
         var queryResult = new QueryResult<Post>(communityPosts);
         return queryResult;
     }
 
-    public async Task<QueryResult<Post>> ListPostsAsync(string search, SortType? sort, User requestingUser = null)
+    public async Task<QueryResult<Post>> ListPostsAsync(string search, SortType? sort, ulong? userId = null)
     {
         sort ??= default;
-        var posts = await _postRepository.ListPostsAsync(search, sort.Value, requestingUser);
+        var posts = await _postRepository.ListPostsAsync(search, sort.Value, userId);
         var queryResult = new QueryResult<Post>(posts);
         return queryResult;
     }
 
-    public async Task<List<Post>> ListPostsByIdsAsync(List<ulong> ids, User requestingUser = null)
+    public async Task<List<Post>> ListPostsByIdsAsync(List<ulong> ids, ulong? userId = null)
     {
         if (ids.IsNullOrEmpty())
             return null;
 
         var posts = await _postRepository
-            .ListPostsByIdsAsync(ids, requestingUser);
+            .ListPostsByIdsAsync(ids, userId);
         return posts;
     }
 
-    public async Task<QueryResult<Post>> ListSelfPostsAsync(User author,
+    public async Task<QueryResult<Post>> ListSelfPostsAsync(ulong authorId,
         SortType? sort = null)
     {
         sort ??= default;
         var selfPosts = await _postRepository.ListSelfPostsAsync(
-            author, sort.Value);
+            authorId, sort.Value);
 
         var queryResult = new QueryResult<Post>(selfPosts);
         return queryResult;
     }
 
     public async Task<Post> GetPostByIdAsync(ulong id,
-        bool includeAuthor, bool includeCommunity, User requestingUser = null)
+        bool includeAuthor, bool includeCommunity, ulong? userId = null)
     {
         var post = await _postRepository.GetPostByIdAsync(
-            id, includeAuthor, includeCommunity, requestingUser);
+            id, includeAuthor, includeCommunity, userId);
         if (post == null)
             return post;
 
         return post;
     }
 
-    public async Task<Post> CreatePostAsync(User requestingUser,
+    public async Task<Post> CreatePostAsync(ulong userId,
         CommunityIdentifier communityIdentifier, string content)
     {
         ulong communityId = default;
@@ -100,55 +100,58 @@ public class PostOperator
                     .GetIdByNameAsync(communityName);
                 break;
         }
-        var post = await CreatePostAsync(requestingUser, communityId,
+        var post = await CreatePostAsync(userId, communityId,
             communityName, content);
         return post;
     }
 
-    public async Task<Post> CreatePostAsync(User requestingUser,
-        ulong communityId, string communityName, string content)
+    public async Task<Post> CreatePostAsync(ulong userId,
+        ulong communityId, string communityName, string content,
+        string username = null)
     {
         var id = await IdGenerator.GenerateNewIdAsync(DoesPostIdExistAsync);
+        username ??= await _userOperator.GetUsernameByIdAsync(userId);
         var post = await _postRepository.CreatePostAsync(
-            id, requestingUser.Id, requestingUser.Username,
+            id, userId, username,
             communityId, communityName, content);
         return post;
     }
 
-    public async Task<Post> VotePostAsync(User requestingUser,
-        ulong id, bool isUp)
+    public async Task<Post> VotePostAsync(ulong userId,
+        ulong id, bool isUp, string username = null)
     {
         var postVoteId = await IdGenerator.GenerateNewIdAsync(
             DoesPostVoteIdExistAsync);
+        username ??= await _userOperator.GetUsernameByIdAsync(userId);
         var postVote = await _postVoteRepository.CreatePostVoteAsync(
-            postVoteId, requestingUser.Id, requestingUser.Username,
+            postVoteId, userId, username,
             id, isUp);
         var voteChange = postVote.IsUp ? +1 : -1;
-        var post = await PatchPostByIdAsync(requestingUser,
+        var post = await PatchPostByIdAsync(userId,
             id, null, voteChange: voteChange);
         return post;
     }
 
-    public async Task<Post> ToggleVoteForPostAsync(User requestingUser,
+    public async Task<Post> ToggleVoteForPostAsync(ulong userId,
         ulong id)
     {
         var postVote = await _postVoteRepository.GetPostVoteAsync(
-            requestingUser.Id, id, includePost: true);
+            userId, id, includePost: true);
         postVote.IsUp = !postVote.IsUp;
         await _postVoteRepository.UpdatePostVoteAsync(postVote);
         var voteChange = postVote.IsUp ? +2 : -2;
         var post = await ApplyPostChangesAsync(postVote.Post,
             null, voteChange: voteChange);
         post = await GetPostByIdAsync(post.Id,
-            false, false, requestingUser);
+            false, false, userId);
         return post;
     }
 
-    public async Task<Post> DeleteVoteForPostAsync(User requestingUser,
+    public async Task<Post> DeleteVoteForPostAsync(ulong userId,
         ulong id)
     {
         var postVote = await _postVoteRepository.GetPostVoteAsync(
-            requestingUser.Id, id, includePost: true);
+            userId, id, includePost: true);
         var voteChange = postVote.IsUp ? -1 : +1;
         await _postVoteRepository.DeletePostVoteByIdAsync(
             postVote.Id);
@@ -157,7 +160,7 @@ public class PostOperator
         return post;
     }
 
-    public async Task<Post> PatchPostByIdAsync(User requestingUser,
+    public async Task<Post> PatchPostByIdAsync(ulong userId,
         ulong id, string content, int? voteChange)
     {
         var post = await _postRepository
@@ -165,7 +168,7 @@ public class PostOperator
         post = await ApplyPostChangesAsync(post, content,
             voteChange);
         post = await GetPostByIdAsync(post.Id,
-            false, false, requestingUser);
+            false, false, userId);
         return post;
     }
 

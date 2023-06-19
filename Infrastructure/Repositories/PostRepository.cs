@@ -30,13 +30,13 @@ public class PostRepository : IPostRepository
     }
 
     public async Task<List<Post>> ListCommunityPostsAsync(CommunityIdentifier communityIdentifier,
-        SortType sort, User requestingUser = null)
+        SortType sort, ulong? userId = null)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
         {
             communityIdentifier,
             sort,
-            requestingUserId = requestingUser?.Id
+            userId
         });
         var sw = Stopwatch.StartNew();
         var postEntities = await _postEntities
@@ -50,14 +50,14 @@ public class PostRepository : IPostRepository
             .Include(
                 authorEntity: false,
                 communityEntity: false,
-                requestingUser: requestingUser
+                userId: userId
             )
             .Sort(sort)
             .Take(Configs.Current.QueryResult.TotalLimit)
             .ToListAsync();
 
-        if (requestingUser != null)
-            postEntities.ForEach(e => e.CheckRequestingUserVote(requestingUser));
+        if (userId != null)
+            postEntities.ForEach(e => e.CheckRequestingUserVote(userId));
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { postEntities = postEntities.Select(e => e.Id) });
@@ -65,13 +65,13 @@ public class PostRepository : IPostRepository
     }
 
     public async Task<List<Post>> ListPostsAsync(string search, SortType sort,
-        User requestingUser = null)
+        ulong? userId = null)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
         {
             search,
             sort,
-            requestingUser = requestingUser?.Id
+            userId
         });
         var sw = Stopwatch.StartNew();
         var postEntities = await _postEntities
@@ -85,14 +85,14 @@ public class PostRepository : IPostRepository
             .Include(
                 authorEntity: false,
                 communityEntity: false,
-                requestingUser: requestingUser
+                userId: userId
             )
             .Sort(sort)
             .Take(Configs.Current.QueryResult.TotalLimit)
             .ToListAsync();
 
-        if (requestingUser != null)
-            postEntities.ForEach(e => e.CheckRequestingUserVote(requestingUser));
+        if (userId != null)
+            postEntities.ForEach(e => e.CheckRequestingUserVote(userId));
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { postEntities = postEntities.Select(e => e.Id) });
@@ -100,12 +100,12 @@ public class PostRepository : IPostRepository
     }
 
     public async Task<List<Post>> ListPostsByIdsAsync(List<ulong> Ids,
-        User requestingUser = null)
+        ulong? userId = null)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
         {
             Ids,
-            requestingUser = requestingUser?.Id
+            userId
         });
         var sw = Stopwatch.StartNew();
         var postEntities = await _postEntities
@@ -114,7 +114,7 @@ public class PostRepository : IPostRepository
             .Include(
                 authorEntity: false,
                 communityEntity: false,
-                requestingUser: requestingUser
+                userId: userId
             )
             .ToListAsync();
 
@@ -123,27 +123,27 @@ public class PostRepository : IPostRepository
         postEntities = new List<PostEntity>();
         Ids.ForEach(id => postEntities.Add(postEntityDictionary[id]));
 
-        if (requestingUser != null)
-            postEntities.ForEach(e => e.CheckRequestingUserVote(requestingUser));
+        if (userId != null)
+            postEntities.ForEach(e => e.CheckRequestingUserVote(userId));
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { postEntities = postEntities.Select(e => e.Id) });
         return postEntities.Select(PostConverter.ToModel).ToList();
     }
 
-    public async Task<List<Post>> ListSelfPostsAsync(User author,
+    public async Task<List<Post>> ListSelfPostsAsync(ulong authorId,
         SortType sort)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
         {
-            authorId = author.Id,
+            authorId,
             sort
         });
         var sw = Stopwatch.StartNew();
         var postEntities = await _postEntities
             .AsNoTracking()
             .Search(
-                authorId: author.Id,
+                authorId: authorId,
                 joined: null,
                 communityIdentifier: null,
                 search: null
@@ -151,13 +151,13 @@ public class PostRepository : IPostRepository
             .Include(
                 authorEntity: false,
                 communityEntity: false,
-                requestingUser: author
+                userId: authorId
             )
             .Sort(sort)
             .Take(Configs.Current.QueryResult.TotalLimit)
             .ToListAsync();
 
-        postEntities.ForEach(e => e.CheckRequestingUserVote(author));
+        postEntities.ForEach(e => e.CheckRequestingUserVote(authorId));
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { postEntities = postEntities.Select(e => e.Id) });
@@ -166,14 +166,14 @@ public class PostRepository : IPostRepository
 
     public async Task<Post> GetPostByIdAsync(ulong id,
         bool includeAuthor = false, bool includeCommunity = false,
-        User requestingUser = null)
+        ulong? userId = null)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
         {
             id,
             includeAuthor,
             includeCommunity,
-            requestingUser = requestingUser != null
+            userId = userId != null
         });
         var sw = Stopwatch.StartNew();
         var postEntity = await _postEntities
@@ -182,12 +182,12 @@ public class PostRepository : IPostRepository
             .Include(
                 authorEntity: includeAuthor,
                 communityEntity: includeCommunity,
-                requestingUser: requestingUser
+                userId: userId
             )
             .SingleOrDefaultAsync();
 
-        if (postEntity != null && requestingUser != null)
-            postEntity.CheckRequestingUserVote(requestingUser);
+        if (postEntity != null && userId != null)
+            postEntity.CheckRequestingUserVote(userId);
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
         return postEntity.ToModel();
@@ -273,7 +273,7 @@ public static class PostRepositoryExtensions
     public static IQueryable<PostEntity> Include(
         [NotNull] this IQueryable<PostEntity> q,
         bool authorEntity, bool communityEntity,
-        User requestingUser)
+        ulong? userId)
     {
         if (authorEntity)
             q = q.Include(e => e.AuthorEntity);
@@ -281,11 +281,11 @@ public static class PostRepositoryExtensions
         if (communityEntity)
             q = q.Include(e => e.CommunityEntity);
 
-        if (requestingUser != null)
+        if (userId != null)
         {
             q = q.Include(
                 c => c.PostVoteEntities
-                    .Where(cv => cv.VoterEntityId == requestingUser.Id)
+                    .Where(cv => cv.VoterEntityId == userId)
             );
         }
 

@@ -31,99 +31,99 @@ public class CommentValidator : DomainValidator
     }
 
     public async Task ValidateListPostCommentsInputParametersAsync(ulong postId,
-        SortType? sort, User requestingUser)
+        SortType? sort, ulong? userId)
     {
         Post = await _postValidator.ValidatePostExistsAsync(postId);
     }
 
     public async Task ValidateListCommentsByIdsInputParametersAsync(List<ulong> ids,
-        SortType? sort, User requestingUser)
+        SortType? sort, ulong? userId)
     {
         await Task.CompletedTask;
     }
 
-    public async Task ValidateListSelfCommentsInputParametersAsync(User requestingUser,
+    public async Task ValidateListSelfCommentsInputParametersAsync(ulong userId,
         SortType? sort)
     {
         await Task.CompletedTask;
     }
 
     public async Task ValidateListChildCommentsAsyncInputParametersAsync(
-        ulong parentCommentId, SortType? sort, User requestingUser)
+        ulong parentCommentId, SortType? sort, ulong? userId)
     {
         ParentComment = await ValidateCommentExistsAsync(parentCommentId);
     }
 
     public async Task ValidateGetCommentByIdInputParametersAsync(ulong id,
-        bool? includeAuthor, bool? includePost, User requestingUser)
+        bool? includeAuthor, bool? includePost, ulong? userId)
     {
         Comment = await ValidateCommentExistsAsync(id);
     }
 
-    public async Task ValidateReplyToPostInputParametersAsync(User requestingUser,
+    public async Task ValidateReplyToPostInputParametersAsync(ulong userId,
         ulong postId, string content)
     {
         Post = await _postValidator.ValidatePostExistsAsync(postId);
     }
 
-    public async Task ValidateReplyToCommentInputParametersAsync(User requestingUser,
+    public async Task ValidateReplyToCommentInputParametersAsync(ulong userId,
         ulong parentCommentId, string content)
     {
         ParentComment = await ValidateCommentExistsAsync(parentCommentId);
     }
 
-    public async Task ValidateVoteCommentInputParametersAsync(User requestingUser,
+    public async Task ValidateVoteCommentInputParametersAsync(ulong userId,
         ulong id, bool? isUpvote)
     {
-        Comment = await ValidateCommentExistsAsync(id, requestingUser);
-        ValidateCommentIsNotVotedByUser(Comment, requestingUser);
+        Comment = await ValidateCommentExistsAsync(id, userId);
+        ValidateCommentIsNotVotedByUser(Comment, userId);
     }
 
-    public async Task ValidateToggleVoteForCommentInputParametersAsync(User requestingUser,
+    public async Task ValidateToggleVoteForCommentInputParametersAsync(ulong userId,
         ulong id)
     {
-        Comment = await ValidateCommentExistsAsync(id, requestingUser);
-        ValidateCommentVoteExists(Comment, requestingUser);
+        Comment = await ValidateCommentExistsAsync(id, userId);
+        ValidateCommentVoteExists(Comment, userId);
     }
 
-    public async Task ValidateDeleteVoteForCommentInputParametersAsync(User requestingUser,
+    public async Task ValidateDeleteVoteForCommentInputParametersAsync(ulong userId,
         ulong id)
     {
-        Comment = await ValidateCommentExistsAsync(id, requestingUser);
-        ValidateCommentVoteExists(Comment, requestingUser);
+        Comment = await ValidateCommentExistsAsync(id, userId);
+        ValidateCommentVoteExists(Comment, userId);
     }
 
-    public async Task ValidatePatchCommentByIdInputParametersAsync(User requestingUser,
+    public async Task ValidatePatchCommentByIdInputParametersAsync(ulong userId,
         ulong id, string content)
     {
         Comment = await ValidateCommentExistsAsync(id);
-        ValidateRequestingUserCanAlterComment(requestingUser, Comment);
+        ValidateRequestingUserCanAlterComment(userId, Comment);
     }
 
-    public async Task ValidateDeleteCommentByIdInputParametersAsync(User requestingUser,
+    public async Task ValidateDeleteCommentByIdInputParametersAsync(ulong userId,
         ulong id)
     {
         Comment = await ValidateCommentExistsAsync(id);
-        ValidateRequestingUserCanAlterComment(requestingUser, Comment);
+        ValidateRequestingUserCanAlterComment(userId, Comment);
     }
 
-    public void ValidateCommentIsNotVotedByUser(Comment comment, User requestingUser)
+    public void ValidateCommentIsNotVotedByUser(Comment comment, ulong userId)
     {
         if (comment.RequestingUserVote != 0)
-            throw new CommentVoteAlreadyExistsException(requestingUser.Id, comment.Id);
+            throw new CommentVoteAlreadyExistsException(userId, comment.Id);
     }
 
-    public void ValidateCommentVoteExists(Comment comment, User requestingUser)
+    public void ValidateCommentVoteExists(Comment comment, ulong userId)
     {
         if (comment.RequestingUserVote == 0)
-            throw new CommentVoteNotExistException(requestingUser.Id, comment.Id);
+            throw new CommentVoteNotExistException(userId, comment.Id);
     }
 
     public async Task<Comment> ValidateCommentExistsAsync(ulong id,
-        User requestingUser = null)
+        ulong? userId = null)
     {
         var comment = await _commentOperator.GetCommentByIdAsync(id, true,
-            true, requestingUser);
+            true, userId);
 
         if (comment == null)
             throw new CommentNotExistException(id);
@@ -138,9 +138,9 @@ public class CommentValidator : DomainValidator
             throw new CommentContentInvalidException(content);
     }
 
-    public void ValidateRequestingUserCanAlterComment(User requestingUser, Comment comment)
+    public void ValidateRequestingUserCanAlterComment(ulong userId, Comment comment)
     {
-        if (requestingUser.Id != comment.AuthorId)
-            throw new CommentAccessDeniedException(requestingUser.Id, comment.Id);
+        if (userId != comment.AuthorId)
+            throw new CommentAccessDeniedException(userId, comment.Id);
     }
 }

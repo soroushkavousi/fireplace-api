@@ -1,6 +1,7 @@
-﻿using FireplaceApi.Application.Converters;
+﻿using FireplaceApi.Application.Auth;
+using FireplaceApi.Application.Converters;
 using FireplaceApi.Application.Dtos;
-using FireplaceApi.Application.Tool;
+using FireplaceApi.Application.Tools;
 using FireplaceApi.Application.Validators;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Services;
@@ -18,9 +19,9 @@ public class UserQueryResolvers
     public async Task<UserDto> GetMeAsync(
         [Service(ServiceKind.Resolver)] UserService userService,
         [Service(ServiceKind.Resolver)] UserValidator userValidator,
-        [User] User requestingUser)
+        [User] RequestingUser requestingUser)
     {
-        var user = await userService.GetRequestingUserAsync(requestingUser, true, true);
+        var user = await userService.GetRequestingUserAsync(requestingUser.Id.Value, true, true);
         var userDto = user.ToDto();
         return userDto;
     }

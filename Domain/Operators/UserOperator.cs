@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -50,6 +51,7 @@ public class UserOperator
                     state: state, scope: scope, authUser: authUser, prompt: prompt,
                     redirectToUserUrl: redirectToUserUrl);
             userId = googleUser.UserId;
+            user = await GetUserByIdentifierAsync(UserIdentifier.OfId(userId), true, false, false);
         }
         else
         {
@@ -72,12 +74,9 @@ public class UserOperator
         }
 
         var sessionOperator = _serviceProvider.GetService<SessionOperator>();
-        var session = await sessionOperator.CreateOrUpdateSessionAsync(userId, ipAddress);
+        var session = await sessionOperator.CreateSessionAsync(userId, ipAddress);
 
-        var accessTokenOperator = _serviceProvider.GetService<AccessTokenOperator>();
-        var accessToken = await accessTokenOperator.CreateAccessTokenAsync(userId);
-
-        user = await GetUserByIdentifierAsync(UserIdentifier.OfId(userId), true, true, true, false);
+        user.Sessions = new() { session };
         return user;
     }
 
@@ -88,8 +87,7 @@ public class UserOperator
         var googleUserOperator = _serviceProvider.GetService<GoogleUserOperator>();
         var redirectToUserUrl = await googleUserOperator.GetRedirectToUserUrlFromState();
         var googleUser = await googleUserOperator.CreateGoogleUserAsync(user.Id,
-            googleUserToken, state,
-            authUser, prompt, redirectToUserUrl);
+            googleUserToken, state, authUser, prompt, redirectToUserUrl);
 
         if (user.State != UserState.VERIFIED)
         {
@@ -105,7 +103,7 @@ public class UserOperator
         }
 
         user = await GetUserByIdentifierAsync(UserIdentifier.OfId(user.Id),
-            true, true, true, false);
+            true, true, false);
         return user;
     }
 
@@ -130,7 +128,7 @@ public class UserOperator
             googleUserToken, state, authUser, prompt, redirectToUserUrl);
 
         user = await GetUserByIdentifierAsync(UserIdentifier.OfId(user.Id),
-            true, true, true, false);
+            true, true, false);
         return user;
     }
 
@@ -147,18 +145,15 @@ public class UserOperator
     {
         var user = await CreateUserAsync(username, password);
 
+        var sessionOperator = _serviceProvider.GetService<SessionOperator>();
+        var session = await sessionOperator.CreateSessionAsync(user.Id, ipAddress);
+        user.Sessions = new List<Session> { session };
+
         var emailOperator = _serviceProvider.GetService<EmailOperator>();
         var email = await emailOperator.CreateEmailAsync(user.Id, emailAddress);
         email = await emailOperator.SendActivationCodeAsync(email);
+        user.Email = email;
 
-        var sessionOperator = _serviceProvider.GetService<SessionOperator>();
-        var session = await sessionOperator.CreateSessionAsync(user.Id, ipAddress);
-
-        var accessTokenOperator = _serviceProvider.GetService<AccessTokenOperator>();
-        var accessToken = await accessTokenOperator.CreateAccessTokenAsync(user.Id);
-
-        user = await GetUserByIdentifierAsync(UserIdentifier.OfId(user.Id), true, false,
-            true, false);
         return user;
     }
 
@@ -168,35 +163,30 @@ public class UserOperator
         var email = await emailOperator.GetEmailByIdentifierAsync(EmailIdentifier.OfAddress(emailAddress));
 
         var sessionOperator = _serviceProvider.GetService<SessionOperator>();
-        var session = await sessionOperator.CreateOrUpdateSessionAsync(email.UserId, ipAddress);
+        var session = await sessionOperator.CreateSessionAsync(email.UserId, ipAddress);
 
-        var accessTokenOperator = _serviceProvider.GetService<AccessTokenOperator>();
-        var accessToken = await accessTokenOperator.CreateAccessTokenAsync(email.UserId);
-
-        var user = await GetUserByIdentifierAsync(UserIdentifier.OfId(email.UserId), true, false, true, false);
+        var user = await GetUserByIdentifierAsync(UserIdentifier.OfId(email.UserId), true, false, false);
+        user.Sessions = new() { session };
         return user;
     }
 
     public async Task<User> LogInWithUsernameAsync(IPAddress ipAddress, string username, Password password)
     {
-        var user = await GetUserByIdentifierAsync(UserIdentifier.OfUsername(username), false, false, false);
+        var user = await GetUserByIdentifierAsync(UserIdentifier.OfUsername(username), false, false);
 
         var sessionOperator = _serviceProvider.GetService<SessionOperator>();
-        var session = await sessionOperator.CreateOrUpdateSessionAsync(user.Id, ipAddress);
+        var session = await sessionOperator.CreateSessionAsync(user.Id, ipAddress);
 
-        var accessTokenOperator = _serviceProvider.GetService<AccessTokenOperator>();
-        var accessToken = await accessTokenOperator.CreateAccessTokenAsync(user.Id);
-
-        user = await GetUserByIdentifierAsync(UserIdentifier.OfId(user.Id), true, false, true, false);
+        user = await GetUserByIdentifierAsync(UserIdentifier.OfId(user.Id), true, false, false);
+        user.Sessions = new() { session };
         return user;
     }
 
     public async Task<List<User>> ListUsersAsync(bool includeEmail = false,
-        bool includeGoogleUser = false, bool includeAccessTokens = false,
-        bool includeSessions = false)
+        bool includeGoogleUser = false, bool includeSessions = false)
     {
         var users = await _userRepository.ListUsersAsync(includeEmail,
-            includeGoogleUser, includeAccessTokens, includeSessions);
+            includeGoogleUser, includeSessions);
 
         foreach (var user in users)
         {
@@ -205,7 +195,7 @@ public class UserOperator
 
             for (int i = 0; i < user.Sessions.Count; i++)
             {
-                if (user.Sessions[i].State == SessionState.CLOSED)
+                if (user.Sessions[i].State != SessionState.ACTIVE)
                     user.Sessions.RemoveAt(i);
             }
         }
@@ -213,11 +203,10 @@ public class UserOperator
     }
 
     public async Task<User> GetUserByIdentifierAsync(UserIdentifier identifier,
-        bool includeEmail = false, bool includeGoogleUser = false,
-        bool includeAccessTokens = false, bool includeSessions = false)
+        bool includeEmail = false, bool includeGoogleUser = false, bool includeSessions = false)
     {
         var user = await _userRepository.GetUserByIdentifierAsync(identifier, includeEmail,
-             includeGoogleUser, includeAccessTokens, includeSessions);
+             includeGoogleUser, includeSessions);
 
         if (user == null)
             return user;
@@ -227,7 +216,7 @@ public class UserOperator
 
         for (int i = 0; i < user.Sessions.Count; i++)
         {
-            if (user.Sessions[i].State == SessionState.CLOSED)
+            if (user.Sessions[i].State != SessionState.ACTIVE)
                 user.Sessions.RemoveAt(i);
         }
         return user;
@@ -246,13 +235,15 @@ public class UserOperator
     }
 
     public async Task<User> CreateUserAsync(string username, Password password = null,
-        UserState state = UserState.NOT_VERIFIED, string displayName = null,
-        string about = null, string avatarUrl = null, string bannerUrl = null)
+        UserState state = UserState.NOT_VERIFIED, List<UserRole> roles = null,
+        string displayName = null, string about = null, string avatarUrl = null,
+        string bannerUrl = null)
     {
+        roles ??= new List<UserRole> { UserRole.USER };
         var id = await IdGenerator.GenerateNewIdAsync(
             (id) => DoesUserIdentifierExistAsync(UserIdentifier.OfId(id)));
         var user = await _userRepository.CreateUserAsync(id, username, state,
-            password, displayName, about, avatarUrl, bannerUrl);
+            roles, password, displayName, about, avatarUrl, bannerUrl);
         return user;
     }
 
@@ -287,7 +278,7 @@ public class UserOperator
         var user = await _userRepository.GetUserByIdentifierAsync(userIdentifier, true);
         user = await ApplyUserChanges(user, displayName, about, avatarUrl, bannerUrl,
             username, state);
-        user = await GetUserByIdentifierAsync(UserIdentifier.OfId(user.Id), true, false, false, false);
+        user = await GetUserByIdentifierAsync(UserIdentifier.OfId(user.Id), true, false, false);
         return user;
     }
 
@@ -329,7 +320,8 @@ public class UserOperator
 
     public async Task<User> ApplyUserChanges(User user, string displayName = null,
         string about = null, string avatarUrl = null, string bannerUrl = null,
-        string username = null, UserState? state = null, string resetPasswordCode = null)
+        string username = null, UserState? state = null, string resetPasswordCode = null,
+        List<UserRole> roles = null)
     {
         var foundAnyChange = false;
         if (displayName != null)
@@ -371,6 +363,12 @@ public class UserOperator
         if (resetPasswordCode != null)
         {
             user.ResetPasswordCode = resetPasswordCode;
+            foundAnyChange = true;
+        }
+
+        if (roles != null && user.Roles.Count != roles.Count && !roles.All(user.Roles.Contains))
+        {
+            user.Roles = roles;
             foundAnyChange = true;
         }
 

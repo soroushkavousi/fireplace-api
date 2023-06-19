@@ -1,12 +1,14 @@
-﻿using FireplaceApi.Application.Attributes;
+﻿using FireplaceApi.Application.Auth;
 using FireplaceApi.Application.Converters;
 using FireplaceApi.Application.Dtos;
+using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Application.Controllers;
@@ -48,18 +50,21 @@ public class UserController : ApiController
     /// <returns>Created user</returns>
     /// <response code="200">Returns the newly created item</response>
     [AllowAnonymous]
-    [HttpPost("sign-up-with-email")]
-    [Consumes("application/json")]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPost("sign-up-with-email")]
     public async Task<ActionResult<UserDto>> SignUpWithEmailAsync(
         [BindNever][FromHeader] InputHeaderDto inputHeaderDto,
         [FromBody] SignUpWithEmailInputBodyDto inputBodyDto)
     {
         var user = await _userService.SignUpWithEmailAsync(inputHeaderDto.IpAddress,
             inputBodyDto.EmailAddress, inputBodyDto.Username, inputBodyDto.PasswordValueObject);
+
+        var futureRequestingUser = new RequestingUser(user.Id,
+            user.Sessions.First().Id, user.State, user.Roles);
+        await HttpContext.SignInWithCookieAsync(futureRequestingUser);
+
         var userDto = user.ToDto();
-        var outputCookieDto = new SignUpWithEmailOutputCookieDto(userDto.AccessToken);
-        SetOutputCookieDto(outputCookieDto);
         return userDto;
     }
 
@@ -70,8 +75,8 @@ public class UserController : ApiController
     /// <response code="200">Returns the newly created item</response>
     [AllowAnonymous]
     [ProducesCsrfToken]
-    [HttpGet("log-in-with-google")]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+    [HttpGet("log-in-with-google")]
     public async Task<ActionResult<UserDto>> LogInWithGoogleAsync(
         [BindNever][FromHeader] InputHeaderDto inputHeaderDto,
         [FromQuery] LogInWithGoogleInputQueryDto inputQueryDto)
@@ -79,9 +84,12 @@ public class UserController : ApiController
         var user = await _userService.LogInWithGoogleAsync(inputHeaderDto.IpAddress,
             inputQueryDto.State, inputQueryDto.Code, inputQueryDto.Scope,
             inputQueryDto.AuthUser, inputQueryDto.Prompt, inputQueryDto.Error);
+
+        var futureRequestingUser = new RequestingUser(user.Id,
+            user.Sessions.First().Id, user.State, user.Roles);
+        await HttpContext.SignInWithCookieAsync(futureRequestingUser);
+
         var userDto = user.ToDto();
-        var outputCookieDto = new SignUpWithEmailOutputCookieDto(userDto?.AccessToken);
-        SetOutputCookieDto(outputCookieDto);
         if (string.IsNullOrWhiteSpace(user.GoogleUser.RedirectToUserUrl))
             return userDto;
         else
@@ -94,18 +102,21 @@ public class UserController : ApiController
     /// <returns>Logged in user</returns>
     /// <response code="200">Returns the newly created item</response>
     [AllowAnonymous]
-    [HttpPost("log-in-with-email")]
-    [Consumes("application/json")]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPost("log-in-with-email")]
     public async Task<ActionResult<UserDto>> LogInWithEmailAsync(
         [BindNever][FromHeader] InputHeaderDto inputHeaderDto,
         [FromBody] LogInWithEmailInputBodyDto inputBodyDto)
     {
         var user = await _userService.LogInWithEmailAsync(inputHeaderDto.IpAddress,
             inputBodyDto.EmailAddress, inputBodyDto.PasswordValueObject);
+
+        var futureRequestingUser = new RequestingUser(user.Id,
+            user.Sessions.First().Id, user.State, user.Roles);
+        await HttpContext.SignInWithCookieAsync(futureRequestingUser);
+
         var userDto = user.ToDto();
-        var outputCookieDto = new SignUpWithEmailOutputCookieDto(userDto.AccessToken);
-        SetOutputCookieDto(outputCookieDto);
         return userDto;
     }
 
@@ -115,18 +126,21 @@ public class UserController : ApiController
     /// <returns>Logged in user</returns>
     /// <response code="200">Returns the newly created item</response>
     [AllowAnonymous]
-    [HttpPost("log-in-with-username")]
-    [Consumes("application/json")]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPost("log-in-with-username")]
     public async Task<ActionResult<UserDto>> LogInWithUsernameAsync(
         [BindNever][FromHeader] InputHeaderDto inputHeaderDto,
         [FromBody] LogInWithUsernameInputBodyDto inputBodyDto)
     {
         var user = await _userService.LogInWithUsernameAsync(inputHeaderDto.IpAddress,
             inputBodyDto.Username, inputBodyDto.PasswordValueObject);
+
+        var futureRequestingUser = new RequestingUser(user.Id,
+            user.Sessions.First().Id, user.State, user.Roles);
+        await HttpContext.SignInWithCookieAsync(futureRequestingUser);
+
         var userDto = user.ToDto();
-        var outputCookieDto = new SignUpWithEmailOutputCookieDto(userDto.AccessToken);
-        SetOutputCookieDto(outputCookieDto);
         return userDto;
     }
 
@@ -135,13 +149,14 @@ public class UserController : ApiController
     /// </summary>
     /// <returns>Requested user</returns>
     /// <response code="200">The user was successfully retrieved.</response>
-    [HttpGet("me")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+    [HttpGet("me")]
     public async Task<ActionResult<UserDto>> GetRequestingUserAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromQuery] GetUserInputQueryDto inputQueryDto)
     {
-        var user = await _userService.GetRequestingUserAsync(requestingUser,
+        var user = await _userService.GetRequestingUserAsync(requestingUser.Id.Value,
             inputQueryDto.IncludeEmail, inputQueryDto.IncludeSessions);
         var userDto = user.ToDto();
         return userDto;
@@ -152,13 +167,14 @@ public class UserController : ApiController
     /// </summary>
     /// <returns>Requested user profile</returns>
     /// <response code="200">The user profile was successfully retrieved.</response>
-    [HttpGet("{id-or-username}")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(ProfileDto), StatusCodes.Status200OK)]
+    [HttpGet("{id-or-username}")]
     public async Task<ActionResult<ProfileDto>> GetUserProfileAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] GetUserProfileInputRouteDto inputRouteDto)
     {
-        var profile = await _userService.GetUserProfileAsync(requestingUser,
+        var profile = await _userService.GetUserProfileAsync(requestingUser.Id.Value,
             inputRouteDto.Identifier);
         var profileDto = profile.ToDto();
         return profileDto;
@@ -169,14 +185,15 @@ public class UserController : ApiController
     /// </summary>
     /// <returns>No content</returns>
     /// <response code="200">The user password successfully set.</response>
-    [HttpPost("me/password")]
-    [Consumes("application/json")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPost("me/password")]
     public async Task<IActionResult> CreateRequestingUserPasswordAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromBody] CreateRequestingUserPasswordInputBodyDto inputBodyDto)
     {
-        await _userService.CreateRequestingUserPasswordAsync(requestingUser,
+        await _userService.CreateRequestingUserPasswordAsync(requestingUser.Id.Value,
             inputBodyDto.PasswordValueObject);
         return Ok();
     }
@@ -187,9 +204,9 @@ public class UserController : ApiController
     /// <returns>No content</returns>
     /// <response code="200">Reset password code successfully sent.</response>
     [AllowAnonymous]
-    [HttpPost("send-reset-password-code")]
-    [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPost("send-reset-password-code")]
     public async Task<IActionResult> SendResetPasswordCodeAsync(
         [FromBody] SendResetPasswordCodeInputBodyDto inputBodyDto)
     {
@@ -205,9 +222,9 @@ public class UserController : ApiController
     /// <returns>No content</returns>
     /// <response code="200">The user password successfully changed.</response>
     [AllowAnonymous]
-    [HttpPost("reset-password-with-code")]
-    [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPost("reset-password-with-code")]
     public async Task<IActionResult> ResetPasswordWithCodeAsync(
         [FromBody] ResetPasswordWithCodeInputBodyDto inputBodyDto)
     {
@@ -221,14 +238,15 @@ public class UserController : ApiController
     /// </summary>
     /// <returns>Updated user</returns>
     /// <response code="200">The user was successfully updated.</response>
-    [HttpPatch("me")]
-    [Consumes("application/json")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPatch("me")]
     public async Task<ActionResult<UserDto>> PatchRequestingUserAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromBody] PatchUserInputBodyDto inputBodyDto)
     {
-        var user = await _userService.PatchRequestingUserAsync(requestingUser, inputBodyDto.DisplayName,
+        var user = await _userService.PatchRequestingUserAsync(requestingUser.Id.Value, inputBodyDto.DisplayName,
             inputBodyDto.About, inputBodyDto.AvatarUrl, inputBodyDto.BannerUrl,
             inputBodyDto.Username);
         var userDto = user.ToDto();
@@ -240,14 +258,15 @@ public class UserController : ApiController
     /// </summary>
     /// <returns>No content</returns>
     /// <response code="200">The user password successfully changed.</response>
-    [HttpPatch("me/password")]
-    [Consumes("application/json")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPatch("me/password")]
     public async Task<IActionResult> PatchRequestingUserPasswordAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromBody] PatchRequestingUserPasswordInputBodyDto inputBodyDto)
     {
-        await _userService.PatchRequestingUserPasswordAsync(requestingUser,
+        await _userService.PatchRequestingUserPasswordAsync(requestingUser.Id.Value,
             inputBodyDto.PasswordValueObject, inputBodyDto.NewPasswordValueObject);
         return Ok();
     }
@@ -257,12 +276,13 @@ public class UserController : ApiController
     /// </summary>
     /// <returns>No content</returns>
     /// <response code="200">The user was successfully deleted.</response>
-    [HttpDelete("me")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [HttpDelete("me")]
     public async Task<IActionResult> DeleteRequestingUserAsync(
-        [BindNever][FromHeader] User requestingUser)
+        [BindNever][FromHeader] RequestingUser requestingUser)
     {
-        await _userService.DeleteRequestingUserAsync(requestingUser);
+        await _userService.DeleteRequestingUserAsync(requestingUser.Id.Value);
         return Ok();
     }
 }

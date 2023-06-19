@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Domain.Attributes;
+﻿using FireplaceApi.Application.Auth;
+using FireplaceApi.Domain.Attributes;
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Tools;
 using Microsoft.AspNetCore.Http;
@@ -23,7 +24,7 @@ public class InputHeaderDto
     {
         string accessTokenValue = null;
 
-        var authorizationHeaderStringValues = httpContext.Request.Headers.GetValue(Tools.Constants.AuthorizationHeaderKey);
+        var authorizationHeaderStringValues = httpContext.Request.Headers.GetValue(AuthConstants.AuthorizationHeaderKey);
         if (authorizationHeaderStringValues == default(StringValues) || authorizationHeaderStringValues.Count == 0)
             return accessTokenValue;
 

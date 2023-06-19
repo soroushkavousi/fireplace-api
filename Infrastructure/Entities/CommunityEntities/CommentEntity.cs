@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Domain.Enums;
-using FireplaceApi.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -57,16 +56,16 @@ public class CommentEntity : BaseEntity
         CommentVoteEntities = commentVoteEntities;
     }
 
-    public void CheckRequestingUserVote(User requestingUser)
+    public void CheckRequestingUserVote(ulong? userId)
     {
-        if (requestingUser == null)
+        if (userId == null)
             return;
 
         var requestingUserVote = VoteType.NEUTRAL;
         if (CommentVoteEntities != null)
         {
             var requestingUserVoteEntity = CommentVoteEntities
-                .SingleOrDefault(cve => cve.VoterEntityId == requestingUser.Id);
+                .SingleOrDefault(cve => cve.VoterEntityId == userId);
             if (requestingUserVoteEntity != null)
             {
                 if (requestingUserVoteEntity.IsUp)
@@ -80,7 +79,7 @@ public class CommentEntity : BaseEntity
         if (ChildCommentEntities == null)
             return;
 
-        ChildCommentEntities.ForEach(cce => cce.CheckRequestingUserVote(requestingUser));
+        ChildCommentEntities.ForEach(cce => cce.CheckRequestingUserVote(userId));
     }
 
     public CommentEntity PureCopy() => new(Id, AuthorEntityId,

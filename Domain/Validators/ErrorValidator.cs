@@ -1,6 +1,5 @@
 ﻿using FireplaceApi.Domain.Exceptions;
 using FireplaceApi.Domain.Identifiers;
-using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Operators;
 using Microsoft.Extensions.Logging;
 using System;
@@ -22,12 +21,12 @@ public class ErrorValidator : DomainValidator
         _errorOperator = errorOperator;
     }
 
-    public async Task ValidateListErrorsInputParametersAsync(User requestingUser)
+    public async Task ValidateListErrorsInputParametersAsync(ulong userId)
     {
         await Task.CompletedTask;
     }
 
-    public async Task ValidateGetErrorByCodeInputParametersAsync(User requestingUser, ErrorIdentifier identifier)
+    public async Task ValidateGetErrorByCodeInputParametersAsync(ulong userId, ErrorIdentifier identifier)
     {
         await ValidateErrorCodeExists(identifier);
     }

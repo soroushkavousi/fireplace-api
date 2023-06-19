@@ -52,7 +52,6 @@ public class UserTests
             var responseBody = await response.Content.ReadAsStringAsync();
             var loggedInUser = responseBody.FromJson<UserDto>();
             Assert.NotNull(loggedInUser);
-            Assert.False(string.IsNullOrWhiteSpace(loggedInUser.AccessToken));
             var loggedInUserId = loggedInUser.Id.IdDecode();
             Assert.Equal(narutoUser.Id, loggedInUserId);
 

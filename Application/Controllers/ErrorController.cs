@@ -1,7 +1,9 @@
-﻿using FireplaceApi.Application.Converters;
+﻿using FireplaceApi.Application.Auth;
+using FireplaceApi.Application.Converters;
 using FireplaceApi.Application.Dtos;
-using FireplaceApi.Domain.Models;
+using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -27,13 +29,14 @@ public class ErrorController : ApiController
     /// </summary>
     /// <returns>Requested error</returns>
     /// <response code="200">The error was successfully retrieved.</response>
-    [HttpGet("{code}")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.ADMIN))]
     [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status200OK)]
+    [HttpGet("{code}")]
     public async Task<ActionResult<ErrorDto>> GetErrorByCodeAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] GetErrorByCodeInputRouteDto inputRouteDto)
     {
-        var error = await _errorService.GetErrorAsync(requestingUser, inputRouteDto.Identifier);
+        var error = await _errorService.GetErrorAsync(requestingUser.Id.Value, inputRouteDto.Identifier);
         var errorDto = error.ToDto();
         return errorDto;
     }

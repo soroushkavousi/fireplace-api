@@ -51,15 +51,6 @@ public static class HttpContextExtensions
         return accessTokenValue;
     }
 
-    public static User GetRequestingUser(this HttpContext httpContext)
-    {
-        User user = null;
-        var hasUser = httpContext.Items.TryGetValue(Constants.RequestingUserKey, out var userObject);
-        if (hasUser)
-            user = userObject.To<User>();
-        return user;
-    }
-
     public static Error GetError(this HttpContext httpContext)
     {
         Error error = null;

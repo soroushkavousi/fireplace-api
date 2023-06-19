@@ -2,6 +2,7 @@
 
 public enum SessionState
 {
-    OPENED,
-    CLOSED,
+    ACTIVE,
+    EXPIRED,
+    REVOKED,
 }

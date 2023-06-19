@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Application.Extensions;
+﻿using FireplaceApi.Application.Auth;
+using FireplaceApi.Application.Extensions;
 using FireplaceApi.Application.Interfaces;
 using FireplaceApi.Application.Tools;
 using FireplaceApi.Application.Validators;
@@ -110,7 +111,7 @@ public class LogInWithGoogleOutputCookieDto : IOutputCookieDto
     {
         var cookieCollection = new CookieCollection
         {
-            new Cookie(Constants.ResponseAccessTokenCookieKey, AccessToken)
+            new Cookie(AuthConstants.AccessTokenCookieKey, AccessToken)
         };
         return cookieCollection;
     }

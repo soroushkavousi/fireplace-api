@@ -59,32 +59,32 @@ public class UserService
         return user;
     }
 
-    public async Task<User> GetRequestingUserAsync(User requestingUser,
+    public async Task<User> GetRequestingUserAsync(ulong userId,
         bool? includeEmail, bool? includeSessions)
     {
-        await _userValidator.ValidateGetRequestingUserInputParametersAsync(requestingUser,
+        await _userValidator.ValidateGetRequestingUserInputParametersAsync(userId,
             includeEmail, includeSessions);
-        var user = await _userOperator.GetUserByIdentifierAsync(UserIdentifier.OfId(requestingUser.Id),
-            includeEmail.Value, false, false, includeSessions.Value);
+        var user = await _userOperator.GetUserByIdentifierAsync(UserIdentifier.OfId(userId),
+            includeEmail.Value, false, includeSessions.Value);
         return user;
     }
 
-    public async Task<Profile> GetUserProfileAsync(User requestingUser, UserIdentifier identifier)
+    public async Task<Profile> GetUserProfileAsync(ulong userId, UserIdentifier identifier)
     {
         await _userValidator.ValidateGetUserProfileInputParametersAsync(
-            requestingUser, identifier);
+            userId, identifier);
         var user = await _userOperator.GetUserByIdentifierAsync(identifier,
-            false, false, false, false);
+            false, false, false);
         var profile = new Profile(user);
         return profile;
     }
 
-    public async Task CreateRequestingUserPasswordAsync(User requestingUser, Password password)
+    public async Task CreateRequestingUserPasswordAsync(ulong userId, Password password)
     {
-        await _userValidator.ValidateCreateRequestingUserPasswordInputParametersAsync(requestingUser,
+        await _userValidator.ValidateCreateRequestingUserPasswordInputParametersAsync(userId,
             password);
         await _userOperator.PatchRequestingUserPasswordAsync(
-            requestingUser, password);
+            _userValidator.User, password);
     }
 
     public async Task SendResetPasswordCodeAsync(string emailAddress, string resetPasswordWithCodeUrlFormat)
@@ -99,27 +99,27 @@ public class UserService
         await _userOperator.PatchRequestingUserPasswordAsync(_userValidator.User, newPassword);
     }
 
-    public async Task<User> PatchRequestingUserAsync(User requestingUser, string displayName,
+    public async Task<User> PatchRequestingUserAsync(ulong userId, string displayName,
         string about, string avatarUrl, string bannerUrl, string username)
     {
-        await _userValidator.ValidatePatchUserInputParametersAsync(requestingUser, displayName,
+        await _userValidator.ValidatePatchUserInputParametersAsync(userId, displayName,
             about, avatarUrl, bannerUrl, username);
-        var user = await _userOperator.PatchUserByIdentifierAsync(UserIdentifier.OfId(requestingUser.Id),
+        var user = await _userOperator.PatchUserByIdentifierAsync(UserIdentifier.OfId(userId),
             displayName, about, avatarUrl, bannerUrl, username);
         return user;
     }
 
-    public async Task PatchRequestingUserPasswordAsync(User requestingUser, Password password, Password newPassword)
+    public async Task PatchRequestingUserPasswordAsync(ulong userId, Password password, Password newPassword)
     {
-        await _userValidator.ValidatePatchRequestingUserPasswordInputParametersAsync(requestingUser,
+        await _userValidator.ValidatePatchRequestingUserPasswordInputParametersAsync(userId,
             password, newPassword);
         await _userOperator.PatchRequestingUserPasswordAsync(
-            requestingUser, newPassword);
+            _userValidator.User, newPassword);
     }
 
-    public async Task DeleteRequestingUserAsync(User requestingUser)
+    public async Task DeleteRequestingUserAsync(ulong userId)
     {
-        await _userValidator.ValidateDeleteUserInputParametersAsync(requestingUser);
+        await _userValidator.ValidateDeleteUserInputParametersAsync(userId);
         await _userOperator.DeleteUserByIdentifierAsync(_userValidator.UserIdentifier);
     }
 }

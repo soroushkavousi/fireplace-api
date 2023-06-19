@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Domain.Models;
-using FireplaceApi.Domain.Operators;
+﻿using FireplaceApi.Domain.Operators;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
@@ -17,7 +16,7 @@ public class FileValidator
         _fileOperator = fileOperator;
     }
 
-    public async Task ValidatePostFileInputParametersAsync(User requestingUser, IFormFile file)
+    public async Task ValidatePostFileInputParametersAsync(ulong userId, IFormFile file)
     {
         await Task.CompletedTask;
     }

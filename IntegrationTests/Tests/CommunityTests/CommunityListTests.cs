@@ -37,8 +37,8 @@ public class CommunityListTests
 
             //Given
             var narutoUser = await _clientPool.CreateNarutoUserAsync();
-            var backendDevelopersCommunity = await _communityOperator.CreateCommunityAsync(narutoUser, "backend-developers");
-            var gamersCommunity = await _communityOperator.CreateCommunityAsync(narutoUser, "gamers");
+            var backendDevelopersCommunity = await _communityOperator.CreateCommunityAsync(narutoUser.Id, "backend-developers");
+            var gamersCommunity = await _communityOperator.CreateCommunityAsync(narutoUser.Id, "gamers");
 
             //When
             var communityQueryResult = await CommunityUtils.ListCommunitiesWithApiAsync(narutoUser, "dev");

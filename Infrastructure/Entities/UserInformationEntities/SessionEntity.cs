@@ -12,22 +12,25 @@ public class SessionEntity : BaseEntity
     public string IpAddress { get; set; }
     [Required]
     public string State { get; set; }
+    [Required]
+    public string RefreshToken { get; set; }
     public UserEntity UserEntity { get; set; }
 
     private SessionEntity() : base() { }
 
     public SessionEntity(ulong id, ulong userEntityId, string ipAddress, string state,
-        DateTime? creationDate = null, DateTime? modifiedDate = null,
+        string refreshToken, DateTime? creationDate = null, DateTime? modifiedDate = null,
         UserEntity userEntity = null) : base(id, creationDate, modifiedDate)
     {
         UserEntityId = userEntityId;
         IpAddress = ipAddress ?? throw new ArgumentNullException(nameof(ipAddress));
         State = state ?? throw new ArgumentNullException(nameof(state));
+        RefreshToken = refreshToken ?? throw new ArgumentNullException(nameof(refreshToken));
         UserEntity = userEntity;
     }
 
     public SessionEntity PureCopy() => new(Id, UserEntityId, IpAddress,
-        State, CreationDate, ModifiedDate);
+        State, RefreshToken, CreationDate, ModifiedDate);
 
     public void RemoveLoopReferencing()
     {

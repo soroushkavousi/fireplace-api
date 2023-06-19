@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Application.Extensions;
+﻿using FireplaceApi.Application.Auth;
+using FireplaceApi.Application.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -50,7 +51,7 @@ public class SwaggerSecurityConfigurator : IOperationFilter
 
         operation.Parameters.Add(new OpenApiParameter
         {
-            Name = Constants.CsrfTokenKey,
+            Name = AntiforgeryConstants.CsrfTokenKey,
             In = ParameterLocation.Header,
             Schema = new OpenApiSchema { Type = "string" },
             Required = true,

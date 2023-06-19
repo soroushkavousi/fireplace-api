@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Domain.Enums;
-using System.Net;
 
 namespace FireplaceApi.Domain.Exceptions;
 
@@ -31,38 +30,12 @@ public class EmailAndPasswordAuthenticationFailedException : ApiException
 
 public class AccessTokenAuthenticationFailedException : ApiException
 {
-    public AccessTokenAuthenticationFailedException(string accessTokenValue)
+    public AccessTokenAuthenticationFailedException(string serverMessage = "Access token not found!")
         : base(
             errorType: ErrorType.AUTHENTICATION_FAILED,
             errorField: FieldName.ACCESS_TOKEN,
-            errorServerMessage: "Access token not found!",
-            parameters: accessTokenValue,
-            systemException: null
-        )
-    { }
-}
-
-public class SessionClosedAuthenticationFailedException : ApiException
-{
-    public SessionClosedAuthenticationFailedException(ulong requestingUserId, IPAddress ipAddress)
-        : base(
-            errorType: ErrorType.AUTHENTICATION_FAILED,
-            errorField: FieldName.SESSION,
-            errorServerMessage: "The user session was closed!",
-            parameters: new { requestingUserId, ipAddress },
-            systemException: null
-        )
-    { }
-}
-
-public class CsrfTokenAuthenticationFailedException : ApiException
-{
-    public CsrfTokenAuthenticationFailedException(string headerCsrfToken, string cookieCsrfToken)
-        : base(
-            errorType: ErrorType.AUTHENTICATION_FAILED,
-            errorField: FieldName.CSRF_TOKEN,
-            errorServerMessage: "The csrf token in headers does not match!",
-            parameters: new { headerCsrfToken, cookieCsrfToken },
+            errorServerMessage: serverMessage,
+            parameters: null,
             systemException: null
         )
     { }

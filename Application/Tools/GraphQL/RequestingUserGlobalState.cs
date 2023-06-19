@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Application.Tools;
+﻿using FireplaceApi.Application.Auth;
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Models;
 using HotChocolate;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FireplaceApi.Application.Tool;
+namespace FireplaceApi.Application.Tools;
 
 public class RequestingUserGlobalState : DefaultHttpRequestInterceptor
 {
@@ -16,7 +16,7 @@ public class RequestingUserGlobalState : DefaultHttpRequestInterceptor
         IRequestExecutor requestExecutor, IQueryRequestBuilder requestBuilder,
         CancellationToken cancellationToken)
     {
-        var user = (User)context.Items.GetValue(Constants.RequestingUserKey);
+        var user = (User)context.Items.GetValue(AuthConstants.RequestingUserKey);
         requestBuilder.SetGlobalState("User", user);
 
         return base.OnCreateAsync(context, requestExecutor, requestBuilder,

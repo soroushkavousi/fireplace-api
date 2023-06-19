@@ -30,78 +30,78 @@ public class PostValidator : DomainValidator
     }
 
     public async Task ValidateListCommunityPostsInputParametersAsync(CommunityIdentifier communityIdentifier,
-        SortType? sort, User requestingUser)
+        SortType? sort, ulong? userId)
     {
         await _communityValidator.ValidateCommunityIdentifierExistsAsync(communityIdentifier);
     }
 
-    public async Task ValidateListPostsInputParametersAsync(string search, SortType? sort, User requestingUser)
+    public async Task ValidateListPostsInputParametersAsync(string search, SortType? sort, ulong? userId)
     {
         await Task.CompletedTask;
     }
 
-    public async Task ValidateListPostsByIdsInputParametersAsync(List<ulong> ids, User requestingUser)
+    public async Task ValidateListPostsByIdsInputParametersAsync(List<ulong> ids, ulong? userId)
     {
         await Task.CompletedTask;
     }
 
-    public async Task ValidateListSelfPostsInputParametersAsync(User requestingUser,
+    public async Task ValidateListSelfPostsInputParametersAsync(ulong userId,
         SortType? sort)
     {
         await Task.CompletedTask;
     }
 
     public async Task ValidateGetPostByIdInputParametersAsync(ulong id,
-        bool? includeAuthor, bool? includeCommunity, User requestingUser = null)
+        bool? includeAuthor, bool? includeCommunity, ulong? userId = null)
     {
         Post = await ValidatePostExistsAsync(id);
     }
 
     public async Task ValidateCreatePostInputParametersAsync(
-        User requestingUser, CommunityIdentifier communityIdentifier, string content)
+        ulong userId, CommunityIdentifier communityIdentifier, string content)
     {
         await _communityValidator.ValidateCommunityIdentifierExistsAsync(communityIdentifier);
     }
 
-    public async Task ValidateVotePostInputParametersAsync(User requestingUser,
+    public async Task ValidateVotePostInputParametersAsync(ulong userId,
         ulong id, bool isUpvote)
     {
-        Post = await ValidatePostExistsAsync(id, requestingUser);
-        ValidatePostIsNotVotedByUser(Post, requestingUser);
+        Post = await ValidatePostExistsAsync(id, userId);
+        ValidatePostIsNotVotedByUser(Post, userId);
     }
 
-    public async Task ValidateToggleVoteForPostInputParametersAsync(User requestingUser,
+    public async Task ValidateToggleVoteForPostInputParametersAsync(ulong userId,
         ulong id)
     {
-        Post = await ValidatePostExistsAsync(id, requestingUser);
-        ValidatePostVoteExists(Post, requestingUser);
+        Post = await ValidatePostExistsAsync(id, userId);
+        ValidatePostVoteExists(Post, userId);
     }
 
-    public async Task ValidateDeleteVoteForPostInputParametersAsync(User requestingUser,
+    public async Task ValidateDeleteVoteForPostInputParametersAsync(ulong userId,
         ulong id)
     {
-        Post = await ValidatePostExistsAsync(id, requestingUser);
-        ValidatePostVoteExists(Post, requestingUser);
+        Post = await ValidatePostExistsAsync(id, userId);
+        ValidatePostVoteExists(Post, userId);
     }
 
-    public async Task ValidatePatchPostByIdInputParametersAsync(User requestingUser,
+    public async Task ValidatePatchPostByIdInputParametersAsync(ulong userId,
         ulong id, string content)
     {
         Post = await ValidatePostExistsAsync(id);
-        ValidateRequestingUserCanAlterPost(requestingUser, Post);
+        ValidateRequestingUserCanAlterPost(userId, Post);
     }
 
-    public async Task ValidateDeletePostByIdInputParametersAsync(User requestingUser,
+    public async Task ValidateDeletePostByIdInputParametersAsync(ulong userId,
         ulong id)
     {
         Post = await ValidatePostExistsAsync(id);
-        ValidateRequestingUserCanAlterPost(requestingUser, Post);
+        ValidateRequestingUserCanAlterPost(userId, Post);
     }
 
-    public async Task<Post> ValidatePostExistsAsync(ulong id, User requestingUser = null)
+    public async Task<Post> ValidatePostExistsAsync(ulong id, ulong? userId = null)
     {
         var post = await _postOperator.GetPostByIdAsync(id, true, true,
-            requestingUser);
+            userId);
 
         if (post == null)
             throw new PostNotExistException(id);
@@ -116,22 +116,22 @@ public class PostValidator : DomainValidator
             throw new PostContentInvalidFormatException(content);
     }
 
-    public void ValidateRequestingUserCanAlterPost(User requestingUser,
+    public void ValidateRequestingUserCanAlterPost(ulong userId,
         Post post)
     {
-        if (requestingUser.Id != post.AuthorId)
-            throw new PostAccessDeniedException(requestingUser.Id, post.Id);
+        if (userId != post.AuthorId)
+            throw new PostAccessDeniedException(userId, post.Id);
     }
 
-    public void ValidatePostIsNotVotedByUser(Post post, User requestingUser)
+    public void ValidatePostIsNotVotedByUser(Post post, ulong userId)
     {
         if (post.RequestingUserVote != 0)
-            throw new PostVoteAlreadyExistsException(requestingUser.Id, post.Id);
+            throw new PostVoteAlreadyExistsException(userId, post.Id);
     }
 
-    public void ValidatePostVoteExists(Post post, User requestingUser)
+    public void ValidatePostVoteExists(Post post, ulong userId)
     {
         if (post.RequestingUserVote == 0)
-            throw new PostVoteNotExistException(requestingUser.Id, post.Id);
+            throw new PostVoteNotExistException(userId, post.Id);
     }
 }

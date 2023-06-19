@@ -18,7 +18,8 @@ public static class SessionConverter
 
         var sessionEntity = new SessionEntity(session.Id, session.UserId,
             session.IpAddress.ToString(), session.State.ToString(),
-            session.CreationDate, session.ModifiedDate, userEntity);
+            session.RefreshToken, session.CreationDate,
+            session.ModifiedDate, userEntity);
 
         return sessionEntity;
     }
@@ -34,7 +35,8 @@ public static class SessionConverter
 
         var session = new Session(sessionEntity.Id, sessionEntity.UserEntityId,
             sessionEntity.IpAddress.ToIPAddress(), sessionEntity.State.ToEnum<SessionState>(),
-            sessionEntity.CreationDate, sessionEntity.ModifiedDate, user);
+            sessionEntity.RefreshToken, sessionEntity.CreationDate,
+            sessionEntity.ModifiedDate, user);
 
         return session;
     }

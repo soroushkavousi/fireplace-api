@@ -31,10 +31,10 @@ public class CommunityService
         return queryResult;
     }
 
-    public async Task<QueryResult<Community>> ListJoinedCommunitiesAsync(User requestingUser, CommunitySortType? sort)
+    public async Task<QueryResult<Community>> ListJoinedCommunitiesAsync(ulong userId, CommunitySortType? sort)
     {
-        await _communityValidator.ValidateListJoinedCommunitiesInputParametersAsync(requestingUser, sort);
-        var queryResult = await _communityOperator.ListJoinedCommunitiesAsync(requestingUser, sort);
+        await _communityValidator.ValidateListJoinedCommunitiesInputParametersAsync(userId, sort);
+        var queryResult = await _communityOperator.ListJoinedCommunitiesAsync(userId, sort);
         return queryResult;
     }
 
@@ -55,27 +55,27 @@ public class CommunityService
         return community;
     }
 
-    public async Task<Community> CreateCommunityAsync(User requestingUser, string name)
+    public async Task<Community> CreateCommunityAsync(ulong userId, string name)
     {
         await _communityValidator.ValidateCreateCommunityInputParametersAsync(
-            requestingUser, name);
-        return await _communityOperator.CreateCommunityAsync(requestingUser, name);
+            userId, name);
+        return await _communityOperator.CreateCommunityAsync(userId, name);
     }
 
-    public async Task<Community> PatchCommunityByIdentifierAsync(User requestingUser,
+    public async Task<Community> PatchCommunityByIdentifierAsync(ulong userId,
         CommunityIdentifier identifier, string newName)
     {
         await _communityValidator.ValidatePatchCommunityByIdentifierInputParametersAsync(
-            requestingUser, identifier, newName);
+            userId, identifier, newName);
         var community = await _communityOperator.PatchCommunityByIdentifierAsync(
             _communityValidator.Community, newName);
         return community;
     }
 
-    public async Task DeleteCommunityByIdentifierAsync(User requestingUser, CommunityIdentifier identifier)
+    public async Task DeleteCommunityByIdentifierAsync(ulong userId, CommunityIdentifier identifier)
     {
         await _communityValidator.ValidateDeleteCommunityByIdentifierInputParametersAsync(
-            requestingUser, identifier);
+            userId, identifier);
         await _communityOperator.DeleteCommunityByIdentifierAsync(identifier);
     }
 }

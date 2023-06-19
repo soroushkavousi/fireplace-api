@@ -28,22 +28,22 @@ public class CommunityMembershipValidator : DomainValidator
         _communityValidator = communityValidator;
     }
 
-    public async Task ValidateCreateCommunityMembershipInputParametersAsync(User requestingUser,
+    public async Task ValidateCreateCommunityMembershipInputParametersAsync(ulong userId,
         CommunityIdentifier communityIdentifier)
     {
         await _communityValidator.ValidateCommunityIdentifierExistsAsync(communityIdentifier);
-        UserIdentifier = UserIdentifier.OfId(requestingUser.Id);
+        UserIdentifier = UserIdentifier.OfId(userId);
         CommunityMembershipIdentifier = CommunityMembershipIdentifier
             .OfUserAndCommunity(UserIdentifier, communityIdentifier);
         await ValidateCommunityMembershipDoesNotAlreadyExist(CommunityMembershipIdentifier);
     }
 
-    public async Task ValidateDeleteCommunityMembershipInputParametersAsync(User requestingUser,
+    public async Task ValidateDeleteCommunityMembershipInputParametersAsync(ulong userId,
         CommunityIdentifier communityIdentifier)
     {
         var community = await _communityValidator.ValidateCommunityIdentifierExistsByGettingAsync(communityIdentifier);
-        ValidateUserIsNotTheOwnerOfTheCommunity(requestingUser, community);
-        UserIdentifier = UserIdentifier.OfId(requestingUser.Id);
+        ValidateUserIsNotTheOwnerOfTheCommunity(userId, community);
+        UserIdentifier = UserIdentifier.OfId(userId);
         CommunityMembershipIdentifier = CommunityMembershipIdentifier
             .OfUserAndCommunity(UserIdentifier, communityIdentifier);
         await ValidateCommunityMembershipAlreadyExists(CommunityMembershipIdentifier);
@@ -75,10 +75,10 @@ public class CommunityMembershipValidator : DomainValidator
         return false;
     }
 
-    public void ValidateUserIsNotTheOwnerOfTheCommunity(User user, Community community)
+    public void ValidateUserIsNotTheOwnerOfTheCommunity(ulong userId, Community community)
     {
-        if (community.CreatorId == user.Id)
-            throw new CommunityMembershipAccessDeniedException(user.Id, community.Id);
+        if (community.CreatorId == userId)
+            throw new CommunityMembershipAccessDeniedException(userId, community.Id);
 
         return;
     }

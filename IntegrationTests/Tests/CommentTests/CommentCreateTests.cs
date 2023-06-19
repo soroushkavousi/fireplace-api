@@ -45,34 +45,35 @@ public class CommentCreateTests
             //Given
             var narutoUser = await _clientPool.CreateNarutoUserAsync();
             var animeCommunityName = "anime-community";
-            var animeCommunity = await _communityOperator.CreateCommunityAsync(narutoUser, animeCommunityName);
+            var animeCommunity = await _communityOperator.CreateCommunityAsync(narutoUser.Id, animeCommunityName,
+                username: narutoUser.Username);
             var postContent = "Sample Post Content";
-            var post = await _postOperator.CreatePostAsync(narutoUser,
+            var post = await _postOperator.CreatePostAsync(narutoUser.Id,
                 animeCommunity.Id, animeCommunity.Name, postContent);
 
             //When
-            var comment1 = await _commentOperator.ReplyToPostAsync(narutoUser, post.Id, "comment 1");
-            var comment2 = await _commentOperator.ReplyToPostAsync(narutoUser, post.Id, "comment 2");
-            var comment3 = await _commentOperator.ReplyToPostAsync(narutoUser, post.Id, "comment 3");
+            var comment1 = await _commentOperator.ReplyToPostAsync(narutoUser.Id, post.Id, "comment 1", username: narutoUser.Username);
+            var comment2 = await _commentOperator.ReplyToPostAsync(narutoUser.Id, post.Id, "comment 2", username: narutoUser.Username);
+            var comment3 = await _commentOperator.ReplyToPostAsync(narutoUser.Id, post.Id, "comment 3", username: narutoUser.Username);
 
-            var comment11 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment1.Id, "comment 1, 1");
-            var comment12 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment1.Id, "comment 1, 2");
-            var comment13 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment1.Id, "comment 1, 3");
-            var comment14 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment1.Id, "comment 1, 4");
+            var comment11 = await _commentOperator.ReplyToCommentAsync(narutoUser.Id, comment1.Id, "comment 1, 1", postId: post.Id, username: narutoUser.Username);
+            var comment12 = await _commentOperator.ReplyToCommentAsync(narutoUser.Id, comment1.Id, "comment 1, 2", postId: post.Id, username: narutoUser.Username);
+            var comment13 = await _commentOperator.ReplyToCommentAsync(narutoUser.Id, comment1.Id, "comment 1, 3", postId: post.Id, username: narutoUser.Username);
+            var comment14 = await _commentOperator.ReplyToCommentAsync(narutoUser.Id, comment1.Id, "comment 1, 4", postId: post.Id, username: narutoUser.Username);
 
-            var comment21 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment2.Id, "comment 2, 1");
-            var comment22 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment2.Id, "comment 2, 2");
+            var comment21 = await _commentOperator.ReplyToCommentAsync(narutoUser.Id, comment2.Id, "comment 2, 1", postId: post.Id, username: narutoUser.Username);
+            var comment22 = await _commentOperator.ReplyToCommentAsync(narutoUser.Id, comment2.Id, "comment 2, 2", postId: post.Id, username: narutoUser.Username);
 
-            var comment31 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment3.Id, "comment 3, 1");
-            var comment32 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment3.Id, "comment 3, 2");
-            var comment33 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment3.Id, "comment 3, 3");
+            var comment31 = await _commentOperator.ReplyToCommentAsync(narutoUser.Id, comment3.Id, "comment 3, 1", postId: post.Id, username: narutoUser.Username);
+            var comment32 = await _commentOperator.ReplyToCommentAsync(narutoUser.Id, comment3.Id, "comment 3, 2", postId: post.Id, username: narutoUser.Username);
+            var comment33 = await _commentOperator.ReplyToCommentAsync(narutoUser.Id, comment3.Id, "comment 3, 3", postId: post.Id, username: narutoUser.Username);
 
-            var comment131 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment13.Id, "comment 1, 3, 1");
-            var comment132 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment13.Id, "comment 1, 3, 2");
-            var comment133 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment13.Id, "comment 1, 3, 3");
+            var comment131 = await _commentOperator.ReplyToCommentAsync(narutoUser.Id, comment13.Id, "comment 1, 3, 1", postId: post.Id, username: narutoUser.Username);
+            var comment132 = await _commentOperator.ReplyToCommentAsync(narutoUser.Id, comment13.Id, "comment 1, 3, 2", postId: post.Id, username: narutoUser.Username);
+            var comment133 = await _commentOperator.ReplyToCommentAsync(narutoUser.Id, comment13.Id, "comment 1, 3, 3", postId: post.Id, username: narutoUser.Username);
 
-            var comment311 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment31.Id, "comment 3, 1, 1");
-            var comment312 = await _commentOperator.ReplyToCommentAsync(narutoUser, post.Id, comment31.Id, "comment 3, 1, 2");
+            var comment311 = await _commentOperator.ReplyToCommentAsync(narutoUser.Id, comment31.Id, "comment 3, 1, 1", postId: post.Id, username: narutoUser.Username);
+            var comment312 = await _commentOperator.ReplyToCommentAsync(narutoUser.Id, comment31.Id, "comment 3, 1, 2", postId: post.Id, username: narutoUser.Username);
 
             //Then
             var nestedComments = await CommentUtils.ListPostCommentsWithApiAsync(narutoUser, post.Id.IdEncode(), SortType.TOP);

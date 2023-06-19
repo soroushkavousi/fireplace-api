@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Tools;
+﻿using FireplaceApi.Application.Auth;
+using FireplaceApi.Application.Extensions;
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Operators;
 using Microsoft.AspNetCore.Builder;
@@ -54,7 +54,7 @@ public class RequestTracerMiddleware
 
 public static class RequestTracerMiddlewareExtensions
 {
-    public static IApplicationBuilder UseRequestTracerMiddleware(this IApplicationBuilder builder)
+    public static IApplicationBuilder UseRequestTracer(this IApplicationBuilder builder)
     {
         return builder.UseMiddleware<RequestTracerMiddleware>();
     }
@@ -72,7 +72,7 @@ public static class RequestTracerMiddlewareExtensions
     public static string FindActionName(this HttpContext context)
     {
         string actionName = null;
-        if (context.Items.TryGetValue(Constants.ActionNameKey, out var actionNameObject))
+        if (context.Items.TryGetValue(Tools.Constants.ActionNameKey, out var actionNameObject))
         {
             actionName = (string)actionNameObject;
             return actionName;
@@ -84,10 +84,10 @@ public static class RequestTracerMiddlewareExtensions
         else
         {
             var requestPath = context.Request.Path.ToString();
-            if (requestPath.StartsWith(Constants.GraphQLBaseRoute))
+            if (requestPath.StartsWith(Tools.Constants.GraphQLBaseRoute))
                 actionName = "GraphQL";
         }
-        context.Items.Add(Constants.ActionNameKey, actionName);
+        context.Items.Add(Tools.Constants.ActionNameKey, actionName);
         return actionName;
     }
 }

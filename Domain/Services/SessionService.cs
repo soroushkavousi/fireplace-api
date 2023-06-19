@@ -20,27 +20,27 @@ public class SessionService
         _sessionOperator = sessionOperator;
     }
 
-    public async Task<List<Session>> ListSessionsAsync(User requestingUser)
+    public async Task<List<Session>> ListSessionsAsync(ulong userId)
     {
-        await _sessionValidator.ValidateListSessionsInputParametersAsync(requestingUser);
-        var session = await _sessionOperator.ListSessionsAsync(requestingUser);
+        await _sessionValidator.ValidateListSessionsInputParametersAsync(userId);
+        var session = await _sessionOperator.ListSessionsAsync(userId);
         return session;
     }
 
-    public async Task<Session> GetSessionByIdAsync(User requestingUser, ulong id,
+    public async Task<Session> GetSessionByIdAsync(ulong userId, ulong id,
         bool? includeUser)
     {
-        await _sessionValidator.ValidateGetSessionByIdInputParametersAsync(requestingUser,
+        await _sessionValidator.ValidateGetSessionByIdInputParametersAsync(userId,
             id, includeUser);
         var session = await _sessionOperator.GetSessionByIdAsync(
             id, includeUser.Value);
         return session;
     }
 
-    public async Task RevokeSessionByIdAsync(User requestingUser, ulong id)
+    public async Task RevokeSessionByIdAsync(ulong userId, ulong id)
     {
         await _sessionValidator.ValidateRevokeSessionByIdInputParametersAsync(
-            requestingUser, id);
+            userId, id);
         await _sessionOperator.RevokeSessionByIdAsync(id);
     }
 }

@@ -1,7 +1,9 @@
-﻿using FireplaceApi.Application.Converters;
+﻿using FireplaceApi.Application.Auth;
+using FireplaceApi.Application.Converters;
 using FireplaceApi.Application.Dtos;
-using FireplaceApi.Domain.Models;
+using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -27,15 +29,16 @@ public class CommunityMembershipController : ApiController
     /// </summary>
     /// <returns>Created community membership</returns>
     /// <response code="200">Returns the newly created item</response>
-    [HttpPost("/v{version:apiVersion}/communities/{id-or-name}/members")]
-    [Consumes("application/json")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(CommunityMembershipDto), StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPost("/v{version:apiVersion}/communities/{id-or-name}/members")]
     public async Task<ActionResult<CommunityMembershipDto>> CreateCommunityMembershipAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] CreateCommunityMembershipInputRouteDto inputRouteDto)
     {
         var communityMembership = await _communityMembershipService.CreateCommunityMembershipAsync(
-            requestingUser, inputRouteDto.CommunityIdentifier);
+            requestingUser.Id.Value, inputRouteDto.CommunityIdentifier);
         var communityMembershipDto = communityMembership.ToDto();
         return communityMembershipDto;
     }
@@ -45,13 +48,14 @@ public class CommunityMembershipController : ApiController
     /// </summary>
     /// <returns>No content</returns>
     /// <response code="200">The community membership was successfully deleted.</response>
-    [HttpDelete("/v{version:apiVersion}/communities/{id-or-name}/members/me")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [HttpDelete("/v{version:apiVersion}/communities/{id-or-name}/members/me")]
     public async Task<IActionResult> DeleteCommunityMembershipByCommunityIdentifierAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] DeleteCommunityMembershipByCommunityIdentifierInputRouteDto inputRouteDto)
     {
-        await _communityMembershipService.DeleteCommunityMembershipAsync(requestingUser,
+        await _communityMembershipService.DeleteCommunityMembershipAsync(requestingUser.Id.Value,
             inputRouteDto.CommunityIdentifier);
         return Ok();
     }

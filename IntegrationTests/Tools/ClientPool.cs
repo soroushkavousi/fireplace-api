@@ -1,9 +1,9 @@
 ﻿using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Extensions;
+using FireplaceApi.Domain.Identifiers;
 using FireplaceApi.Domain.Interfaces;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Operators;
-using FireplaceApi.Domain.Tools;
 using FireplaceApi.Domain.ValueObjects;
 using FireplaceApi.Infrastructure.Entities;
 using FireplaceApi.IntegrationTests.Extensions;
@@ -12,7 +12,9 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -26,8 +28,8 @@ public class ClientPool
     private readonly ProjectDbContext _dbContext;
     private readonly IUserRepository _userRepository;
     private readonly IEmailRepository _emailRepository;
-    private readonly IAccessTokenRepository _accessTokenRepository;
-    private readonly AccessTokenOperator _accessTokenOperator;
+    private readonly UserOperator _userOperator;
+    private readonly EmailOperator _emailOperator;
 
     public User NarutoUser { get; set; }
     public HttpClient NarutoHttpClient { get; set; }
@@ -46,8 +48,8 @@ public class ClientPool
         _dbContext = testFixture.ServiceProvider.GetRequiredService<ProjectDbContext>();
         _userRepository = testFixture.ServiceProvider.GetRequiredService<IUserRepository>();
         _emailRepository = testFixture.ServiceProvider.GetRequiredService<IEmailRepository>();
-        _accessTokenRepository = testFixture.ServiceProvider.GetRequiredService<IAccessTokenRepository>();
-        _accessTokenOperator = testFixture.ServiceProvider.GetRequiredService<AccessTokenOperator>();
+        _userOperator = testFixture.ServiceProvider.GetRequiredService<UserOperator>();
+        _emailOperator = testFixture.ServiceProvider.GetRequiredService<EmailOperator>();
     }
 
     public TestGuest CreateGuest()
@@ -58,9 +60,9 @@ public class ClientPool
             username: "NotVerifiedUser",
             displayName: "NotVerified User",
             passwordValue: "NotVerifiedUserPassword111!",
-            activationCode: 11111,
             emailAddress: "NotVerifiedUser@gmail.com",
-            state: UserState.NOT_VERIFIED
+            state: UserState.NOT_VERIFIED,
+            roles: new List<UserRole> { UserRole.USER }
             );
 
     public async Task<TestUser> CreateNarutoUserAsync()
@@ -68,9 +70,9 @@ public class ClientPool
             username: "Naruto",
             displayName: "Naruto Uzumaki",
             passwordValue: "NarutoPassword222@",
-            activationCode: 22222,
             emailAddress: "Naruto@gmail.com",
-            state: UserState.VERIFIED
+            state: UserState.VERIFIED,
+            roles: new List<UserRole> { UserRole.USER }
             );
 
     public async Task<TestUser> CreateSasukeUserAsync()
@@ -78,26 +80,36 @@ public class ClientPool
             username: "Sasuke",
             displayName: "Sasuke Uchiha",
             passwordValue: "SasukePassword333#",
-            activationCode: 33333,
             emailAddress: "Sasuke@gmail.com",
-            state: UserState.VERIFIED
+            state: UserState.VERIFIED,
+            roles: new List<UserRole> { UserRole.USER }
             );
 
     private async Task<TestUser> CreateTestUser(string username,
-        string displayName, string passwordValue, int activationCode,
-        string emailAddress, UserState state)
+        string displayName, string passwordValue, string emailAddress,
+        UserState state, List<UserRole> roles)
     {
         var sw = Stopwatch.StartNew();
-        var id = await IdGenerator.GenerateNewIdAsync();
         var password = Password.OfValue(passwordValue);
-        var user = await _userRepository.CreateUserAsync(id, username,
-            state, password, displayName: displayName);
+        var ipAddress = IPAddress.Parse("127.0.0.1");
+        var user = await _userOperator.SignUpWithEmailAsync(ipAddress, emailAddress, username, password);
         user.Password = password;
+        await _userOperator.ApplyUserChanges(user, displayName: displayName, roles: roles);
+        user.DisplayName = displayName;
+        user.Roles = roles;
+        if (state == UserState.VERIFIED)
+            user.Email = await _emailOperator.ActivateEmailByIdentifierAsync(EmailIdentifier.OfId(user.Email.Id));
+        user.State = UserState.VERIFIED;
 
-        var activationStatus = state == UserState.VERIFIED ? ActivationStatus.COMPLETED : ActivationStatus.SENT;
-        var emailActivation = new Activation(activationStatus, activationCode, "Fireplace Email Activation", $"Code: {activationCode}");
-        id = await IdGenerator.GenerateNewIdAsync();
-        user.Email = await _emailRepository.CreateEmailAsync(id, user.Id, emailAddress, emailActivation);
+        //var id = await IdGenerator.GenerateNewIdAsync();
+        //var user = await _userRepository.CreateUserAsync(id, username,
+        //    state, roles, password, displayName: displayName);
+        //user.Password = password;
+
+        //var activationStatus = state == UserState.VERIFIED ? ActivationStatus.COMPLETED : ActivationStatus.SENT;
+        //var emailActivation = new Activation(activationStatus, activationCode, "Fireplace Email Activation", $"Code: {activationCode}");
+        //id = await IdGenerator.GenerateNewIdAsync();
+        //user.Email = await _emailRepository.CreateEmailAsync(id, user.Id, emailAddress, emailActivation);
 
         var httpClient = CreateHttpClient();
         var testUser = new TestUser(user, httpClient);
@@ -109,9 +121,8 @@ public class ClientPool
 
     private async Task LogInUser(TestUser testUser)
     {
-        var httpMethod = new HttpMethod("POST");
         var requestUri = "/users/log-in-with-email";
-        var request = new HttpRequestMessage(httpMethod, requestUri)
+        var request = new HttpRequestMessage(HttpMethod.Post, requestUri)
         {
             Content = new
             {

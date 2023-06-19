@@ -50,8 +50,8 @@ public class CommunityMembershipOperator
         return communityMembership;
     }
 
-    public async Task<CommunityMembership> CreateCommunityMembershipAsync(User requestingUser,
-        CommunityIdentifier communityIdentifier)
+    public async Task<CommunityMembership> CreateCommunityMembershipAsync(ulong userId,
+        CommunityIdentifier communityIdentifier, string username = null)
     {
         ulong communityId = default;
         string communityName = default;
@@ -71,9 +71,10 @@ public class CommunityMembershipOperator
 
         var id = await IdGenerator.GenerateNewIdAsync(
             id => DoesCommunityMembershipIdentifierExistAsync(CommunityMembershipIdentifier.OfId(id)));
+        username ??= await _userOperator.GetUsernameByIdAsync(userId);
         var communityMembership = await _communityMembershipRepository
-            .CreateCommunityMembershipAsync(id, requestingUser.Id,
-                requestingUser.Username, communityId, communityName);
+            .CreateCommunityMembershipAsync(id, userId,
+                username, communityId, communityName);
         return communityMembership;
     }
 

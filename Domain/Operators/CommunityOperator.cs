@@ -19,13 +19,16 @@ public class CommunityOperator
     private readonly ILogger<CommunityOperator> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly ICommunityRepository _communityRepository;
+    private readonly UserOperator _userOperator;
 
     public CommunityOperator(ILogger<CommunityOperator> logger,
-        IServiceProvider serviceProvider, ICommunityRepository communityRepository)
+        IServiceProvider serviceProvider, ICommunityRepository communityRepository,
+        UserOperator userOperator)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
         _communityRepository = communityRepository;
+        _userOperator = userOperator;
     }
 
     public async Task<QueryResult<Community>> ListCommunitiesAsync(string search, CommunitySortType? sort = null)
@@ -36,12 +39,12 @@ public class CommunityOperator
         return queryResult;
     }
 
-    public async Task<QueryResult<Community>> ListJoinedCommunitiesAsync(User requestingUser, CommunitySortType? sort = null)
+    public async Task<QueryResult<Community>> ListJoinedCommunitiesAsync(ulong userId, CommunitySortType? sort = null)
     {
         sort ??= default;
         var communityMembershipOperator = _serviceProvider.GetService<CommunityMembershipOperator>();
         var communityMemberships = await communityMembershipOperator.SearchCommunityMembershipsAsync(
-            userIdentifier: UserIdentifier.OfId(requestingUser.Id), includeCommunity: true);
+            userIdentifier: UserIdentifier.OfId(userId), includeCommunity: true);
         var communities = communityMemberships.Select(cm => cm.Community).ToList();
         var queryResult = new QueryResult<Community>(communities);
         return queryResult;
@@ -80,15 +83,17 @@ public class CommunityOperator
         return communityId;
     }
 
-    public async Task<Community> CreateCommunityAsync(User requestingUser, string name)
+    public async Task<Community> CreateCommunityAsync(ulong userId, string name,
+        string username = null)
     {
         var id = await IdGenerator.GenerateNewIdAsync(
             id => DoesCommunityIdentifierExistAsync(CommunityIdentifier.OfId(id)));
+        username ??= await _userOperator.GetUsernameByIdAsync(userId);
         var community = await _communityRepository.CreateCommunityAsync(
-            id, name, requestingUser.Id, requestingUser.Username);
+            id, name, userId, username);
         var communityMembershipOperator = _serviceProvider.GetService<CommunityMembershipOperator>();
         var membership = await communityMembershipOperator
-            .CreateCommunityMembershipAsync(requestingUser, CommunityIdentifier.OfId(community.Id));
+            .CreateCommunityMembershipAsync(userId, CommunityIdentifier.OfId(community.Id));
         return community;
     }
 

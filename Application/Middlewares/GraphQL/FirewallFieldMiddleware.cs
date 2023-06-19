@@ -1,7 +1,6 @@
 ﻿using FireplaceApi.Application.Extensions;
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Models;
-using FireplaceApi.Domain.Tools;
 using HotChocolate.Resolvers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -16,14 +15,12 @@ public class FirewallFieldMiddleware
 {
     private readonly FieldDelegate _next;
     private readonly ILogger<FirewallFieldMiddleware> _logger;
-    private readonly Firewall _firewall;
 
     public FirewallFieldMiddleware(FieldDelegate next,
-        ILogger<FirewallFieldMiddleware> logger, Firewall firewall)
+        ILogger<FirewallFieldMiddleware> logger)
     {
         _next = next;
         _logger = logger;
-        _firewall = firewall;
     }
 
     public async Task InvokeAsync(IMiddlewareContext context)
@@ -46,9 +43,11 @@ public class FirewallFieldMiddleware
             return;
         var requestingUser = context.ContextData["User"].To<User>();
         var httpContext = (HttpContext)context.ContextData["HttpContext"];
-        var accessTokenValue = httpContext.GetAccessTokenValue();
-        if (isUserEndpoint)
-            _firewall.ValidateRequestingUserExists(requestingUser, accessTokenValue);
+        //var accessTokenValue = httpContext.GetAccessTokenValue();
+
+        //To Do
+        //if (isUserEndpoint)
+        //    _firewall.ValidateRequestingUserExists(requestingUser, accessTokenValue);
     }
 }
 

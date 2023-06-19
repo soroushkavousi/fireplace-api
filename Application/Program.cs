@@ -1,11 +1,12 @@
 using FireplaceApi.Application.Attributes;
+using FireplaceApi.Application.Auth;
 using FireplaceApi.Application.Dtos;
 using FireplaceApi.Application.Extensions;
 using FireplaceApi.Application.Middlewares;
-using FireplaceApi.Application.Tool;
 using FireplaceApi.Application.Tools;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Infrastructure.Entities;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -77,7 +78,6 @@ public partial class Program
         builder.Services.AddServices();
         builder.Services.AddValidators();
         builder.Services.AddOperators();
-        builder.Services.AddTools();
         builder.Services.AddGateways();
         builder.Services.AddRepositories();
         builder.Services.AddCacheServices();
@@ -95,19 +95,14 @@ public partial class Program
         var redisConnection = ConnectionMultiplexer.Connect(Configs.Current.Api.RedisConnectionString);
         builder.Services.AddSingleton<IConnectionMultiplexer>(redisConnection);
 
+        // Config Auth
+        builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddApiCookieAuthentication();
+        builder.Services.AddAuthorization(options => options.AddApiPolicies());
+        builder.Services.AddAuthHandlers();
+
         // For XSRF/CSRF attacks, add access to IAntiforgery
-        builder.Services.AddAntiforgery(options =>
-        {
-            options.Cookie = new CookieBuilder
-            {
-                Name = Constants.CsrfTokenKey,
-                MaxAge = new TimeSpan(Configs.Current.Api.CookieMaxAgeInDays, 0, 0, 0),
-                IsEssential = true,
-            };
-            options.FormFieldName = Constants.CsrfTokenKey;
-            options.HeaderName = Constants.CsrfTokenKey;
-            options.SuppressXFrameOptionsHeader = true;
-        });
+        builder.Services.AddApiAntiforgery();
 
         // Make url lowercase
         builder.Services.AddRouting(options => options.LowercaseUrls = true);
@@ -197,7 +192,7 @@ public partial class Program
     {
         var app = builder.Build();
 
-        app.UseRequestTracerMiddleware();
+        app.UseRequestTracer();
 
         app.UseForwardedHeaders(new ForwardedHeadersOptions
         {
@@ -213,7 +208,8 @@ public partial class Program
         app.UseStaticFiles();
 
         app.UseRewriter(new RewriteOptions()
-            .AddRewrite(@"^(?!v\d)(?!graphql)(?!swagger)(.*)", $"{Constants.LatestApiVersion}/$1", false));
+            .AddRewrite(@"^(?!v\d)(?!graphql)(?!swagger)(.*)",
+            $"{Constants.LatestApiVersion}/$1", false));
         app.UseRouting();
 
         app.UseSwagger();
@@ -221,7 +217,8 @@ public partial class Program
         {
             options.DocumentTitle = "Fireplace API Swagger UI";
             options.EnableDeepLinking();
-            options.SwaggerEndpoint($"/swagger/{Constants.LatestApiVersion}/swagger.json", Constants.LatestApiVersion.ToUpper());
+            options.SwaggerEndpoint($"/swagger/{Constants.LatestApiVersion}/swagger.json",
+                Constants.LatestApiVersion.ToUpper());
             options.DocExpansion(DocExpansion.List);
             options.DisplayRequestDuration();
             options.InjectStylesheet("https://fonts.googleapis.com/css?family=Roboto");
@@ -236,8 +233,11 @@ public partial class Program
                 "}");
         });
 
-        app.UseExceptionMiddleware();
-        app.UseFirewallMiddleware();
+        app.UseApiExceptionHandler();
+        app.UseRequestContentValidator();
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseAntiforgeryTokenGenerator();
         app.MapControllers();
         app.MapGraphQL();
         return app;

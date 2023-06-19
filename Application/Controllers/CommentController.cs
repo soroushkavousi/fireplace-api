@@ -1,5 +1,7 @@
-﻿using FireplaceApi.Application.Converters;
+﻿using FireplaceApi.Application.Auth;
+using FireplaceApi.Application.Converters;
 using FireplaceApi.Application.Dtos;
+using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Services;
@@ -30,16 +32,16 @@ public class CommentController : ApiController
     /// </summary>
     /// <returns>List of post comments</returns>
     /// <response code="200">Post comments was successfully retrieved.</response>
-    [HttpGet("/v{version:apiVersion}/posts/{id}/comments")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(QueryResultDto<CommentDto>), StatusCodes.Status200OK)]
+    [HttpGet("/v{version:apiVersion}/posts/{id}/comments")]
     public async Task<ActionResult<QueryResultDto<CommentDto>>> ListPostCommentsAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] ListPostCommentsInputRouteDto inputRouteDto,
         [FromQuery] ListPostCommentsInputQueryDto inputQueryDto)
     {
         var queryResult = await _commentService.ListPostCommentsAsync(
-            inputRouteDto.PostId, inputQueryDto.Sort, requestingUser);
+            inputRouteDto.PostId, inputQueryDto.Sort, requestingUser?.Id);
         var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
@@ -50,17 +52,17 @@ public class CommentController : ApiController
     /// <returns>List of comments</returns>
     /// <response code="200">The comments was successfully retrieved.</response>
     [AllowAnonymous]
-    [HttpGet]
     [ProducesResponseType(typeof(QueryResultDto<CommentDto>), StatusCodes.Status200OK)]
+    [HttpGet]
     public async Task<ActionResult<QueryResultDto<CommentDto>>> ListCommentsAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromQuery] ListCommentsInputQueryDto inputQueryDto)
     {
         var queryResult = new QueryResult<Comment>(null, null);
         if (!inputQueryDto.EncodedIds.IsNullOrEmpty())
         {
             queryResult.Items = await _commentService.ListCommentsByIdsAsync(
-                inputQueryDto.Ids, inputQueryDto.Sort, requestingUser);
+                inputQueryDto.Ids, inputQueryDto.Sort, requestingUser?.Id);
         }
 
         var queryResultDto = queryResult.ToDto();
@@ -72,13 +74,14 @@ public class CommentController : ApiController
     /// </summary>
     /// <returns>List of self comments</returns>
     /// <response code="200">The comments was successfully retrieved.</response>
-    [HttpGet("me")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(QueryResultDto<CommentDto>), StatusCodes.Status200OK)]
+    [HttpGet("me")]
     public async Task<ActionResult<QueryResultDto<CommentDto>>> ListSelfCommentsAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromQuery] ListSelfCommentsInputQueryDto inputQueryDto)
     {
-        var queryResult = await _commentService.ListSelfCommentsAsync(requestingUser,
+        var queryResult = await _commentService.ListSelfCommentsAsync(requestingUser.Id.Value,
             inputQueryDto.Sort);
         var queryResultDto = queryResult.ToDto();
         return queryResultDto;
@@ -90,15 +93,15 @@ public class CommentController : ApiController
     /// <returns>List of child comments</returns>
     /// <response code="200">Child comments was successfully retrieved.</response>
     [AllowAnonymous]
-    [HttpGet("{id}/comments")]
     [ProducesResponseType(typeof(QueryResultDto<CommentDto>), StatusCodes.Status200OK)]
+    [HttpGet("{id}/comments")]
     public async Task<ActionResult<QueryResultDto<CommentDto>>> ListChildCommentsAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] ListChildCommentsInputRouteDto inputRouteDto,
         [FromQuery] ListChildCommentsInputQueryDto inputQueryDto)
     {
         var queryResult = await _commentService.ListChildCommentsAsync(
-            inputRouteDto.ParentId, inputQueryDto.Sort, requestingUser);
+            inputRouteDto.ParentId, inputQueryDto.Sort, requestingUser?.Id);
         var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
@@ -109,16 +112,16 @@ public class CommentController : ApiController
     /// <returns>Requested comment</returns>
     /// <response code="200">The comment was successfully retrieved.</response>
     [AllowAnonymous]
-    [HttpGet("{id}")]
     [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
+    [HttpGet("{id}")]
     public async Task<ActionResult<CommentDto>> GetCommentByIdAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] GetCommentByIdInputRouteDto inputRouteDto,
         [FromQuery] GetCommentInputQueryDto inputQueryDto)
     {
         var comment = await _commentService.GetCommentByIdAsync(inputRouteDto.Id,
                 inputQueryDto.IncludeAuthor, inputQueryDto.IncludePost,
-                requestingUser);
+                requestingUser?.Id);
         var commentDto = comment.ToDto();
         return commentDto;
     }
@@ -128,16 +131,17 @@ public class CommentController : ApiController
     /// </summary>
     /// <returns>Created comment</returns>
     /// <response code="200">Returns the newly created item</response>
-    [HttpPost("/v{version:apiVersion}/posts/{id}/comments")]
-    [Consumes("application/json")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPost("/v{version:apiVersion}/posts/{id}/comments")]
     public async Task<ActionResult<CommentDto>> ReplyToPostAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] ReplyToPostInputRouteDto inputRouteDto,
         [FromBody] ReplyToPostInputBodyDto inputBodyDto)
     {
         var comment = await _commentService.ReplyToPostAsync(
-            requestingUser, inputRouteDto.PostId,
+            requestingUser.Id.Value, inputRouteDto.PostId,
             inputBodyDto.Content);
         var commentDto = comment.ToDto();
         return commentDto;
@@ -148,16 +152,17 @@ public class CommentController : ApiController
     /// </summary>
     /// <returns>Created comment</returns>
     /// <response code="200">Returns the newly created item</response>
-    [HttpPost("{id}/comments")]
-    [Consumes("application/json")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPost("{id}/comments")]
     public async Task<ActionResult<CommentDto>> ReplyToCommentAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] ReplyToCommentInputRouteDto inputRouteDto,
         [FromBody] ReplyToCommentInputBodyDto inputBodyDto)
     {
         var comment = await _commentService.ReplyToCommentAsync(
-            requestingUser, inputRouteDto.ParentCommentId,
+            requestingUser.Id.Value, inputRouteDto.ParentCommentId,
             inputBodyDto.Content);
         var commentDto = comment.ToDto();
         return commentDto;
@@ -168,16 +173,17 @@ public class CommentController : ApiController
     /// </summary>
     /// <returns>Voted comment</returns>
     /// <response code="200">Returns the Voted comment</response>
-    [HttpPost("{id}/votes")]
-    [Consumes("application/json")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPost("{id}/votes")]
     public async Task<ActionResult<CommentDto>> VoteCommentAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] VoteCommentInputRouteDto inputRouteDto,
         [FromBody] VoteCommentInputBodyDto inputBodyDto)
     {
         var comment = await _commentService.VoteCommentAsync(
-            requestingUser, inputRouteDto.Id, inputBodyDto.IsUpvote);
+            requestingUser.Id.Value, inputRouteDto.Id, inputBodyDto.IsUpvote);
         var commentDto = comment.ToDto();
         return commentDto;
     }
@@ -187,15 +193,16 @@ public class CommentController : ApiController
     /// </summary>
     /// <returns>The comment</returns>
     /// <response code="200">Returns the comment</response>
-    [HttpPatch("{id}/votes/me")]
-    [Consumes("application/json")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPatch("{id}/votes/me")]
     public async Task<ActionResult<CommentDto>> ToggleVoteForCommentAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] ToggleVoteForCommentInputRouteDto inputRouteDto)
     {
         var comment = await _commentService.ToggleVoteForCommentAsync(
-            requestingUser, inputRouteDto.Id);
+            requestingUser.Id.Value, inputRouteDto.Id);
         var commentDto = comment.ToDto();
         return commentDto;
     }
@@ -205,15 +212,16 @@ public class CommentController : ApiController
     /// </summary>
     /// <returns>The comment</returns>
     /// <response code="200">Returns the comment</response>
-    [HttpDelete("{id}/votes/me")]
-    [Consumes("application/json")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpDelete("{id}/votes/me")]
     public async Task<ActionResult<CommentDto>> DeleteVoteForCommentAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] DeleteVoteForCommentInputRouteDto inputRouteDto)
     {
         var comment = await _commentService.DeleteVoteForCommentAsync(
-            requestingUser, inputRouteDto.Id);
+            requestingUser.Id.Value, inputRouteDto.Id);
         var commentDto = comment.ToDto();
         return commentDto;
     }
@@ -223,15 +231,16 @@ public class CommentController : ApiController
     /// </summary>
     /// <returns>Updated comment</returns>
     /// <response code="200">The comment was successfully updated.</response>
-    [HttpPatch("{id}")]
-    [Consumes("application/json")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPatch("{id}")]
     public async Task<ActionResult<CommentDto>> PatchCommentByIdAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] PatchCommentByIdInputRouteDto inputRouteDto,
         [FromBody] PatchCommentInputBodyDto inputBodyDto)
     {
-        var comment = await _commentService.PatchCommentByIdAsync(requestingUser,
+        var comment = await _commentService.PatchCommentByIdAsync(requestingUser.Id.Value,
             inputRouteDto.Id, inputBodyDto.Content);
         var commentDto = comment.ToDto();
         return commentDto;
@@ -242,13 +251,14 @@ public class CommentController : ApiController
     /// </summary>
     /// <returns>No content</returns>
     /// <response code="200">The comment was successfully deleted.</response>
-    [HttpDelete("{id}")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCommentByIdAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] DeleteCommentByIdInputRouteDto inputRouteDto)
     {
-        await _commentService.DeleteCommentByIdAsync(requestingUser,
+        await _commentService.DeleteCommentByIdAsync(requestingUser.Id.Value,
             inputRouteDto.Id);
         return Ok();
     }

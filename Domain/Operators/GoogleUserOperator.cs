@@ -212,7 +212,6 @@ public class GoogleUserOperator
             googleUser.RedirectToUserUrl = redirectToUserUrl;
 
         googleUser = await _googleUserRepository.UpdateGoogleUserAsync(googleUser);
-        googleUser = await GetGoogleUserByIdAsync(googleUser.Id, true);
         return googleUser;
     }
 

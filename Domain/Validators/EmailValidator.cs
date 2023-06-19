@@ -28,30 +28,30 @@ public class EmailValidator : DomainValidator
     public EmailIdentifier EmailIdentifier { get; private set; }
     public Email Email { get; private set; }
 
-    public async Task ValidateActivateRequestingUserEmailInputParametersAsync(User requestingUser, int activationCode)
+    public async Task ValidateActivateRequestingUserEmailInputParametersAsync(ulong userId, int activationCode)
     {
-        EmailIdentifier = EmailIdentifier.OfUserId(requestingUser.Id);
+        EmailIdentifier = EmailIdentifier.OfUserId(userId);
         Email = await _emailOperator.GetEmailByIdentifierAsync(EmailIdentifier);
         ValidateEmailIsNotAlreadyActivated(Email);
         ValidateActivationCodeIsCorrectAsync(Email, activationCode);
     }
 
-    public async Task ValidateGetRequestingUserEmailInputParametersAsync(User requestingUser)
+    public async Task ValidateGetRequestingUserEmailInputParametersAsync(ulong userId)
     {
-        EmailIdentifier = EmailIdentifier.OfUserId(requestingUser.Id);
+        EmailIdentifier = EmailIdentifier.OfUserId(userId);
         await Task.CompletedTask;
     }
 
-    public async Task ValidateResendActivationCodeInputParametersAsync(User requestingUser)
+    public async Task ValidateResendActivationCodeInputParametersAsync(ulong userId)
     {
-        EmailIdentifier = EmailIdentifier.OfUserId(requestingUser.Id);
+        EmailIdentifier = EmailIdentifier.OfUserId(userId);
         Email = await _emailOperator.GetEmailByIdentifierAsync(EmailIdentifier);
         ValidateEmailIsNotAlreadyActivated(Email);
     }
 
-    public async Task ValidatePatchEmailInputParametersAsync(User requestingUser, string newAddress)
+    public async Task ValidatePatchEmailInputParametersAsync(ulong userId, string newAddress)
     {
-        EmailIdentifier = EmailIdentifier.OfUserId(requestingUser.Id);
+        EmailIdentifier = EmailIdentifier.OfUserId(userId);
         await ValidateEmailIdentifierDoesNotExistAsync(EmailIdentifier.OfAddress(newAddress));
     }
 

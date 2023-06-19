@@ -1,8 +1,9 @@
 ﻿using FireplaceApi.Application.Controllers;
 using FireplaceApi.Application.Extensions;
 using FireplaceApi.Application.Tools;
-using FireplaceApi.Domain.Attributes;
+using FireplaceApi.Domain.Enums;
 using Microsoft.OpenApi.Any;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
@@ -19,16 +20,17 @@ public class UserDto
     public string Username { get; set; }
     [Required]
     public string State { get; set; }
+    [JsonIgnore]
+    public List<UserRole> Roles { get; set; }
     [Required]
     public DateTime CreationDate { get; set; }
     public string DisplayName { get; set; }
     public string About { get; set; }
     public string AvatarUrl { get; set; }
     public string BannerUrl { get; set; }
-    [Sensitive]
-    public string AccessToken { get; set; }
     public EmailDto Email { get; set; }
     public List<SessionDto> Sessions { get; set; }
+
 
     public static OpenApiObject PureExample1 { get; } = new OpenApiObject
     {
@@ -40,7 +42,6 @@ public class UserDto
         [nameof(About).ToSnakeCase()] = new OpenApiString("ABOUT ME!"),
         [nameof(AvatarUrl).ToSnakeCase()] = new OpenApiString("https://files.server.com/avatar.png"),
         [nameof(BannerUrl).ToSnakeCase()] = new OpenApiString("https://files.server.com/banner.png"),
-        [nameof(AccessToken).ToSnakeCase()] = new OpenApiNull(),
         [nameof(Email).ToSnakeCase()] = new OpenApiNull(),
         [nameof(Sessions).ToSnakeCase()] = new OpenApiNull(),
     };
@@ -54,7 +55,6 @@ public class UserDto
         [nameof(About).ToSnakeCase()] = new OpenApiString("ABOUT ME!"),
         [nameof(AvatarUrl).ToSnakeCase()] = new OpenApiString("https://files.server.com/avatar.png"),
         [nameof(BannerUrl).ToSnakeCase()] = new OpenApiString("https://files.server.com/banner.png"),
-        [nameof(AccessToken).ToSnakeCase()] = new OpenApiNull(),
         [nameof(Email).ToSnakeCase()] = new OpenApiNull(),
         [nameof(Sessions).ToSnakeCase()] = new OpenApiNull(),
     };
@@ -74,7 +74,7 @@ public class UserDto
         [nameof(About).ToSnakeCase()] = PureExample1[nameof(About).ToSnakeCase()],
         [nameof(AvatarUrl).ToSnakeCase()] = PureExample1[nameof(AvatarUrl).ToSnakeCase()],
         [nameof(BannerUrl).ToSnakeCase()] = PureExample1[nameof(BannerUrl).ToSnakeCase()],
-        [nameof(AccessToken).ToSnakeCase()] = new OpenApiString("e207d1b29e9146a2b143cb1a6e3aaa26"),
+        //[nameof(AccessToken).ToSnakeCase()] = new OpenApiString("e207d1b29e9146a2b143cb1a6e3aaa26"),
         [nameof(Email).ToSnakeCase()] = EmailDto.PureExample1,
         [nameof(Sessions).ToSnakeCase()] = SessionDto.PureListExample1,
     };
@@ -88,7 +88,6 @@ public class UserDto
         [nameof(About).ToSnakeCase()] = PureExample2[nameof(About).ToSnakeCase()],
         [nameof(AvatarUrl).ToSnakeCase()] = PureExample2[nameof(AvatarUrl).ToSnakeCase()],
         [nameof(BannerUrl).ToSnakeCase()] = PureExample2[nameof(BannerUrl).ToSnakeCase()],
-        [nameof(AccessToken).ToSnakeCase()] = new OpenApiString("957b25e5ef5c4de68a135eafab380918"),
         [nameof(Email).ToSnakeCase()] = EmailDto.PureExample2,
         [nameof(Sessions).ToSnakeCase()] = SessionDto.PureListExample2,
     };
@@ -119,20 +118,20 @@ public class UserDto
 
     }
 
-    public UserDto(string id, string username, string state, DateTime creationDate,
-        string displayName, string about, string avatarUrl, string bannerUrl,
-        string accessToken = null, EmailDto email = null,
-        List<SessionDto> sessions = null)
+    public UserDto(string id, string username, string state,
+        List<UserRole> roles, DateTime creationDate, string displayName,
+        string about, string avatarUrl, string bannerUrl,
+        EmailDto email = null, List<SessionDto> sessions = null)
     {
         Id = id;
         Username = username;
         State = state;
+        Roles = roles;
         CreationDate = creationDate;
         DisplayName = displayName;
         About = about;
         AvatarUrl = avatarUrl;
         BannerUrl = bannerUrl;
-        AccessToken = accessToken;
         Email = email;
         Sessions = sessions;
     }

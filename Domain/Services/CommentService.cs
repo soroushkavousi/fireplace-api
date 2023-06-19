@@ -24,118 +24,118 @@ public class CommentService
     }
 
     public async Task<QueryResult<Comment>> ListPostCommentsAsync(ulong postId,
-        SortType? sort, User requestingUser = null)
+        SortType? sort, ulong? userId = null)
     {
         await _commentValidator.ValidateListPostCommentsInputParametersAsync(
-            postId, sort, requestingUser);
+            postId, sort, userId);
         var queryResult = await _commentOperator.ListPostCommentsAsync(
-            postId, sort, requestingUser);
+            postId, sort, userId);
         return queryResult;
     }
 
     public async Task<List<Comment>> ListCommentsByIdsAsync(List<ulong> ids,
-        SortType? sort, User requestingUser = null)
+        SortType? sort, ulong? userId = null)
     {
         await _commentValidator.ValidateListCommentsByIdsInputParametersAsync(
-            ids, sort, requestingUser);
+            ids, sort, userId);
         var comments = await _commentOperator.ListCommentsByIdsAsync(
-            ids, sort, requestingUser);
+            ids, sort, userId);
         return comments;
     }
 
-    public async Task<QueryResult<Comment>> ListSelfCommentsAsync(User requestingUser,
+    public async Task<QueryResult<Comment>> ListSelfCommentsAsync(ulong userId,
         SortType? sort)
     {
-        await _commentValidator.ValidateListSelfCommentsInputParametersAsync(requestingUser,
+        await _commentValidator.ValidateListSelfCommentsInputParametersAsync(userId,
             sort);
-        var queryResult = await _commentOperator.ListSelfCommentsAsync(requestingUser,
+        var queryResult = await _commentOperator.ListSelfCommentsAsync(userId,
             sort);
         return queryResult;
     }
 
     public async Task<QueryResult<Comment>> ListChildCommentsAsync(
-        ulong parentCommentId, SortType? sort, User requestingUser = null)
+        ulong parentCommentId, SortType? sort, ulong? userId = null)
     {
         await _commentValidator.ValidateListChildCommentsAsyncInputParametersAsync(
-            parentCommentId, sort, requestingUser);
-        var queryResult = await _commentOperator.ListChildCommentsAsync(requestingUser,
-            parentCommentId);
+            parentCommentId, sort, userId);
+        var queryResult = await _commentOperator.ListChildCommentsAsync(parentCommentId,
+            userId);
         return queryResult;
     }
 
     public async Task<Comment> GetCommentByIdAsync(ulong id,
-        bool? includeAuthor, bool? includePost, User requestingUser = null)
+        bool? includeAuthor, bool? includePost, ulong? userId = null)
     {
         await _commentValidator.ValidateGetCommentByIdInputParametersAsync(
-            id, includeAuthor, includePost, requestingUser);
+            id, includeAuthor, includePost, userId);
         var comment = await _commentOperator.GetCommentByIdAsync(
-            id, includeAuthor.Value, includePost.Value, requestingUser);
+            id, includeAuthor.Value, includePost.Value, userId);
         return comment;
     }
 
-    public async Task<Comment> ReplyToPostAsync(User requestingUser, ulong postId,
+    public async Task<Comment> ReplyToPostAsync(ulong userId, ulong postId,
         string content)
     {
         await _commentValidator.ValidateReplyToPostInputParametersAsync(
-            requestingUser, postId, content);
-        return await _commentOperator.ReplyToPostAsync(requestingUser,
+            userId, postId, content);
+        return await _commentOperator.ReplyToPostAsync(userId,
             postId, content);
     }
 
-    public async Task<Comment> ReplyToCommentAsync(User requestingUser,
+    public async Task<Comment> ReplyToCommentAsync(ulong userId,
         ulong parentCommentId, string content)
     {
         await _commentValidator.ValidateReplyToCommentInputParametersAsync(
-            requestingUser, parentCommentId, content);
-        return await _commentOperator.ReplyToCommentAsync(requestingUser,
+            userId, parentCommentId, content);
+        return await _commentOperator.ReplyToCommentAsync(userId,
             parentCommentId, content);
     }
 
-    public async Task<Comment> VoteCommentAsync(User requestingUser,
+    public async Task<Comment> VoteCommentAsync(ulong userId,
         ulong id, bool? isUpvote)
     {
         await _commentValidator.ValidateVoteCommentInputParametersAsync(
-            requestingUser, id, isUpvote);
+            userId, id, isUpvote);
         var comment = await _commentOperator.VoteCommentAsync(
-            requestingUser, id, isUpvote.Value);
+            userId, id, isUpvote.Value);
         return comment;
     }
 
-    public async Task<Comment> ToggleVoteForCommentAsync(User requestingUser,
+    public async Task<Comment> ToggleVoteForCommentAsync(ulong userId,
         ulong id)
     {
         await _commentValidator.ValidateToggleVoteForCommentInputParametersAsync(
-            requestingUser, id);
+            userId, id);
         var comment = await _commentOperator.ToggleVoteForCommentAsync(
-            requestingUser, id);
+            userId, id);
         return comment;
     }
 
-    public async Task<Comment> DeleteVoteForCommentAsync(User requestingUser,
+    public async Task<Comment> DeleteVoteForCommentAsync(ulong userId,
         ulong id)
     {
         await _commentValidator.ValidateDeleteVoteForCommentInputParametersAsync(
-            requestingUser, id);
+            userId, id);
         var comment = await _commentOperator.DeleteVoteForCommentAsync(
-            requestingUser, id);
+            userId, id);
         return comment;
     }
 
-    public async Task<Comment> PatchCommentByIdAsync(User requestingUser,
+    public async Task<Comment> PatchCommentByIdAsync(ulong userId,
         ulong id, string content)
     {
         await _commentValidator
-            .ValidatePatchCommentByIdInputParametersAsync(requestingUser,
+            .ValidatePatchCommentByIdInputParametersAsync(userId,
                 id, content);
         var comment = await _commentOperator.PatchCommentByIdAsync(
-            requestingUser, id, content, null);
+            userId, id, content, null);
         return comment;
     }
 
-    public async Task DeleteCommentByIdAsync(User requestingUser, ulong id)
+    public async Task DeleteCommentByIdAsync(ulong userId, ulong id)
     {
         await _commentValidator
-            .ValidateDeleteCommentByIdInputParametersAsync(requestingUser, id);
+            .ValidateDeleteCommentByIdInputParametersAsync(userId, id);
         await _commentOperator.DeleteCommentByIdAsync(id);
     }
 }

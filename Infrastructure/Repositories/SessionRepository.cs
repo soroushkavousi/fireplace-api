@@ -92,13 +92,13 @@ public class SessionRepository : ISessionRepository
     }
 
     public async Task<Session> CreateSessionAsync(ulong id, ulong userId, IPAddress ipAddress,
-        SessionState state)
+        SessionState state, string refreshToken)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT",
             parameters: new { id, userId, ipAddress, state });
         var sw = Stopwatch.StartNew();
         var sessionEntity = new SessionEntity(id, userId, ipAddress.ToString(),
-            state.ToString());
+            state.ToString(), refreshToken);
         _sessionEntities.Add(sessionEntity);
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();

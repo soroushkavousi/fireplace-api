@@ -1,6 +1,7 @@
-﻿using FireplaceApi.Application.Converters;
+﻿using FireplaceApi.Application.Auth;
+using FireplaceApi.Application.Converters;
 using FireplaceApi.Application.Dtos;
-using FireplaceApi.Application.Tool;
+using FireplaceApi.Application.Tools;
 using FireplaceApi.Application.Validators;
 using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Identifiers;
@@ -21,10 +22,10 @@ public class PostQueryResolvers
     public async Task<QueryResultDto<PostDto>> GetPostsAsync(
         [Service(ServiceKind.Resolver)] PostService postService,
         [Service(ServiceKind.Resolver)] PostValidator postValidator,
-        [User] User requestingUser, [GraphQLNonNullType] string search,
+        [User] RequestingUser requestingUser, [GraphQLNonNullType] string search,
         SortType? sort = null)
     {
-        var queryResult = await postService.ListPostsAsync(search, sort, requestingUser);
+        var queryResult = await postService.ListPostsAsync(search, sort, requestingUser?.Id);
         var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
@@ -33,10 +34,10 @@ public class PostQueryResolvers
     public async Task<PostDto> GetPostAsync(
         [Service(ServiceKind.Resolver)] PostService postService,
         [Service(ServiceKind.Resolver)] PostValidator postValidator,
-        [User] User requestingUser, [GraphQLNonNullType] string id)
+        [User] RequestingUser requestingUser, [GraphQLNonNullType] string id)
     {
         var ulongId = postValidator.ValidateEncodedIdFormat(id, FieldName.POST_ID).Value;
-        var post = await postService.GetPostByIdAsync(ulongId, false, false, requestingUser);
+        var post = await postService.GetPostByIdAsync(ulongId, false, false, requestingUser?.Id);
         var postDto = post.ToDto();
         return postDto;
     }
@@ -49,11 +50,12 @@ public class CommunityPostsQueryResolvers
     public async Task<QueryResultDto<PostDto>> GetPostsAsync(
         [Service(ServiceKind.Resolver)] PostService postService,
         [Service(ServiceKind.Resolver)] PostValidator postValidator,
-        [User] User requestingUser, [Parent] CommunityDto community,
+        [User] RequestingUser requestingUser, [Parent] CommunityDto community,
         SortType? sort = null)
     {
         var communityIdentifier = CommunityIdentifier.OfId(community.Id.IdDecode());
-        var queryResult = await postService.ListCommunityPostsAsync(communityIdentifier, sort, requestingUser);
+        var queryResult = await postService.ListCommunityPostsAsync(communityIdentifier,
+            sort, requestingUser?.Id);
         var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
@@ -66,9 +68,10 @@ public class CommentPostQueryResolvers
     public async Task<PostDto> GetPostAsync(
         [Service(ServiceKind.Resolver)] PostService postService,
         [Service(ServiceKind.Resolver)] PostValidator postValidator,
-        [User] User requestingUser, [Parent] CommentDto comment)
+        [User] RequestingUser requestingUser, [Parent] CommentDto comment)
     {
-        var post = await postService.GetPostByIdAsync(comment.PostId.IdDecode(), false, false, requestingUser);
+        var post = await postService.GetPostByIdAsync(comment.PostId.IdDecode(),
+            false, false, requestingUser?.Id);
         var postDto = post.ToDto();
         return postDto;
     }
@@ -81,10 +84,10 @@ public class UserPostsQueryResolvers
     public async Task<QueryResultDto<PostDto>> GetPostsAsync(
         [Service(ServiceKind.Resolver)] PostService postService,
         [Service(ServiceKind.Resolver)] PostValidator postValidator,
-        [User] User requestingUser, [Parent] UserDto user,
+        [User] RequestingUser requestingUser, [Parent] UserDto user,
         SortType? sort = null)
     {
-        var queryResult = await postService.ListSelfPostsAsync(requestingUser, sort);
+        var queryResult = await postService.ListSelfPostsAsync(requestingUser.Id.Value, sort);
         var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }

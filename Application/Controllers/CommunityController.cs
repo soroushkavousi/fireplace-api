@@ -1,5 +1,7 @@
-﻿using FireplaceApi.Application.Converters;
+﻿using FireplaceApi.Application.Auth;
+using FireplaceApi.Application.Converters;
 using FireplaceApi.Application.Dtos;
+using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Services;
@@ -31,8 +33,8 @@ public class CommunityController : ApiController
     /// <returns>List of communities</returns>
     /// <response code="200">The communities was successfully retrieved.</response>
     [AllowAnonymous]
-    [HttpGet]
     [ProducesResponseType(typeof(QueryResultDto<CommunityDto>), StatusCodes.Status200OK)]
+    [HttpGet]
     public async Task<ActionResult<QueryResultDto<CommunityDto>>> ListCommunitiesAsync(
         [FromQuery] ListCommunitiesInputQueryDto inputQueryDto)
     {
@@ -56,13 +58,14 @@ public class CommunityController : ApiController
     /// </summary>
     /// <returns>List of communities</returns>
     /// <response code="200">The communities was successfully retrieved.</response>
-    [HttpGet("joined")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(QueryResultDto<CommunityDto>), StatusCodes.Status200OK)]
+    [HttpGet("joined")]
     public async Task<ActionResult<QueryResultDto<CommunityDto>>> ListJoinedCommunitiesAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromQuery] ListJoinedCommunitiesInputQueryDto inputQueryDto)
     {
-        var queryResult = await _communityService.ListJoinedCommunitiesAsync(requestingUser,
+        var queryResult = await _communityService.ListJoinedCommunitiesAsync(requestingUser.Id.Value,
             inputQueryDto.Sort);
         var queryResultDto = queryResult.ToDto();
         return queryResultDto;
@@ -74,8 +77,8 @@ public class CommunityController : ApiController
     /// <returns>Requested community</returns>
     /// <response code="200">The community was successfully retrieved.</response>
     [AllowAnonymous]
-    [HttpGet("{id-or-name}")]
     [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
+    [HttpGet("{id-or-name}")]
     public async Task<ActionResult<CommunityDto>> GetCommunityByIdOrNameAsync(
         [FromRoute] GetCommunityByIdOrNameInputRouteDto inputRouteDto)
     {
@@ -90,14 +93,15 @@ public class CommunityController : ApiController
     /// </summary>
     /// <returns>Created community</returns>
     /// <response code="200">Returns the newly created item</response>
-    [HttpPost]
-    [Consumes("application/json")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPost]
     public async Task<ActionResult<CommunityDto>> CreateCommunityAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromBody] CreateCommunityInputBodyDto inputBodyDto)
     {
-        var community = await _communityService.CreateCommunityAsync(requestingUser,
+        var community = await _communityService.CreateCommunityAsync(requestingUser.Id.Value,
             inputBodyDto.Name);
         var communityDto = community.ToDto();
         return communityDto;
@@ -108,15 +112,16 @@ public class CommunityController : ApiController
     /// </summary>
     /// <returns>Updated community</returns>
     /// <response code="200">The community was successfully updated.</response>
-    [HttpPatch("{id-or-name}")]
-    [Consumes("application/json")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(CommunityDto), StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPatch("{id-or-name}")]
     public async Task<ActionResult<CommunityDto>> PatchCommunityByEncodedIdOrNameAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] PatchCommunityByEncodedIdOrNameInputRouteDto inputRouteDto,
         [FromBody] PatchCommunityInputBodyDto inputBodyDto)
     {
-        var community = await _communityService.PatchCommunityByIdentifierAsync(requestingUser,
+        var community = await _communityService.PatchCommunityByIdentifierAsync(requestingUser.Id.Value,
             inputRouteDto.Identifier, inputBodyDto.NewName);
         var communityDto = community.ToDto();
         return communityDto;
@@ -127,13 +132,15 @@ public class CommunityController : ApiController
     /// </summary>
     /// <returns>No content</returns>
     /// <response code="200">The community was successfully deleted.</response>
-    [HttpDelete("{id-or-name}")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [HttpDelete("{id-or-name}")]
     public async Task<IActionResult> DeleteCommunityByIdOrNameAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] DeleteCommunityByEncodedIdOrNameInputRouteDto inputRouteDto)
     {
-        await _communityService.DeleteCommunityByIdentifierAsync(requestingUser, inputRouteDto.Identifier);
+        await _communityService.DeleteCommunityByIdentifierAsync(requestingUser.Id.Value,
+            inputRouteDto.Identifier);
         return Ok();
     }
 }

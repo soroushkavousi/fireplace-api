@@ -32,122 +32,121 @@ public class CommentOperator
     }
 
     public async Task<QueryResult<Comment>> ListPostCommentsAsync(ulong postId,
-        SortType? sort = null, User requestingUser = null)
+        SortType? sort = null, ulong? userId = null)
     {
         sort ??= default;
         var postComments = await _commentRepository.ListPostCommentsAsync(
-            postId, sort.Value, requestingUser);
+            postId, sort.Value, userId);
 
         var queryResult = CreateQueryResult(postComments);
         return queryResult;
     }
 
     public async Task<List<Comment>> ListCommentsByIdsAsync(List<ulong> ids,
-        SortType? sort = null, User requestingUser = null)
+        SortType? sort = null, ulong? userId = null)
     {
         sort ??= default;
         if (ids.IsNullOrEmpty())
             return null;
 
         var comments = await _commentRepository.ListCommentsByIdsAsync(
-            ids, sort.Value, requestingUser);
+            ids, sort.Value, userId);
         return comments;
     }
 
-    public async Task<QueryResult<Comment>> ListSelfCommentsAsync(User author,
+    public async Task<QueryResult<Comment>> ListSelfCommentsAsync(ulong authorId,
         SortType? sort = null)
     {
         sort ??= default;
         var selfComments = await _commentRepository.ListSelfCommentsAsync(
-            author, sort.Value);
+            authorId, sort.Value);
 
         var queryResult = CreateQueryResult(selfComments);
         return queryResult;
     }
 
-    public async Task<QueryResult<Comment>> ListChildCommentsAsync(User requestingUser,
-        ulong parentCommentId, SortType? sort = null)
+    public async Task<QueryResult<Comment>> ListChildCommentsAsync(ulong parentCommentId,
+        ulong? userId = null, SortType? sort = null)
     {
         sort ??= default;
         var childComments = await _commentRepository.ListChildCommentAsync(parentCommentId,
-            sort.Value, requestingUser: requestingUser);
+            sort.Value, userId: userId);
 
         var queryResult = CreateQueryResult(childComments);
         return queryResult;
     }
 
     public async Task<Comment> GetCommentByIdAsync(ulong id, bool includeAuthor,
-        bool includePost, User requestingUser = null)
+        bool includePost, ulong? userId = null)
     {
         var comment = await _commentRepository.GetCommentByIdAsync(
-            id, includeAuthor, includePost, requestingUser: requestingUser);
+            id, includeAuthor, includePost, userId);
 
         return comment;
     }
 
-    public async Task<Comment> ReplyToPostAsync(User requestingUser,
-        ulong postId, string content)
+    public async Task<Comment> ReplyToPostAsync(ulong userId,
+        ulong postId, string content, string username = null)
     {
         var id = await IdGenerator.GenerateNewIdAsync(DoesCommentIdExistAsync);
+        username ??= await _userOperator.GetUsernameByIdAsync(userId);
         var comment = await _commentRepository.CreateCommentAsync(id,
-            requestingUser.Id, requestingUser.Username, postId, content);
+            userId, username, postId, content);
         return comment;
     }
 
-    public async Task<Comment> ReplyToCommentAsync(User requestingUser,
-        ulong commentId, string content)
+    public async Task<Comment> ReplyToCommentAsync(ulong userId,
+        ulong commentId, string content, string username = null,
+        ulong? postId = null)
     {
-        var parentComment = await _commentRepository
-            .GetCommentByIdAsync(commentId);
-        var postId = parentComment.PostId;
-        var comment = await ReplyToCommentAsync(requestingUser, postId,
-            commentId, content);
-        return comment;
-    }
-
-    public async Task<Comment> ReplyToCommentAsync(User requestingUser,
-        ulong postId, ulong commentId, string content)
-    {
+        if (postId == null)
+        {
+            var parentComment = await _commentRepository
+                .GetCommentByIdAsync(commentId);
+            postId = parentComment.PostId;
+        }
         var id = await IdGenerator.GenerateNewIdAsync(DoesCommentIdExistAsync);
+        username ??= await _userOperator.GetUsernameByIdAsync(userId);
         var comment = await _commentRepository.CreateCommentAsync(id,
-            requestingUser.Id, requestingUser.Username, postId, content, commentId);
+            userId, username, postId.Value, content, commentId);
         return comment;
     }
 
-    public async Task<Comment> VoteCommentAsync(User requestingUser,
-        ulong id, bool isUp)
+    public async Task<Comment> VoteCommentAsync(ulong userId,
+        ulong id, bool isUp, string username = null)
     {
         var commentVoteId = await IdGenerator.GenerateNewIdAsync(
             DoesCommentVoteIdExistAsync);
+        username ??= await _userOperator.GetUsernameByIdAsync(userId);
         var commentVote = await _commentVoteRepository
-            .CreateCommentVoteAsync(commentVoteId, requestingUser.Id,
-                requestingUser.Username, id, isUp);
+            .CreateCommentVoteAsync(commentVoteId, userId,
+                username, id, isUp);
         var voteChange = commentVote.IsUp ? +1 : -1;
-        var comment = await PatchCommentByIdAsync(requestingUser,
+        var comment = await PatchCommentByIdAsync(userId,
             id, null, voteChange: voteChange);
         return comment;
     }
 
-    public async Task<Comment> ToggleVoteForCommentAsync(User requestingUser,
+    public async Task<Comment> ToggleVoteForCommentAsync(ulong userId,
         ulong id)
     {
         var commentVote = await _commentVoteRepository.GetCommentVoteAsync(
-            requestingUser.Id, id, includeComment: true);
+            userId, id, includeComment: true);
         commentVote.IsUp = !commentVote.IsUp;
         await _commentVoteRepository.UpdateCommentVoteAsync(commentVote);
         var voteChange = commentVote.IsUp ? +2 : -2;
         var comment = await ApplyCommentChangesAsync(commentVote.Comment,
             null, voteChange: voteChange);
         comment = await GetCommentByIdAsync(comment.Id, false, false,
-            requestingUser);
+            userId);
         return comment;
     }
 
-    public async Task<Comment> DeleteVoteForCommentAsync(User requestingUser,
+    public async Task<Comment> DeleteVoteForCommentAsync(ulong userId,
         ulong id)
     {
         var commentVote = await _commentVoteRepository.GetCommentVoteAsync(
-            requestingUser.Id, id, includeComment: true);
+            userId, id, includeComment: true);
         var voteChange = commentVote.IsUp ? -1 : +1;
         await _commentVoteRepository.DeleteCommentVoteByIdAsync(
             commentVote.Id);
@@ -156,7 +155,7 @@ public class CommentOperator
         return comment;
     }
 
-    public async Task<Comment> PatchCommentByIdAsync(User requestingUser,
+    public async Task<Comment> PatchCommentByIdAsync(ulong userId,
         ulong id, string content, int? voteChange)
     {
         var comment = await _commentRepository
@@ -164,7 +163,7 @@ public class CommentOperator
         comment = await ApplyCommentChangesAsync(comment, content,
             voteChange);
         comment = await GetCommentByIdAsync(comment.Id, false, false,
-            requestingUser);
+            userId);
         return comment;
     }
 

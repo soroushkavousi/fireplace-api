@@ -24,9 +24,9 @@ public class SessionOperator
         _sessionRepository = sessionRepository;
     }
 
-    public async Task<List<Session>> ListSessionsAsync(User requestingUser)
+    public async Task<List<Session>> ListSessionsAsync(ulong userId)
     {
-        var session = await _sessionRepository.ListSessionsAsync(requestingUser.Id, SessionState.OPENED, false);
+        var session = await _sessionRepository.ListSessionsAsync(userId, SessionState.ACTIVE, false);
         return session;
     }
 
@@ -41,7 +41,7 @@ public class SessionOperator
 
     public async Task RevokeSessionByIdAsync(ulong id)
     {
-        await PatchSessionByIdAsync(id, state: SessionState.CLOSED);
+        await PatchSessionByIdAsync(id, state: SessionState.REVOKED);
     }
 
     public async Task<Session> FindSessionAsync(ulong userId, IPAddress IpAddress,
@@ -57,27 +57,9 @@ public class SessionOperator
     public async Task<Session> CreateSessionAsync(ulong userId, IPAddress ipAddress)
     {
         var id = await IdGenerator.GenerateNewIdAsync(DoesSessionIdExistAsync);
+        var refreshToken = GenerateNewRefreshToken();
         var session = await _sessionRepository.CreateSessionAsync(id, userId, ipAddress,
-            SessionState.OPENED);
-        return session;
-    }
-
-    public async Task<Session> CreateOrUpdateSessionAsync(ulong userId, IPAddress ipAddress)
-    {
-        var session = await FindSessionAsync(userId, ipAddress, true);
-        if (session == null)
-        {
-            session = await CreateSessionAsync(userId, ipAddress);
-        }
-        else
-        {
-            if (session.State == SessionState.CLOSED)
-                await ApplySessionChangesAsync(session, state: SessionState.OPENED);
-            else
-            {
-                ;// TODO: Update last time of session
-            }
-        }
+            SessionState.ACTIVE, refreshToken);
         return session;
     }
 
@@ -124,5 +106,10 @@ public class SessionOperator
 
         session = await _sessionRepository.UpdateSessionAsync(session);
         return session;
+    }
+
+    public static string GenerateNewRefreshToken()
+    {
+        return Guid.NewGuid().ToString().Replace("-", "");
     }
 }

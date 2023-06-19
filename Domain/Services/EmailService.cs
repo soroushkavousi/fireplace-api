@@ -19,31 +19,31 @@ public class EmailService
         _emailOperator = emailOperator;
     }
 
-    public async Task<Email> ActivateRequestingUserEmailAsync(User requestingUser, int activationCode)
+    public async Task<Email> ActivateRequestingUserEmailAsync(ulong userId, int activationCode)
     {
-        await _emailValidator.ValidateActivateRequestingUserEmailInputParametersAsync(requestingUser,
+        await _emailValidator.ValidateActivateRequestingUserEmailInputParametersAsync(userId,
             activationCode);
         var email = await _emailOperator.ActivateEmailByIdentifierAsync(_emailValidator.EmailIdentifier);
         return email;
     }
 
-    public async Task ResendActivationCodeAsync(User requestingUser)
+    public async Task ResendActivationCodeAsync(ulong userId)
     {
-        await _emailValidator.ValidateResendActivationCodeInputParametersAsync(requestingUser);
+        await _emailValidator.ValidateResendActivationCodeInputParametersAsync(userId);
         await _emailOperator.ResendActivationCodeAsync(_emailValidator.Email);
     }
 
-    public async Task<Email> GetRequestingUserEmailAsync(User requestingUser)
+    public async Task<Email> GetRequestingUserEmailAsync(ulong userId)
     {
-        await _emailValidator.ValidateGetRequestingUserEmailInputParametersAsync(requestingUser);
+        await _emailValidator.ValidateGetRequestingUserEmailInputParametersAsync(userId);
         var email = await _emailOperator.GetEmailByIdentifierAsync(
             _emailValidator.EmailIdentifier);
         return email;
     }
 
-    public async Task<Email> PatchEmailAsync(User requestingUser, string newAddress)
+    public async Task<Email> PatchEmailAsync(ulong userId, string newAddress)
     {
-        await _emailValidator.ValidatePatchEmailInputParametersAsync(requestingUser, newAddress);
+        await _emailValidator.ValidatePatchEmailInputParametersAsync(userId, newAddress);
         var email = await _emailOperator.PatchEmailByIdentifierAsync(
             _emailValidator.EmailIdentifier, address: newAddress);
         return email;

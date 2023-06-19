@@ -22,19 +22,19 @@ public class CommunityMembershipService
     }
 
     public async Task<CommunityMembership> CreateCommunityMembershipAsync(
-        User requestingUser, CommunityIdentifier communityIdentifier)
+        ulong userId, CommunityIdentifier communityIdentifier)
     {
         await _communityMembershipValidator.ValidateCreateCommunityMembershipInputParametersAsync(
-            requestingUser, communityIdentifier);
-        return await _communityMembershipOperator.CreateCommunityMembershipAsync(requestingUser,
+            userId, communityIdentifier);
+        return await _communityMembershipOperator.CreateCommunityMembershipAsync(userId,
             communityIdentifier);
     }
 
-    public async Task DeleteCommunityMembershipAsync(User requestingUser,
+    public async Task DeleteCommunityMembershipAsync(ulong userId,
         CommunityIdentifier communityIdentifier)
     {
         await _communityMembershipValidator.ValidateDeleteCommunityMembershipInputParametersAsync(
-                requestingUser, communityIdentifier);
+                userId, communityIdentifier);
         await _communityMembershipOperator.DeleteCommunityMembershipByIdentifierAsync(
             _communityMembershipValidator.CommunityMembershipIdentifier);
     }

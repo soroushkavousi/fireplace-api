@@ -1,7 +1,11 @@
-﻿using FireplaceApi.Application.Converters;
+﻿using FireplaceApi.Application.Auth;
+using FireplaceApi.Application.Converters;
 using FireplaceApi.Application.Dtos;
-using FireplaceApi.Domain.Models;
+using FireplaceApi.Application.Tools;
+using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Services;
+using FireplaceApi.Domain.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -29,12 +33,13 @@ public class SessionController : ApiController
     /// </summary>
     /// <returns>List of sessions</returns>
     /// <response code="200">All sessions was successfully retrieved.</response>
-    [HttpGet]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(IEnumerable<SessionDto>), StatusCodes.Status200OK)]
+    [HttpGet]
     public async Task<ActionResult<IEnumerable<SessionDto>>> ListSessionsAsync(
-        [BindNever][FromHeader] User requestingUser)
+        [BindNever][FromHeader] RequestingUser requestingUser)
     {
-        var sessions = await _sessionService.ListSessionsAsync(requestingUser);
+        var sessions = await _sessionService.ListSessionsAsync(requestingUser.Id.Value);
         var sessionDtos = sessions.Select(session => session.ToDto()).ToList();
         //SetOutputHeaderDto(sessionDtos.HeaderDto);
         return sessionDtos;
@@ -45,13 +50,14 @@ public class SessionController : ApiController
     /// </summary>
     /// <returns>Created basic authentication</returns>
     /// <response code="200">Returns the newly registered session.</response>
-    [HttpDelete("{id}")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(SessionDto), StatusCodes.Status200OK)]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> RevokeSession(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] RevokeSessionInputRouteDto inputRouteDto)
     {
-        await _sessionService.RevokeSessionByIdAsync(requestingUser, inputRouteDto.Id);
+        await _sessionService.RevokeSessionByIdAsync(requestingUser.Id.Value, inputRouteDto.Id);
         return Ok();
     }
 }

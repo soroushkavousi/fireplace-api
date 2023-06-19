@@ -1,7 +1,11 @@
-﻿using FireplaceApi.Application.Converters;
+﻿using FireplaceApi.Application.Auth;
+using FireplaceApi.Application.Converters;
 using FireplaceApi.Application.Dtos;
-using FireplaceApi.Domain.Models;
+using FireplaceApi.Application.Tools;
+using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Services;
+using FireplaceApi.Domain.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -27,15 +31,16 @@ public class FileController : ApiController
     /// </summary>
     /// <returns>Created file</returns>
     /// <response code="200">Returns the newly created item</response>
-    [HttpPost]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(FileDto), StatusCodes.Status200OK)]
     [RequestFormLimits(MultipartBodyLengthLimit = 268435456)]
     [RequestSizeLimit(268435456)] // For kestrel
+    [HttpPost]
     public async Task<ActionResult<FileDto>> PostFileAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromForm] PostFileInputFormDto inputBodyDto)
     {
-        var file = await _fileService.CreateFileAsync(requestingUser, inputBodyDto.FormFile);
+        var file = await _fileService.CreateFileAsync(requestingUser.Id.Value, inputBodyDto.FormFile);
         var fileDto = file.ToDto();
         return fileDto;
     }

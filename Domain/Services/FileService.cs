@@ -20,9 +20,9 @@ public class FileService
         _fileOperator = fileOperator;
     }
 
-    public async Task<File> CreateFileAsync(User requestingUser, IFormFile formFile)
+    public async Task<File> CreateFileAsync(ulong userId, IFormFile formFile)
     {
-        await _fileValidator.ValidatePostFileInputParametersAsync(requestingUser, formFile);
+        await _fileValidator.ValidatePostFileInputParametersAsync(userId, formFile);
         var file = await _fileOperator.CreateFileAsync(formFile);
         return file;
     }

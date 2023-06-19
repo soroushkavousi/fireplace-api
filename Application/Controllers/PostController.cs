@@ -1,5 +1,7 @@
-﻿using FireplaceApi.Application.Converters;
+﻿using FireplaceApi.Application.Auth;
+using FireplaceApi.Application.Converters;
 using FireplaceApi.Application.Dtos;
+using FireplaceApi.Domain.Enums;
 using FireplaceApi.Domain.Extensions;
 using FireplaceApi.Domain.Models;
 using FireplaceApi.Domain.Services;
@@ -30,16 +32,16 @@ public class PostController : ApiController
     /// </summary>
     /// <returns>List of community posts</returns>
     /// <response code="200">Community posts was successfully retrieved.</response>
-    [HttpGet("/v{version:apiVersion}/communities/{id-or-name}/posts")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(QueryResultDto<PostDto>), StatusCodes.Status200OK)]
+    [HttpGet("/v{version:apiVersion}/communities/{id-or-name}/posts")]
     public async Task<ActionResult<QueryResultDto<PostDto>>> ListCommunityPostsAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] ListCommunityPostsInputRouteDto inputRouteDto,
         [FromQuery] ListCommunityPostsInputQueryDto inputQueryDto)
     {
         var queryResult = await _postService.ListCommunityPostsAsync(
-            inputRouteDto.CommunityIdentifier, inputQueryDto.Sort, requestingUser);
+            inputRouteDto.CommunityIdentifier, inputQueryDto.Sort, requestingUser?.Id);
         var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
@@ -51,22 +53,22 @@ public class PostController : ApiController
     /// <returns>List of posts</returns>
     /// <response code="200">All posts was successfully retrieved.</response>
     [AllowAnonymous]
-    [HttpGet]
     [ProducesResponseType(typeof(QueryResultDto<PostDto>), StatusCodes.Status200OK)]
+    [HttpGet]
     public async Task<ActionResult<QueryResultDto<PostDto>>> ListPostsAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromQuery] ListPostsInputQueryDto inputQueryDto)
     {
         var queryResult = new QueryResult<Post>(null, null);
         if (!inputQueryDto.Ids.IsNullOrEmpty())
         {
             queryResult.Items = await _postService.ListPostsByIdsAsync(
-                inputQueryDto.Ids, requestingUser);
+                inputQueryDto.Ids, requestingUser?.Id);
         }
         else
         {
             queryResult = await _postService.ListPostsAsync(inputQueryDto.Search,
-                inputQueryDto.Sort, requestingUser);
+                inputQueryDto.Sort, requestingUser?.Id);
         }
         var queryResultDto = queryResult.ToDto();
         return queryResultDto;
@@ -77,13 +79,14 @@ public class PostController : ApiController
     /// </summary>
     /// <returns>List of posts</returns>
     /// <response code="200">The posts was successfully retrieved.</response>
-    [HttpGet("me")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(QueryResultDto<PostDto>), StatusCodes.Status200OK)]
+    [HttpGet("me")]
     public async Task<ActionResult<QueryResultDto<PostDto>>> ListSelfPostsAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromQuery] ListSelfPostsInputQueryDto inputQueryDto)
     {
-        var queryResult = await _postService.ListSelfPostsAsync(requestingUser,
+        var queryResult = await _postService.ListSelfPostsAsync(requestingUser.Id.Value,
             inputQueryDto.Sort);
         var queryResultDto = queryResult.ToDto();
         return queryResultDto;
@@ -95,16 +98,16 @@ public class PostController : ApiController
     /// <returns>Requested post</returns>
     /// <response code="200">The post was successfully retrieved.</response>
     [AllowAnonymous]
-    [HttpGet("{id}")]
     [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
+    [HttpGet("{id}")]
     public async Task<ActionResult<PostDto>> GetPostByIdAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] GetPostByIdInputRouteDto inputRouteDto,
         [FromQuery] GetPostByIdInputQueryDto inputQueryDto)
     {
         var post = await _postService.GetPostByIdAsync(inputRouteDto.Id,
             inputQueryDto.IncludeAuthor, inputQueryDto.IncludeCommunity,
-            requestingUser);
+            requestingUser?.Id);
         var postDto = post.ToDto();
         return postDto;
     }
@@ -114,15 +117,16 @@ public class PostController : ApiController
     /// </summary>
     /// <returns>Created post</returns>
     /// <response code="200">Returns the newly created item</response>
-    [HttpPost("/v{version:apiVersion}/communities/{id-or-name}/posts")]
-    [Consumes("application/json")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPost("/v{version:apiVersion}/communities/{id-or-name}/posts")]
     public async Task<ActionResult<PostDto>> CreatePostAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] CreatePostInputRouteDto inputRouteDto,
         [FromBody] CreatePostInputBodyDto inputBodyDto)
     {
-        var post = await _postService.CreatePostAsync(requestingUser,
+        var post = await _postService.CreatePostAsync(requestingUser.Id.Value,
             inputRouteDto.CommunityIdentifier, inputBodyDto.Content);
         var postDto = post.ToDto();
         return postDto;
@@ -133,16 +137,17 @@ public class PostController : ApiController
     /// </summary>
     /// <returns>Voted post</returns>
     /// <response code="200">Returns the Voted post</response>
-    [HttpPost("{id}/votes")]
-    [Consumes("application/json")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPost("{id}/votes")]
     public async Task<ActionResult<PostDto>> VotePostAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] VotePostInputRouteDto inputRouteDto,
         [FromBody] VotePostInputBodyDto inputBodyDto)
     {
         var post = await _postService.VotePostAsync(
-            requestingUser, inputRouteDto.Id, inputBodyDto.IsUpvote.Value);
+            requestingUser.Id.Value, inputRouteDto.Id, inputBodyDto.IsUpvote.Value);
         var postDto = post.ToDto();
         return postDto;
     }
@@ -152,15 +157,16 @@ public class PostController : ApiController
     /// </summary>
     /// <returns>The post</returns>
     /// <response code="200">Returns the post</response>
-    [HttpPatch("{id}/votes/me")]
-    [Consumes("application/json")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPatch("{id}/votes/me")]
     public async Task<ActionResult<PostDto>> ToggleVoteForPostAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] ToggleVoteForPostInputRouteDto inputRouteDto)
     {
         var post = await _postService.ToggleVoteForPostAsync(
-            requestingUser, inputRouteDto.Id);
+            requestingUser.Id.Value, inputRouteDto.Id);
         var postDto = post.ToDto();
         return postDto;
     }
@@ -170,15 +176,16 @@ public class PostController : ApiController
     /// </summary>
     /// <returns>The post</returns>
     /// <response code="200">Returns the post</response>
-    [HttpDelete("{id}/votes/me")]
-    [Consumes("application/json")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpDelete("{id}/votes/me")]
     public async Task<ActionResult<PostDto>> DeleteVoteForPostAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] DeleteVoteForPostInputRouteDto inputRouteDto)
     {
         var post = await _postService.DeleteVoteForPostAsync(
-            requestingUser, inputRouteDto.Id);
+            requestingUser.Id.Value, inputRouteDto.Id);
         var postDto = post.ToDto();
         return postDto;
     }
@@ -188,15 +195,16 @@ public class PostController : ApiController
     /// </summary>
     /// <returns>Updated post</returns>
     /// <response code="200">The post was successfully updated.</response>
-    [HttpPatch("{id}")]
-    [Consumes("application/json")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
+    [Consumes(Tools.Constants.JsonContentTypeName)]
+    [HttpPatch("{id}")]
     public async Task<ActionResult<PostDto>> PatchPostByIdAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] PatchPostByIdInputRouteDto inputRouteDto,
         [FromBody] PatchPostInputBodyDto inputBodyDto)
     {
-        var post = await _postService.PatchPostByIdAsync(requestingUser,
+        var post = await _postService.PatchPostByIdAsync(requestingUser.Id.Value,
             inputRouteDto.Id, inputBodyDto.Content);
         var postDto = post.ToDto();
         return postDto;
@@ -207,13 +215,14 @@ public class PostController : ApiController
     /// </summary>
     /// <returns>No content</returns>
     /// <response code="200">The post was successfully deleted.</response>
-    [HttpDelete("{id}")]
+    [Authorize(Policy = AuthConstants.UserPolicyKey, Roles = nameof(UserRole.USER))]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeletePostByIdAsync(
-        [BindNever][FromHeader] User requestingUser,
+        [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] DeletePostByIdInputRouteDto inputRouteDto)
     {
-        await _postService.DeletePostByIdAsync(requestingUser,
+        await _postService.DeletePostByIdAsync(requestingUser.Id.Value,
             inputRouteDto.Id);
         return Ok();
     }

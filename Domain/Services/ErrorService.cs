@@ -22,16 +22,16 @@ public class ErrorService
         _errorOperator = errorOperator;
     }
 
-    public async Task<List<Error>> ListErrorsAsync(User requestingUser)
+    public async Task<List<Error>> ListErrorsAsync(ulong userId)
     {
-        await _errorValidator.ValidateListErrorsInputParametersAsync(requestingUser);
+        await _errorValidator.ValidateListErrorsInputParametersAsync(userId);
         var errors = await _errorOperator.ListErrorsAsync();
         return errors;
     }
 
-    public async Task<Error> GetErrorAsync(User requestingUser, ErrorIdentifier identifier)
+    public async Task<Error> GetErrorAsync(ulong userId, ErrorIdentifier identifier)
     {
-        await _errorValidator.ValidateGetErrorByCodeInputParametersAsync(requestingUser, identifier);
+        await _errorValidator.ValidateGetErrorByCodeInputParametersAsync(userId, identifier);
         var error = await _errorOperator.GetErrorAsync(identifier);
         return error;
     }

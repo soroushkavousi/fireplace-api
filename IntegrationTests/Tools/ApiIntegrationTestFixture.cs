@@ -1,7 +1,9 @@
 ﻿using FireplaceApi.Application.Tools;
 using FireplaceApi.Domain.Exceptions;
+using FireplaceApi.Domain.Interfaces;
 using FireplaceApi.Infrastructure.Entities;
 using FireplaceApi.Infrastructure.Extensions;
+using FireplaceApi.IntegrationTests.Stubs;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -116,6 +118,7 @@ public class ApiIntegrationTestFixture : IDisposable
                 builder.ConfigureServices(services =>
                 {
                     ReplaceMainDatabaseWithTestDatabase(services);
+                    ReplaceEmailGatewayWithStub(services);
                 });
                 builder.ConfigureLogging(logging =>
                 {
@@ -136,6 +139,17 @@ public class ApiIntegrationTestFixture : IDisposable
         services.AddDbContext<ProjectDbContext>(
             optionsBuilder => optionsBuilder.UseNpgsql(_databaseConnectionString)
         );
+    }
+
+    private void ReplaceEmailGatewayWithStub(IServiceCollection services)
+    {
+        var descriptor = services.SingleOrDefault(d =>
+            d.ServiceType == typeof(IEmailGateway));
+
+        if (descriptor != null)
+            services.Remove(descriptor);
+
+        services.AddSingleton<IEmailGateway, EmailGatewayStub>();
     }
 
     private void InitializeServiceProvider()

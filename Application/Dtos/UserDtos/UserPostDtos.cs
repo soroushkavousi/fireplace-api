@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Application.Extensions;
+﻿using FireplaceApi.Application.Auth;
+using FireplaceApi.Application.Extensions;
 using FireplaceApi.Application.Interfaces;
 using FireplaceApi.Application.Tools;
 using FireplaceApi.Application.Validators;
@@ -66,7 +67,7 @@ public class SignUpWithEmailOutputCookieDto : IOutputCookieDto
     {
         var cookieCollection = new CookieCollection
         {
-            new Cookie(Constants.ResponseAccessTokenCookieKey, AccessToken)
+            new Cookie(AuthConstants.AccessTokenCookieKey, AccessToken)
         };
         return cookieCollection;
     }
@@ -119,7 +120,7 @@ public class LogInWithEmailOutputCookieDto : IOutputCookieDto
     {
         var cookieCollection = new CookieCollection
         {
-            new Cookie(Constants.ResponseAccessTokenCookieKey, AccessToken)
+            new Cookie(AuthConstants.AccessTokenCookieKey, AccessToken)
         };
         return cookieCollection;
     }
@@ -171,7 +172,7 @@ public class LogInWithUsernameOutputCookieDto : IOutputCookieDto
     {
         var cookieCollection = new CookieCollection
         {
-            new Cookie(Constants.ResponseAccessTokenCookieKey, AccessToken)
+            new Cookie(AuthConstants.AccessTokenCookieKey, AccessToken)
         };
         return cookieCollection;
     }

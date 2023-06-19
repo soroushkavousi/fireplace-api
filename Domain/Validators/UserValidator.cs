@@ -66,22 +66,23 @@ public class UserValidator : DomainValidator
         await ValidateUsernameMatchWithPasswordAsync(username, password);
     }
 
-    public async Task ValidateGetRequestingUserInputParametersAsync(User requestingUser,
+    public async Task ValidateGetRequestingUserInputParametersAsync(ulong userId,
         bool? includeEmail, bool? includeSessions)
     {
         await Task.CompletedTask;
     }
 
     public async Task ValidateGetUserProfileInputParametersAsync(
-        User requestingUser, UserIdentifier identifier)
+        ulong userId, UserIdentifier identifier)
     {
         await ValidateUserIdentifierExists(identifier);
     }
 
-    public async Task ValidateCreateRequestingUserPasswordInputParametersAsync(User user,
+    public async Task ValidateCreateRequestingUserPasswordInputParametersAsync(ulong userId,
         Password password)
     {
-        ValidateUserPasswordNotExist(user);
+        User = await _userOperator.GetUserByIdentifierAsync(UserIdentifier.OfId(userId));
+        ValidateUserPasswordNotExist(User);
         await Task.CompletedTask;
     }
 
@@ -101,13 +102,13 @@ public class UserValidator : DomainValidator
         ValidateResetPasswordCodeIsCorrectAsync(User, resetPasswordCode);
     }
 
-    public async Task ValidateDeleteUserInputParametersAsync(User requestingUser)
+    public async Task ValidateDeleteUserInputParametersAsync(ulong userId)
     {
-        UserIdentifier = UserIdentifier.OfId(requestingUser.Id);
+        UserIdentifier = UserIdentifier.OfId(userId);
         await Task.CompletedTask;
     }
 
-    public async Task ValidatePatchUserInputParametersAsync(User user, string displayName,
+    public async Task ValidatePatchUserInputParametersAsync(ulong userId, string displayName,
         string about, string avatarUrl, string bannerUrl, string username)
     {
         if (username != null)
@@ -116,11 +117,12 @@ public class UserValidator : DomainValidator
         }
     }
 
-    public async Task ValidatePatchRequestingUserPasswordInputParametersAsync(User user,
+    public async Task ValidatePatchRequestingUserPasswordInputParametersAsync(ulong userId,
         Password password, Password newPassword)
     {
-        ValidateUserPasswordExists(user);
-        ValidateInputPasswordIsCorrectForRequestingUser(user, password);
+        User = await _userOperator.GetUserByIdentifierAsync(UserIdentifier.OfId(userId));
+        ValidateUserPasswordExists(User);
+        ValidateInputPasswordIsCorrectForRequestingUser(User, password);
         await Task.CompletedTask;
     }
 
@@ -136,9 +138,9 @@ public class UserValidator : DomainValidator
             throw new AboutInvalidFormatException(about);
     }
 
-    public void ValidateInputPasswordIsCorrectForRequestingUser(User requestingUser, Password password)
+    public void ValidateInputPasswordIsCorrectForRequestingUser(User user, Password password)
     {
-        if (!Equals(requestingUser.Password.Hash, password.Hash))
+        if (!Equals(user.Password.Hash, password.Hash))
             throw new PasswordIncorrectValueException(password.Hash);
     }
 
@@ -260,26 +262,26 @@ public class UserValidator : DomainValidator
 
     }
 
-    public bool ValidateUserPasswordExists(User requestingUser,
+    public bool ValidateUserPasswordExists(User user,
         bool throwException = true)
     {
-        if (requestingUser.Password != null && !string.IsNullOrWhiteSpace(requestingUser.Password.Hash))
+        if (user.Password != null && !string.IsNullOrWhiteSpace(user.Password.Hash))
             return true;
 
         if (throwException)
-            throw new PasswordNotExistException(requestingUser.Id);
+            throw new PasswordNotExistException(user.Id);
 
         return false;
     }
 
-    public bool ValidateUserPasswordNotExist(User requestingUser,
+    public bool ValidateUserPasswordNotExist(User user,
         bool throwException = true)
     {
-        if (requestingUser.Password == null || string.IsNullOrWhiteSpace(requestingUser.Password.Hash))
+        if (user.Password == null || string.IsNullOrWhiteSpace(user.Password.Hash))
             return true;
 
         if (throwException)
-            throw new PasswordAlreadyExistException(requestingUser.Id, requestingUser.Password.Hash);
+            throw new PasswordAlreadyExistException(user.Id, user.Password.Hash);
 
         return false;
     }

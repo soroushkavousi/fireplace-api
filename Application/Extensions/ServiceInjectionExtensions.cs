@@ -1,28 +1,17 @@
 ﻿using FireplaceApi.Domain.Interfaces;
 using FireplaceApi.Domain.Operators;
 using FireplaceApi.Domain.Services;
-using FireplaceApi.Domain.Tools;
 using FireplaceApi.Infrastructure.CacheService;
 using FireplaceApi.Infrastructure.Gateways;
 using FireplaceApi.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 
 namespace FireplaceApi.Application.Extensions;
 
-public static class AspNetCoreExtensions
+public static class ServiceInjectionExtensions
 {
-    public static IEnumerable<string> GetErrorMessages(this ModelStateDictionary modelState)
-    {
-        return modelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-    }
-
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IAccessTokenRepository, AccessTokenRepository>();
         services.AddScoped<ICommentRepository, CommentRepository>();
         services.AddScoped<ICommentVoteRepository, CommentVoteRepository>();
         services.AddScoped<ICommunityRepository, CommunityRepository>();
@@ -55,15 +44,8 @@ public static class AspNetCoreExtensions
         return services;
     }
 
-    public static IServiceCollection AddTools(this IServiceCollection services)
-    {
-        services.AddScoped<Firewall>();
-        return services;
-    }
-
     public static IServiceCollection AddOperators(this IServiceCollection services)
     {
-        services.AddScoped<AccessTokenOperator>();
         services.AddScoped<CommentOperator>();
         services.AddScoped<CommunityOperator>();
         services.AddScoped<CommunityMembershipOperator>();
@@ -90,7 +72,6 @@ public static class AspNetCoreExtensions
         services.AddScoped<Validators.SessionValidator>();
         services.AddScoped<Validators.UserValidator>();
 
-        services.AddScoped<Domain.Validators.AccessTokenValidator>();
         services.AddScoped<Domain.Validators.CommentValidator>();
         services.AddScoped<Domain.Validators.CommunityValidator>();
         services.AddScoped<Domain.Validators.CommunityMembershipValidator>();
@@ -115,10 +96,5 @@ public static class AspNetCoreExtensions
         services.AddScoped<SessionService>();
         services.AddScoped<UserService>();
         return services;
-    }
-
-    public static Expression<TDelegate> AndAlso<TDelegate>(this Expression<TDelegate> left, Expression<TDelegate> right)
-    {
-        return Expression.Lambda<TDelegate>(Expression.AndAlso(left, right), left.Parameters);
     }
 }

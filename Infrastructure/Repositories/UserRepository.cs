@@ -32,18 +32,17 @@ public class UserRepository : IUserRepository
     }
 
     public async Task<List<User>> ListUsersAsync(
-                bool includeEmail = false, bool includeGoogleUser = false,
-                bool includeAccessTokens = false, bool includeSessions = false)
+        bool includeEmail = false, bool includeGoogleUser = false,
+        bool includeSessions = false)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT",
-            parameters: new { includeEmail, includeGoogleUser, includeAccessTokens, includeSessions });
+            parameters: new { includeEmail, includeGoogleUser, includeSessions });
         var sw = Stopwatch.StartNew();
         var userEntities = await _userEntities
             .AsNoTracking()
             .Include(
                 emailEntity: includeEmail,
                 googleUserEntity: includeGoogleUser,
-                accessTokenEntities: includeAccessTokens,
                 sessionEntities: includeSessions
             )
             .ToListAsync();
@@ -55,7 +54,7 @@ public class UserRepository : IUserRepository
 
     public async Task<User> GetUserByIdentifierAsync(UserIdentifier identifier,
         bool includeEmail = false, bool includeGoogleUser = false,
-        bool includeAccessTokens = false, bool includeSessions = false)
+        bool includeSessions = false)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT",
             parameters: new
@@ -63,7 +62,6 @@ public class UserRepository : IUserRepository
                 identifier,
                 includeEmail,
                 includeGoogleUser,
-                includeAccessTokens,
                 includeSessions
             });
         var sw = Stopwatch.StartNew();
@@ -75,7 +73,6 @@ public class UserRepository : IUserRepository
             .Include(
                 emailEntity: includeEmail,
                 googleUserEntity: includeGoogleUser,
-                accessTokenEntities: includeAccessTokens,
                 sessionEntities: includeSessions
             )
             .SingleOrDefaultAsync();
@@ -114,14 +111,16 @@ public class UserRepository : IUserRepository
     }
 
     public async Task<User> CreateUserAsync(ulong id, string username,
-        UserState state, Password password = null, string displayName = null,
-        string about = null, string avatarUrl = null, string bannerUrl = null)
+        UserState state, List<UserRole> roles, Password password = null,
+        string displayName = null, string about = null, string avatarUrl = null,
+        string bannerUrl = null)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
         {
             id,
             username,
             state,
+            roles,
             password,
             displayName,
             about,
@@ -129,9 +128,11 @@ public class UserRepository : IUserRepository
             bannerUrl
         });
         var sw = Stopwatch.StartNew();
+        var userEntityRoles = roles.Select(r => r.ToString()).ToList();
         var userEntity = new UserEntity(id, username, state.ToString(),
-            displayName: displayName, about: about, avatarUrl: avatarUrl,
-            bannerUrl: bannerUrl, passwordHash: password?.Hash);
+            roles: userEntityRoles, displayName: displayName, about: about,
+            avatarUrl: avatarUrl, bannerUrl: bannerUrl,
+            passwordHash: password?.Hash);
         _userEntities.Add(userEntity);
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
@@ -218,18 +219,14 @@ public class UserRepository : IUserRepository
 public static class UserRepositoryExtensions
 {
     public static IQueryable<UserEntity> Include(
-                [NotNull] this IQueryable<UserEntity> userEntitiesQuery,
-                bool emailEntity, bool googleUserEntity,
-                bool accessTokenEntities, bool sessionEntities)
+        [NotNull] this IQueryable<UserEntity> userEntitiesQuery,
+        bool emailEntity, bool googleUserEntity, bool sessionEntities)
     {
         if (emailEntity)
             userEntitiesQuery = userEntitiesQuery.Include(e => e.EmailEntity);
 
         if (googleUserEntity)
             userEntitiesQuery = userEntitiesQuery.Include(e => e.GoogleUserEntity);
-
-        if (accessTokenEntities)
-            userEntitiesQuery = userEntitiesQuery.Include(e => e.AccessTokenEntities);
 
         if (sessionEntities)
             userEntitiesQuery = userEntitiesQuery.Include(e => e.SessionEntities);
