@@ -1,7 +1,7 @@
-﻿using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Operators;
-using FireplaceApi.Application.Tools;
+﻿using FireplaceApi.Application.Comments;
+using FireplaceApi.Application.Communities;
+using FireplaceApi.Application.Posts;
+using FireplaceApi.Domain.Comments;
 using FireplaceApi.IntegrationTests.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -76,7 +76,7 @@ public class CommentCreateTests
             var comment312 = await _commentOperator.ReplyToCommentAsync(narutoUser.Id, comment31.Id, "comment 3, 1, 2", postId: post.Id, username: narutoUser.Username);
 
             //Then
-            var nestedComments = await CommentUtils.ListPostCommentsWithApiAsync(narutoUser, post.Id.IdEncode(), SortType.TOP);
+            var nestedComments = await CommentUtils.ListPostCommentsWithApiAsync(narutoUser, post.Id.IdEncode(), CommentSortType.TOP);
             Assert.Equal(3, nestedComments.Items.Count);
             var receivedComment1 = nestedComments.Items.Single(c => c.Id.IdDecode() == comment1.Id);
             var receivedComment2 = nestedComments.Items.Single(c => c.Id.IdDecode() == comment2.Id);

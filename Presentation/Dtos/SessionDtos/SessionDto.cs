@@ -26,28 +26,28 @@ public class SessionDto
         [nameof(Id).ToSnakeCase()] = new OpenApiString("3RdDopKZEJi"),
         [nameof(UserId).ToSnakeCase()] = null,
         [nameof(IpAddress).ToSnakeCase()] = new OpenApiString("111.111.111.111"),
-        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
+        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Tools.Utils.GetYesterdayDate()),
     };
     public static OpenApiObject PureExample12 { get; } = new OpenApiObject
     {
         [nameof(Id).ToSnakeCase()] = new OpenApiString("QWEZdTom6HG"),
         [nameof(UserId).ToSnakeCase()] = null,
         [nameof(IpAddress).ToSnakeCase()] = new OpenApiString("111.111.111.112"),
-        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
+        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Tools.Utils.GetYesterdayDate()),
     };
     public static OpenApiObject PureExample21 { get; } = new OpenApiObject
     {
         [nameof(Id).ToSnakeCase()] = new OpenApiString("YFc5Sm15pjS"),
         [nameof(UserId).ToSnakeCase()] = null,
         [nameof(IpAddress).ToSnakeCase()] = new OpenApiString("222.222.222.222"),
-        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
+        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Tools.Utils.GetYesterdayDate()),
     };
     public static OpenApiObject PureExample22 { get; } = new OpenApiObject
     {
         [nameof(Id).ToSnakeCase()] = new OpenApiString("cV3MXa8yVp8"),
         [nameof(UserId).ToSnakeCase()] = null,
         [nameof(IpAddress).ToSnakeCase()] = new OpenApiString("222.222.222.223"),
-        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
+        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Tools.Utils.GetYesterdayDate()),
     };
     public static OpenApiArray PureListExample1 { get; } = new OpenApiArray
     {
@@ -63,28 +63,28 @@ public class SessionDto
         [nameof(Id).ToSnakeCase()] = PureExample11[nameof(Id).ToSnakeCase()],
         [nameof(UserId).ToSnakeCase()] = PureExample11[nameof(UserId).ToSnakeCase()],
         [nameof(IpAddress).ToSnakeCase()] = PureExample11[nameof(IpAddress).ToSnakeCase()],
-        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
+        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Tools.Utils.GetYesterdayDate()),
     };
     public static OpenApiObject Example12 { get; } = new OpenApiObject
     {
         [nameof(Id).ToSnakeCase()] = PureExample12[nameof(Id).ToSnakeCase()],
         [nameof(UserId).ToSnakeCase()] = PureExample12[nameof(UserId).ToSnakeCase()],
         [nameof(IpAddress).ToSnakeCase()] = PureExample12[nameof(IpAddress).ToSnakeCase()],
-        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
+        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Tools.Utils.GetYesterdayDate()),
     };
     public static OpenApiObject Example21 { get; } = new OpenApiObject
     {
         [nameof(Id).ToSnakeCase()] = PureExample21[nameof(Id).ToSnakeCase()],
         [nameof(UserId).ToSnakeCase()] = PureExample21[nameof(UserId).ToSnakeCase()],
         [nameof(IpAddress).ToSnakeCase()] = PureExample21[nameof(IpAddress).ToSnakeCase()],
-        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
+        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Tools.Utils.GetYesterdayDate()),
     };
     public static OpenApiObject Example22 { get; } = new OpenApiObject
     {
         [nameof(Id).ToSnakeCase()] = PureExample22[nameof(Id).ToSnakeCase()],
         [nameof(UserId).ToSnakeCase()] = PureExample22[nameof(UserId).ToSnakeCase()],
         [nameof(IpAddress).ToSnakeCase()] = PureExample22[nameof(IpAddress).ToSnakeCase()],
-        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
+        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Tools.Utils.GetYesterdayDate()),
     };
     public static OpenApiArray ListExample1 { get; } = new OpenApiArray
     {

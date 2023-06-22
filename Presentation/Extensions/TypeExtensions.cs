@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Application.Exceptions;
-using FireplaceApi.Application.Extensions;
+﻿using FireplaceApi.Domain.Errors;
 using Microsoft.OpenApi.Any;
 using System;
 using System.Collections.Generic;

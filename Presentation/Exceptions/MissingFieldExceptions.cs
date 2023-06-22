@@ -1,6 +1,5 @@
-﻿using FireplaceApi.Presentation.Enums;
-using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Exceptions;
+﻿using FireplaceApi.Domain.Errors;
+using FireplaceApi.Presentation.Enums;
 
 namespace FireplaceApi.Presentation.Exceptions;
 
@@ -8,7 +7,7 @@ public abstract class MissingFieldException : ApiException
 {
     public MissingFieldException(FieldName errorField)
         : base(
-            errorType: ApplicationErrorType.MISSING_FIELD,
+            errorType: PresentationErrorType.MISSING_FIELD,
             errorField: errorField,
             errorServerMessage: $"Field {errorField.Name} is missing!",
             parameters: null,
@@ -129,7 +128,7 @@ public class RequestBodyMissingFieldException : MissingFieldException
 {
     public RequestBodyMissingFieldException()
         : base(
-            errorField: ApplicationFieldName.REQUEST_BODY
+            errorField: PresentationFieldName.REQUEST_BODY
         )
     { }
 }

@@ -1,8 +1,9 @@
-﻿using FireplaceApi.Presentation.Enums;
+﻿using FireplaceApi.Domain.Comments;
+using FireplaceApi.Domain.Communities;
+using FireplaceApi.Domain.Errors;
+using FireplaceApi.Domain.Posts;
+using FireplaceApi.Presentation.Enums;
 using FireplaceApi.Presentation.Exceptions;
-using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Exceptions;
-using FireplaceApi.Application.Tools;
 using System;
 using System.Collections.Generic;
 
@@ -47,8 +48,9 @@ public class ApplicationValidator
         {
             throw typeof(TEnum).Name switch
             {
-                nameof(SortType) => new SortIncorrectValueException(inputString),
                 nameof(CommunitySortType) => new CommunitySortIncorrectValueException(inputString),
+                nameof(PostSortType) => new PostSortIncorrectValueException(inputString),
+                nameof(CommentSortType) => new CommentSortIncorrectValueException(inputString),
                 _ => new InternalServerException("Not known enum type!"),
             };
         }
@@ -82,7 +84,7 @@ public class ApplicationValidator
         var encodedIds = stringOfEncodedIds.Split(',');
         foreach (var encodedId in encodedIds)
         {
-            ids.Add(ValidateEncodedIdFormat(encodedId, ApplicationFieldName.COMMUNITY_ID_OR_NAME).Value);
+            ids.Add(ValidateEncodedIdFormat(encodedId, PresentationFieldName.COMMUNITY_ID_OR_NAME).Value);
         }
         return ids;
     }

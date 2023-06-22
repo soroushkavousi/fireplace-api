@@ -1,7 +1,6 @@
-﻿using FireplaceApi.Presentation.Dtos;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.IntegrationTests.Extensions;
+﻿using FireplaceApi.IntegrationTests.Extensions;
 using FireplaceApi.IntegrationTests.Models;
+using FireplaceApi.Presentation.Dtos;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Collections.Generic;
 using System.Net.Http;

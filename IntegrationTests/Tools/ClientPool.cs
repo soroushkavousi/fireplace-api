@@ -1,10 +1,8 @@
-﻿using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Identifiers;
-using FireplaceApi.Application.Interfaces;
-using FireplaceApi.Application.Models;
-using FireplaceApi.Application.Operators;
-using FireplaceApi.Application.ValueObjects;
+﻿using FireplaceApi.Application.Emails;
+using FireplaceApi.Application.Users;
+using FireplaceApi.Domain.Configurations;
+using FireplaceApi.Domain.Emails;
+using FireplaceApi.Domain.Users;
 using FireplaceApi.Infrastructure.Entities;
 using FireplaceApi.IntegrationTests.Extensions;
 using FireplaceApi.IntegrationTests.Models;

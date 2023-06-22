@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Application.Identifiers;
+﻿using FireplaceApi.Domain.Errors;
 using FireplaceApi.Presentation.Interfaces;
 using FireplaceApi.Presentation.Validators;
 using Microsoft.AspNetCore.Mvc;

@@ -1,7 +1,5 @@
-﻿using FireplaceApi.Presentation.Dtos;
-using FireplaceApi.Application.Models;
-using FireplaceApi.Application.Tools;
-using FireplaceApi.Application.ValueObjects;
+﻿using FireplaceApi.Domain.Posts;
+using FireplaceApi.Presentation.Dtos;
 using System.Linq;
 
 namespace FireplaceApi.Presentation.Converters;

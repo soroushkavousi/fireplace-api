@@ -1,8 +1,7 @@
-﻿using FireplaceApi.Application.Exceptions;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Interfaces;
-using FireplaceApi.Application.Models;
-using FireplaceApi.Application.ValueObjects;
+﻿using FireplaceApi.Application.GoogleUsers;
+using FireplaceApi.Domain.Configurations;
+using FireplaceApi.Domain.Errors;
+using FireplaceApi.Domain.GoogleUsers;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Microsoft.AspNetCore.WebUtilities;

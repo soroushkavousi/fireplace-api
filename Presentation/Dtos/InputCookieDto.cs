@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Presentation.Auth;
-using FireplaceApi.Application.Attributes;
+﻿using FireplaceApi.Domain.Common;
+using FireplaceApi.Presentation.Auth;
 using Microsoft.AspNetCore.Http;
 
 namespace FireplaceApi.Presentation.Dtos;

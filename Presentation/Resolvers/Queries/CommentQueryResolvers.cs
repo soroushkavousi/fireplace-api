@@ -1,12 +1,10 @@
-﻿using FireplaceApi.Presentation.Auth;
+﻿using FireplaceApi.Application.Comments;
+using FireplaceApi.Domain.Comments;
+using FireplaceApi.Domain.Errors;
+using FireplaceApi.Presentation.Auth;
 using FireplaceApi.Presentation.Converters;
 using FireplaceApi.Presentation.Dtos;
 using FireplaceApi.Presentation.Tools;
-using FireplaceApi.Presentation.Validators;
-using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Models;
-using FireplaceApi.Application.Services;
-using FireplaceApi.Application.Tools;
 using HotChocolate;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +18,7 @@ public class CommentQueryResolvers
     [AllowAnonymous]
     public async Task<CommentDto> GetCommentAsync(
         [Service(ServiceKind.Resolver)] CommentService commentService,
-        [Service(ServiceKind.Resolver)] CommentValidator commentValidator,
+        [Service(ServiceKind.Resolver)] Validators.CommentValidator commentValidator,
         [User] RequestingUser requestingUser,
         [GraphQLNonNullType] string id)
     {
@@ -37,9 +35,9 @@ public class PostCommentsQueryResolvers
     [AllowAnonymous]
     public async Task<QueryResultDto<CommentDto>> GetCommentsAsync(
         [Service(ServiceKind.Resolver)] CommentService commentService,
-        [Service(ServiceKind.Resolver)] CommentValidator commentValidator,
+        [Service(ServiceKind.Resolver)] Validators.CommentValidator commentValidator,
         [User] RequestingUser requestingUser, [Parent] PostDto post,
-        SortType? sort = null)
+        CommentSortType? sort = null)
     {
         var queryResult = await commentService.ListPostCommentsAsync(post.Id.IdDecode(), sort, requestingUser?.Id);
         var queryResultDto = queryResult.ToDto();
@@ -53,9 +51,9 @@ public class UserCommentsQueryResolvers
     [AllowAnonymous]
     public async Task<QueryResultDto<CommentDto>> GetCommentsAsync(
         [Service(ServiceKind.Resolver)] CommentService commentService,
-        [Service(ServiceKind.Resolver)] CommentValidator commentValidator,
+        [Service(ServiceKind.Resolver)] Validators.CommentValidator commentValidator,
         [User] RequestingUser requestingUser, [Parent] UserDto user,
-        SortType? sort = null)
+        CommentSortType? sort = null)
     {
         var queryResult = await commentService.ListSelfCommentsAsync(requestingUser.Id.Value, sort);
         var queryResultDto = queryResult.ToDto();

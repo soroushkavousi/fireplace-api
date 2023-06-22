@@ -1,7 +1,6 @@
-﻿using FireplaceApi.Presentation.Auth;
+﻿using FireplaceApi.Application.RequestTraces;
+using FireplaceApi.Presentation.Auth;
 using FireplaceApi.Presentation.Extensions;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Operators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;

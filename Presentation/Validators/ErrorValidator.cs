@@ -2,9 +2,9 @@
 
 public class ErrorValidator : ApplicationValidator
 {
-    public Application.Validators.ErrorValidator ApplicationValidator { get; set; }
+    public Application.Errors.ErrorValidator ApplicationValidator { get; set; }
 
-    public ErrorValidator(Application.Validators.ErrorValidator applicationValidator)
+    public ErrorValidator(Application.Errors.ErrorValidator applicationValidator)
     {
         ApplicationValidator = applicationValidator;
     }

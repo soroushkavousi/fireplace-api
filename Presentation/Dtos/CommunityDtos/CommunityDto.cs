@@ -30,7 +30,7 @@ public class CommunityDto
         [nameof(Name).ToSnakeCase()] = new OpenApiString("backend-developers"),
         [nameof(CreatorId).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Id).ToSnakeCase()],
         [nameof(CreatorUsername).ToSnakeCase()] = UserDto.PureExample1[nameof(UserDto.Username).ToSnakeCase()],
-        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
+        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Tools.Utils.GetYesterdayDate()),
     };
     public static OpenApiObject PureExample2 { get; } = new OpenApiObject
     {
@@ -38,7 +38,7 @@ public class CommunityDto
         [nameof(Name).ToSnakeCase()] = new OpenApiString("android-developers"),
         [nameof(CreatorId).ToSnakeCase()] = UserDto.PureExample2[nameof(Id).ToSnakeCase()],
         [nameof(CreatorUsername).ToSnakeCase()] = UserDto.PureExample2[nameof(UserDto.Username).ToSnakeCase()],
-        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
+        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Tools.Utils.GetYesterdayDate()),
     };
 
     public static OpenApiArray PureListExample1 { get; } = new OpenApiArray

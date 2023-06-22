@@ -1,6 +1,4 @@
-﻿using FireplaceApi.Application.Exceptions;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Presentation.Tools;
+﻿using FireplaceApi.Domain.Errors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -23,7 +21,7 @@ public class ActionLoggingAttribute : ActionFilterAttribute
     {
         var actionInput = context.ActionArguments;
         var actionName = context.ActionDescriptor.To<ControllerActionDescriptor>().ActionName;
-        context.HttpContext.Items.Add(Constants.ActionNameKey, actionName);
+        context.HttpContext.Items.Add(Tools.Constants.ActionNameKey, actionName);
         _logger.LogAppInformation(message: actionName, title: "ACTION_INPUT", parameters: actionInput);
         _sw = Stopwatch.StartNew();
     }

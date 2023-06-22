@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Application.Enums;
+﻿using FireplaceApi.Domain.Errors;
 using FireplaceApi.Presentation.Validators;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;

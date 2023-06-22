@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Application.Models;
+﻿using FireplaceApi.Domain.Configurations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System;

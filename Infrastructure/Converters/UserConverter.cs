@@ -1,7 +1,7 @@
-﻿using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Models;
-using FireplaceApi.Application.ValueObjects;
+﻿using FireplaceApi.Domain.Emails;
+using FireplaceApi.Domain.GoogleUsers;
+using FireplaceApi.Domain.Sessions;
+using FireplaceApi.Domain.Users;
 using FireplaceApi.Infrastructure.Entities;
 using System.Collections.Generic;
 using System.Linq;

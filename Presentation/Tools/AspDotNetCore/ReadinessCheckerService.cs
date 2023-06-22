@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Application.Extensions;
-using FireplaceApi.Infrastructure.Entities;
+﻿using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

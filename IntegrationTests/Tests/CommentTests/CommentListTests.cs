@@ -1,8 +1,7 @@
-﻿using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Models;
-using FireplaceApi.Application.Operators;
-using FireplaceApi.Application.Tools;
+﻿using FireplaceApi.Application.Comments;
+using FireplaceApi.Application.Communities;
+using FireplaceApi.Application.Posts;
+using FireplaceApi.Domain.Comments;
 using FireplaceApi.IntegrationTests.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -71,7 +70,7 @@ public class CommentListTests
             }
 
             //Then
-            var postComments = await CommentUtils.ListPostCommentsWithApiAsync(narutoUser, post.Id.IdEncode(), SortType.TOP);
+            var postComments = await CommentUtils.ListPostCommentsWithApiAsync(narutoUser, post.Id.IdEncode(), CommentSortType.TOP);
             Assert.Equal(Configs.Current.QueryResult.ViewLimit, postComments.Items.Count);
             Assert.Equal(comments.Count - Configs.Current.QueryResult.ViewLimit, postComments.MoreItemIds.Count);
 

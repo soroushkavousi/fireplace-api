@@ -2,9 +2,9 @@
 
 public class CommunityMembershipValidator : ApplicationValidator
 {
-    public Application.Validators.CommunityMembershipValidator ApplicationValidator { get; set; }
+    public Application.Communities.CommunityMembershipValidator ApplicationValidator { get; set; }
 
-    public CommunityMembershipValidator(Application.Validators.CommunityMembershipValidator applicationValidator)
+    public CommunityMembershipValidator(Application.Communities.CommunityMembershipValidator applicationValidator)
     {
         ApplicationValidator = applicationValidator;
     }

@@ -1,8 +1,7 @@
-﻿using FireplaceApi.Presentation.Enums;
-using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Extensions;
+﻿using FireplaceApi.Application.Errors;
 using FireplaceApi.IntegrationTests.Extensions;
 using FireplaceApi.IntegrationTests.Tools;
+using FireplaceApi.Presentation.Enums;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -44,7 +43,7 @@ public class AuthTests
             var response = await testGuest.HttpClient.SendAsync(request);
 
             //Then
-            await response.EnsureResponseIsTheErrorAsync(ErrorType.AUTHENTICATION_FAILED, FieldName.ACCESS_TOKEN);
+            await response.EnsureResponseIsTheErrorAsync(ApplicationErrorType.AUTHENTICATION_FAILED, FieldName.ACCESS_TOKEN);
 
             _logger.LogAppInformation(title: "TEST_END", sw: sw);
         }
@@ -72,7 +71,7 @@ public class AuthTests
 
             //Then
             response.EnsureSuccessStatusCode();
-            await response.EnsureResponseIsNotTheErrorAsync(ErrorType.AUTHENTICATION_FAILED, FieldName.ACCESS_TOKEN);
+            await response.EnsureResponseIsNotTheErrorAsync(ApplicationErrorType.AUTHENTICATION_FAILED, FieldName.ACCESS_TOKEN);
 
             _logger.LogAppInformation(title: "TEST_END", sw: sw);
         }
@@ -99,8 +98,8 @@ public class AuthTests
             var response = await narutoUser.SendRequestAsync(request);
 
             //Then
-            await response.EnsureResponseIsTheErrorAsync(ErrorType.INCORRECT_VALUE,
-                ApplicationFieldName.REQUEST_CONTENT_TYPE);
+            await response.EnsureResponseIsTheErrorAsync(ApplicationErrorType.INCORRECT_VALUE,
+                PresentationFieldName.REQUEST_CONTENT_TYPE);
 
             _logger.LogAppInformation(title: "TEST_END", sw: sw);
         }
@@ -133,7 +132,7 @@ public class AuthTests
 
             //Then
             await response.EnsureResponseIsTheErrorAsync(ErrorType.INVALID_FORMAT,
-                ApplicationFieldName.REQUEST_BODY);
+                PresentationFieldName.REQUEST_BODY);
 
             _logger.LogAppInformation(title: "TEST_END", sw: sw);
         }

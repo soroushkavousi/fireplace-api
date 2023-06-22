@@ -1,11 +1,10 @@
-﻿using FireplaceApi.Presentation.Auth;
+﻿using FireplaceApi.Application.Posts;
+using FireplaceApi.Domain.Common;
+using FireplaceApi.Domain.Posts;
+using FireplaceApi.Domain.Users;
+using FireplaceApi.Presentation.Auth;
 using FireplaceApi.Presentation.Converters;
 using FireplaceApi.Presentation.Dtos;
-using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Models;
-using FireplaceApi.Application.Services;
-using FireplaceApi.Application.ValueObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

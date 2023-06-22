@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Application.Identifiers;
+﻿using FireplaceApi.Domain.Users;
 using FireplaceApi.Presentation.Enums;
 using FireplaceApi.Presentation.Exceptions;
 
@@ -6,9 +6,9 @@ namespace FireplaceApi.Presentation.Validators;
 
 public class UserValidator : ApplicationValidator
 {
-    public Application.Validators.UserValidator ApplicationValidator { get; set; }
+    public Application.Users.UserValidator ApplicationValidator { get; set; }
 
-    public UserValidator(Application.Validators.UserValidator applicationValidator)
+    public UserValidator(Application.Users.UserValidator applicationValidator)
     {
         ApplicationValidator = applicationValidator;
     }
@@ -16,7 +16,7 @@ public class UserValidator : ApplicationValidator
     public UserIdentifier ValidateEncodedIdOrUsername(string encodedIdOrUsername)
     {
         UserIdentifier identifier;
-        var id = ValidateEncodedIdFormat(encodedIdOrUsername, ApplicationFieldName.USER_ID_OR_USERNAME, throwException: false);
+        var id = ValidateEncodedIdFormat(encodedIdOrUsername, PresentationFieldName.USER_ID_OR_USERNAME, throwException: false);
         if (id.HasValue)
         {
             identifier = UserIdentifier.OfId(id.Value);

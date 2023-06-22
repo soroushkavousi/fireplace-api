@@ -1,11 +1,10 @@
-﻿using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Services;
+﻿using FireplaceApi.Application.Communities;
+using FireplaceApi.Domain.Errors;
 using FireplaceApi.Presentation.Auth;
 using FireplaceApi.Presentation.Converters;
 using FireplaceApi.Presentation.Dtos;
 using FireplaceApi.Presentation.Interfaces;
 using FireplaceApi.Presentation.Tools;
-using FireplaceApi.Presentation.Validators;
 using HotChocolate;
 using HotChocolate.Types;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,7 +35,7 @@ public class CreateCommunityInput : IValidator
 
     public void Validate(IServiceProvider serviceProvider)
     {
-        var presentationValidator = serviceProvider.GetService<CommunityValidator>();
+        var presentationValidator = serviceProvider.GetService<Validators.CommunityValidator>();
         var applicationValidator = presentationValidator.ApplicationValidator;
 
         presentationValidator.ValidateFieldIsNotMissing(Name, FieldName.COMMUNITY_NAME);

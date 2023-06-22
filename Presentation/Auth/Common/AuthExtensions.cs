@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Extensions;
+﻿using FireplaceApi.Domain.Users;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

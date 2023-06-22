@@ -2,9 +2,9 @@
 
 public class EmailValidator : ApplicationValidator
 {
-    public Application.Validators.EmailValidator ApplicationValidator { get; set; }
+    public Application.Emails.EmailValidator ApplicationValidator { get; set; }
 
-    public EmailValidator(Application.Validators.EmailValidator applicationValidator)
+    public EmailValidator(Application.Emails.EmailValidator applicationValidator)
     {
         ApplicationValidator = applicationValidator;
     }

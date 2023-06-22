@@ -1,7 +1,5 @@
-﻿using FireplaceApi.Presentation.Dtos;
-using FireplaceApi.Presentation.Tools;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Models;
+﻿using FireplaceApi.Domain.Errors;
+using FireplaceApi.Presentation.Dtos;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using System.Text;
@@ -54,7 +52,7 @@ public static class HttpContextExtensions
     public static Error GetError(this HttpContext httpContext)
     {
         Error error = null;
-        var hasError = httpContext.Items.TryGetValue(Constants.ErrorKey, out var errorObject);
+        var hasError = httpContext.Items.TryGetValue(Tools.Constants.ErrorKey, out var errorObject);
         if (hasError)
             error = errorObject.To<Error>();
         return error;

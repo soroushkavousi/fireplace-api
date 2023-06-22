@@ -1,6 +1,5 @@
-﻿using FireplaceApi.Presentation.Extensions;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Models;
+﻿using FireplaceApi.Domain.Configurations;
+using FireplaceApi.Presentation.Extensions;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

@@ -13,7 +13,7 @@ public static class LogExtensions
         [CallerFilePath] string sourceFilePath = "", [CallerMemberName] string memberName = "",
         [CallerLineNumber] int sourceLineNumber = 0)
     {
-        logger.Trace(Application.Extensions.LogExtensions.CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
+        logger.Trace(Application.Common.LogExtensions.CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
     }
 
     public static void LogAppInformation(this Logger logger, string message = null,
@@ -21,7 +21,7 @@ public static class LogExtensions
         [CallerFilePath] string sourceFilePath = "", [CallerMemberName] string memberName = "",
         [CallerLineNumber] int sourceLineNumber = 0)
     {
-        logger.Info(Application.Extensions.LogExtensions.CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
+        logger.Info(Application.Common.LogExtensions.CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
     }
 
     public static void LogAppError(this Logger logger, string message = null,
@@ -30,9 +30,9 @@ public static class LogExtensions
         [CallerLineNumber] int sourceLineNumber = 0)
     {
         if (ex == null)
-            logger.Error(Application.Extensions.LogExtensions.CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
+            logger.Error(Application.Common.LogExtensions.CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
         else
-            logger.Error(ex, Application.Extensions.LogExtensions.CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
+            logger.Error(ex, Application.Common.LogExtensions.CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
     }
 
     public static void LogAppCritical(this Logger logger, string message = null,
@@ -41,8 +41,8 @@ public static class LogExtensions
         [CallerLineNumber] int sourceLineNumber = 0)
     {
         if (ex == null)
-            logger.Fatal(Application.Extensions.LogExtensions.CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
+            logger.Fatal(Application.Common.LogExtensions.CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
         else
-            logger.Fatal(ex, Application.Extensions.LogExtensions.CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
+            logger.Fatal(ex, Application.Common.LogExtensions.CreateLogMessage(sourceFilePath, memberName, sourceLineNumber, message, sw, title, parameters));
     }
 }

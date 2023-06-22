@@ -573,7 +573,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<string>("ErrorField")
                         .HasColumnType("text");
 
-                    b.Property<string>("ErrorType")
+                    b.Property<string>("BaseErrorType")
                         .HasColumnType("text");
 
                     b.Property<string>("IP")

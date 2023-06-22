@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Identifiers;
+﻿using FireplaceApi.Domain.Communities;
+using FireplaceApi.Domain.Errors;
 using FireplaceApi.Presentation.Interfaces;
 using FireplaceApi.Presentation.Tools;
 using FireplaceApi.Presentation.Validators;

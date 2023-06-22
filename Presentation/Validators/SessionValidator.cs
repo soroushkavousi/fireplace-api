@@ -2,9 +2,9 @@
 
 public class SessionValidator : ApplicationValidator
 {
-    public Application.Validators.SessionValidator ApplicationValidator { get; set; }
+    public Application.Sessions.SessionValidator ApplicationValidator { get; set; }
 
-    public SessionValidator(Application.Validators.SessionValidator applicationValidator)
+    public SessionValidator(Application.Sessions.SessionValidator applicationValidator)
     {
         ApplicationValidator = applicationValidator;
     }

@@ -1,6 +1,5 @@
-﻿using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Models;
+﻿using FireplaceApi.Domain.Sessions;
+using FireplaceApi.Domain.Users;
 using FireplaceApi.Infrastructure.Entities;
 
 namespace FireplaceApi.Infrastructure.Converters;

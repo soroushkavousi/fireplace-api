@@ -1,4 +1,6 @@
-﻿using FireplaceApi.Application.Models;
+﻿using FireplaceApi.Domain.Communities;
+using FireplaceApi.Domain.Posts;
+using FireplaceApi.Domain.Users;
 using FireplaceApi.Infrastructure.Entities;
 
 namespace FireplaceApi.Infrastructure.Converters;

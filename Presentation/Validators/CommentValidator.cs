@@ -2,9 +2,9 @@
 
 public class CommentValidator : ApplicationValidator
 {
-    public Application.Validators.CommentValidator ApplicationValidator { get; set; }
+    public Application.Comments.CommentValidator ApplicationValidator { get; set; }
 
-    public CommentValidator(Application.Validators.CommentValidator applicationValidator)
+    public CommentValidator(Application.Comments.CommentValidator applicationValidator)
     {
         ApplicationValidator = applicationValidator;
     }

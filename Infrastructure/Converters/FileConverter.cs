@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Application.Models;
+﻿using FireplaceApi.Domain.Configurations;
+using FireplaceApi.Domain.Files;
 using FireplaceApi.Infrastructure.Entities;
 using System;
 

@@ -1,8 +1,6 @@
-﻿using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Exceptions;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Interfaces;
-using FireplaceApi.Application.Models;
+﻿using FireplaceApi.Application.Posts;
+using FireplaceApi.Domain.Errors;
+using FireplaceApi.Domain.Posts;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -199,7 +197,7 @@ public static class PostVoteRepositoryExtensions
 
     public static IQueryable<PostVoteEntity> Search(
         [NotNull] this IQueryable<PostVoteEntity> q,
-        ulong? voterId, ulong? postId, SortType? sort)
+        ulong? voterId, ulong? postId)
     {
         if (voterId.HasValue)
             q = q.Where(e => e.VoterEntityId == voterId.Value);
@@ -207,18 +205,7 @@ public static class PostVoteRepositoryExtensions
         if (postId.HasValue)
             q = q.Where(e => e.PostEntityId == postId.Value);
 
-        if (sort.HasValue)
-        {
-            q = sort switch
-            {
-                SortType.TOP => q.OrderByDescending(e => e.IsUp),
-                SortType.NEW => q.OrderByDescending(e => e.CreationDate),
-                SortType.OLD => q.OrderBy(e => e.CreationDate),
-                _ => q.OrderByDescending(e => e.CreationDate),
-            };
-        }
-        else
-            q = q.OrderByDescending(e => e.CreationDate);
+        q = q.OrderByDescending(e => e.CreationDate);
 
         return q;
     }

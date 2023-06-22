@@ -1,9 +1,9 @@
-﻿using FireplaceApi.Presentation.Tools;
-using FireplaceApi.Application.Exceptions;
-using FireplaceApi.Application.Interfaces;
+﻿using FireplaceApi.Application.Emails;
+using FireplaceApi.Domain.Errors;
 using FireplaceApi.Infrastructure.Entities;
 using FireplaceApi.Infrastructure.Extensions;
 using FireplaceApi.IntegrationTests.Stubs;
+using FireplaceApi.Presentation.Tools;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -103,7 +103,7 @@ public class ApiIntegrationTestFixture : IDisposable
 
     private string GenerateRandomConnectionString()
     {
-        _databaseName = $"test-{Application.Tools.Utils.GenerateRandomString(8)}";
+        _databaseName = $"test-{Application.Common.Utils.GenerateRandomString(8)}";
         var databaseNameRegex = @"^(.*)Database=([^;]+);(.*)$";
         var newConnectionString = Regex.Replace(EnvironmentVariable.ConnectionString.Value,
             databaseNameRegex, $"$1Database={_databaseName};$3", RegexOptions.IgnoreCase);

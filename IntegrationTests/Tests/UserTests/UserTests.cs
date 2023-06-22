@@ -1,8 +1,6 @@
-﻿using FireplaceApi.Presentation.Dtos;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Tools;
-using FireplaceApi.IntegrationTests.Extensions;
+﻿using FireplaceApi.IntegrationTests.Extensions;
 using FireplaceApi.IntegrationTests.Tools;
+using FireplaceApi.Presentation.Dtos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;

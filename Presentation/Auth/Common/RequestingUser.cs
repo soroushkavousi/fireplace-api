@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Application.Enums;
+﻿using FireplaceApi.Domain.Users;
 using System.Collections.Generic;
 
 namespace FireplaceApi.Presentation.Auth;

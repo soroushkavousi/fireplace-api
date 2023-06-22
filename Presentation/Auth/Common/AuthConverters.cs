@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Extensions;
+﻿using FireplaceApi.Domain.Users;
 using System.Collections.Generic;
 using System.Security.Claims;
 

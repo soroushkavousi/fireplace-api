@@ -1,9 +1,8 @@
-﻿using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Exceptions;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Identifiers;
-using FireplaceApi.Application.Interfaces;
-using FireplaceApi.Application.Models;
+﻿using FireplaceApi.Application.Posts;
+using FireplaceApi.Domain.Communities;
+using FireplaceApi.Domain.Configurations;
+using FireplaceApi.Domain.Errors;
+using FireplaceApi.Domain.Posts;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +29,7 @@ public class PostRepository : IPostRepository
     }
 
     public async Task<List<Post>> ListCommunityPostsAsync(CommunityIdentifier communityIdentifier,
-        SortType sort, ulong? userId = null)
+        PostSortType sort, ulong? userId = null)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
         {
@@ -64,7 +63,7 @@ public class PostRepository : IPostRepository
         return postEntities.Select(PostConverter.ToModel).ToList();
     }
 
-    public async Task<List<Post>> ListPostsAsync(string search, SortType sort,
+    public async Task<List<Post>> ListPostsAsync(string search, PostSortType sort,
         ulong? userId = null)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
@@ -132,7 +131,7 @@ public class PostRepository : IPostRepository
     }
 
     public async Task<List<Post>> ListSelfPostsAsync(ulong authorId,
-        SortType sort)
+        PostSortType sort)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
         {
@@ -326,13 +325,13 @@ public static class PostRepositoryExtensions
     }
 
     public static IQueryable<PostEntity> Sort(
-        [NotNull] this IQueryable<PostEntity> q, SortType sort)
+        [NotNull] this IQueryable<PostEntity> q, PostSortType sort)
     {
         q = sort switch
         {
-            SortType.TOP => q.OrderByDescending(e => e.Vote),
-            SortType.NEW => q.OrderByDescending(e => e.CreationDate),
-            SortType.OLD => q.OrderBy(e => e.CreationDate),
+            PostSortType.TOP => q.OrderByDescending(e => e.Vote),
+            PostSortType.NEW => q.OrderByDescending(e => e.CreationDate),
+            PostSortType.OLD => q.OrderBy(e => e.CreationDate),
             _ => q.OrderByDescending(e => e.Vote),
         };
 

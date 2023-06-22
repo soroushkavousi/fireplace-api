@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Application.Exceptions;
-using FireplaceApi.Application.Validators;
+﻿using FireplaceApi.Application.Sessions;
+using FireplaceApi.Domain.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;

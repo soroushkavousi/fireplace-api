@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Application.Enums;
+﻿using FireplaceApi.Domain.Comments;
+using FireplaceApi.Domain.Errors;
 using FireplaceApi.Presentation.Interfaces;
 using FireplaceApi.Presentation.Tools;
 using FireplaceApi.Presentation.Validators;
@@ -32,18 +33,18 @@ public class ListPostCommentsInputRouteDto : IValidator
 public class ListPostCommentsInputQueryDto : IValidator
 {
     [FromQuery(Name = "sort")]
-    [SwaggerEnum(Type = typeof(SortType))]
+    [SwaggerEnum(Type = typeof(CommentSortType))]
     public string SortString { get; set; }
 
     [BindNever]
-    public SortType? Sort { get; set; }
+    public CommentSortType? Sort { get; set; }
 
     public void Validate(IServiceProvider serviceProvider)
     {
         var presentationValidator = serviceProvider.GetService<CommentValidator>();
         var applicationValidator = presentationValidator.ApplicationValidator;
 
-        Sort = presentationValidator.ValidateInputEnum<SortType>(SortString);
+        Sort = presentationValidator.ValidateInputEnum<CommentSortType>(SortString);
     }
 }
 
@@ -53,13 +54,13 @@ public class ListCommentsInputQueryDto : IValidator
     public string EncodedIds { get; set; }
 
     [FromQuery(Name = "sort")]
-    [SwaggerEnum(Type = typeof(SortType))]
+    [SwaggerEnum(Type = typeof(CommentSortType))]
     public string SortString { get; set; }
 
     [BindNever]
     public List<ulong> Ids { get; private set; }
     [BindNever]
-    public SortType? Sort { get; set; }
+    public CommentSortType? Sort { get; set; }
 
     public void Validate(IServiceProvider serviceProvider)
     {
@@ -67,7 +68,7 @@ public class ListCommentsInputQueryDto : IValidator
         var applicationValidator = presentationValidator.ApplicationValidator;
 
         Ids = presentationValidator.ValidateIdsFormat(EncodedIds);
-        Sort = presentationValidator.ValidateInputEnum<SortType>(SortString);
+        Sort = presentationValidator.ValidateInputEnum<CommentSortType>(SortString);
     }
 }
 
@@ -92,36 +93,36 @@ public class ListChildCommentsInputRouteDto : IValidator
 public class ListChildCommentsInputQueryDto : IValidator
 {
     [FromQuery(Name = "sort")]
-    [SwaggerEnum(Type = typeof(SortType))]
+    [SwaggerEnum(Type = typeof(CommentSortType))]
     public string SortString { get; set; }
 
     [BindNever]
-    public SortType? Sort { get; set; }
+    public CommentSortType? Sort { get; set; }
 
     public void Validate(IServiceProvider serviceProvider)
     {
         var presentationValidator = serviceProvider.GetService<CommentValidator>();
         var applicationValidator = presentationValidator.ApplicationValidator;
 
-        Sort = presentationValidator.ValidateInputEnum<SortType>(SortString);
+        Sort = presentationValidator.ValidateInputEnum<CommentSortType>(SortString);
     }
 }
 
 public class ListSelfCommentsInputQueryDto : IValidator
 {
     [FromQuery(Name = "sort")]
-    [SwaggerEnum(Type = typeof(SortType))]
+    [SwaggerEnum(Type = typeof(CommentSortType))]
     public string SortString { get; set; }
 
     [BindNever]
-    public SortType? Sort { get; set; }
+    public CommentSortType? Sort { get; set; }
 
     public void Validate(IServiceProvider serviceProvider)
     {
         var presentationValidator = serviceProvider.GetService<CommentValidator>();
         var applicationValidator = presentationValidator.ApplicationValidator;
 
-        Sort = presentationValidator.ValidateInputEnum<SortType>(SortString);
+        Sort = presentationValidator.ValidateInputEnum<CommentSortType>(SortString);
     }
 }
 

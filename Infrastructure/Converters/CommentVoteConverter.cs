@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Application.Models;
+﻿using FireplaceApi.Domain.Comments;
+using FireplaceApi.Domain.Users;
 using FireplaceApi.Infrastructure.Entities;
 
 namespace FireplaceApi.Infrastructure.Converters;

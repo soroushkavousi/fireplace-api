@@ -1,4 +1,6 @@
-﻿using FireplaceApi.Application.Models;
+﻿using FireplaceApi.Domain.Comments;
+using FireplaceApi.Domain.Posts;
+using FireplaceApi.Domain.Users;
 using FireplaceApi.Infrastructure.Entities;
 using System.Collections.Generic;
 using System.Linq;

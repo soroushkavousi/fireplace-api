@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Operators;
+﻿using FireplaceApi.Application.Communities;
 using FireplaceApi.IntegrationTests.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

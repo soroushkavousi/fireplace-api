@@ -1,10 +1,6 @@
-﻿using FireplaceApi.Presentation.Converters;
-using FireplaceApi.Presentation.Tools;
-using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Exceptions;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Models;
-using FireplaceApi.Application.Operators;
+﻿using FireplaceApi.Application.Errors;
+using FireplaceApi.Domain.Errors;
+using FireplaceApi.Presentation.Converters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -35,7 +31,7 @@ public class ApiExceptionHandlerMiddleware
         catch (Exception ex)
         {
             var error = await errorOperator.GetErrorAsync(ex);
-            httpContext.Items[Constants.ErrorKey] = error;
+            httpContext.Items[Tools.Constants.ErrorKey] = error;
             await ReportError(error, httpContext);
         }
         _logger.LogAppTrace(sw: sw, title: "EXCEPTION_MIDDLEWARE");

@@ -1,8 +1,6 @@
-﻿using FireplaceApi.Presentation.Dtos;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Models;
-using FireplaceApi.Application.Tools;
-using FireplaceApi.Application.ValueObjects;
+﻿using FireplaceApi.Domain.Comments;
+using FireplaceApi.Domain.Common;
+using FireplaceApi.Presentation.Dtos;
 using System.Collections.Generic;
 
 namespace FireplaceApi.Presentation.Converters;

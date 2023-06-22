@@ -2,9 +2,9 @@
 
 public class FileValidator : ApplicationValidator
 {
-    public Application.Validators.FileValidator ApplicationValidator { get; set; }
+    public Application.Files.FileValidator ApplicationValidator { get; set; }
 
-    public FileValidator(Application.Validators.FileValidator applicationValidator)
+    public FileValidator(Application.Files.FileValidator applicationValidator)
     {
         ApplicationValidator = applicationValidator;
     }

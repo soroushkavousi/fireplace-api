@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Application.Enums;
+﻿using FireplaceApi.Domain.Errors;
 using System.Runtime.CompilerServices;
 
 namespace FireplaceApi.Infrastructure.Enums;

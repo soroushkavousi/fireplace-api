@@ -1,11 +1,10 @@
+using FireplaceApi.Infrastructure.Entities;
 using FireplaceApi.Presentation.Attributes;
 using FireplaceApi.Presentation.Auth;
 using FireplaceApi.Presentation.Dtos;
 using FireplaceApi.Presentation.Extensions;
 using FireplaceApi.Presentation.Middlewares;
 using FireplaceApi.Presentation.Tools;
-using FireplaceApi.Application.Models;
-using FireplaceApi.Infrastructure.Entities;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

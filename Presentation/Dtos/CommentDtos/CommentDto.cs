@@ -1,7 +1,6 @@
 ﻿using FireplaceApi.Presentation.Controllers;
 using FireplaceApi.Presentation.Extensions;
 using FireplaceApi.Presentation.Tools;
-using FireplaceApi.Application.Enums;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -48,7 +47,7 @@ public class CommentDto
         [nameof(Vote).ToSnakeCase()] = new OpenApiInteger(53),
         [nameof(RequestingUserVote).ToSnakeCase()] = new OpenApiString(VoteType.UPVOTE.ToString()),
         [nameof(Content).ToSnakeCase()] = new OpenApiString("It's ok."),
-        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
+        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Tools.Utils.GetYesterdayDate()),
         [nameof(ModifiedDate).ToSnakeCase()] = new OpenApiNull(),
         [nameof(Author).ToSnakeCase()] = new OpenApiNull(),
         [nameof(Post).ToSnakeCase()] = new OpenApiNull(),
@@ -65,8 +64,8 @@ public class CommentDto
         [nameof(Vote).ToSnakeCase()] = new OpenApiInteger(4),
         [nameof(RequestingUserVote).ToSnakeCase()] = new OpenApiString(VoteType.NEUTRAL.ToString()),
         [nameof(Content).ToSnakeCase()] = new OpenApiString("It's not good!"),
-        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
-        [nameof(ModifiedDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetLastHourDate()),
+        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Tools.Utils.GetYesterdayDate()),
+        [nameof(ModifiedDate).ToSnakeCase()] = new OpenApiDateTime(Tools.Utils.GetLastHourDate()),
         [nameof(Author).ToSnakeCase()] = new OpenApiNull(),
         [nameof(Post).ToSnakeCase()] = new OpenApiNull(),
         [nameof(ChildComments).ToSnakeCase()] = new OpenApiNull(),

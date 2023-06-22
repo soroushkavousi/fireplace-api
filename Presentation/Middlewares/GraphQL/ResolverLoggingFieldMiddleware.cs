@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Presentation.Extensions;
-using FireplaceApi.Application.Extensions;
 using HotChocolate.Resolvers;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;

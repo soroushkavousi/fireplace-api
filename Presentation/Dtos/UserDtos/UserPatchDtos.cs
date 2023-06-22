@@ -1,6 +1,6 @@
-﻿using FireplaceApi.Application.Attributes;
-using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.ValueObjects;
+﻿using FireplaceApi.Domain.Common;
+using FireplaceApi.Domain.Errors;
+using FireplaceApi.Domain.Users;
 using FireplaceApi.Presentation.Extensions;
 using FireplaceApi.Presentation.Interfaces;
 using FireplaceApi.Presentation.Tools;
@@ -35,7 +35,7 @@ public class PatchUserInputBodyDto : IValidator
     {
         var presentationValidator = serviceProvider.GetService<UserValidator>();
         var applicationValidator = presentationValidator.ApplicationValidator;
-        var emailValidator = serviceProvider.GetService<Application.Validators.EmailValidator>();
+        var emailValidator = serviceProvider.GetService<Application.Emails.EmailValidator>();
 
         if (DisplayName != null)
             applicationValidator.ValidateDisplayNameFormat(DisplayName);

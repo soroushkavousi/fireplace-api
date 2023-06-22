@@ -1,9 +1,9 @@
-﻿using FireplaceApi.Application.Enums;
+﻿using FireplaceApi.Application.Errors;
 using System.Runtime.CompilerServices;
 
 namespace FireplaceApi.Infrastructure.Enums;
 
-public sealed class InfrastructureErrorType : ErrorType
+public sealed class InfrastructureErrorType : ApplicationErrorType
 {
     public static readonly InfrastructureErrorType MISSING_FIELD = new();
 

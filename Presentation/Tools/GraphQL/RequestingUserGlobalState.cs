@@ -1,6 +1,5 @@
-﻿using FireplaceApi.Presentation.Auth;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Models;
+﻿using FireplaceApi.Domain.Users;
+using FireplaceApi.Presentation.Auth;
 using HotChocolate;
 using HotChocolate.AspNetCore;
 using HotChocolate.Execution;

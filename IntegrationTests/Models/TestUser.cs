@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Application.Models;
+﻿using FireplaceApi.Domain.Users;
 using FireplaceApi.IntegrationTests.Extensions;
 using System.Net.Http;
 using System.Threading.Tasks;

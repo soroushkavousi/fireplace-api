@@ -2,9 +2,9 @@
 
 public class PostValidator : ApplicationValidator
 {
-    public Application.Validators.PostValidator ApplicationValidator { get; set; }
+    public Application.Posts.PostValidator ApplicationValidator { get; set; }
 
-    public PostValidator(Application.Validators.PostValidator applicationValidator)
+    public PostValidator(Application.Posts.PostValidator applicationValidator)
     {
         ApplicationValidator = applicationValidator;
     }

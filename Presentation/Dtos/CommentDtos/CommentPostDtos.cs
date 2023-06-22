@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Application.Enums;
+﻿using FireplaceApi.Domain.Errors;
 using FireplaceApi.Presentation.Extensions;
 using FireplaceApi.Presentation.Interfaces;
 using FireplaceApi.Presentation.Tools;

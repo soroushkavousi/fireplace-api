@@ -1,5 +1,6 @@
-﻿using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Identifiers;
+﻿using FireplaceApi.Domain.Communities;
+using FireplaceApi.Domain.Errors;
+using FireplaceApi.Domain.Posts;
 using FireplaceApi.Presentation.Interfaces;
 using FireplaceApi.Presentation.Tools;
 using FireplaceApi.Presentation.Validators;
@@ -33,18 +34,18 @@ public class ListCommunityPostsInputRouteDto : IValidator
 public class ListCommunityPostsInputQueryDto : IValidator
 {
     [FromQuery(Name = "sort")]
-    [SwaggerEnum(Type = typeof(SortType))]
+    [SwaggerEnum(Type = typeof(PostSortType))]
     public string SortString { get; set; }
 
     [BindNever]
-    public SortType? Sort { get; set; }
+    public PostSortType? Sort { get; set; }
 
     public void Validate(IServiceProvider serviceProvider)
     {
         var presentationValidator = serviceProvider.GetService<PostValidator>();
         var applicationValidator = presentationValidator.ApplicationValidator;
 
-        Sort = presentationValidator.ValidateInputEnum<SortType>(SortString);
+        Sort = presentationValidator.ValidateInputEnum<PostSortType>(SortString);
     }
 }
 
@@ -54,14 +55,14 @@ public class ListPostsInputQueryDto : IValidator
     public string Search { get; set; }
 
     [FromQuery(Name = "sort")]
-    [SwaggerEnum(Type = typeof(SortType))]
+    [SwaggerEnum(Type = typeof(PostSortType))]
     public string SortString { get; set; }
 
     [FromQuery(Name = "ids")]
     public string EncodedIds { get; set; }
 
     [BindNever]
-    public SortType? Sort { get; set; }
+    public PostSortType? Sort { get; set; }
     [BindNever]
     public List<ulong> Ids { get; private set; }
 
@@ -73,7 +74,7 @@ public class ListPostsInputQueryDto : IValidator
         if (string.IsNullOrWhiteSpace(EncodedIds))
             presentationValidator.ValidateFieldIsNotMissing(Search, FieldName.SEARCH);
 
-        Sort = presentationValidator.ValidateInputEnum<SortType>(SortString);
+        Sort = presentationValidator.ValidateInputEnum<PostSortType>(SortString);
 
         Ids = presentationValidator.ValidateIdsFormat(EncodedIds);
     }
@@ -82,18 +83,18 @@ public class ListPostsInputQueryDto : IValidator
 public class ListSelfPostsInputQueryDto : IValidator
 {
     [FromQuery(Name = "sort")]
-    [SwaggerEnum(Type = typeof(SortType))]
+    [SwaggerEnum(Type = typeof(PostSortType))]
     public string SortString { get; set; }
 
     [BindNever]
-    public SortType? Sort { get; set; }
+    public PostSortType? Sort { get; set; }
 
     public void Validate(IServiceProvider serviceProvider)
     {
         var presentationValidator = serviceProvider.GetService<PostValidator>();
         var applicationValidator = presentationValidator.ApplicationValidator;
 
-        Sort = presentationValidator.ValidateInputEnum<SortType>(SortString);
+        Sort = presentationValidator.ValidateInputEnum<PostSortType>(SortString);
     }
 }
 

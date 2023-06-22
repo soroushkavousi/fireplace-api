@@ -1,6 +1,14 @@
-﻿using FireplaceApi.Application.Interfaces;
-using FireplaceApi.Application.Operators;
-using FireplaceApi.Application.Services;
+﻿using FireplaceApi.Application.Comments;
+using FireplaceApi.Application.Communities;
+using FireplaceApi.Application.Configurations;
+using FireplaceApi.Application.Emails;
+using FireplaceApi.Application.Errors;
+using FireplaceApi.Application.Files;
+using FireplaceApi.Application.GoogleUsers;
+using FireplaceApi.Application.Posts;
+using FireplaceApi.Application.RequestTraces;
+using FireplaceApi.Application.Sessions;
+using FireplaceApi.Application.Users;
 using FireplaceApi.Infrastructure.CacheService;
 using FireplaceApi.Infrastructure.Gateways;
 using FireplaceApi.Infrastructure.Repositories;
@@ -72,15 +80,15 @@ public static class ServiceInjectionExtensions
         services.AddScoped<Validators.SessionValidator>();
         services.AddScoped<Validators.UserValidator>();
 
-        services.AddScoped<Application.Validators.CommentValidator>();
-        services.AddScoped<Application.Validators.CommunityValidator>();
-        services.AddScoped<Application.Validators.CommunityMembershipValidator>();
-        services.AddScoped<Application.Validators.EmailValidator>();
-        services.AddScoped<Application.Validators.ErrorValidator>();
-        services.AddScoped<Application.Validators.FileValidator>();
-        services.AddScoped<Application.Validators.PostValidator>();
-        services.AddScoped<Application.Validators.SessionValidator>();
-        services.AddScoped<Application.Validators.UserValidator>();
+        services.AddScoped<CommentValidator>();
+        services.AddScoped<CommunityValidator>();
+        services.AddScoped<CommunityMembershipValidator>();
+        services.AddScoped<EmailValidator>();
+        services.AddScoped<ErrorValidator>();
+        services.AddScoped<FileValidator>();
+        services.AddScoped<PostValidator>();
+        services.AddScoped<SessionValidator>();
+        services.AddScoped<UserValidator>();
         return services;
     }
 

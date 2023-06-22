@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Application.Models;
+﻿using FireplaceApi.Domain.Configurations;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;

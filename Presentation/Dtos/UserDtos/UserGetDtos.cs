@@ -1,6 +1,6 @@
-﻿using FireplaceApi.Application.Attributes;
-using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Identifiers;
+﻿using FireplaceApi.Domain.Common;
+using FireplaceApi.Domain.Errors;
+using FireplaceApi.Domain.Users;
 using FireplaceApi.Presentation.Auth;
 using FireplaceApi.Presentation.Extensions;
 using FireplaceApi.Presentation.Interfaces;

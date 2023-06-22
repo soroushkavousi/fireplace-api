@@ -1,5 +1,6 @@
-﻿using FireplaceApi.Presentation.Extensions;
-using FireplaceApi.Application.Exceptions;
+﻿using FireplaceApi.Application.Errors;
+using FireplaceApi.Domain.Errors;
+using FireplaceApi.Presentation.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;

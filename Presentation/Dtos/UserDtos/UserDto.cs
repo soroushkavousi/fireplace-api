@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Application.Enums;
+﻿using FireplaceApi.Domain.Users;
 using FireplaceApi.Presentation.Controllers;
 using FireplaceApi.Presentation.Extensions;
 using FireplaceApi.Presentation.Tools;
@@ -37,7 +37,7 @@ public class UserDto
         [nameof(Id).ToSnakeCase()] = new OpenApiString("5FhKGzw165x"),
         [nameof(Username).ToSnakeCase()] = new OpenApiString("erenyeager"),
         [nameof(State).ToSnakeCase()] = new OpenApiString(UserState.VERIFIED.ToString()),
-        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
+        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Tools.Utils.GetYesterdayDate()),
         [nameof(DisplayName).ToSnakeCase()] = new OpenApiString("Eren Yeager"),
         [nameof(About).ToSnakeCase()] = new OpenApiString("ABOUT ME!"),
         [nameof(AvatarUrl).ToSnakeCase()] = new OpenApiString("https://files.server.com/avatar.png"),
@@ -50,7 +50,7 @@ public class UserDto
         [nameof(Id).ToSnakeCase()] = new OpenApiString("fNnXz8tyV1b"),
         [nameof(Username).ToSnakeCase()] = new OpenApiString("lelouchlamperouge"),
         [nameof(State).ToSnakeCase()] = new OpenApiString(UserState.NOT_VERIFIED.ToString()),
-        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
+        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Tools.Utils.GetYesterdayDate()),
         [nameof(DisplayName).ToSnakeCase()] = new OpenApiString("Lelouch Lamperouge"),
         [nameof(About).ToSnakeCase()] = new OpenApiString("ABOUT ME!"),
         [nameof(AvatarUrl).ToSnakeCase()] = new OpenApiString("https://files.server.com/avatar.png"),

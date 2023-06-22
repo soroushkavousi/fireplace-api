@@ -1,13 +1,9 @@
-﻿using FireplaceApi.Presentation.Auth;
+﻿using FireplaceApi.Application.Communities;
+using FireplaceApi.Domain.Communities;
+using FireplaceApi.Presentation.Auth;
 using FireplaceApi.Presentation.Converters;
 using FireplaceApi.Presentation.Dtos;
 using FireplaceApi.Presentation.Tools;
-using FireplaceApi.Presentation.Validators;
-using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Identifiers;
-using FireplaceApi.Application.Models;
-using FireplaceApi.Application.Services;
-using FireplaceApi.Application.Tools;
 using HotChocolate;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Authorization;
@@ -21,7 +17,7 @@ public class CommunityQueryResolvers
     [AllowAnonymous]
     public async Task<QueryResultDto<CommunityDto>> GetCommunitiesAsync(
         [Service(ServiceKind.Resolver)] CommunityService communityService,
-        [Service(ServiceKind.Resolver)] CommunityValidator communityValidator,
+        [Service(ServiceKind.Resolver)] Validators.CommunityValidator communityValidator,
         [GraphQLNonNullType] string search, CommunitySortType? sort = null)
     {
         var queryResult = await communityService.ListCommunitiesAsync(search, sort);
@@ -32,7 +28,7 @@ public class CommunityQueryResolvers
     [AllowAnonymous]
     public async Task<CommunityDto> GetCommunityAsync(
         [Service(ServiceKind.Resolver)] CommunityService communityService,
-        [Service(ServiceKind.Resolver)] CommunityValidator communityValidator,
+        [Service(ServiceKind.Resolver)] Validators.CommunityValidator communityValidator,
         [GraphQLNonNullType] string idOrName)
     {
         var communityIdentifier = communityValidator.ValidateEncodedIdOrName(idOrName);
@@ -48,7 +44,7 @@ public class PostCommunityQueryResolvers
     [AllowAnonymous]
     public async Task<CommunityDto> GetCommunityAsync(
         [Service(ServiceKind.Resolver)] CommunityService communityService,
-        [Service(ServiceKind.Resolver)] CommunityValidator communityValidator,
+        [Service(ServiceKind.Resolver)] Validators.CommunityValidator communityValidator,
         [User] RequestingUser requestingUser, [Parent] PostDto post)
     {
         var communityIdentifier = CommunityIdentifier.OfId(post.CommunityId.IdDecode());
@@ -64,7 +60,7 @@ public class UserCommunitiesQueryResolvers
     [AllowAnonymous]
     public async Task<QueryResultDto<CommunityDto>> GetJoinedCommunitiesAsync(
         [Service(ServiceKind.Resolver)] CommunityService communityService,
-        [Service(ServiceKind.Resolver)] CommunityValidator communityValidator,
+        [Service(ServiceKind.Resolver)] Validators.CommunityValidator communityValidator,
         [User] RequestingUser requestingUser, [Parent] UserDto user,
         CommunitySortType? sort = null)
     {

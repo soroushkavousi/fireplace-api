@@ -1,8 +1,7 @@
-﻿using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Exceptions;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Interfaces;
-using FireplaceApi.Application.Models;
+﻿using FireplaceApi.Application.RequestTraces;
+using FireplaceApi.Domain.Configurations;
+using FireplaceApi.Domain.Errors;
+using FireplaceApi.Domain.RequestTraces;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;

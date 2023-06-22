@@ -23,13 +23,13 @@ public class FileDto
     {
         [nameof(Id).ToSnakeCase()] = new OpenApiString("DzqWK7MRS1H"),
         [nameof(Url).ToSnakeCase()] = new OpenApiString("https://files.social-media.bitiano.com/xww03krwo1e3.jpg"),
-        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
+        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Tools.Utils.GetYesterdayDate()),
     };
     public static OpenApiObject Example1 { get; } = new OpenApiObject
     {
         [nameof(Id).ToSnakeCase()] = PureExample1[nameof(Id).ToSnakeCase()],
         [nameof(Url).ToSnakeCase()] = PureExample1[nameof(Url).ToSnakeCase()],
-        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Utils.GetYesterdayDate()),
+        [nameof(CreationDate).ToSnakeCase()] = new OpenApiDateTime(Tools.Utils.GetYesterdayDate()),
     };
 
     public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>

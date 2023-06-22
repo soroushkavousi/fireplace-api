@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Presentation.Interfaces;
-using FireplaceApi.Application.Models;
+﻿using FireplaceApi.Domain.Configurations;
+using FireplaceApi.Presentation.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;

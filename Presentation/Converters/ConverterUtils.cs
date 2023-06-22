@@ -1,7 +1,4 @@
 ﻿using FireplaceApi.Presentation.Dtos;
-using FireplaceApi.Application.Models;
-using FireplaceApi.Application.Tools;
-using FireplaceApi.Application.ValueObjects;
 using System;
 using System.Linq;
 

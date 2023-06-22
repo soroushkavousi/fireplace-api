@@ -1,6 +1,5 @@
-﻿using FireplaceApi.Presentation.Extensions;
-using FireplaceApi.Application.Exceptions;
-using FireplaceApi.Application.Extensions;
+﻿using FireplaceApi.Domain.Errors;
+using FireplaceApi.Presentation.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;

@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Interfaces;
+﻿using FireplaceApi.Application.Emails;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Threading.Tasks;

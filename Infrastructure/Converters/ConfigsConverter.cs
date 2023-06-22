@@ -1,6 +1,4 @@
-﻿using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Models;
+﻿using FireplaceApi.Domain.Configurations;
 using FireplaceApi.Infrastructure.Entities;
 using FireplaceApi.Infrastructure.ValueObjects;
 

@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Application.Extensions;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using System;
 using System.Diagnostics;

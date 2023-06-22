@@ -25,14 +25,14 @@ public class EmailDto
         [nameof(Id).ToSnakeCase()] = new OpenApiString("TebvzX5eHJN"),
         [nameof(UserId).ToSnakeCase()] = null,
         [nameof(Address).ToSnakeCase()] = new OpenApiString("erenyeager@gmail.com"),
-        [nameof(ActivationStatus).ToSnakeCase()] = new OpenApiString(Application.Enums.ActivationStatus.COMPLETED.ToString()),
+        [nameof(ActivationStatus).ToSnakeCase()] = new OpenApiString(Domain.Emails.ActivationStatus.COMPLETED.ToString()),
     };
     public static OpenApiObject PureExample2 { get; } = new OpenApiObject
     {
         [nameof(Id).ToSnakeCase()] = new OpenApiString("SFhCNah9niG"),
         [nameof(UserId).ToSnakeCase()] = null,
         [nameof(Address).ToSnakeCase()] = new OpenApiString("lelouchlamperouge@gmail.com"),
-        [nameof(ActivationStatus).ToSnakeCase()] = new OpenApiString(Application.Enums.ActivationStatus.SENT.ToString()),
+        [nameof(ActivationStatus).ToSnakeCase()] = new OpenApiString(Domain.Emails.ActivationStatus.SENT.ToString()),
     };
     public static OpenApiArray PureListExample1 { get; } = new OpenApiArray
     {

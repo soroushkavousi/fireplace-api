@@ -1,8 +1,7 @@
-﻿using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.Exceptions;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Interfaces;
-using FireplaceApi.Application.Models;
+﻿using FireplaceApi.Application.Comments;
+using FireplaceApi.Domain.Comments;
+using FireplaceApi.Domain.Configurations;
+using FireplaceApi.Domain.Errors;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +29,7 @@ public class CommentRepository : ICommentRepository
     }
 
     public async Task<List<Comment>> ListPostCommentsAsync(ulong postId,
-        SortType sort, ulong? userId = null)
+        CommentSortType sort, ulong? userId = null)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
         {
@@ -66,7 +65,7 @@ public class CommentRepository : ICommentRepository
         return commentEntities.Select(CommentConverter.ToModel).ToList();
     }
 
-    public async Task<List<Comment>> ListChildCommentAsync(ulong id, SortType sort,
+    public async Task<List<Comment>> ListChildCommentAsync(ulong id, CommentSortType sort,
         ulong? userId = null)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
@@ -98,7 +97,7 @@ public class CommentRepository : ICommentRepository
     }
 
     public async Task<List<Comment>> ListCommentsByIdsAsync(List<ulong> Ids,
-        SortType sort, ulong? userId = null)
+        CommentSortType sort, ulong? userId = null)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT",
             parameters: new
@@ -135,7 +134,7 @@ public class CommentRepository : ICommentRepository
     }
 
     public async Task<List<Comment>> ListSelfCommentsAsync(ulong authorId,
-        SortType sort)
+        CommentSortType sort)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
         {
@@ -280,7 +279,7 @@ public static class CommentRepositoryExtensions
     public static IQueryable<CommentEntity> Include(
         [NotNull] this IQueryable<CommentEntity> q,
         bool authorEntity, bool postEntity, bool childCommentEntities,
-        ulong? userId, SortType? sort)
+        ulong? userId, CommentSortType? sort)
     {
         if (authorEntity)
             q = q.Include(e => e.AuthorEntity);
@@ -295,15 +294,15 @@ public static class CommentRepositoryExtensions
             {
                 switch (sort)
                 {
-                    case SortType.TOP:
+                    case CommentSortType.TOP:
                         z = q.Include(
                             e => e.ChildCommentEntities.OrderByDescending(e => e.Vote));
                         break;
-                    case SortType.NEW:
+                    case CommentSortType.NEW:
                         z = q.Include(
                             e => e.ChildCommentEntities.OrderByDescending(e => e.CreationDate));
                         break;
-                    case SortType.OLD:
+                    case CommentSortType.OLD:
                         z = q.Include(
                             e => e.ChildCommentEntities.OrderBy(e => e.CreationDate));
                         break;
@@ -315,15 +314,15 @@ public static class CommentRepositoryExtensions
                 {
                     switch (sort)
                     {
-                        case SortType.TOP:
+                        case CommentSortType.TOP:
                             z = z.ThenInclude(
                                 e => e.ChildCommentEntities.OrderByDescending(e => e.Vote));
                             break;
-                        case SortType.NEW:
+                        case CommentSortType.NEW:
                             z = z.ThenInclude(
                                 e => e.ChildCommentEntities.OrderByDescending(e => e.CreationDate));
                             break;
-                        case SortType.OLD:
+                        case CommentSortType.OLD:
                             z = z.ThenInclude(
                                 e => e.ChildCommentEntities.OrderBy(e => e.CreationDate));
                             break;
@@ -374,13 +373,13 @@ public static class CommentRepositoryExtensions
     }
 
     public static IQueryable<CommentEntity> Sort(
-        [NotNull] this IQueryable<CommentEntity> q, SortType sort)
+        [NotNull] this IQueryable<CommentEntity> q, CommentSortType sort)
     {
         q = sort switch
         {
-            SortType.TOP => q.OrderByDescending(e => e.Vote),
-            SortType.NEW => q.OrderByDescending(e => e.CreationDate),
-            SortType.OLD => q.OrderBy(e => e.CreationDate),
+            CommentSortType.TOP => q.OrderByDescending(e => e.Vote),
+            CommentSortType.NEW => q.OrderByDescending(e => e.CreationDate),
+            CommentSortType.OLD => q.OrderBy(e => e.CreationDate),
             _ => q.OrderByDescending(e => e.Vote),
         };
 

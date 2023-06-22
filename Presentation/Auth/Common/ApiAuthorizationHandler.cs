@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Application.Exceptions;
+﻿using FireplaceApi.Domain.Errors;
 
 namespace FireplaceApi.Presentation.Auth;
 

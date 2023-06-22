@@ -1,10 +1,8 @@
-﻿using FireplaceApi.Presentation.Dtos;
+﻿using FireplaceApi.Application.Errors;
+using FireplaceApi.Domain.Errors;
+using FireplaceApi.Presentation.Dtos;
 using FireplaceApi.Presentation.Enums;
 using FireplaceApi.Presentation.Extensions;
-using FireplaceApi.Application.Extensions;
-using FireplaceApi.Application.Identifiers;
-using FireplaceApi.Application.Models;
-using FireplaceApi.Application.Operators;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Any;
@@ -40,8 +38,8 @@ public class TypeExampleProvider : ISchemaFilter
     public static async Task<OpenApiObject> FillErrorExample<T>(OpenApiObject errorExample,
         IServiceProvider serviceProvider, ILogger<T> logger)
     {
-        var type = ApplicationErrorType.FromName(errorExample[nameof(ApiExceptionErrorDto.Type).ToSnakeCase()].To<OpenApiString>().Value);
-        var field = ApplicationFieldName.FromName(errorExample[nameof(ApiExceptionErrorDto.Field).ToSnakeCase()].To<OpenApiString>().Value);
+        var type = PresentationErrorType.FromName(errorExample[nameof(ApiExceptionErrorDto.Type).ToSnakeCase()].To<OpenApiString>().Value);
+        var field = PresentationFieldName.FromName(errorExample[nameof(ApiExceptionErrorDto.Field).ToSnakeCase()].To<OpenApiString>().Value);
         var errorIdentifier = ErrorIdentifier.OfTypeAndField(type, field);
         Error error = null;
         using (var scope = serviceProvider.CreateScope())

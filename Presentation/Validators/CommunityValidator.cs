@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Application.Identifiers;
+﻿using FireplaceApi.Domain.Communities;
 using FireplaceApi.Presentation.Enums;
 using FireplaceApi.Presentation.Exceptions;
 
@@ -6,9 +6,9 @@ namespace FireplaceApi.Presentation.Validators;
 
 public class CommunityValidator : ApplicationValidator
 {
-    public Application.Validators.CommunityValidator ApplicationValidator { get; set; }
+    public Application.Communities.CommunityValidator ApplicationValidator { get; set; }
 
-    public CommunityValidator(Application.Validators.CommunityValidator applicationValidator)
+    public CommunityValidator(Application.Communities.CommunityValidator applicationValidator)
     {
         ApplicationValidator = applicationValidator;
     }
@@ -16,7 +16,7 @@ public class CommunityValidator : ApplicationValidator
     public CommunityIdentifier ValidateEncodedIdOrName(string encodedIdOrName)
     {
         CommunityIdentifier identifier;
-        var id = ValidateEncodedIdFormat(encodedIdOrName, ApplicationFieldName.COMMUNITY_ID_OR_NAME, throwException: false);
+        var id = ValidateEncodedIdFormat(encodedIdOrName, PresentationFieldName.COMMUNITY_ID_OR_NAME, throwException: false);
         if (id.HasValue)
         {
             identifier = CommunityIdentifier.OfId(id.Value);

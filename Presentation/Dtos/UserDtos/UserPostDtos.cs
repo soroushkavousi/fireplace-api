@@ -1,6 +1,6 @@
-﻿using FireplaceApi.Application.Attributes;
-using FireplaceApi.Application.Enums;
-using FireplaceApi.Application.ValueObjects;
+﻿using FireplaceApi.Domain.Common;
+using FireplaceApi.Domain.Errors;
+using FireplaceApi.Domain.Users;
 using FireplaceApi.Presentation.Auth;
 using FireplaceApi.Presentation.Extensions;
 using FireplaceApi.Presentation.Interfaces;
@@ -41,7 +41,7 @@ public class SignUpWithEmailInputBodyDto : IValidator
     {
         var presentationValidator = serviceProvider.GetService<UserValidator>();
         var applicationValidator = presentationValidator.ApplicationValidator;
-        var emailValidator = serviceProvider.GetService<Application.Validators.EmailValidator>();
+        var emailValidator = serviceProvider.GetService<Application.Emails.EmailValidator>();
 
         presentationValidator.ValidateFieldIsNotMissing(EmailAddress, FieldName.EMAIL_ADDRESS);
         presentationValidator.ValidateFieldIsNotMissing(Username, FieldName.USERNAME);
@@ -96,7 +96,7 @@ public class LogInWithEmailInputBodyDto : IValidator
     {
         var presentationValidator = serviceProvider.GetService<UserValidator>();
         var applicationValidator = presentationValidator.ApplicationValidator;
-        var emailValidator = serviceProvider.GetService<Application.Validators.EmailValidator>();
+        var emailValidator = serviceProvider.GetService<Application.Emails.EmailValidator>();
 
         presentationValidator.ValidateFieldIsNotMissing(EmailAddress, FieldName.EMAIL_ADDRESS);
         presentationValidator.ValidateFieldIsNotMissing(Password, FieldName.PASSWORD);
@@ -218,7 +218,7 @@ public class SendResetPasswordCodeInputBodyDto : IValidator
     {
         var presentationValidator = serviceProvider.GetService<UserValidator>();
         var applicationValidator = presentationValidator.ApplicationValidator;
-        var emailValidator = serviceProvider.GetService<Application.Validators.EmailValidator>();
+        var emailValidator = serviceProvider.GetService<Application.Emails.EmailValidator>();
 
         presentationValidator.ValidateFieldIsNotMissing(EmailAddress, FieldName.EMAIL_ADDRESS);
         emailValidator.ValidateEmailAddressFormat(EmailAddress);
@@ -250,7 +250,7 @@ public class ResetPasswordWithCodeInputBodyDto : IValidator
     {
         var presentationValidator = serviceProvider.GetService<UserValidator>();
         var applicationValidator = presentationValidator.ApplicationValidator;
-        var emailValidator = serviceProvider.GetService<Application.Validators.EmailValidator>();
+        var emailValidator = serviceProvider.GetService<Application.Emails.EmailValidator>();
 
         presentationValidator.ValidateFieldIsNotMissing(EmailAddress, FieldName.EMAIL_ADDRESS);
         presentationValidator.ValidateFieldIsNotMissing(ResetPasswordCode, FieldName.RESET_PASSWORD_CODE);
