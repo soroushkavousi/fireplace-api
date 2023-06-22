@@ -1,6 +1,6 @@
-﻿using FireplaceApi.Application.Dtos;
-using FireplaceApi.Domain.Enums;
-using FireplaceApi.Domain.Extensions;
+﻿using FireplaceApi.Presentation.Dtos;
+using FireplaceApi.Application.Enums;
+using FireplaceApi.Application.Extensions;
 using FireplaceApi.IntegrationTests.Extensions;
 using FireplaceApi.IntegrationTests.Models;
 using Microsoft.AspNetCore.WebUtilities;

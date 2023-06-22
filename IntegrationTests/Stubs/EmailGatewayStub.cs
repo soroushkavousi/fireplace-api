@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Domain.Extensions;
-using FireplaceApi.Domain.Interfaces;
+﻿using FireplaceApi.Application.Extensions;
+using FireplaceApi.Application.Interfaces;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Threading.Tasks;

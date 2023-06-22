@@ -1,9 +1,9 @@
-﻿using FireplaceApi.Domain.Exceptions;
-using FireplaceApi.Domain.Extensions;
-using FireplaceApi.Domain.Identifiers;
-using FireplaceApi.Domain.Interfaces;
-using FireplaceApi.Domain.Models;
-using FireplaceApi.Domain.ValueObjects;
+﻿using FireplaceApi.Application.Exceptions;
+using FireplaceApi.Application.Extensions;
+using FireplaceApi.Application.Identifiers;
+using FireplaceApi.Application.Interfaces;
+using FireplaceApi.Application.Models;
+using FireplaceApi.Application.ValueObjects;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;

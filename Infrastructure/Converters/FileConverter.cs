@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Domain.Models;
+﻿using FireplaceApi.Application.Models;
 using FireplaceApi.Infrastructure.Entities;
 using System;
 

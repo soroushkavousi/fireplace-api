@@ -1,10 +1,10 @@
-﻿using FireplaceApi.Domain.Enums;
-using FireplaceApi.Domain.Extensions;
-using FireplaceApi.Domain.Identifiers;
-using FireplaceApi.Domain.Interfaces;
-using FireplaceApi.Domain.Models;
-using FireplaceApi.Domain.Operators;
-using FireplaceApi.Domain.ValueObjects;
+﻿using FireplaceApi.Application.Enums;
+using FireplaceApi.Application.Extensions;
+using FireplaceApi.Application.Identifiers;
+using FireplaceApi.Application.Interfaces;
+using FireplaceApi.Application.Models;
+using FireplaceApi.Application.Operators;
+using FireplaceApi.Application.ValueObjects;
 using FireplaceApi.Infrastructure.Entities;
 using FireplaceApi.IntegrationTests.Extensions;
 using FireplaceApi.IntegrationTests.Models;
@@ -138,7 +138,7 @@ public class ClientPool
     {
         var httpClient = _apiFactory.CreateClient(_clientOptions);
         var defaultRequestHeaders = httpClient.DefaultRequestHeaders;
-        defaultRequestHeaders.Add(Application.Tools.Constants.X_FORWARDED_FOR, @"::1");
+        defaultRequestHeaders.Add(Presentation.Tools.Constants.X_FORWARDED_FOR, @"::1");
         return httpClient;
     }
 }

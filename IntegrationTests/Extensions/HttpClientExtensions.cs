@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Application.Auth;
-using FireplaceApi.Application.Tools;
+﻿using FireplaceApi.Presentation.Auth;
+using FireplaceApi.Presentation.Tools;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;

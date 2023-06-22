@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Presentation\FireplaceApi.Presentation.csproj" />
     <ProjectReference Include="..\Application\FireplaceApi.Application.csproj" />
-    <ProjectReference Include="..\Domain\FireplaceApi.Domain.csproj" />
     <ProjectReference Include="..\Infrastructure\FireplaceApi.Infrastructure.csproj" />
   </ItemGroup>
 

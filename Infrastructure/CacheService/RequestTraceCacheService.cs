@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Domain.Interfaces;
-using FireplaceApi.Domain.ValueObjects;
+﻿using FireplaceApi.Application.Interfaces;
+using FireplaceApi.Application.ValueObjects;
 using FireplaceApi.Infrastructure.Gateways;
 using System;
 using System.Net;

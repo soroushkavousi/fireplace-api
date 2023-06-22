@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Domain.Enums;
+﻿using FireplaceApi.Application.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;

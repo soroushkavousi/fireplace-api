@@ -1,43 +1,41 @@
 ﻿using FireplaceApi.Application.Enums;
-using FireplaceApi.Domain.Enums;
-using FireplaceApi.Domain.Exceptions;
 
 namespace FireplaceApi.Application.Exceptions;
 
-public class CommunitySortIncorrectValueException : ApiException
+public class PasswordIncorrectValueException : ApiException
 {
-    public CommunitySortIncorrectValueException(string sortString)
+    public PasswordIncorrectValueException(string passwordHash)
         : base(
             errorType: ErrorType.INCORRECT_VALUE,
-            errorField: ApplicationFieldName.COMMUNITY_SORT,
-            errorServerMessage: "The community sort is not correct!",
-            parameters: new { sortString },
+            errorField: FieldName.PASSWORD,
+            errorServerMessage: "The password is not correct!",
+            parameters: new { passwordHash },
             systemException: null
         )
     { }
 }
 
-public class SortIncorrectValueException : ApiException
+public class ResetPasswordCodeIncorrectValueException : ApiException
 {
-    public SortIncorrectValueException(string sortString)
+    public ResetPasswordCodeIncorrectValueException(string resetPasswordCode)
         : base(
             errorType: ErrorType.INCORRECT_VALUE,
-            errorField: ApplicationFieldName.SORT,
-            errorServerMessage: "The sort is not correct!",
-            parameters: new { sortString },
+            errorField: FieldName.RESET_PASSWORD_CODE,
+            errorServerMessage: "The reset password code is not correct!",
+            parameters: new { resetPasswordCode },
             systemException: null
         )
     { }
 }
 
-public class RequestContentTypeIncorrectValueException : ApiException
+public class ActivationCodeIncorrectValueException : ApiException
 {
-    public RequestContentTypeIncorrectValueException(string requestContentType)
+    public ActivationCodeIncorrectValueException(int activationCode)
         : base(
             errorType: ErrorType.INCORRECT_VALUE,
-            errorField: ApplicationFieldName.REQUEST_CONTENT_TYPE,
-            errorServerMessage: "The request content type is not correct!",
-            parameters: new { requestContentType },
+            errorField: FieldName.ACTIVATION_CODE,
+            errorServerMessage: "The activation code is not correct!",
+            parameters: new { activationCode },
             systemException: null
         )
     { }

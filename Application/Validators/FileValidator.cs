@@ -1,11 +1,23 @@
-﻿namespace FireplaceApi.Application.Validators;
+﻿using FireplaceApi.Application.Operators;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
-public class FileValidator : ApplicationValidator
+namespace FireplaceApi.Application.Validators;
+
+public class FileValidator
 {
-    public Domain.Validators.FileValidator DomainValidator { get; set; }
+    private readonly ILogger<FileValidator> _logger;
+    private readonly FileOperator _fileOperator;
 
-    public FileValidator(Domain.Validators.FileValidator domainValidator)
+    public FileValidator(ILogger<FileValidator> logger, FileOperator fileOperator)
     {
-        DomainValidator = domainValidator;
+        _logger = logger;
+        _fileOperator = fileOperator;
+    }
+
+    public async Task ValidatePostFileInputParametersAsync(ulong userId, IFormFile file)
+    {
+        await Task.CompletedTask;
     }
 }

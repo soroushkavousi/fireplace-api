@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Domain.Extensions;
+﻿using FireplaceApi.Application.Extensions;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using System;

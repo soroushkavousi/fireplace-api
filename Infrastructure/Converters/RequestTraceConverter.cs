@@ -1,5 +1,5 @@
-﻿using FireplaceApi.Domain.Enums;
-using FireplaceApi.Domain.Models;
+﻿using FireplaceApi.Application.Enums;
+using FireplaceApi.Application.Models;
 using FireplaceApi.Infrastructure.Entities;
 using FireplaceApi.Infrastructure.Enums;
 using System.Net;

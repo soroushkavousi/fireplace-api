@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FireplaceApi.Application", "Application\FireplaceApi.Application.csproj", "{649E3826-9954-4DB6-A65B-B7797CE4A886}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FireplaceApi.Presentation", "Presentation\FireplaceApi.Presentation.csproj", "{649E3826-9954-4DB6-A65B-B7797CE4A886}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FireplaceApi.Domain", "Domain\FireplaceApi.Domain.csproj", "{A7369CD4-3E5D-4C1E-982F-D6D28C5D50DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FireplaceApi.Application", "Application\FireplaceApi.Application.csproj", "{A7369CD4-3E5D-4C1E-982F-D6D28C5D50DC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FireplaceApi.Infrastructure", "Infrastructure\FireplaceApi.Infrastructure.csproj", "{D48C0072-3959-44CD-8039-F973E1D8D24D}"
 EndProject
@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Guides", "Guides", "{2B8681
 		Guides\db-initial-data.txt = Guides\db-initial-data.txt
 		Guides\id-generation-and-encoding.md = Guides\id-generation-and-encoding.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FireplaceApi.Domain", "Domain\FireplaceApi.Domain.csproj", "{650A8809-ABFE-46DD-81E2-89FF66CA6605}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +50,10 @@ Global
 		{1F51795D-E4C4-487B-85C9-83ADA3ABC892}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F51795D-E4C4-487B-85C9-83ADA3ABC892}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F51795D-E4C4-487B-85C9-83ADA3ABC892}.Release|Any CPU.Build.0 = Release|Any CPU
+		{650A8809-ABFE-46DD-81E2-89FF66CA6605}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{650A8809-ABFE-46DD-81E2-89FF66CA6605}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{650A8809-ABFE-46DD-81E2-89FF66CA6605}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{650A8809-ABFE-46DD-81E2-89FF66CA6605}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

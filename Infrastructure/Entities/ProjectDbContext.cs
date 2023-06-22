@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Domain.Extensions;
+﻿using FireplaceApi.Application.Extensions;
 using FireplaceApi.Infrastructure.Tools;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

@@ -1,31 +1,50 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using FireplaceApi.Application.Extensions;
+using System;
+using System.IO;
 
 namespace FireplaceApi.Application.Tools;
 
 public static class Utils
 {
-    public static string ContentRootPath
+    private static readonly Random _random = new();
+
+    public static T CreateInstance<T>() => (T)Activator.CreateInstance(typeof(T), true);
+
+    public static string GenerateRandomString(int length, bool uppercase = false, bool special = false)
     {
-        get
+        var chars = @"abcdefghijklmnopqrstuvwxyz0123456789";
+        if (uppercase)
+            chars += @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        if (special)
+            chars += @"!@#$%^&";
+        chars = chars.Shuffle();
+        var randomString = "";
+        for (int i = 0; i < length; i++)
+            randomString += chars[_random.Next(chars.Length)];
+        return randomString;
+    }
+
+    public static int GenerateRandomNumber(int min, int max)
+    {
+        return _random.Next(min, max + 1);
+    }
+
+    public static ulong GenerateRandomUlongNumber(ulong min, ulong max)
+    {
+        ulong uRange = (max - min);
+        ulong ulongRand;
+        do
         {
-            var rootDirectory = AppContext.BaseDirectory;
-            if (rootDirectory.Contains("bin"))
-            {
-                rootDirectory = rootDirectory[..rootDirectory.IndexOf("bin")];
-            }
-            return rootDirectory;
-        }
+            byte[] buf = new byte[8];
+            _random.NextBytes(buf);
+            ulongRand = BitConverter.ToUInt64(buf, 0);
+        } while (ulongRand > ulong.MaxValue - ((ulong.MaxValue % uRange) + 1) % uRange);
+
+        return (ulongRand % uRange) + min;
     }
 
-    public static bool IsOsWindows()
+    public static void CreateParentDirectoriesOfFileIfNotExists(string filePath)
     {
-        return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        Directory.CreateDirectory(Directory.GetParent(filePath).FullName);
     }
-
-    public static DateTimeOffset GetYesterdayDate()
-        => DateTimeOffset.UtcNow.Subtract(new TimeSpan(1, 0, 0, 0));
-
-    public static DateTimeOffset GetLastHourDate()
-        => DateTimeOffset.UtcNow.Subtract(new TimeSpan(0, 1, 0, 0));
 }

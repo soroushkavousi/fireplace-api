@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Domain.Attributes;
+﻿using FireplaceApi.Application.Attributes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
