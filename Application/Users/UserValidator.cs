@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Application.Emails;
-using FireplaceApi.Application.Errors;
 using FireplaceApi.Domain.Emails;
 using FireplaceApi.Domain.Errors;
 using FireplaceApi.Domain.Users;
@@ -44,8 +43,9 @@ public class UserValidator : ApplicationValidator
     }
 
     public async Task ValidateSignUpWithEmailInputParametersAsync(IPAddress ipAddress,
-        string emailAddress, string username, Password password)
+        string emailAddress, Username username, Password password)
     {
+        if (username == null) throw new UsernameMissingFieldException();
         var emailValidator = _serviceProvider.GetService<EmailValidator>();
         await ValidateUserIdentifierDoesNotExistAsync(UserIdentifier.OfUsername(username));
         await emailValidator.ValidateEmailIdentifierDoesNotExistAsync(EmailIdentifier.OfAddress(emailAddress));
@@ -59,8 +59,9 @@ public class UserValidator : ApplicationValidator
     }
 
     public async Task ValidateLogInWithUsernameInputParametersAsync(IPAddress ipAddress,
-        string username, Password password)
+        Username username, Password password)
     {
+        if (username == null) throw new UsernameMissingFieldException();
         await ValidateUsernameMatchWithPasswordAsync(username, password);
     }
 
@@ -107,7 +108,7 @@ public class UserValidator : ApplicationValidator
     }
 
     public async Task ValidatePatchUserInputParametersAsync(ulong userId, string displayName,
-        string about, string avatarUrl, string bannerUrl, string username)
+        string about, string avatarUrl, string bannerUrl, Username username)
     {
         if (username != null)
         {
@@ -166,35 +167,6 @@ public class UserValidator : ApplicationValidator
         return false;
     }
 
-    public bool ValidateUsernameFormat(string username, bool throwException = true)
-    {
-        if (Regexes.UsernameMinLength.IsMatch(username) == false)
-            return throwException ? throw new UsernameInvalidFormatException(username,
-                "The username doesn't have the minimum length!") : false;
-
-        if (Regexes.UsernameMaxLength.IsMatch(username) == false)
-            return throwException ? throw new UsernameInvalidFormatException(username,
-                "The username exceeds the maximum length!") : false;
-
-        if (Regexes.UsernameStart.IsMatch(username) == false)
-            return throwException ? throw new UsernameInvalidFormatException(username,
-                "The username has wrong starts!") : false;
-
-        if (Regexes.UsernameEnd.IsMatch(username) == false)
-            return throwException ? throw new UsernameInvalidFormatException(username,
-                "The username has wrong end!") : false;
-
-        if (Regexes.UsernameSafeConsecutives.IsMatch(username) == false)
-            return throwException ? throw new UsernameInvalidFormatException(username,
-                "The username has invalid consecutive!") : false;
-
-        if (Regexes.UsernameValidCharacters.IsMatch(username) == false)
-            return throwException ? throw new UsernameInvalidFormatException(username,
-                "The username has invalid characters!") : false;
-
-        return true;
-    }
-
     public Password ValidatePasswordFormat(string passwordValue, FieldName field = null)
     {
         if (field == null)
@@ -239,7 +211,7 @@ public class UserValidator : ApplicationValidator
         return null;
     }
 
-    public async Task ValidateUsernameMatchWithPasswordAsync(string username, Password password)
+    public async Task ValidateUsernameMatchWithPasswordAsync(Username username, Password password)
     {
         var user = await _userOperator.GetUserByIdentifierAsync(UserIdentifier.OfUsername(username));
         if (user == null)

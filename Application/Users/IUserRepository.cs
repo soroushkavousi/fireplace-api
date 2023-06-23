@@ -12,13 +12,13 @@ public interface IUserRepository
     public Task<User> GetUserByIdentifierAsync(UserIdentifier identifier,
         bool includeEmail = false, bool includeGoogleUser = false,
         bool includeSessions = false);
-    public Task<string> GetUsernameByIdAsync(ulong id);
-    public Task<ulong> GetIdByUsernameAsync(string username);
-    public Task<User> CreateUserAsync(ulong id, string username, UserState state,
+    public Task<Username> GetUsernameByIdAsync(ulong id);
+    public Task<ulong> GetIdByUsernameAsync(Username username);
+    public Task<User> CreateUserAsync(ulong id, Username username, UserState state,
         List<UserRole> roles, Password password = null, string displayName = null,
         string about = null, string avatarUrl = null, string bannerUrl = null);
     public Task<User> UpdateUserAsync(User user);
-    public Task UpdateUsernameAsync(ulong id, string newUsername);
+    public Task UpdateUsernameAsync(ulong id, Username newUsername);
     public Task DeleteUserByIdentifierAsync(UserIdentifier identifier);
     public Task<bool> DoesUserIdentifierExistAsync(UserIdentifier identifier);
 }

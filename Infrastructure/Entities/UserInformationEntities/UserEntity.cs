@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FireplaceApi.Domain.Users;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,7 +12,7 @@ namespace FireplaceApi.Infrastructure.Entities;
 public class UserEntity : BaseEntity
 {
     [Required]
-    public string Username { get; set; }
+    public Username Username { get; set; }
     [Required]
     public string State { get; set; }
     public List<string> Roles { get; set; }
@@ -32,7 +34,7 @@ public class UserEntity : BaseEntity
 
     private UserEntity() : base() { }
 
-    public UserEntity(ulong id, string username, string state, List<string> roles,
+    public UserEntity(ulong id, Username username, string state, List<string> roles,
         DateTime? creationDate = null, string displayName = null, string about = null,
         string avatarUrl = null, string bannerUrl = null, DateTime? modifiedDate = null,
         string passwordHash = null, string resetPasswordCode = null, EmailEntity emailEntity = null,
@@ -74,6 +76,9 @@ public class UserEntity : BaseEntity
     //    SessionEntities?.ForEach(
     //            sessionEntity => sessionEntity?.PureCopy());
     //}
+
+    public static readonly ValueConverter<Username, string> UsernameConverter
+        = new(valueObject => valueObject.Value, value => new(value));
 }
 
 public class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
@@ -84,5 +89,8 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
 
         modelBuilder.DoBaseConfiguration();
 
+        modelBuilder
+            .Property(e => e.Username)
+            .HasConversion(UserEntity.UsernameConverter);
     }
 }

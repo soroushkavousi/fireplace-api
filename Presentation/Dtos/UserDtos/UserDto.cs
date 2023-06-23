@@ -17,7 +17,7 @@ public class UserDto
     [Required]
     public string Id { get; set; }
     [Required]
-    public string Username { get; set; }
+    public Username Username { get; set; }
     [Required]
     public string State { get; set; }
     [JsonIgnore]
@@ -118,7 +118,7 @@ public class UserDto
 
     }
 
-    public UserDto(string id, string username, string state,
+    public UserDto(string id, Username username, string state,
         List<UserRole> roles, DateTime creationDate, string displayName,
         string about, string avatarUrl, string bannerUrl,
         EmailDto email = null, List<SessionDto> sessions = null)

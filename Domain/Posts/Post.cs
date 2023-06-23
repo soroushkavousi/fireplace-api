@@ -8,7 +8,7 @@ namespace FireplaceApi.Domain.Posts;
 public class Post : BaseModel
 {
     public ulong AuthorId { get; set; }
-    public string AuthorUsername { get; set; }
+    public Username AuthorUsername { get; set; }
     public ulong CommunityId { get; set; }
     public string CommunityName { get; set; }
     public int Vote { get; set; }
@@ -18,7 +18,7 @@ public class Post : BaseModel
     public Community Community { get; set; }
     public QueryResult<Comment> Comments { get; set; }
 
-    public Post(ulong id, ulong authorId, string authorUsername,
+    public Post(ulong id, ulong authorId, Username authorUsername,
         ulong communityId, string communityName, int vote, VoteType requestingUserVote,
         string content, DateTime creationDate, DateTime? modifiedDate = null,
         User author = null, Community community = null,

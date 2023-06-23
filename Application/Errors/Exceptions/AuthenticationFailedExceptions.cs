@@ -1,10 +1,11 @@
 ﻿using FireplaceApi.Domain.Errors;
+using FireplaceApi.Domain.Users;
 
 namespace FireplaceApi.Application.Errors;
 
 public class UsernameAndPasswordAuthenticationFailedException : ApiException
 {
-    public UsernameAndPasswordAuthenticationFailedException(string username, string passwordHash)
+    public UsernameAndPasswordAuthenticationFailedException(Username username, string passwordHash)
         : base(
             errorType: ApplicationErrorType.AUTHENTICATION_FAILED,
             errorField: FieldName.USERNAME_AND_PASSWORD,

@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Domain.Common;
+﻿using FireplaceApi.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -17,7 +17,7 @@ public class PostEntity : BaseEntity
 {
     public ulong AuthorEntityId { get; set; }
     [Required]
-    public string AuthorEntityUsername { get; set; }
+    public Username AuthorEntityUsername { get; set; }
     public ulong CommunityEntityId { get; set; }
     [Required]
     public string CommunityEntityName { get; set; }
@@ -33,7 +33,7 @@ public class PostEntity : BaseEntity
 
     private PostEntity() : base() { }
 
-    public PostEntity(ulong id, ulong authorEntityId, string authorEntityUsername,
+    public PostEntity(ulong id, ulong authorEntityId, Username authorEntityUsername,
         ulong communityEntityId, string communityEntityName, string content,
         int vote = 0, VoteType requestingUserVote = VoteType.NEUTRAL,
         DateTime? creationDate = null, DateTime? modifiedDate = null,

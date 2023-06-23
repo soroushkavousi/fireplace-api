@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Presentation.Controllers;
+﻿using FireplaceApi.Domain.Users;
+using FireplaceApi.Presentation.Controllers;
 using FireplaceApi.Presentation.Extensions;
 using FireplaceApi.Presentation.Tools;
 using Microsoft.OpenApi.Any;
@@ -13,7 +14,7 @@ namespace FireplaceApi.Presentation.Dtos;
 public class ProfileDto
 {
     [Required]
-    public string Username { get; set; }
+    public Username Username { get; set; }
     [Required]
     public DateTime CreationDate { get; set; }
     public string DisplayName { get; set; }
@@ -79,7 +80,7 @@ public class ProfileDto
 
     }
 
-    public ProfileDto(string username, DateTime creationDate,
+    public ProfileDto(Username username, DateTime creationDate,
         string displayName, string about, string avatarUrl, string bannerUrl)
     {
         Username = username;

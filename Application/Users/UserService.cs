@@ -28,7 +28,7 @@ public class UserService
     }
 
     public async Task<User> SignUpWithEmailAsync(IPAddress ipAddress, string emailAddress,
-        string username, Password password)
+        Username username, Password password)
     {
         await _userValidator.ValidateSignUpWithEmailInputParametersAsync(ipAddress,
             emailAddress, username, password);
@@ -48,7 +48,7 @@ public class UserService
         return user;
     }
 
-    public async Task<User> LogInWithUsernameAsync(IPAddress ipAddress, string username, Password password)
+    public async Task<User> LogInWithUsernameAsync(IPAddress ipAddress, Username username, Password password)
     {
         await _userValidator.ValidateLogInWithUsernameInputParametersAsync(ipAddress, username, password);
         var user = await _userOperator.LogInWithUsernameAsync(ipAddress, username, password);
@@ -96,7 +96,7 @@ public class UserService
     }
 
     public async Task<User> PatchRequestingUserAsync(ulong userId, string displayName,
-        string about, string avatarUrl, string bannerUrl, string username)
+        string about, string avatarUrl, string bannerUrl, Username username)
     {
         await _userValidator.ValidatePatchUserInputParametersAsync(userId, displayName,
             about, avatarUrl, bannerUrl, username);

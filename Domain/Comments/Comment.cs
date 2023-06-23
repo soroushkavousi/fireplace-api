@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Domain.Common;
-using FireplaceApi.Domain.Posts;
+﻿using FireplaceApi.Domain.Posts;
 using FireplaceApi.Domain.Users;
 
 namespace FireplaceApi.Domain.Comments;
@@ -7,7 +6,7 @@ namespace FireplaceApi.Domain.Comments;
 public class Comment : BaseModel
 {
     public ulong AuthorId { get; set; }
-    public string AuthorUsername { get; set; }
+    public Username AuthorUsername { get; set; }
     public ulong PostId { get; set; }
     public ulong? ParentCommentId { get; set; }
     public int Vote { get; set; }
@@ -19,7 +18,7 @@ public class Comment : BaseModel
     public List<Comment> ChildComments { get; set; }
     public List<ulong> MoreChildCommentIds { get; set; }
 
-    public Comment(ulong id, ulong authorId, string authorUsername,
+    public Comment(ulong id, ulong authorId, Username authorUsername,
         ulong postId, int vote, VoteType requestingUserVote, string content,
         DateTime creationDate, ulong? parentCommentId = null,
         DateTime? modifiedDate = null, User author = null,

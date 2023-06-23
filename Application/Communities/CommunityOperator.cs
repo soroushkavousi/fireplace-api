@@ -80,7 +80,7 @@ public class CommunityOperator
     }
 
     public async Task<Community> CreateCommunityAsync(ulong userId, string name,
-        string username = null)
+        Username username = null)
     {
         var id = await IdGenerator.GenerateNewIdAsync(
             id => DoesCommunityIdentifierExistAsync(CommunityIdentifier.OfId(id)));

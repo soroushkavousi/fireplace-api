@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Domain.Common;
-using FireplaceApi.Domain.Errors;
+﻿using FireplaceApi.Domain.Errors;
 using FireplaceApi.Domain.Users;
 using FireplaceApi.Presentation.Auth;
 using FireplaceApi.Presentation.Extensions;
@@ -13,6 +12,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Text.Json.Serialization;
 
 namespace FireplaceApi.Presentation.Dtos;
 
@@ -22,12 +22,12 @@ public class SignUpWithEmailInputBodyDto : IValidator
     [Required]
     public string EmailAddress { get; set; }
     [Required]
-    public string Username { get; set; }
+    public Username Username { get; set; }
     [Required]
     [Sensitive]
     public string Password { get; set; }
 
-    [BindNever]
+    [BindNever, JsonIgnore]
     public Password PasswordValueObject { get; set; }
 
     public static IOpenApiAny Example { get; } = new OpenApiObject
@@ -44,9 +44,7 @@ public class SignUpWithEmailInputBodyDto : IValidator
         var emailValidator = serviceProvider.GetService<Application.Emails.EmailValidator>();
 
         presentationValidator.ValidateFieldIsNotMissing(EmailAddress, FieldName.EMAIL_ADDRESS);
-        presentationValidator.ValidateFieldIsNotMissing(Username, FieldName.USERNAME);
         presentationValidator.ValidateFieldIsNotMissing(Password, FieldName.PASSWORD);
-        applicationValidator.ValidateUsernameFormat(Username);
         emailValidator.ValidateEmailAddressFormat(EmailAddress);
         PasswordValueObject = applicationValidator.ValidatePasswordFormat(Password);
     }
@@ -131,12 +129,12 @@ public class LogInWithEmailOutputCookieDto : IOutputCookieDto
 public class LogInWithUsernameInputBodyDto : IValidator
 {
     [Required]
-    public string Username { get; set; }
+    public Username Username { get; set; }
     [Required]
     [Sensitive]
     public string Password { get; set; }
 
-    [BindNever]
+    [BindNever, JsonIgnore]
     public Password PasswordValueObject { get; set; }
 
     public static IOpenApiAny Example { get; } = new OpenApiObject
@@ -150,9 +148,7 @@ public class LogInWithUsernameInputBodyDto : IValidator
         var presentationValidator = serviceProvider.GetService<UserValidator>();
         var applicationValidator = presentationValidator.ApplicationValidator;
 
-        presentationValidator.ValidateFieldIsNotMissing(Username, FieldName.USERNAME);
         presentationValidator.ValidateFieldIsNotMissing(Password, FieldName.PASSWORD);
-        applicationValidator.ValidateUsernameFormat(Username);
         PasswordValueObject = applicationValidator.ValidatePasswordFormat(Password);
     }
 }

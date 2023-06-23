@@ -2,14 +2,14 @@
 
 public class Profile
 {
-    public string Username { get; set; }
+    public Username Username { get; set; }
     public string DisplayName { get; set; }
     public string About { get; set; }
     public string AvatarUrl { get; set; }
     public string BannerUrl { get; set; }
     public DateTime CreationDate { get; set; }
 
-    public Profile(string username, string displayName, string about,
+    public Profile(Username username, string displayName, string about,
         string avatarUrl, string bannerUrl, DateTime creationDate)
     {
         Username = username ?? throw new ArgumentNullException(nameof(username));

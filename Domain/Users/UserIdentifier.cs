@@ -8,7 +8,7 @@ public abstract class UserIdentifier : Identifier
     public static UserIdIdentifier OfId(ulong id)
         => new(id);
 
-    public static UserUsernameIdentifier OfUsername(string username)
+    public static UserUsernameIdentifier OfUsername(Username username)
         => new(username);
 }
 
@@ -26,9 +26,9 @@ public class UserIdIdentifier : UserIdentifier, IIdIdentifier
 public class UserUsernameIdentifier : UserIdentifier
 {
     public override FieldName TargetField => FieldName.USERNAME;
-    public string Username { get; set; }
+    public Username Username { get; set; }
 
-    internal UserUsernameIdentifier(string username)
+    internal UserUsernameIdentifier(Username username)
     {
         Username = username;
     }

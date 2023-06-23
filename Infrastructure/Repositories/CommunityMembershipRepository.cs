@@ -82,7 +82,7 @@ public class CommunityMembershipRepository : ICommunityMembershipRepository
     }
 
     public async Task<CommunityMembership> CreateCommunityMembershipAsync(ulong id,
-        ulong userId, string username, ulong communityId, string communityName)
+        ulong userId, Username username, ulong communityId, string communityName)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT",
             parameters: new { id, userId, username, communityId, communityName });

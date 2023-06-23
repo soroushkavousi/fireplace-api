@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json.Serialization;
 using System.Text.Json;
 
-namespace FireplaceApi.Presentation.Tools;
+namespace FireplaceApi.Application.Common;
 
 public class SnakeCaseNamingPolicy : JsonNamingPolicy
 {

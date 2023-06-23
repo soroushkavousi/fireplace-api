@@ -61,7 +61,8 @@ public class UserRepository : IUserRepository
                 includeSessions
             });
         var sw = Stopwatch.StartNew();
-        var userEntity = await _userEntities
+        var userEntity =
+            await _userEntities
             .AsNoTracking()
             .Search(
                 identifier: identifier
@@ -70,15 +71,14 @@ public class UserRepository : IUserRepository
                 emailEntity: includeEmail,
                 googleUserEntity: includeGoogleUser,
                 sessionEntities: includeSessions
-            )
-            .SingleOrDefaultAsync();
+            ).SingleOrDefaultAsync();
 
         _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { userEntity });
         return userEntity.ToModel();
     }
 
-    public async Task<string> GetUsernameByIdAsync(ulong id)
+    public async Task<Username> GetUsernameByIdAsync(ulong id)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
         var sw = Stopwatch.StartNew();
@@ -92,7 +92,7 @@ public class UserRepository : IUserRepository
         return username;
     }
 
-    public async Task<ulong> GetIdByUsernameAsync(string username)
+    public async Task<ulong> GetIdByUsernameAsync(Username username)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { username });
         var sw = Stopwatch.StartNew();
@@ -106,7 +106,7 @@ public class UserRepository : IUserRepository
         return userId;
     }
 
-    public async Task<User> CreateUserAsync(ulong id, string username,
+    public async Task<User> CreateUserAsync(ulong id, Username username,
         UserState state, List<UserRole> roles, Password password = null,
         string displayName = null, string about = null, string avatarUrl = null,
         string bannerUrl = null)
@@ -159,7 +159,7 @@ public class UserRepository : IUserRepository
         return userEntity.ToModel();
     }
 
-    public async Task UpdateUsernameAsync(ulong id, string newUsername)
+    public async Task UpdateUsernameAsync(ulong id, Username newUsername)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id, newUsername });
         var sw = Stopwatch.StartNew();
@@ -167,7 +167,7 @@ public class UserRepository : IUserRepository
         try
         {
             rowAffectedCount = await _dbContext.Database.ExecuteSqlInterpolatedAsync(
-                $"CALL public.\"UpdateUsername\"({id}, {newUsername});");
+                $"CALL public.\"UpdateUsername\"({id}, {newUsername.Value});");
             _dbContext.DetachAllEntries();
         }
         catch (DbUpdateConcurrencyException ex)

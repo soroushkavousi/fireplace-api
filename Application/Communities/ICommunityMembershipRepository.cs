@@ -14,7 +14,7 @@ public interface ICommunityMembershipRepository
         CommunityMembershipIdentifier identifier, bool includeUser = false,
         bool includeCommunity = false);
     public Task<CommunityMembership> CreateCommunityMembershipAsync(ulong id,
-        ulong userId, string username, ulong communityId, string communityName);
+        ulong userId, Username username, ulong communityId, string communityName);
     public Task<CommunityMembership> UpdateCommunityMembershipAsync(
         CommunityMembership communityMembership);
     public Task DeleteCommunityMembershipByIdentifierAsync(CommunityMembershipIdentifier identifier);

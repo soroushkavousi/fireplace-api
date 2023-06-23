@@ -1,6 +1,5 @@
 ﻿using FireplaceApi.Application.Emails;
 using FireplaceApi.Application.Users;
-using FireplaceApi.Domain.Configurations;
 using FireplaceApi.Domain.Emails;
 using FireplaceApi.Domain.Users;
 using FireplaceApi.Infrastructure.Entities;
@@ -55,7 +54,7 @@ public class ClientPool
 
     public async Task<TestUser> CreateNotVerifiedUserAsync()
         => await CreateTestUser(
-            username: "NotVerifiedUser",
+            username: new Username("NotVerifiedUser"),
             displayName: "NotVerified User",
             passwordValue: "NotVerifiedUserPassword111!",
             emailAddress: "NotVerifiedUser@gmail.com",
@@ -65,7 +64,7 @@ public class ClientPool
 
     public async Task<TestUser> CreateNarutoUserAsync()
         => await CreateTestUser(
-            username: "Naruto",
+            username: new Username("Naruto"),
             displayName: "Naruto Uzumaki",
             passwordValue: "NarutoPassword222@",
             emailAddress: "Naruto@gmail.com",
@@ -75,7 +74,7 @@ public class ClientPool
 
     public async Task<TestUser> CreateSasukeUserAsync()
         => await CreateTestUser(
-            username: "Sasuke",
+            username: new Username("Sasuke"),
             displayName: "Sasuke Uchiha",
             passwordValue: "SasukePassword333#",
             emailAddress: "Sasuke@gmail.com",
@@ -83,7 +82,7 @@ public class ClientPool
             roles: new List<UserRole> { UserRole.USER }
             );
 
-    private async Task<TestUser> CreateTestUser(string username,
+    private async Task<TestUser> CreateTestUser(Username username,
         string displayName, string passwordValue, string emailAddress,
         UserState state, List<UserRole> roles)
     {

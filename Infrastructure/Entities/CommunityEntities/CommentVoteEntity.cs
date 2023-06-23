@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FireplaceApi.Domain.Users;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -12,7 +13,7 @@ public class CommentVoteEntity : BaseEntity
 {
     public ulong VoterEntityId { get; set; }
     [Required]
-    public string VoterEntityUsername { get; set; }
+    public Username VoterEntityUsername { get; set; }
     public ulong CommentEntityId { get; set; }
     public bool IsUp { get; set; }
     public UserEntity VoterEntity { get; set; }
@@ -20,7 +21,7 @@ public class CommentVoteEntity : BaseEntity
 
     private CommentVoteEntity() : base() { }
 
-    public CommentVoteEntity(ulong id, ulong voterEntityId, string voterEntityUsername,
+    public CommentVoteEntity(ulong id, ulong voterEntityId, Username voterEntityUsername,
         ulong commentEntityId, bool isUp, DateTime? creationDate = null,
         DateTime? modifiedDate = null, UserEntity voterEntity = null,
         CommentEntity commentEntity = null) : base(id, creationDate, modifiedDate)

@@ -98,7 +98,7 @@ public class UserNotExistException : ApiException
 
 public class UsernameNotExistException : ApiException
 {
-    public UsernameNotExistException(string username)
+    public UsernameNotExistException(Username username)
         : base(
             errorType: ApplicationErrorType.NOT_EXIST_OR_ACCESS_DENIED,
             errorField: FieldName.USERNAME,

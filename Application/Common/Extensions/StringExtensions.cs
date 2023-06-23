@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -10,25 +9,6 @@ namespace FireplaceApi.Application.Common;
 
 public static class StringExtensions
 {
-    private static readonly JsonSerializerSettings _jsonSerializerSettings;
-
-    static StringExtensions()
-    {
-        _jsonSerializerSettings = new JsonSerializerSettings
-        {
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            ContractResolver = CoreContractResolver.Instance,
-            //NullValueHandling = NullValueHandling.Ignore,
-        };
-    }
-
-    public static T FromJson<T>(this string json)
-    {
-        if (json == null)
-            return default;
-        return JsonConvert.DeserializeObject<T>(json, _jsonSerializerSettings);
-    }
-
     public static string FirstCharToUpper(this string str) =>
         str switch
         {
@@ -98,14 +78,6 @@ public static class StringExtensions
             isEmailAddress = false;
         }
         return isEmailAddress;
-    }
-
-    public static bool IsUsername(this string value)
-    {
-        bool isUsername;
-        var match = Regexes.Username.Match(value);
-        isUsername = match.Success;
-        return isUsername;
     }
 
     public static string RemoveLineBreaks(this string str)

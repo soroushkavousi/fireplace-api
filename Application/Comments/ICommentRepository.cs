@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Domain.Comments;
+using FireplaceApi.Domain.Users;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ public interface ICommentRepository
         bool includeAuthor = false, bool includePost = false,
         ulong? userId = null);
     public Task<Comment> CreateCommentAsync(ulong id,
-        ulong authorUserId, string authorUsername, ulong postId,
+        ulong authorUserId, Username authorUsername, ulong postId,
         string content, ulong? parentCommentId = null);
     public Task<Comment> UpdateCommentAsync(Comment comment);
     public Task DeleteCommentByIdAsync(ulong id);

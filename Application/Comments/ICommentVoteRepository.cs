@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Domain.Comments;
+using FireplaceApi.Domain.Users;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ public interface ICommentVoteRepository
     public Task<CommentVote> GetCommentVoteAsync(ulong voterId,
         ulong commentId, bool includeVoter = false, bool includeComment = false);
     public Task<CommentVote> CreateCommentVoteAsync(ulong id, ulong voterUserId,
-        string voterUsername, ulong commentId, bool isUp);
+        Username voterUsername, ulong commentId, bool isUp);
     public Task<CommentVote> UpdateCommentVoteAsync(
         CommentVote commentVote);
     public Task DeleteCommentVoteByIdAsync(ulong id);

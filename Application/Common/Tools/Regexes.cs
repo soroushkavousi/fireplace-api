@@ -14,13 +14,7 @@ public static partial class Regexes
     public static Regex PasswordANumber { get; } = PasswordANumberRegex();
     public static Regex MobileNumber { get; } = MobileNumberRegex();
     public static Regex EmailAddress { get; } = EmailAddressRegex();
-    public static Regex Username { get; } = UsernameRegex();
-    public static Regex UsernameMinLength { get; } = UsernameMinLengthRegex();
-    public static Regex UsernameMaxLength { get; } = UsernameMaxLengthRegex();
-    public static Regex UsernameStart { get; } = UsernameStartRegex();
-    public static Regex UsernameEnd { get; } = UsernameEndRegex();
-    public static Regex UsernameSafeConsecutives { get; } = UsernameSafeConsecutivesRegex();
-    public static Regex UsernameValidCharacters { get; } = UsernameValidCharactersRegex();
+
     public static Regex AuthorizationHeaderValue { get; } = AuthorizationHeaderValueRegex();
     public static Regex AccessTokenValue { get; } = AccessTokenValueRegex();
     public static Regex TextWithWhitespace { get; } = TextWithWhitespaceRegex();
@@ -58,26 +52,7 @@ public static partial class Regexes
     [GeneratedRegex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")]
     private static partial Regex EmailAddressRegex();
 
-    [GeneratedRegex("^(?=.{6,25}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$")]
-    private static partial Regex UsernameRegex();
 
-    [GeneratedRegex("^.{6,}$")]
-    private static partial Regex UsernameMinLengthRegex();
-
-    [GeneratedRegex("^.{0,30}$")]
-    private static partial Regex UsernameMaxLengthRegex();
-
-    [GeneratedRegex("^(?![_]).*$")]
-    private static partial Regex UsernameStartRegex();
-
-    [GeneratedRegex("^.*(?<![_])$")]
-    private static partial Regex UsernameEndRegex();
-
-    [GeneratedRegex("^(?!.*[_]{2}).*$")]
-    private static partial Regex UsernameSafeConsecutivesRegex();
-
-    [GeneratedRegex("^[a-zA-Z0-9_]+$")]
-    private static partial Regex UsernameValidCharactersRegex();
 
     [GeneratedRegex("Bearer\\s+(.+)", RegexOptions.IgnoreCase, "en-US")]
     private static partial Regex AuthorizationHeaderValueRegex();

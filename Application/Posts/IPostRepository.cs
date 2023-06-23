@@ -1,5 +1,6 @@
 ﻿using FireplaceApi.Domain.Communities;
 using FireplaceApi.Domain.Posts;
+using FireplaceApi.Domain.Users;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -15,7 +16,7 @@ public interface IPostRepository
     public Task<Post> GetPostByIdAsync(ulong id, bool includeAuthor = false,
         bool includeCommunity = false, ulong? userId = null);
     public Task<Post> CreatePostAsync(ulong id, ulong authorUserId,
-        string authorUsername, ulong communityId,
+        Username authorUsername, ulong communityId,
         string communityName, string content);
     public Task<Post> UpdatePostAsync(Post post);
     public Task DeletePostByIdAsync(ulong id);

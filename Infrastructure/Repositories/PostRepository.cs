@@ -1,8 +1,8 @@
 ﻿using FireplaceApi.Application.Posts;
 using FireplaceApi.Domain.Communities;
-using FireplaceApi.Domain.Configurations;
 using FireplaceApi.Domain.Errors;
 using FireplaceApi.Domain.Posts;
+using FireplaceApi.Domain.Users;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -193,7 +193,7 @@ public class PostRepository : IPostRepository
     }
 
     public async Task<Post> CreatePostAsync(ulong id, ulong authorUserId,
-        string authorUsername, ulong communityId, string communityName,
+        Username authorUsername, ulong communityId, string communityName,
         string content)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new

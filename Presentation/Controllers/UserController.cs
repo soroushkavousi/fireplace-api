@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Application.Users;
-using FireplaceApi.Domain.Configurations;
 using FireplaceApi.Domain.Users;
 using FireplaceApi.Presentation.Auth;
 using FireplaceApi.Presentation.Converters;

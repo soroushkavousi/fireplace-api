@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Domain.Communities;
+using FireplaceApi.Domain.Users;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,7 +14,7 @@ public interface ICommunityRepository
     public Task<string> GetNameByIdAsync(ulong id);
     public Task<ulong> GetIdByNameAsync(string name);
     public Task<Community> CreateCommunityAsync(ulong id, string name,
-        ulong creatorId, string creatorUsername);
+        ulong creatorId, Username creatorUsername);
     public Task<Community> UpdateCommunityAsync(Community community);
     public Task UpdateCommunityNameAsync(ulong id, string newCommunityName);
     public Task DeleteCommunityByIdentifierAsync(CommunityIdentifier identifier);

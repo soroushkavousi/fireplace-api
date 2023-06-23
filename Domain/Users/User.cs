@@ -7,7 +7,7 @@ namespace FireplaceApi.Domain.Users;
 
 public class User : BaseModel
 {
-    public string Username { get; set; }
+    public Username Username { get; set; }
     public UserState State { get; set; }
     public List<UserRole> Roles { get; set; }
     public string DisplayName { get; set; }
@@ -20,7 +20,7 @@ public class User : BaseModel
     public GoogleUser GoogleUser { get; set; }
     public List<Session> Sessions { get; set; }
 
-    public User(ulong id, string username, UserState state, List<UserRole> roles,
+    public User(ulong id, Username username, UserState state, List<UserRole> roles,
         string displayName, string about, string avatarUrl, string bannerUrl,
         DateTime creationDate, DateTime? modifiedDate = null, Password password = null,
         string resetPasswordCode = null, Email email = null, GoogleUser googleUser = null,

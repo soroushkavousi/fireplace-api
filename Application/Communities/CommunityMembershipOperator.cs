@@ -50,7 +50,7 @@ public class CommunityMembershipOperator
     }
 
     public async Task<CommunityMembership> CreateCommunityMembershipAsync(ulong userId,
-        CommunityIdentifier communityIdentifier, string username = null)
+        CommunityIdentifier communityIdentifier, Username username = null)
     {
         ulong communityId = default;
         string communityName = default;

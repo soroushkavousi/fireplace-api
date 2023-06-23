@@ -47,12 +47,12 @@ public class CommentContentInvalidException : ApiException
 
 public class UsernameInvalidFormatException : ApiException
 {
-    public UsernameInvalidFormatException(string username, string serverMessage)
+    public UsernameInvalidFormatException(string usernameValue, string serverMessage)
         : base(
             errorType: ErrorType.INVALID_FORMAT,
             errorField: FieldName.USERNAME,
             errorServerMessage: serverMessage,
-            parameters: new { username },
+            parameters: new { usernameValue },
             systemException: null
         )
     { }

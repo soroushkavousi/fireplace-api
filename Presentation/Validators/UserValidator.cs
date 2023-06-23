@@ -23,11 +23,13 @@ public class UserValidator : ApplicationValidator
             return identifier;
         }
 
-        if (ApplicationValidator.ValidateUsernameFormat(encodedIdOrUsername, throwException: false))
+        try
         {
-            identifier = UserIdentifier.OfUsername(encodedIdOrUsername);
+            var username = new Username(encodedIdOrUsername);
+            identifier = UserIdentifier.OfUsername(username);
             return identifier;
         }
+        catch { }
 
         throw new UserEncodedIdOrUsernameInvalidFormatException(encodedIdOrUsername);
     }

@@ -1,7 +1,7 @@
 ﻿using FireplaceApi.Application.Communities;
 using FireplaceApi.Domain.Communities;
-using FireplaceApi.Domain.Configurations;
 using FireplaceApi.Domain.Errors;
+using FireplaceApi.Domain.Users;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -114,7 +114,7 @@ public class CommunityRepository : ICommunityRepository
     }
 
     public async Task<Community> CreateCommunityAsync(ulong id, string name,
-        ulong creatorId, string creatorUsername)
+        ulong creatorId, Username creatorUsername)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT",
             parameters: new { id, name, creatorId, creatorUsername });

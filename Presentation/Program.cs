@@ -5,6 +5,7 @@ using FireplaceApi.Presentation.Dtos;
 using FireplaceApi.Presentation.Extensions;
 using FireplaceApi.Presentation.Middlewares;
 using FireplaceApi.Presentation.Tools;
+using FireplaceApi.Presentation.Tools.Swagger;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,7 +28,6 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
 using System.IO;
 using System.Reflection;
-using System.Text.Json.Serialization;
 
 var program = new Program();
 program.Start(args);
@@ -116,8 +116,7 @@ public partial class Program
             options.Filters.Add<ActionInputValidatorAttribute>();
         }).AddJsonOptions(options =>
         {
-            options.JsonSerializerOptions.PropertyNamingPolicy = SnakeCaseNamingPolicy.Instance;
-            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            options.JsonSerializerOptions.AddApplicationOptions();
         });
 
         // Add ulong support
@@ -150,6 +149,7 @@ public partial class Program
             options.OperationFilter<SwaggerEnumDescriptionProvider>();
             options.DocumentFilter<CustomModelDocumentFilter<ApiExceptionErrorDto>>();
             options.DocumentFilter<OrderDocumentFilter>();
+            options.AddValueObjectMappers();
 
             // Enable xml
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

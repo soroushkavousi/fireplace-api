@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Domain.Common;
-using FireplaceApi.Domain.Errors;
+﻿using FireplaceApi.Domain.Errors;
 using FireplaceApi.Domain.Users;
 using FireplaceApi.Presentation.Extensions;
 using FireplaceApi.Presentation.Interfaces;
@@ -20,7 +19,7 @@ public class PatchUserInputBodyDto : IValidator
     public string About { get; set; }
     public string AvatarUrl { get; set; }
     public string BannerUrl { get; set; }
-    public string Username { get; set; }
+    public Username Username { get; set; }
 
     public static IOpenApiAny Example { get; } = new OpenApiObject
     {
@@ -48,9 +47,6 @@ public class PatchUserInputBodyDto : IValidator
 
         if (BannerUrl != null)
             applicationValidator.ValidateUrlStringFormat(BannerUrl, FieldName.BANNER_URL);
-
-        if (Username != null)
-            applicationValidator.ValidateUsernameFormat(Username);
     }
 }
 

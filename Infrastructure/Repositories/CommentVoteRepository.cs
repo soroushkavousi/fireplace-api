@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Application.Comments;
 using FireplaceApi.Domain.Comments;
 using FireplaceApi.Domain.Errors;
+using FireplaceApi.Domain.Users;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -95,7 +96,7 @@ public class CommentVoteRepository : ICommentVoteRepository
     }
 
     public async Task<CommentVote> CreateCommentVoteAsync(ulong id, ulong voterUserId,
-        string voterUsername, ulong commentId, bool isUp)
+        Username voterUsername, ulong commentId, bool isUp)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
         {

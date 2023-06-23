@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Application.Posts;
 using FireplaceApi.Application.Users;
 using FireplaceApi.Domain.Comments;
+using FireplaceApi.Domain.Users;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,7 +84,7 @@ public class CommentOperator
     }
 
     public async Task<Comment> ReplyToPostAsync(ulong userId,
-        ulong postId, string content, string username = null)
+        ulong postId, string content, Username username = null)
     {
         var id = await IdGenerator.GenerateNewIdAsync(DoesCommentIdExistAsync);
         username ??= await _userOperator.GetUsernameByIdAsync(userId);
@@ -93,7 +94,7 @@ public class CommentOperator
     }
 
     public async Task<Comment> ReplyToCommentAsync(ulong userId,
-        ulong commentId, string content, string username = null,
+        ulong commentId, string content, Username username = null,
         ulong? postId = null)
     {
         if (postId == null)
@@ -110,7 +111,7 @@ public class CommentOperator
     }
 
     public async Task<Comment> VoteCommentAsync(ulong userId,
-        ulong id, bool isUp, string username = null)
+        ulong id, bool isUp, Username username = null)
     {
         var commentVoteId = await IdGenerator.GenerateNewIdAsync(
             DoesCommentVoteIdExistAsync);

@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Domain.Posts;
+using FireplaceApi.Domain.Users;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ public interface IPostVoteRepository
     public Task<PostVote> GetPostVoteAsync(ulong voterId,
         ulong postId, bool includeVoter = false, bool includePost = false);
     public Task<PostVote> CreatePostVoteAsync(ulong id, ulong voterUserId,
-        string voterUsername, ulong postId, bool isUp);
+        Username voterUsername, ulong postId, bool isUp);
     public Task<PostVote> UpdatePostVoteAsync(
         PostVote postVote);
     public Task DeletePostVoteByIdAsync(ulong id);

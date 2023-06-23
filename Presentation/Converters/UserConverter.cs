@@ -21,8 +21,9 @@ public static class UserConverter
             sessionDtos = user.Sessions.Select(
                 session => session.PureCopy().ToDto()).ToList();
 
-        var userDto = new UserDto(user.Id.IdEncode(), user.Username, user.State.ToString(),
-            user.Roles, user.CreationDate, user.DisplayName, user.About, user.AvatarUrl,
+        var userDto = new UserDto(user.Id.IdEncode(), user.Username,
+            user.State.ToString(), user.Roles, user.CreationDate,
+            user.DisplayName, user.About, user.AvatarUrl,
             user.BannerUrl, emailDto, sessionDtos);
 
         return userDto;

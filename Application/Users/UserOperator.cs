@@ -141,7 +141,7 @@ public class UserOperator
     }
 
     public async Task<User> SignUpWithEmailAsync(IPAddress ipAddress, string emailAddress,
-        string username, Password password)
+        Username username, Password password)
     {
         var user = await CreateUserAsync(username, password);
 
@@ -170,7 +170,7 @@ public class UserOperator
         return user;
     }
 
-    public async Task<User> LogInWithUsernameAsync(IPAddress ipAddress, string username, Password password)
+    public async Task<User> LogInWithUsernameAsync(IPAddress ipAddress, Username username, Password password)
     {
         var user = await GetUserByIdentifierAsync(UserIdentifier.OfUsername(username), false, false);
 
@@ -222,19 +222,19 @@ public class UserOperator
         return user;
     }
 
-    public async Task<string> GetUsernameByIdAsync(ulong id)
+    public async Task<Username> GetUsernameByIdAsync(ulong id)
     {
         var username = await _userRepository.GetUsernameByIdAsync(id);
         return username;
     }
 
-    public async Task<ulong> GetIdByUsernameAsync(string username)
+    public async Task<ulong> GetIdByUsernameAsync(Username username)
     {
         var userId = await _userRepository.GetIdByUsernameAsync(username);
         return userId;
     }
 
-    public async Task<User> CreateUserAsync(string username, Password password = null,
+    public async Task<User> CreateUserAsync(Username username, Password password = null,
         UserState state = UserState.NOT_VERIFIED, List<UserRole> roles = null,
         string displayName = null, string about = null, string avatarUrl = null,
         string bannerUrl = null)
@@ -273,7 +273,7 @@ public class UserOperator
 
     public async Task<User> PatchUserByIdentifierAsync(UserIdentifier userIdentifier,
         string displayName = null, string about = null, string avatarUrl = null,
-        string bannerUrl = null, string username = null, UserState? state = null)
+        string bannerUrl = null, Username username = null, UserState? state = null)
     {
         var user = await _userRepository.GetUserByIdentifierAsync(userIdentifier, true);
         user = await ApplyUserChanges(user, displayName, about, avatarUrl, bannerUrl,
@@ -300,14 +300,14 @@ public class UserOperator
         return userIdExists;
     }
 
-    public async Task<string> GenerateNewUsername()
+    public async Task<Username> GenerateNewUsername()
     {
         int randomNumber;
-        string newUsername;
+        Username newUsername;
         do
         {
             randomNumber = Utils.GenerateRandomNumber(1000000, 9999999);
-            newUsername = $"user{randomNumber}";
+            newUsername = new Username($"user{randomNumber}");
         }
         while (await DoesUserIdentifierExistAsync(UserIdentifier.OfUsername(newUsername)));
         return newUsername;
@@ -320,7 +320,7 @@ public class UserOperator
 
     public async Task<User> ApplyUserChanges(User user, string displayName = null,
         string about = null, string avatarUrl = null, string bannerUrl = null,
-        string username = null, UserState? state = null, string resetPasswordCode = null,
+        Username username = null, UserState? state = null, string resetPasswordCode = null,
         List<UserRole> roles = null)
     {
         var foundAnyChange = false;

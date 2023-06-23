@@ -6,13 +6,13 @@ namespace FireplaceApi.Domain.Posts;
 public class PostVote : BaseModel
 {
     public ulong VoterId { get; set; }
-    public string VoterUsername { get; set; }
+    public Username VoterUsername { get; set; }
     public ulong PostId { get; set; }
     public bool IsUp { get; set; }
     public User Voter { get; set; }
     public Post Post { get; set; }
 
-    public PostVote(ulong id, ulong voterId, string voterUsername,
+    public PostVote(ulong id, ulong voterId, Username voterUsername,
         ulong postId, bool isUp, DateTime creationDate,
         DateTime? modifiedDate = null, User voter = null,
         Post post = null) : base(id, creationDate, modifiedDate)

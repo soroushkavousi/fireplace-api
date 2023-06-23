@@ -1,6 +1,7 @@
 ﻿using FireplaceApi.Application.Posts;
 using FireplaceApi.Domain.Errors;
 using FireplaceApi.Domain.Posts;
+using FireplaceApi.Domain.Users;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -94,7 +95,7 @@ public class PostVoteRepository : IPostVoteRepository
     }
 
     public async Task<PostVote> CreatePostVoteAsync(ulong id, ulong voterUserId,
-        string voterUsername, ulong postId, bool isUp)
+        Username voterUsername, ulong postId, bool isUp)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
         {

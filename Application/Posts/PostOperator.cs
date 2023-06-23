@@ -2,6 +2,7 @@
 using FireplaceApi.Application.Users;
 using FireplaceApi.Domain.Communities;
 using FireplaceApi.Domain.Posts;
+using FireplaceApi.Domain.Users;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -104,25 +105,23 @@ public class PostOperator
 
     public async Task<Post> CreatePostAsync(ulong userId,
         ulong communityId, string communityName, string content,
-        string username = null)
+        Username username = null)
     {
         var id = await IdGenerator.GenerateNewIdAsync(DoesPostIdExistAsync);
         username ??= await _userOperator.GetUsernameByIdAsync(userId);
         var post = await _postRepository.CreatePostAsync(
-            id, userId, username,
-            communityId, communityName, content);
+            id, userId, username, communityId, communityName, content);
         return post;
     }
 
     public async Task<Post> VotePostAsync(ulong userId,
-        ulong id, bool isUp, string username = null)
+        ulong id, bool isUp, Username username = null)
     {
         var postVoteId = await IdGenerator.GenerateNewIdAsync(
             DoesPostVoteIdExistAsync);
         username ??= await _userOperator.GetUsernameByIdAsync(userId);
         var postVote = await _postVoteRepository.CreatePostVoteAsync(
-            postVoteId, userId, username,
-            id, isUp);
+            postVoteId, userId, username, id, isUp);
         var voteChange = postVote.IsUp ? +1 : -1;
         var post = await PatchPostByIdAsync(userId,
             id, null, voteChange: voteChange);

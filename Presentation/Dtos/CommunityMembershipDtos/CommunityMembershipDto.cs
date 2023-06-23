@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Presentation.Controllers;
+﻿using FireplaceApi.Domain.Users;
+using FireplaceApi.Presentation.Controllers;
 using FireplaceApi.Presentation.Extensions;
 using FireplaceApi.Presentation.Tools;
 using Microsoft.OpenApi.Any;
@@ -17,7 +18,7 @@ public class CommunityMembershipDto
     [Required]
     public string UserId { get; set; }
     [Required]
-    public string Username { get; set; }
+    public Username Username { get; set; }
     [Required]
     public string CommunityId { get; set; }
     [Required]
@@ -90,7 +91,7 @@ public class CommunityMembershipDto
 
     }
 
-    public CommunityMembershipDto(string id, string userId, string username,
+    public CommunityMembershipDto(string id, string userId, Username username,
         string communityId, string communityName, DateTime creationDate)
     {
         Id = id;

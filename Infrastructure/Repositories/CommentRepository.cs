@@ -1,7 +1,7 @@
 ﻿using FireplaceApi.Application.Comments;
 using FireplaceApi.Domain.Comments;
-using FireplaceApi.Domain.Configurations;
 using FireplaceApi.Domain.Errors;
+using FireplaceApi.Domain.Users;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -200,7 +200,7 @@ public class CommentRepository : ICommentRepository
     }
 
     public async Task<Comment> CreateCommentAsync(ulong id, ulong authorUserId,
-        string authorUsername, ulong postId, string content,
+        Username authorUsername, ulong postId, string content,
         ulong? parentCommentId = null)
     {
         _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
