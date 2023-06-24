@@ -1,5 +1,5 @@
 ﻿using FireplaceApi.Presentation.Extensions;
-using FireplaceApi.Presentation.Tools;
+using FireplaceApi.Presentation.Swagger;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;

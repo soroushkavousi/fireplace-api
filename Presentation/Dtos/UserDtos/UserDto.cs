@@ -1,7 +1,7 @@
 ﻿using FireplaceApi.Domain.Users;
 using FireplaceApi.Presentation.Controllers;
 using FireplaceApi.Presentation.Extensions;
-using FireplaceApi.Presentation.Tools;
+using FireplaceApi.Presentation.Swagger;
 using Microsoft.OpenApi.Any;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;

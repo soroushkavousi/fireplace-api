@@ -3,6 +3,7 @@ using FireplaceApi.Domain.Errors;
 using FireplaceApi.Infrastructure.Entities;
 using FireplaceApi.Infrastructure.Extensions;
 using FireplaceApi.IntegrationTests.Stubs;
+using FireplaceApi.Presentation;
 using FireplaceApi.Presentation.Tools;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;

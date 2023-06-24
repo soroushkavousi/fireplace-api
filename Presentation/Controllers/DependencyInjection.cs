@@ -20,5 +20,14 @@ public static class DependencyInjection
             // Config serializers
             options.JsonSerializerOptions.AddApplicationOptions();
         });
+
+        // Make url lowercase
+        services.AddRouting(options => options.LowercaseUrls = true);
+
+        // Add ulong support
+        services.AddRouting(options =>
+        {
+            options.ConstraintMap.Add(UlongRouteConstraint.Name, typeof(UlongRouteConstraint));
+        });
     }
 }

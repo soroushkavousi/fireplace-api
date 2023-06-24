@@ -1,7 +1,7 @@
 ﻿using FireplaceApi.Domain.Comments;
 using FireplaceApi.Domain.Errors;
 using FireplaceApi.Presentation.Interfaces;
-using FireplaceApi.Presentation.Tools;
+using FireplaceApi.Presentation.Swagger;
 using FireplaceApi.Presentation.Validators;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;

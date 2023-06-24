@@ -3,6 +3,7 @@ using FireplaceApi.Infrastructure;
 using FireplaceApi.Presentation;
 using FireplaceApi.Presentation.Auth;
 using FireplaceApi.Presentation.Middlewares;
+using FireplaceApi.Presentation.Swagger;
 using FireplaceApi.Presentation.Tools;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,25 +19,27 @@ program.Start(args);
 
 public partial class Program
 {
+    private Logger _logger;
+
     void Start(string[] args)
     {
-        ProjectInitializer.Start();
-        var logger = ProjectInitializer.Logger;
+        FireplaceApi.Presentation.ProjectInitializer.Start();
+        _logger = LogManager.GetCurrentClassLogger();
         try
         {
-            logger.Trace("Starting api...");
+            _logger.Trace("Starting api...");
             var builder = CreateBuilder(args);
             var app = CreateApp(builder);
             app.Run();
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "Stopped program because of exception!");
+            _logger.Error(ex, "Stopped program because of exception!");
             throw;
         }
         finally
         {
-            logger.Trace("Flushing logger...");
+            _logger.Trace("Flushing logger...");
             LogManager.Shutdown();
         }
     }

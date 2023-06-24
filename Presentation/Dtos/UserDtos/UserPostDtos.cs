@@ -3,7 +3,7 @@ using FireplaceApi.Domain.Users;
 using FireplaceApi.Presentation.Auth;
 using FireplaceApi.Presentation.Extensions;
 using FireplaceApi.Presentation.Interfaces;
-using FireplaceApi.Presentation.Tools;
+using FireplaceApi.Presentation.Swagger;
 using FireplaceApi.Presentation.Validators;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;

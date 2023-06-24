@@ -1,5 +1,7 @@
 ﻿using FireplaceApi.Presentation.Auth;
-using FireplaceApi.Presentation.Tools;
+using FireplaceApi.Presentation.GraphQL;
+using FireplaceApi.Presentation.HostedServices;
+using FireplaceApi.Presentation.Swagger;
 using FireplaceApi.Presentation.Validators;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,21 +27,6 @@ public static class DependencyInjection
     {
         // Give access to HttpContext
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-        // Make url lowercase
-        services.AddRouting(options => options.LowercaseUrls = true);
-
-        // Add ulong support
-        services.AddRouting(options =>
-        {
-            options.ConstraintMap.Add(UlongRouteConstraint.Name, typeof(UlongRouteConstraint));
-        });
-    }
-
-    private static void AddHostedServices(this IServiceCollection services)
-    {
-        // Add a hosted service to check the API readiness
-        services.AddHostedService<ReadinessCheckerService>();
     }
 
     private static void AddVersioning(this IServiceCollection services)

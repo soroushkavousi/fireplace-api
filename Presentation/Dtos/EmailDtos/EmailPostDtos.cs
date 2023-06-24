@@ -1,7 +1,7 @@
 ﻿using FireplaceApi.Domain.Errors;
 using FireplaceApi.Presentation.Extensions;
 using FireplaceApi.Presentation.Interfaces;
-using FireplaceApi.Presentation.Tools;
+using FireplaceApi.Presentation.Swagger;
 using FireplaceApi.Presentation.Validators;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Any;

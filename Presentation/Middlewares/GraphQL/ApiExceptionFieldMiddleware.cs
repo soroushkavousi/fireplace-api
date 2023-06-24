@@ -1,5 +1,5 @@
 ﻿using FireplaceApi.Application.Errors;
-using FireplaceApi.Presentation.Tools;
+using FireplaceApi.Presentation.GraphQL;
 using HotChocolate;
 using HotChocolate.Resolvers;
 using Microsoft.Extensions.Logging;

@@ -5,27 +5,21 @@ namespace FireplaceApi.Presentation.Tools;
 
 public class EnvironmentVariable
 {
-    public string Key { get; set; }
-    public string Value { get; set; }
-    public string Default { get; set; }
-    public bool IsProvided { get; set; }
+    public string Key { get; private set; }
+    public string Value { get; private set; }
+    public string Default { get; private set; }
 
     public EnvironmentVariable(string key, string @default)
     {
         Key = key;
         Default = @default;
-
-        IsProvided = TryReadValue();
-        if (IsProvided)
-            return;
-
-        Value = Default;
+        ReadValue();
     }
 
     public static EnvironmentVariable EnvironmentName { get; } = new
     (
         key: "FIREPLACE_API_ASPNETCORE_ENVIRONMENT",
-        @default: "Development"
+        @default: "Production"
     );
 
     public static EnvironmentVariable LogDirectory { get; } = new
@@ -37,23 +31,23 @@ public class EnvironmentVariable
     public static EnvironmentVariable ConnectionString { get; } = new
     (
         key: "FIREPLACE_API_CONNECTION_STRING",
-        @default: ""
+        @default: null
     );
 
-    private bool TryReadValue()
+    private void ReadValue()
     {
         Value = Environment.GetEnvironmentVariable(Key, EnvironmentVariableTarget.Process);
         if (!string.IsNullOrWhiteSpace(Value))
-            return true;
+            return;
 
         Value = Environment.GetEnvironmentVariable(Key, EnvironmentVariableTarget.Machine);
         if (!string.IsNullOrWhiteSpace(Value))
-            return true;
+            return;
 
         Value = Environment.GetEnvironmentVariable(Key, EnvironmentVariableTarget.User);
         if (!string.IsNullOrWhiteSpace(Value))
-            return true;
+            return;
 
-        return false;
+        Value = Default;
     }
 }

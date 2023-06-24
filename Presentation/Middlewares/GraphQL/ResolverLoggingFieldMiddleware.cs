@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Presentation.Tools;
+﻿using FireplaceApi.Presentation.GraphQL;
 using HotChocolate.Resolvers;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
