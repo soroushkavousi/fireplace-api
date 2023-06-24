@@ -1,14 +1,15 @@
-﻿using FireplaceApi.Domain.Configurations;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace FireplaceApi.Presentation.Auth;
 
-public static class AntiforgeryExtensions
+public static class AntiforgeryDependencyInjection
 {
-    public static IServiceCollection AddApiAntiforgery(this IServiceCollection services)
+    public static void AddApiAntiforgery(this IServiceCollection services)
     {
+        services.AddScoped<IAuthorizationHandler, AntiforgeryAuthorizationHandler>();
         services.AddAntiforgery(options =>
         {
             options.Cookie = new CookieBuilder
@@ -20,7 +21,5 @@ public static class AntiforgeryExtensions
             options.HeaderName = AntiforgeryConstants.CsrfTokenKey;
             options.Cookie.Name = AntiforgeryConstants.CsrfTokenKey;
         });
-
-        return services;
     }
 }

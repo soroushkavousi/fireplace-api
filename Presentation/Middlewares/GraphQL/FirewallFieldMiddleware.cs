@@ -1,5 +1,5 @@
 ﻿using FireplaceApi.Domain.Users;
-using FireplaceApi.Presentation.Extensions;
+using FireplaceApi.Presentation.Tools;
 using HotChocolate.Resolvers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

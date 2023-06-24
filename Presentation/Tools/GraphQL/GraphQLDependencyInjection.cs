@@ -1,15 +1,22 @@
 ﻿using FireplaceApi.Presentation.Middlewares;
 using FireplaceApi.Presentation.Resolvers;
 using HotChocolate.Execution.Configuration;
-using HotChocolate.Resolvers;
-using HotChocolate.Types;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace FireplaceApi.Presentation.Extensions;
+namespace FireplaceApi.Presentation.Tools;
 
-public static class GraphQLExtensions
+public static class GraphQLDependencyInjection
 {
+    public static void AddGraphQL(this IServiceCollection services)
+    {
+        services
+            .AddGraphQLServer()
+            .UseGraphQLPipeline()
+            .AddGraphQLResolvers()
+            .AddHttpRequestInterceptor<RequestingUserGlobalState>();
+    }
+
     public static IRequestExecutorBuilder UseGraphQLPipeline(
         this IRequestExecutorBuilder builder)
     {
@@ -53,16 +60,5 @@ public static class GraphQLExtensions
             .AddTypeExtension<CommunityMutationResolvers>();
 
         return builder;
-    }
-
-    public static ObjectField GetField(this IMiddlewareContext context)
-        => (ObjectField)context.GetType().GetProperty("Field").GetValue(context, null);
-
-    public static bool IsApiResolver(this IMiddlewareContext context)
-    {
-        var field = context.GetField();
-        if (field.ResolverMember.MemberType == System.Reflection.MemberTypes.Method)
-            return true;
-        return false;
     }
 }

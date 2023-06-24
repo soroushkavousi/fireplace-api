@@ -1,4 +1,5 @@
-﻿using FireplaceApi.Presentation.Extensions;
+﻿using FireplaceApi.Application.Errors;
+using FireplaceApi.Presentation.Tools;
 using HotChocolate;
 using HotChocolate.Resolvers;
 using Microsoft.Extensions.Logging;
@@ -6,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using FireplaceApi.Application.Errors;
 
 namespace FireplaceApi.Presentation.Middlewares;
 

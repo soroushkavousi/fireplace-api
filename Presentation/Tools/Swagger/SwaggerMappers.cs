@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace FireplaceApi.Presentation.Tools.Swagger;
+namespace FireplaceApi.Presentation.Tools;
 
 public static class SwaggerMappers
 {
