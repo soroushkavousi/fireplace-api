@@ -1,7 +1,5 @@
-﻿using FireplaceApi.Domain.Configurations;
-using FireplaceApi.Domain.Files;
+﻿using FireplaceApi.Domain.Files;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,14 +9,14 @@ namespace FireplaceApi.Application.Files;
 
 public class FileOperator
 {
-    private readonly ILogger<FileOperator> _logger;
+    private readonly IServerLogger<FileOperator> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly IFileRepository _fileRepository;
     private readonly IFileGateway _fileGateway;
     private readonly Uri _baseUri;
     private readonly string _basePhysicalPath;
 
-    public FileOperator(ILogger<FileOperator> logger,
+    public FileOperator(IServerLogger<FileOperator> logger,
         IServiceProvider serviceProvider, IFileRepository fileRepository,
         IFileGateway fileGateway)
     {
@@ -54,11 +52,10 @@ public class FileOperator
         var relativePath = name;
         var uri = new Uri(_baseUri, relativePath);
         var physicalPath = System.IO.Path.GetFullPath(relativePath, _basePhysicalPath);
-        var id = await IdGenerator.GenerateNewIdAsync(DoesFileIdExistAsync);
-        var file = await _fileRepository.CreateFileAsync(id, name, realName,
+        var file = await _fileRepository.CreateFileAsync(name, realName,
             uri, physicalPath);
         await _fileGateway.CreateFileAsync(formFile, physicalPath);
-        _logger.LogAppInformation($"New uploaded file: {file.ToJson()}", sw);
+        _logger.LogServerInformation(message: "New uploaded file created.", sw, parameters: new { file });
 
         file = await GetFileByIdAsync(file.Id);
         return file;
@@ -89,7 +86,6 @@ public class FileOperator
         var fileIdExists = await _fileRepository.DoesFileNameExistAsync(name);
         return fileIdExists;
     }
-
 
     public async Task<File> ApplyFileChangesAsync(File file, string name = null,
         string realName = null, Uri uri = null, string physicalPath = null)

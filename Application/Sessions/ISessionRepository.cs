@@ -12,7 +12,7 @@ public interface ISessionRepository
     public Task<Session> GetSessionByIdAsync(ulong id, bool includeUser = false);
     public Task<Session> FindSessionAsync(ulong userId, IPAddress IpAddress,
         bool includeTracking = false, bool includeUser = false);
-    public Task<Session> CreateSessionAsync(ulong id, ulong userId,
+    public Task<Session> CreateSessionAsync(ulong userId,
         IPAddress ipAddress, SessionState state, string refreshToken);
     public Task<Session> UpdateSessionAsync(Session session);
     public Task DeleteSessionAsync(ulong id);

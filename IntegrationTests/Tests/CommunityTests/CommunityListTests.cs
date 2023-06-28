@@ -1,5 +1,7 @@
 ﻿using FireplaceApi.Application.Communities;
+using FireplaceApi.Domain.Communities;
 using FireplaceApi.IntegrationTests.Tools;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,7 +17,7 @@ public class CommunityListTests
     private readonly ApiIntegrationTestFixture _fixture;
     private readonly ILogger<CommunityListTests> _logger;
     private readonly ClientPool _clientPool;
-    private readonly CommunityOperator _communityOperator;
+    private readonly ISender _sender;
 
     public CommunityListTests(ApiIntegrationTestFixture fixture)
     {
@@ -23,7 +25,7 @@ public class CommunityListTests
         _fixture.CleanDatabase();
         _logger = _fixture.ServiceProvider.GetRequiredService<ILogger<CommunityListTests>>();
         _clientPool = _fixture.ClientPool;
-        _communityOperator = _fixture.ServiceProvider.GetRequiredService<CommunityOperator>();
+        _sender = _fixture.ServiceProvider.GetRequiredService<ISender>();
     }
 
     [Fact]
@@ -32,25 +34,31 @@ public class CommunityListTests
         var sw = Stopwatch.StartNew();
         try
         {
-            _logger.LogAppInformation(title: "TEST_START");
+            _logger.LogServerInformation(title: "TEST_START");
 
             //Given
             var narutoUser = await _clientPool.CreateNarutoUserAsync();
-            var backendDevelopersCommunity = await _communityOperator.CreateCommunityAsync(narutoUser.Id, "backend-developers");
-            var gamersCommunity = await _communityOperator.CreateCommunityAsync(narutoUser.Id, "gamers");
+
+            var createCommunityCommand = new CreateCommunityCommand(narutoUser.Id,
+                new CommunityName("backend-developers"), narutoUser.Username);
+            var backendDevelopersCommunity = await _sender.Send(createCommunityCommand);
+
+            createCommunityCommand = new CreateCommunityCommand(narutoUser.Id,
+                new CommunityName("gamers"), narutoUser.Username);
+            var gamersCommunity = await _sender.Send(createCommunityCommand);
 
             //When
-            var communityQueryResult = await CommunityUtils.ListCommunitiesWithApiAsync(narutoUser, "dev");
+            var communityQueryResult = await CommunityUtils.SearchCommunitiesWithApiAsync(narutoUser, "dev");
 
             //Then
             Assert.Single(communityQueryResult.Items);
-            Assert.Equal(backendDevelopersCommunity.Name, communityQueryResult.Items[0].Name);
+            Assert.Equal(backendDevelopersCommunity.Name.Value, communityQueryResult.Items[0].Name);
 
-            _logger.LogAppInformation(title: "TEST_END", sw: sw);
+            _logger.LogServerInformation(title: "TEST_END", sw: sw);
         }
         catch (Exception ex)
         {
-            _logger.LogAppCritical(title: "TEST_FAILED", sw: sw, ex: ex);
+            _logger.LogServerCritical(title: "TEST_FAILED", sw: sw, ex: ex);
             throw;
         }
     }

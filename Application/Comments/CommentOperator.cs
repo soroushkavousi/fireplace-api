@@ -2,7 +2,6 @@
 using FireplaceApi.Application.Users;
 using FireplaceApi.Domain.Comments;
 using FireplaceApi.Domain.Users;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,13 +10,13 @@ namespace FireplaceApi.Application.Comments;
 
 public class CommentOperator
 {
-    private readonly ILogger<CommentOperator> _logger;
+    private readonly IServerLogger<CommentOperator> _logger;
     private readonly ICommentRepository _commentRepository;
     private readonly ICommentVoteRepository _commentVoteRepository;
     private readonly UserOperator _userOperator;
     private readonly PostOperator _postOperator;
 
-    public CommentOperator(ILogger<CommentOperator> logger,
+    public CommentOperator(IServerLogger<CommentOperator> logger,
         ICommentRepository commentRepository,
         ICommentVoteRepository commentVoteRepository,
         UserOperator userOperator, PostOperator postOperator)
@@ -86,9 +85,8 @@ public class CommentOperator
     public async Task<Comment> ReplyToPostAsync(ulong userId,
         ulong postId, string content, Username username = null)
     {
-        var id = await IdGenerator.GenerateNewIdAsync(DoesCommentIdExistAsync);
         username ??= await _userOperator.GetUsernameByIdAsync(userId);
-        var comment = await _commentRepository.CreateCommentAsync(id,
+        var comment = await _commentRepository.CreateCommentAsync(
             userId, username, postId, content);
         return comment;
     }
@@ -103,9 +101,8 @@ public class CommentOperator
                 .GetCommentByIdAsync(commentId);
             postId = parentComment.PostId;
         }
-        var id = await IdGenerator.GenerateNewIdAsync(DoesCommentIdExistAsync);
         username ??= await _userOperator.GetUsernameByIdAsync(userId);
-        var comment = await _commentRepository.CreateCommentAsync(id,
+        var comment = await _commentRepository.CreateCommentAsync(
             userId, username, postId.Value, content, commentId);
         return comment;
     }
@@ -113,11 +110,9 @@ public class CommentOperator
     public async Task<Comment> VoteCommentAsync(ulong userId,
         ulong id, bool isUp, Username username = null)
     {
-        var commentVoteId = await IdGenerator.GenerateNewIdAsync(
-            DoesCommentVoteIdExistAsync);
         username ??= await _userOperator.GetUsernameByIdAsync(userId);
         var commentVote = await _commentVoteRepository
-            .CreateCommentVoteAsync(commentVoteId, userId,
+            .CreateCommentVoteAsync(userId,
                 username, id, isUp);
         var voteChange = commentVote.IsUp ? +1 : -1;
         var comment = await PatchCommentByIdAsync(userId,

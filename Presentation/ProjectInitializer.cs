@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Infrastructure.Extensions;
+﻿using FireplaceApi.Infrastructure.Loggers;
 using FireplaceApi.Presentation.Tools;
 using NLog;
 
@@ -24,6 +24,6 @@ public static class ProjectInitializer
             EnvironmentVariable.ConnectionString.Value,
             EnvironmentVariable.EnvironmentName.Value);
         _logger = LogManager.GetCurrentClassLogger();
-        _logger.LogAppInformation($"Project '{nameof(Presentation)}' has initialized successfully.");
+        _logger.LogServerInformation($"Project '{nameof(Presentation)}' has initialized successfully.");
     }
 }

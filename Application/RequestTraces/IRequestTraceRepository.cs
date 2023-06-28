@@ -20,7 +20,7 @@ public interface IRequestTraceRepository
         long? fromDuration = null, ErrorType errorType = null, FieldName errorField = null,
         DateTime? fromDate = null, bool? withAction = null);
     public Task<RequestTrace> GetRequestTraceByIdAsync(ulong id);
-    public Task<RequestTrace> CreateRequestTraceAsync(ulong id, string method,
+    public Task<RequestTrace> CreateRequestTraceAsync(string method,
         string url, IPAddress ip, string country, string userAgent, ulong? userId,
         int statusCode, long duration, string action = null, ErrorType errorType = null,
         FieldName errorField = null);

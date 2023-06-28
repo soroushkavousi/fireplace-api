@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Domain.Sessions;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -7,11 +6,11 @@ namespace FireplaceApi.Application.Sessions;
 
 public class SessionService
 {
-    private readonly ILogger<SessionService> _logger;
+    private readonly IServerLogger<SessionService> _logger;
     private readonly SessionValidator _sessionValidator;
     private readonly SessionOperator _sessionOperator;
 
-    public SessionService(ILogger<SessionService> logger, SessionValidator sessionValidator, SessionOperator sessionOperator)
+    public SessionService(IServerLogger<SessionService> logger, SessionValidator sessionValidator, SessionOperator sessionOperator)
     {
         _logger = logger;
         _sessionValidator = sessionValidator;

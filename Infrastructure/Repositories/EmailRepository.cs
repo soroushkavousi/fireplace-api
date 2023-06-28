@@ -13,23 +13,26 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories;
 
-public class EmailRepository : IEmailRepository
+public class EmailRepository : IEmailRepository, IRepository<IEmailRepository>
 {
     private readonly ILogger<EmailRepository> _logger;
-    private readonly ProjectDbContext _dbContext;
+    private readonly ApiDbContext _dbContext;
+    private readonly IIdGenerator _idGenerator;
     private readonly DbSet<EmailEntity> _emailEntities;
 
-    public EmailRepository(ILogger<EmailRepository> logger, ProjectDbContext dbContext)
+    public EmailRepository(ILogger<EmailRepository> logger, ApiDbContext dbContext,
+        IIdGenerator idGenerator)
     {
         _logger = logger;
         _dbContext = dbContext;
+        _idGenerator = idGenerator;
         _emailEntities = dbContext.EmailEntities;
     }
 
     public async Task<List<Email>> ListEmailsAsync(
                 bool includeUser = false)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { includeUser });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { includeUser });
         var sw = Stopwatch.StartNew();
         var emailEntities = await _emailEntities
             .AsNoTracking()
@@ -38,14 +41,14 @@ public class EmailRepository : IEmailRepository
             )
             .ToListAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { emailEntities = emailEntities.Select(e => e.Id) });
         return emailEntities.Select(EmailConverter.ToModel).ToList();
     }
 
     public async Task<Email> GetEmailByIdentifierAsync(EmailIdentifier identifier, bool includeUser = false)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier, includeUser });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { identifier, includeUser });
         var sw = Stopwatch.StartNew();
         var emailEntity = await _emailEntities
             .AsNoTracking()
@@ -57,29 +60,30 @@ public class EmailRepository : IEmailRepository
             )
             .SingleOrDefaultAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { emailEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { emailEntity });
         return EmailConverter.ToModel(emailEntity);
     }
 
-    public async Task<Email> CreateEmailAsync(ulong id, ulong userId,
+    public async Task<Email> CreateEmailAsync(ulong userId,
         string address, Activation activation)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT",
-            parameters: new { id, userId, address, activation });
+        _logger.LogServerInformation(title: "DATABASE_INPUT",
+            parameters: new { userId, address, activation });
         var sw = Stopwatch.StartNew();
+        var id = _idGenerator.GenerateNewId();
         var emailEntity = new EmailEntity(id, userId, address,
             activation.Status.ToString(), activationCode: activation.Code);
         _emailEntities.Add(emailEntity);
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { emailEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { emailEntity });
         return EmailConverter.ToModel(emailEntity);
     }
 
     public async Task<Email> UpdateEmailAsync(Email email)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { email });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { email });
         var sw = Stopwatch.StartNew();
         var emailEntity = email.ToEntity();
         _emailEntities.Update(emailEntity);
@@ -94,13 +98,13 @@ public class EmailRepository : IEmailRepository
                 parameters: emailEntity, systemException: ex);
         }
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { emailEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { emailEntity });
         return emailEntity.ToModel();
     }
 
     public async Task DeleteEmailAsync(EmailIdentifier identifier)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { identifier });
         var sw = Stopwatch.StartNew();
         var emailEntity = await _emailEntities
             .Search(
@@ -112,12 +116,12 @@ public class EmailRepository : IEmailRepository
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { emailEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { emailEntity });
     }
 
     public async Task<bool> DoesEmailIdentifierExistAsync(EmailIdentifier identifier)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { identifier });
         var sw = Stopwatch.StartNew();
         var doesExist = await _emailEntities
             .AsNoTracking()
@@ -126,7 +130,7 @@ public class EmailRepository : IEmailRepository
             )
             .AnyAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
         return doesExist;
     }
 }

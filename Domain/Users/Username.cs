@@ -73,4 +73,7 @@ public partial record Username(string Value)
 
     [GeneratedRegex("^[a-zA-Z0-9_]+$")]
     private static partial Regex GetValidCharactersRegex();
+
+    public override string ToString()
+        => Value;
 }

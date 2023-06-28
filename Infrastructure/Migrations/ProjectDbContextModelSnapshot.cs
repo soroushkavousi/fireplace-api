@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FireplaceApi.Infrastructure.Migrations
 {
-    [DbContext(typeof(ProjectDbContext))]
+    [DbContext(typeof(ApiDbContext))]
     partial class ProjectDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -20,7 +20,6 @@ namespace FireplaceApi.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:CollationDefinition:case_insensitive", "en-u-ks-primary,en-u-ks-primary,icu,False")
-                .HasAnnotation("Npgsql:DefaultColumnCollation", "case_insensitive")
                 .HasAnnotation("ProductVersion", "7.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -36,11 +35,13 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.Property<string>("AuthorEntityUsername")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
@@ -98,7 +99,8 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.Property<string>("VoterEntityUsername")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.HasKey("Id");
 
@@ -130,14 +132,16 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.Property<string>("CreatorEntityUsername")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.HasKey("Id");
 
@@ -163,7 +167,8 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.Property<string>("CommunityEntityName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
@@ -178,7 +183,8 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.Property<string>("UserEntityUsername")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.HasKey("Id");
 
@@ -216,7 +222,8 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.Property<string>("EnvironmentName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
@@ -239,11 +246,13 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.Property<string>("ActivationStatus")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
@@ -274,7 +283,8 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.Property<string>("ClientMessage")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<int>("Code")
                         .HasColumnType("integer");
@@ -286,7 +296,8 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.Property<string>("Field")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<int>("HttpStatusCode")
                         .ValueGeneratedOnAdd()
@@ -298,7 +309,8 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.HasKey("Id");
 
@@ -323,16 +335,20 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("RealName")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("RelativePhysicalPath")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("RelativeUri")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.HasKey("Id");
 
@@ -345,7 +361,8 @@ namespace FireplaceApi.Infrastructure.Migrations
                         .HasColumnType("numeric(20,0)");
 
                     b.Property<string>("AccessToken")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<long>("AccessTokenExpiresInSeconds")
                         .HasColumnType("bigint");
@@ -354,10 +371,12 @@ namespace FireplaceApi.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("AuthUser")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("Code")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
@@ -365,13 +384,16 @@ namespace FireplaceApi.Infrastructure.Migrations
                         .HasDefaultValueSql("now() at time zone 'utc'");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("FullName")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("GmailAddress")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<long>("GmailIssuedTimeInSeconds")
                         .HasColumnType("bigint");
@@ -380,37 +402,47 @@ namespace FireplaceApi.Infrastructure.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("IdToken")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("Locale")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("PictureUrl")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("Prompt")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("RedirectToUserUrl")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("RefreshToken")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("Scope")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("State")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("TokenType")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<decimal>("UserEntityId")
                         .HasColumnType("numeric(20,0)");
@@ -436,18 +468,21 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.Property<string>("AuthorEntityUsername")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<decimal>("CommunityEntityId")
                         .HasColumnType("numeric(20,0)");
 
                     b.Property<string>("CommunityEntityName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
@@ -501,7 +536,8 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.Property<string>("VoterEntityUsername")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.HasKey("Id");
 
@@ -524,11 +560,13 @@ namespace FireplaceApi.Infrastructure.Migrations
                         .HasColumnType("numeric(20,0)");
 
                     b.Property<string>("Action")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("Country")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
@@ -539,18 +577,22 @@ namespace FireplaceApi.Infrastructure.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("ErrorField")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
-                    b.Property<string>("BaseErrorType")
-                        .HasColumnType("text");
+                    b.Property<string>("ErrorType")
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("IP")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("Method")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
@@ -560,10 +602,12 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.Property<string>("Url")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("UserAgent")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<decimal?>("UserId")
                         .HasColumnType("numeric(20,0)");
@@ -571,6 +615,32 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("RequestTraceEntities");
+                });
+
+            modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.ServerEntity", b =>
+                {
+                    b.Property<decimal>("Id")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now() at time zone 'utc'");
+
+                    b.Property<string>("MacAddress")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MacAddress")
+                        .IsUnique();
+
+                    b.ToTable("ServerEntities");
                 });
 
             modelBuilder.Entity("FireplaceApi.Infrastructure.Entities.SessionEntity", b =>
@@ -585,18 +655,21 @@ namespace FireplaceApi.Infrastructure.Migrations
 
                     b.Property<string>("IpAddress")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("RefreshToken")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("State")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<decimal>("UserEntityId")
                         .HasColumnType("numeric(20,0)");
@@ -614,13 +687,16 @@ namespace FireplaceApi.Infrastructure.Migrations
                         .HasColumnType("numeric(20,0)");
 
                     b.Property<string>("About")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("AvatarUrl")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("BannerUrl")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
@@ -628,27 +704,32 @@ namespace FireplaceApi.Infrastructure.Migrations
                         .HasDefaultValueSql("now() at time zone 'utc'");
 
                     b.Property<string>("DisplayName")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("ResetPasswordCode")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<List<string>>("Roles")
                         .HasColumnType("text[]");
 
                     b.Property<string>("State")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .UseCollation("case_insensitive");
 
                     b.HasKey("Id");
 

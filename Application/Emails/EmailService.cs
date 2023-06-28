@@ -1,16 +1,15 @@
 ﻿using FireplaceApi.Domain.Emails;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace FireplaceApi.Application.Emails;
 
 public class EmailService
 {
-    private readonly ILogger<EmailService> _logger;
+    private readonly IServerLogger<EmailService> _logger;
     private readonly EmailValidator _emailValidator;
     private readonly EmailOperator _emailOperator;
 
-    public EmailService(ILogger<EmailService> logger, EmailValidator emailValidator, EmailOperator emailOperator)
+    public EmailService(IServerLogger<EmailService> logger, EmailValidator emailValidator, EmailOperator emailOperator)
     {
         _logger = logger;
         _emailValidator = emailValidator;

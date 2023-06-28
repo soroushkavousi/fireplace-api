@@ -11,8 +11,8 @@ public static class CommunityMembershipConverter
             return null;
 
         var communityMembershipDto = new CommunityMembershipDto(communityMembership.Id.IdEncode(),
-            communityMembership.UserId.IdEncode(), communityMembership.Username,
-            communityMembership.CommunityId.IdEncode(), communityMembership.CommunityName,
+            communityMembership.UserId.IdEncode(), communityMembership.Username.Value,
+            communityMembership.CommunityId.IdEncode(), communityMembership.CommunityName.Value,
             communityMembership.CreationDate);
 
         return communityMembershipDto;

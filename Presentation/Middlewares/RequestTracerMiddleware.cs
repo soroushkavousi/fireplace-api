@@ -26,11 +26,11 @@ public class RequestTracerMiddleware
     {
         var sw = Stopwatch.StartNew();
         var requestInfoMessage = context.CreateRequestInfoMessage();
-        _logger.LogAppInformation(requestInfoMessage, title: "REQUEST");
+        _logger.LogServerInformation(requestInfoMessage, title: "REQUEST");
         await _next(context);
         var action = context.FindActionName();
         await StoreRequestTrace(context, sw, requestTraceOperator);
-        _logger.LogAppInformation($"action: {action ?? "null"} | {requestInfoMessage}", sw: sw, title: "REQUEST_DURATION");
+        _logger.LogServerInformation($"action: {action ?? "null"} | {requestInfoMessage}", sw: sw, title: "REQUEST_DURATION");
     }
 
     private async Task StoreRequestTrace(HttpContext context, Stopwatch sw,

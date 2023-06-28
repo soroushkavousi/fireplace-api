@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Domain.Errors;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -7,11 +6,11 @@ namespace FireplaceApi.Application.Errors;
 
 public class ErrorService
 {
-    private readonly ILogger<ErrorService> _logger;
+    private readonly IServerLogger<ErrorService> _logger;
     private readonly ErrorValidator _errorValidator;
     private readonly ErrorOperator _errorOperator;
 
-    public ErrorService(ILogger<ErrorService> logger, ErrorValidator errorValidator,
+    public ErrorService(IServerLogger<ErrorService> logger, ErrorValidator errorValidator,
         ErrorOperator errorOperator)
     {
         _logger = logger;

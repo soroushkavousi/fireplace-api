@@ -1,6 +1,4 @@
 ﻿using FireplaceApi.Domain.Comments;
-using FireplaceApi.Domain.Common;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,11 +6,11 @@ namespace FireplaceApi.Application.Comments;
 
 public class CommentService
 {
-    private readonly ILogger<CommentService> _logger;
+    private readonly IServerLogger<CommentService> _logger;
     private readonly CommentValidator _commentValidator;
     private readonly CommentOperator _commentOperator;
 
-    public CommentService(ILogger<CommentService> logger,
+    public CommentService(IServerLogger<CommentService> logger,
         CommentValidator commentValidator, CommentOperator commentOperator)
     {
         _logger = logger;

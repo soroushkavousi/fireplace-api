@@ -14,22 +14,25 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories;
 
-public class FileRepository : IFileRepository
+public class FileRepository : IFileRepository, IRepository<IFileRepository>
 {
     private readonly ILogger<FileRepository> _logger;
-    private readonly ProjectDbContext _dbContext;
+    private readonly ApiDbContext _dbContext;
+    private readonly IIdGenerator _idGenerator;
     private readonly DbSet<FileEntity> _fileEntities;
 
-    public FileRepository(ILogger<FileRepository> logger, ProjectDbContext dbContext)
+    public FileRepository(ILogger<FileRepository> logger, ApiDbContext dbContext,
+        IIdGenerator idGenerator)
     {
         _logger = logger;
         _dbContext = dbContext;
+        _idGenerator = idGenerator;
         _fileEntities = dbContext.FileEntities;
     }
 
     public async Task<List<File>> ListFilesAsync()
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: null);
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: null);
         var sw = Stopwatch.StartNew();
         var fileEntities = await _fileEntities
             .AsNoTracking()
@@ -37,14 +40,14 @@ public class FileRepository : IFileRepository
             )
             .ToListAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { fileEntities = fileEntities.Select(e => e.Id) });
         return fileEntities.Select(FileConverter.ToModel).ToList();
     }
 
     public async Task<File> GetFileByIdAsync(ulong id)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id });
         var sw = Stopwatch.StartNew();
         var fileEntity = await _fileEntities
             .AsNoTracking()
@@ -53,16 +56,17 @@ public class FileRepository : IFileRepository
             )
             .SingleOrDefaultAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { fileEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { fileEntity });
         return FileConverter.ToModel(fileEntity);
     }
 
-    public async Task<File> CreateFileAsync(ulong id, string name, string realName,
+    public async Task<File> CreateFileAsync(string name, string realName,
         Uri uri, string physicalPath)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT",
-            parameters: new { id, name, realName, uri, physicalPath });
+        _logger.LogServerInformation(title: "DATABASE_INPUT",
+            parameters: new { name, realName, uri, physicalPath });
         var sw = Stopwatch.StartNew();
+        var id = _idGenerator.GenerateNewId();
         var relativeUri = uri.ToRelativeUri().ToString();
         var relativePhysicalPath = physicalPath.ToRelativePhysicalPath();
         var fileEntity = new FileEntity(id, name, realName, relativeUri, relativePhysicalPath);
@@ -70,13 +74,13 @@ public class FileRepository : IFileRepository
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { fileEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { fileEntity });
         return FileConverter.ToModel(fileEntity);
     }
 
     public async Task<File> UpdateFileAsync(File file)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { file });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { file });
         var sw = Stopwatch.StartNew();
         var fileEntity = file.ToEntity();
         _fileEntities.Update(fileEntity);
@@ -91,13 +95,13 @@ public class FileRepository : IFileRepository
                 parameters: fileEntity, systemException: ex);
         }
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { fileEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { fileEntity });
         return FileConverter.ToModel(fileEntity);
     }
 
     public async Task DeleteFileAsync(ulong id)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id });
         var sw = Stopwatch.StartNew();
         var fileEntity = await _fileEntities
             .Where(e => e.Id == id)
@@ -107,32 +111,32 @@ public class FileRepository : IFileRepository
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { fileEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { fileEntity });
     }
 
     public async Task<bool> DoesFileIdExistAsync(ulong id)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id });
         var sw = Stopwatch.StartNew();
         var doesExist = await _fileEntities
             .AsNoTracking()
             .Where(e => e.Id == id)
             .AnyAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
         return doesExist;
     }
 
     public async Task<bool> DoesFileNameExistAsync(string name)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { name });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { name });
         var sw = Stopwatch.StartNew();
         var doesExist = await _fileEntities
             .AsNoTracking()
             .Where(e => e.Name == name)
             .AnyAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
         return doesExist;
     }
 }

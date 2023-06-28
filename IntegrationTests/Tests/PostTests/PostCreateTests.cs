@@ -1,5 +1,7 @@
 ﻿using FireplaceApi.Application.Communities;
+using FireplaceApi.Domain.Communities;
 using FireplaceApi.IntegrationTests.Tools;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,7 +17,7 @@ public class PostCreateTests
     private readonly ApiIntegrationTestFixture _fixture;
     private readonly ILogger<PostCreateTests> _logger;
     private readonly ClientPool _clientPool;
-    private readonly CommunityOperator _communityOperator;
+    private readonly ISender _sender;
 
     public PostCreateTests(ApiIntegrationTestFixture fixture)
     {
@@ -23,7 +25,7 @@ public class PostCreateTests
         _fixture.CleanDatabase();
         _logger = _fixture.ServiceProvider.GetRequiredService<ILogger<PostCreateTests>>();
         _clientPool = _fixture.ClientPool;
-        _communityOperator = _fixture.ServiceProvider.GetRequiredService<CommunityOperator>();
+        _sender = _fixture.ServiceProvider.GetRequiredService<ISender>();
     }
 
     [Fact]
@@ -32,36 +34,36 @@ public class PostCreateTests
         var sw = Stopwatch.StartNew();
         try
         {
-            _logger.LogAppInformation(title: "TEST_START");
+            _logger.LogServerInformation(title: "TEST_START");
 
             //Given
             var narutoUser = await _clientPool.CreateNarutoUserAsync();
-            var animeCommunityName = "anime-community";
-            var animeCommunity = await _communityOperator.CreateCommunityAsync(narutoUser.Id,
-                animeCommunityName, username: narutoUser.Username);
+            var animeCommunityName = new CommunityName("anime-community");
+            var createCommunityCommand = new CreateCommunityCommand(narutoUser.Id, animeCommunityName, narutoUser.Username);
+            var animeCommunity = await _sender.Send(createCommunityCommand);
             var postContent = "Sample Post Content";
 
             //When
-            var createdPost = await PostUtils.CreatePostWithApiAsync(narutoUser, animeCommunityName, postContent);
+            var createdPost = await PostUtils.CreatePostWithApiAsync(narutoUser, animeCommunityName.Value, postContent);
 
             //Then
-            Assert.Equal(animeCommunityName, createdPost.CommunityName);
+            Assert.Equal(animeCommunityName.Value, createdPost.CommunityName);
             Assert.Equal(postContent, createdPost.Content);
 
             var retrievedPost = await PostUtils.GetPostWithApiAsync(narutoUser, createdPost.Id);
             Assert.Equal(createdPost.Id, retrievedPost.Id);
-            Assert.Equal(animeCommunityName, retrievedPost.CommunityName);
+            Assert.Equal(animeCommunityName.Value, retrievedPost.CommunityName);
             Assert.Equal(postContent, retrievedPost.Content);
 
-            var animePosts = await PostUtils.ListPostsWithApiAsync(narutoUser, animeCommunityName);
+            var animePosts = await PostUtils.ListPostsWithApiAsync(narutoUser, animeCommunityName.Value);
             Assert.Single(animePosts.Items);
             Assert.Equal(createdPost.Id, animePosts.Items[0].Id);
 
-            _logger.LogAppInformation(title: "TEST_END", sw: sw);
+            _logger.LogServerInformation(title: "TEST_END", sw: sw);
         }
         catch (Exception ex)
         {
-            _logger.LogAppCritical(title: "TEST_FAILED", sw: sw, ex: ex);
+            _logger.LogServerCritical(title: "TEST_FAILED", sw: sw, ex: ex);
             throw;
         }
     }

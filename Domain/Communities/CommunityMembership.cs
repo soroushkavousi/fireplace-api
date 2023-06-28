@@ -8,12 +8,12 @@ public class CommunityMembership : BaseModel
     public ulong UserId { get; set; }
     public Username Username { get; set; }
     public ulong CommunityId { get; set; }
-    public string CommunityName { get; set; }
+    public CommunityName CommunityName { get; set; }
     public User User { get; set; }
     public Community Community { get; set; }
 
     public CommunityMembership(ulong id, ulong userId,
-        Username username, ulong communityId, string communityName,
+        Username username, ulong communityId, CommunityName communityName,
         DateTime creationDate, DateTime? modifiedDate = null,
         User user = null, Community community = null)
         : base(id, creationDate, modifiedDate)

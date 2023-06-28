@@ -28,8 +28,8 @@ public static class PostConverter
         }
 
         var postDto = new PostDto(post.Id.IdEncode(),
-            post.AuthorId.IdEncode(), post.AuthorUsername,
-            post.CommunityId.IdEncode(), post.CommunityName,
+            post.AuthorId.IdEncode(), post.AuthorUsername.Value,
+            post.CommunityId.IdEncode(), post.CommunityName.Value,
             post.Vote, post.RequestingUserVote, post.Content,
             post.CreationDate, post.ModifiedDate, profileDto,
             communityDto, commentDtos);

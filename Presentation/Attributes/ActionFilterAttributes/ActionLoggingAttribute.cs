@@ -22,7 +22,7 @@ public class ActionLoggingAttribute : ActionFilterAttribute
         var actionInput = context.ActionArguments;
         var actionName = context.ActionDescriptor.To<ControllerActionDescriptor>().ActionName;
         context.HttpContext.Items.Add(Tools.Constants.ActionNameKey, actionName);
-        _logger.LogAppInformation(message: actionName, title: "ACTION_INPUT", parameters: actionInput);
+        _logger.LogServerInformation(message: actionName, title: "ACTION_INPUT", parameters: actionInput);
         _sw = Stopwatch.StartNew();
     }
 
@@ -38,14 +38,14 @@ public class ActionLoggingAttribute : ActionFilterAttribute
                 message += $" | {apiException.ErrorType} | {apiException.ErrorField}";
             else
                 message += $" | {context.Exception.Message}";
-            _logger.LogAppInformation(title: title, message: message, sw: _sw);
+            _logger.LogServerInformation(title: title, message: message, sw: _sw);
             return;
         }
 
         if (context.Result == null)
         {
             message += " | No Result!";
-            _logger.LogAppInformation(title: title, message: message, sw: _sw);
+            _logger.LogServerInformation(title: title, message: message, sw: _sw);
             return;
         }
 
@@ -53,19 +53,19 @@ public class ActionLoggingAttribute : ActionFilterAttribute
         {
             case OkResult:
                 message += " | Ok Result!";
-                _logger.LogAppInformation(title: title, message: message, sw: _sw);
+                _logger.LogServerInformation(title: title, message: message, sw: _sw);
                 break;
             case RedirectResult redirectResult:
                 message += " | Redirect Result!";
                 var redirectUrl = redirectResult.Url.Length > 25 ? $"{redirectResult.Url[..25]}..." : redirectResult.Url;
-                _logger.LogAppInformation(title: title, message: message, parameters: new { redirectUrl }, sw: _sw);
+                _logger.LogServerInformation(title: title, message: message, parameters: new { redirectUrl }, sw: _sw);
                 break;
             case ObjectResult objectResult:
-                _logger.LogAppInformation(title: title, message: message, parameters: objectResult.Value, sw: _sw);
+                _logger.LogServerInformation(title: title, message: message, parameters: objectResult.Value, sw: _sw);
                 break;
             default:
                 message += " | Unknown Output => {context.Result}";
-                _logger.LogAppInformation(title: title, message: message, sw: _sw);
+                _logger.LogServerInformation(title: title, message: message, sw: _sw);
                 break;
         }
     }

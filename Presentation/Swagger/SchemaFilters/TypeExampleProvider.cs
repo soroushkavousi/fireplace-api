@@ -1,7 +1,7 @@
 ﻿using FireplaceApi.Application.Errors;
 using FireplaceApi.Domain.Errors;
 using FireplaceApi.Presentation.Dtos;
-using FireplaceApi.Presentation.Enums;
+using FireplaceApi.Presentation.Errors;
 using FireplaceApi.Presentation.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -51,14 +51,14 @@ public class TypeExampleProvider : ISchemaFilter
             }
             catch (Exception ex)
             {
-                logger.LogAppInformation($"Exception occurred when trying to get the error details for examples.",
+                logger.LogServerInformation($"Exception occurred when trying to get the error details for examples.",
                     parameters: new { type, field, ErrorMessage = ex.Message });
             }
             finally
             {
                 if (error == null)
                 {
-                    logger.LogAppInformation($"Error seems does not exists yet or an exception occurred.",
+                    logger.LogServerInformation($"Error seems does not exists yet or an exception occurred.",
                         parameters: new { type, field });
                     error = Error.InternalServerError;
                 }

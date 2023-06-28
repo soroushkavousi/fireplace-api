@@ -20,7 +20,7 @@ public static class PostVoteConverter
             postEntity = postVote.Post.PureCopy().ToEntity();
 
         var postVoteEntity = new PostVoteEntity(postVote.Id,
-            postVote.VoterId, postVote.VoterUsername, postVote.PostId,
+            postVote.VoterId, postVote.VoterUsername.Value, postVote.PostId,
             postVote.IsUp, postVote.CreationDate,
             postVote.ModifiedDate, voterEntity, postEntity);
 
@@ -41,7 +41,7 @@ public static class PostVoteConverter
             post = postVoteEntity.PostEntity.PureCopy().ToModel();
 
         var postVote = new PostVote(postVoteEntity.Id,
-            postVoteEntity.VoterEntityId, postVoteEntity.VoterEntityUsername,
+            postVoteEntity.VoterEntityId, new Username(postVoteEntity.VoterEntityUsername),
             postVoteEntity.PostEntityId, postVoteEntity.IsUp,
             postVoteEntity.CreationDate, postVoteEntity.ModifiedDate,
             voter, post);

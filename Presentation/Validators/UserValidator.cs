@@ -1,6 +1,5 @@
 ﻿using FireplaceApi.Domain.Users;
-using FireplaceApi.Presentation.Enums;
-using FireplaceApi.Presentation.Exceptions;
+using FireplaceApi.Presentation.Errors;
 
 namespace FireplaceApi.Presentation.Validators;
 

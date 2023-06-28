@@ -33,23 +33,6 @@ public static class StringExtensions
         return new string(array);
     }
 
-    public static T ToEnum<T>(this string value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-            return default;
-
-        return (T)Enum.Parse(typeof(T), value, true);
-    }
-
-    public static T? ToNullableEnum<T>(this string value)
-        where T : struct
-    {
-        if (string.IsNullOrWhiteSpace(value))
-            return default;
-
-        return (T)Enum.Parse(typeof(T), value, true);
-    }
-
     public static IPAddress ToIPAddress(this string value)
     {
         if (string.IsNullOrWhiteSpace(value))

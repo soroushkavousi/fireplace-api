@@ -1,4 +1,5 @@
-﻿using FireplaceApi.IntegrationTests.Extensions;
+﻿using FireplaceApi.Domain.Communities;
+using FireplaceApi.IntegrationTests.Extensions;
 using FireplaceApi.IntegrationTests.Models;
 using FireplaceApi.Presentation.Dtos;
 using Microsoft.AspNetCore.WebUtilities;
@@ -11,7 +12,7 @@ namespace FireplaceApi.IntegrationTests.Tests.CommunityTests;
 
 public static class CommunityUtils
 {
-    public static async Task<CommunityDto> CreateCommunityWithApiAsync(TestUser user, string communityName)
+    public static async Task<CommunityDto> CreateCommunityWithApiAsync(TestUser user, CommunityName communityName)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, "/communities")
         {
@@ -28,7 +29,7 @@ public static class CommunityUtils
         return createdCommunity;
     }
 
-    public static async Task<CommunityDto> GetCommunityWithApiAsync(TestUser user, string communityName)
+    public static async Task<CommunityDto> GetCommunityWithApiAsync(TestUser user, CommunityName communityName)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"/communities/{communityName}");
         var response = await user.SendRequestAsync(request);
@@ -39,13 +40,13 @@ public static class CommunityUtils
         return retrievedCommunity;
     }
 
-    public static async Task<QueryResultDto<CommunityDto>> ListCommunitiesWithApiAsync(TestUser user, string communityName)
+    public static async Task<QueryResultDto<CommunityDto>> SearchCommunitiesWithApiAsync(TestUser user, string communityNameSearch)
     {
         var baseUrl = $"/communities";
         var queryParameters = new Dictionary<string, string>()
-            {
-                { "search", communityName },
-            };
+        {
+            { "search", communityNameSearch },
+        };
         var requestUrl = QueryHelpers.AddQueryString(baseUrl, queryParameters);
         var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
         var response = await user.SendRequestAsync(request);

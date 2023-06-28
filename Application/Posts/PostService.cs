@@ -1,7 +1,5 @@
-﻿using FireplaceApi.Domain.Common;
-using FireplaceApi.Domain.Communities;
+﻿using FireplaceApi.Domain.Communities;
 using FireplaceApi.Domain.Posts;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,11 +7,11 @@ namespace FireplaceApi.Application.Posts;
 
 public class PostService
 {
-    private readonly ILogger<PostService> _logger;
+    private readonly IServerLogger<PostService> _logger;
     private readonly PostValidator _postValidator;
     private readonly PostOperator _postOperator;
 
-    public PostService(ILogger<PostService> logger,
+    public PostService(IServerLogger<PostService> logger,
         PostValidator postValidator, PostOperator postOperator)
     {
         _logger = logger;

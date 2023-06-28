@@ -14,22 +14,25 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories;
 
-public class CommunityRepository : ICommunityRepository
+public class CommunityRepository : ICommunityRepository, IRepository<ICommunityRepository>
 {
     private readonly ILogger<CommunityRepository> _logger;
-    private readonly ProjectDbContext _dbContext;
+    private readonly ApiDbContext _dbContext;
+    private readonly IIdGenerator _idGenerator;
     private readonly DbSet<CommunityEntity> _communityEntities;
 
-    public CommunityRepository(ILogger<CommunityRepository> logger, ProjectDbContext dbContext)
+    public CommunityRepository(ILogger<CommunityRepository> logger, ApiDbContext dbContext,
+        IIdGenerator idGenerator)
     {
         _logger = logger;
         _dbContext = dbContext;
+        _idGenerator = idGenerator;
         _communityEntities = dbContext.CommunityEntities;
     }
 
     public async Task<List<Community>> ListCommunitiesAsync(string search, CommunitySortType sort)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { search });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { search });
         var sw = Stopwatch.StartNew();
         var communityEntities = await _communityEntities
             .AsNoTracking()
@@ -41,14 +44,14 @@ public class CommunityRepository : ICommunityRepository
             .Take(Configs.Current.QueryResult.TotalLimit)
             .ToListAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { communityEntities = communityEntities.Select(e => e.Id) });
         return communityEntities.Select(CommunityConverter.ToModel).ToList();
     }
 
     public async Task<List<Community>> ListCommunitiesByIdsAsync(List<ulong> Ids)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { Ids });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { Ids });
         var sw = Stopwatch.StartNew();
         var communityEntities = await _communityEntities
             .AsNoTracking()
@@ -60,15 +63,15 @@ public class CommunityRepository : ICommunityRepository
         communityEntities = new List<CommunityEntity>();
         Ids.ForEach(id => communityEntities.Add(communityEntityDictionary[id]));
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { communityEntities = communityEntities.Select(e => e.Id) });
         return communityEntities.Select(CommunityConverter.ToModel).ToList();
     }
 
-    public async Task<Community> GetCommunityByIdentifierAsync(CommunityIdentifier identifier,
+    public async Task<Community> GetCommunityAsync(CommunityIdentifier identifier,
         bool includeCreator = false)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier, includeCreator });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { identifier, includeCreator });
         var sw = Stopwatch.StartNew();
         var communityEntity = await _communityEntities
             .AsNoTracking()
@@ -81,56 +84,57 @@ public class CommunityRepository : ICommunityRepository
             )
             .SingleOrDefaultAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntity });
         return communityEntity.ToModel();
     }
 
-    public async Task<string> GetNameByIdAsync(ulong id)
+    public async Task<CommunityName> GetNameByIdAsync(ulong id)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id });
         var sw = Stopwatch.StartNew();
-        var communityName = (await _communityEntities
+        var communityNameValue = (await _communityEntities
             .AsNoTracking()
             .Select(e => new { e.Id, e.Name })
             .SingleAsync(e => e.Id == id))
             .Name;
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityName });
-        return communityName;
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityNameValue });
+        return new CommunityName(communityNameValue);
     }
 
-    public async Task<ulong> GetIdByNameAsync(string communityName)
+    public async Task<ulong> GetIdByNameAsync(CommunityName communityName)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { communityName });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { communityName });
         var sw = Stopwatch.StartNew();
         var communityId = (await _communityEntities
             .AsNoTracking()
             .Select(e => new { e.Id, e.Name })
-            .SingleAsync(e => string.Equals(e.Name, communityName)))
+            .SingleAsync(e => string.Equals(e.Name, communityName.Value)))
             .Id;
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityId });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityId });
         return communityId;
     }
 
-    public async Task<Community> CreateCommunityAsync(ulong id, string name,
+    public async Task<Community> CreateCommunityAsync(CommunityName name,
         ulong creatorId, Username creatorUsername)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT",
-            parameters: new { id, name, creatorId, creatorUsername });
+        _logger.LogServerInformation(title: "DATABASE_INPUT",
+            parameters: new { name, creatorId, creatorUsername });
         var sw = Stopwatch.StartNew();
-        var communityEntity = new CommunityEntity(id, name, creatorId, creatorUsername);
+        var id = _idGenerator.GenerateNewId();
+        var communityEntity = new CommunityEntity(id, name.Value, creatorId, creatorUsername.Value);
         _communityEntities.Add(communityEntity);
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntity });
         return communityEntity.ToModel();
     }
 
     public async Task<Community> UpdateCommunityAsync(Community community)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { community });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { community });
         var sw = Stopwatch.StartNew();
         var communityEntity = community.ToEntity();
         _communityEntities.Update(communityEntity);
@@ -145,13 +149,13 @@ public class CommunityRepository : ICommunityRepository
                 parameters: communityEntity, systemException: ex);
         }
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntity });
         return communityEntity.ToModel();
     }
 
-    public async Task UpdateCommunityNameAsync(ulong id, string newCommunityName)
+    public async Task UpdateCommunityNameAsync(ulong id, CommunityName newCommunityName)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id, newCommunityName });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id, newCommunityName });
         var sw = Stopwatch.StartNew();
         int rowAffectedCount = 0;
         try
@@ -166,12 +170,12 @@ public class CommunityRepository : ICommunityRepository
                 parameters: new { id, newCommunityName, rowAffectedCount }, systemException: ex);
         }
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { rowAffectedCount });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { rowAffectedCount });
     }
 
-    public async Task DeleteCommunityByIdentifierAsync(CommunityIdentifier identifier)
+    public async Task DeleteCommunityAsync(CommunityIdentifier identifier)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { identifier });
         var sw = Stopwatch.StartNew();
         var communityEntity = await _communityEntities
             .Search(
@@ -184,12 +188,12 @@ public class CommunityRepository : ICommunityRepository
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityEntity });
     }
 
-    public async Task<bool> DoesCommunityIdentifierExistAsync(CommunityIdentifier identifier)
+    public async Task<bool> DoesCommunityExistAsync(CommunityIdentifier identifier)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { identifier });
         var sw = Stopwatch.StartNew();
         var doesExist = await _communityEntities
             .AsNoTracking()
@@ -199,20 +203,20 @@ public class CommunityRepository : ICommunityRepository
             )
             .AnyAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
         return doesExist;
     }
 
-    public async Task<bool> DoesCommunityNameExistAsync(string name)
+    public async Task<bool> DoesCommunityNameExistAsync(CommunityName name)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { name });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { name });
         var sw = Stopwatch.StartNew();
         var doesExist = await _communityEntities
             .AsNoTracking()
-            .Where(e => e.Name == name)
+            .Where(e => e.Name == name.Value)
             .AnyAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
         return doesExist;
     }
 }
@@ -241,7 +245,7 @@ public static class CommunityRepositoryExtensions
                     q = q.Where(e => e.Id == idIdentifier.Id);
                     break;
                 case CommunityNameIdentifier nameIdentifier:
-                    q = q.Where(e => e.Name == nameIdentifier.Name);
+                    q = q.Where(e => e.Name == nameIdentifier.Name.Value);
                     break;
             }
         }
@@ -259,7 +263,7 @@ public static class CommunityRepositoryExtensions
         q = sort switch
         {
             CommunitySortType.NEW => q.OrderByDescending(e => e.CreationDate),
-            CommunitySortType.OLD => q.OrderBy(e => e.CreationDate),
+            CommunitySortType.CREATION => q.OrderBy(e => e.CreationDate),
             _ => q.OrderByDescending(e => e.CreationDate),
         };
 

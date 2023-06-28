@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Domain.Users;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -14,7 +13,7 @@ public class CommunityMembershipEntity : BaseEntity
 {
     public ulong UserEntityId { get; set; }
     [Required]
-    public Username UserEntityUsername { get; set; }
+    public string UserEntityUsername { get; set; }
     public ulong CommunityEntityId { get; set; }
     [Required]
     public string CommunityEntityName { get; set; }
@@ -24,7 +23,7 @@ public class CommunityMembershipEntity : BaseEntity
     private CommunityMembershipEntity() : base() { }
 
     public CommunityMembershipEntity(ulong id, ulong userEntityId,
-        Username userEntityUsername, ulong communityEntityId, string communityEntityName,
+        string userEntityUsername, ulong communityEntityId, string communityEntityName,
         DateTime? creationDate = null, DateTime? modifiedDate = null,
         UserEntity userEntity = null, CommunityEntity communityEntity = null)
         : base(id, creationDate, modifiedDate)

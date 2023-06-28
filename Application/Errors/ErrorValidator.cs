@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Domain.Errors;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -7,11 +6,11 @@ namespace FireplaceApi.Application.Errors;
 
 public class ErrorValidator : ApplicationValidator
 {
-    private readonly ILogger<ErrorValidator> _logger;
+    private readonly IServerLogger<ErrorValidator> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly ErrorOperator _errorOperator;
 
-    public ErrorValidator(ILogger<ErrorValidator> logger,
+    public ErrorValidator(IServerLogger<ErrorValidator> logger,
         IServiceProvider serviceProvider, ErrorOperator errorOperator)
     {
         _logger = logger;

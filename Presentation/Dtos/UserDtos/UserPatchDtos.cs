@@ -1,6 +1,5 @@
 ﻿using FireplaceApi.Domain.Errors;
 using FireplaceApi.Domain.Users;
-using FireplaceApi.Presentation.Extensions;
 using FireplaceApi.Presentation.Interfaces;
 using FireplaceApi.Presentation.Swagger;
 using FireplaceApi.Presentation.Validators;
@@ -19,7 +18,7 @@ public class PatchUserInputBodyDto : IValidator
     public string About { get; set; }
     public string AvatarUrl { get; set; }
     public string BannerUrl { get; set; }
-    public Username Username { get; set; }
+    public string Username { get; set; }
 
     public static IOpenApiAny Example { get; } = new OpenApiObject
     {

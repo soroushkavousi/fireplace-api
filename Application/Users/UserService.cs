@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Domain.Users;
-using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -7,11 +6,11 @@ namespace FireplaceApi.Application.Users;
 
 public class UserService
 {
-    private readonly ILogger<UserService> _logger;
+    private readonly IServerLogger<UserService> _logger;
     private readonly UserValidator _userValidator;
     private readonly UserOperator _userOperator;
 
-    public UserService(ILogger<UserService> logger, UserValidator userValidator, UserOperator userOperator)
+    public UserService(IServerLogger<UserService> logger, UserValidator userValidator, UserOperator userOperator)
     {
         _logger = logger;
         _userValidator = userValidator;

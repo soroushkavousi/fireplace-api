@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Application.Posts;
-using FireplaceApi.Domain.Common;
 using FireplaceApi.Domain.Posts;
 using FireplaceApi.Domain.Users;
 using FireplaceApi.Presentation.Auth;
@@ -39,12 +38,12 @@ public class PostController : ApiController
         [FromRoute] ListCommunityPostsInputRouteDto inputRouteDto,
         [FromQuery] ListCommunityPostsInputQueryDto inputQueryDto)
     {
+        var communityIdentifier = inputRouteDto.CommunityEncodedIdOrName.ToCommunityIdentifier();
         var queryResult = await _postService.ListCommunityPostsAsync(
-            inputRouteDto.CommunityIdentifier, inputQueryDto.Sort, requestingUser?.Id);
+            communityIdentifier, inputQueryDto.Sort, requestingUser?.Id);
         var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
-
 
     /// <summary>
     /// Search for posts.

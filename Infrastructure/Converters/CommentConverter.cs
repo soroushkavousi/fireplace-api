@@ -34,7 +34,7 @@ public static class CommentConverter
                 .Select(cc => cc.PureCopy().ToEntity()).ToList();
 
         var commentEntity = new CommentEntity(
-            comment.Id, comment.AuthorId, comment.AuthorUsername,
+            comment.Id, comment.AuthorId, comment.AuthorUsername.Value,
             comment.PostId, comment.Content, comment.ParentCommentId,
             comment.Vote, comment.RequestingUserVote,
             comment.CreationDate, comment.ModifiedDate,
@@ -67,7 +67,7 @@ public static class CommentConverter
                 .Select(cc => cc.PureCopy().ToModel()).ToList();
 
         var comment = new Comment(commentEntity.Id,
-            commentEntity.AuthorEntityId, commentEntity.AuthorEntityUsername,
+            commentEntity.AuthorEntityId, new Username(commentEntity.AuthorEntityUsername),
             commentEntity.PostEntityId, commentEntity.Vote,
             commentEntity.RequestingUserVote, commentEntity.Content,
             commentEntity.CreationDate, commentEntity.ParentCommentEntityId,

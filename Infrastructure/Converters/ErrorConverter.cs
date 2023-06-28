@@ -1,6 +1,6 @@
 ﻿using FireplaceApi.Domain.Errors;
 using FireplaceApi.Infrastructure.Entities;
-using FireplaceApi.Infrastructure.Enums;
+using FireplaceApi.Infrastructure.Errors;
 
 namespace FireplaceApi.Infrastructure.Converters;
 

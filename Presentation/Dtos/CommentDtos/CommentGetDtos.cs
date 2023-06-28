@@ -44,7 +44,7 @@ public class ListPostCommentsInputQueryDto : IValidator
         var presentationValidator = serviceProvider.GetService<CommentValidator>();
         var applicationValidator = presentationValidator.ApplicationValidator;
 
-        Sort = presentationValidator.ValidateInputEnum<CommentSortType>(SortString);
+        Sort = SortString.ToNullableEnum<CommentSortType>();
     }
 }
 
@@ -68,7 +68,7 @@ public class ListCommentsInputQueryDto : IValidator
         var applicationValidator = presentationValidator.ApplicationValidator;
 
         Ids = presentationValidator.ValidateIdsFormat(EncodedIds);
-        Sort = presentationValidator.ValidateInputEnum<CommentSortType>(SortString);
+        Sort = SortString.ToNullableEnum<CommentSortType>();
     }
 }
 
@@ -104,7 +104,7 @@ public class ListChildCommentsInputQueryDto : IValidator
         var presentationValidator = serviceProvider.GetService<CommentValidator>();
         var applicationValidator = presentationValidator.ApplicationValidator;
 
-        Sort = presentationValidator.ValidateInputEnum<CommentSortType>(SortString);
+        Sort = SortString.ToNullableEnum<CommentSortType>();
     }
 }
 
@@ -122,7 +122,7 @@ public class ListSelfCommentsInputQueryDto : IValidator
         var presentationValidator = serviceProvider.GetService<CommentValidator>();
         var applicationValidator = presentationValidator.ApplicationValidator;
 
-        Sort = presentationValidator.ValidateInputEnum<CommentSortType>(SortString);
+        Sort = SortString.ToNullableEnum<CommentSortType>();
     }
 }
 

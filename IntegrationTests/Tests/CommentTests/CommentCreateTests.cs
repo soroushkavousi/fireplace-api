@@ -2,7 +2,9 @@
 using FireplaceApi.Application.Communities;
 using FireplaceApi.Application.Posts;
 using FireplaceApi.Domain.Comments;
+using FireplaceApi.Domain.Communities;
 using FireplaceApi.IntegrationTests.Tools;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -21,7 +23,7 @@ public class CommentCreateTests
     private readonly ClientPool _clientPool;
     private readonly CommentOperator _commentOperator;
     private readonly PostOperator _postOperator;
-    private readonly CommunityOperator _communityOperator;
+    private readonly ISender _sender;
 
     public CommentCreateTests(ApiIntegrationTestFixture fixture)
     {
@@ -31,7 +33,7 @@ public class CommentCreateTests
         _clientPool = _fixture.ClientPool;
         _commentOperator = _fixture.ServiceProvider.GetRequiredService<CommentOperator>();
         _postOperator = _fixture.ServiceProvider.GetRequiredService<PostOperator>();
-        _communityOperator = _fixture.ServiceProvider.GetRequiredService<CommunityOperator>();
+        _sender = _fixture.ServiceProvider.GetRequiredService<ISender>();
     }
 
     [Fact]
@@ -40,13 +42,13 @@ public class CommentCreateTests
         var sw = Stopwatch.StartNew();
         try
         {
-            _logger.LogAppInformation(title: "TEST_START");
+            _logger.LogServerInformation(title: "TEST_START");
 
             //Given
             var narutoUser = await _clientPool.CreateNarutoUserAsync();
-            var animeCommunityName = "anime-community";
-            var animeCommunity = await _communityOperator.CreateCommunityAsync(narutoUser.Id, animeCommunityName,
-                username: narutoUser.Username);
+            var animeCommunityName = new CommunityName("anime-community");
+            var createCommunityCommand = new CreateCommunityCommand(narutoUser.Id, animeCommunityName, narutoUser.Username);
+            var animeCommunity = await _sender.Send(createCommunityCommand);
             var postContent = "Sample Post Content";
             var post = await _postOperator.CreatePostAsync(narutoUser.Id,
                 animeCommunity.Id, animeCommunity.Name, postContent);
@@ -89,11 +91,11 @@ public class CommentCreateTests
             Assert.Equal(3, receivedComment13.ChildComments.Count);
             Assert.Equal(2, receivedComment31.ChildComments.Count);
 
-            _logger.LogAppInformation(title: "TEST_END", sw: sw);
+            _logger.LogServerInformation(title: "TEST_END", sw: sw);
         }
         catch (Exception ex)
         {
-            _logger.LogAppCritical(title: "TEST_FAILED", sw: sw, ex: ex);
+            _logger.LogServerCritical(title: "TEST_FAILED", sw: sw, ex: ex);
             throw;
         }
     }

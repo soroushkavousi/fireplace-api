@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Application.Comments;
-using FireplaceApi.Application.Communities;
 using FireplaceApi.Application.Emails;
 using FireplaceApi.Application.Files;
 using FireplaceApi.Application.GoogleUsers;
@@ -15,16 +14,23 @@ public static class DependencyInjection
 {
     public static void AddApplication(this IServiceCollection services)
     {
+        services.AddMediatR();
         services.AddServices();
         services.AddValidators();
         services.AddOperators();
     }
 
+    private static void AddMediatR(this IServiceCollection services)
+    {
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
+        });
+    }
+
     private static void AddServices(this IServiceCollection services)
     {
         services.AddScoped<CommentService>();
-        services.AddScoped<CommunityService>();
-        services.AddScoped<CommunityMembershipService>();
         services.AddScoped<EmailService>();
         services.AddScoped<ErrorService>();
         services.AddScoped<FileService>();
@@ -36,8 +42,6 @@ public static class DependencyInjection
     private static void AddValidators(this IServiceCollection services)
     {
         services.AddScoped<CommentValidator>();
-        services.AddScoped<CommunityValidator>();
-        services.AddScoped<CommunityMembershipValidator>();
         services.AddScoped<EmailValidator>();
         services.AddScoped<ErrorValidator>();
         services.AddScoped<FileValidator>();
@@ -49,8 +53,6 @@ public static class DependencyInjection
     private static void AddOperators(this IServiceCollection services)
     {
         services.AddScoped<CommentOperator>();
-        services.AddScoped<CommunityOperator>();
-        services.AddScoped<CommunityMembershipOperator>();
         services.AddScoped<EmailOperator>();
         services.AddScoped<ErrorOperator>();
         services.AddScoped<FileOperator>();

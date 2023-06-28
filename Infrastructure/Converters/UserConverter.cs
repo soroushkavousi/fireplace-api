@@ -30,7 +30,7 @@ public static class UserConverter
             sessionEntities = user.Sessions.Select(
                 session => session.PureCopy().ToEntity()).ToList();
 
-        var userEntity = new UserEntity(user.Id, user.Username, user.State.ToString(),
+        var userEntity = new UserEntity(user.Id, user.Username.Value, user.State.ToString(),
             userEntityRoles, user.CreationDate, user.DisplayName, user.About, user.AvatarUrl, user.BannerUrl,
             user.ModifiedDate, user.Password?.Hash, user.ResetPasswordCode, emailEntity, googleUserEntity,
             sessionEntities);
@@ -58,7 +58,7 @@ public static class UserConverter
             sessions = userEntity.SessionEntities.Select(
                 sessionEntity => sessionEntity.PureCopy().ToModel()).ToList();
 
-        var user = new User(userEntity.Id, userEntity.Username, userEntity.State.ToEnum<UserState>(),
+        var user = new User(userEntity.Id, new Username(userEntity.Username), userEntity.State.ToEnum<UserState>(),
             userRoles, userEntity.DisplayName, userEntity.About, userEntity.AvatarUrl,
             userEntity.BannerUrl, userEntity.CreationDate, userEntity.ModifiedDate,
             Password.OfHash(userEntity.PasswordHash), userEntity.ResetPasswordCode,

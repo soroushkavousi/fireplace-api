@@ -7,7 +7,6 @@ using FireplaceApi.Domain.Sessions;
 using FireplaceApi.Domain.Users;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +17,12 @@ namespace FireplaceApi.Application.Users;
 
 public class UserOperator
 {
-    private readonly ILogger<UserOperator> _logger;
+    private readonly IServerLogger<UserOperator> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly IUserRepository _userRepository;
     private readonly IGoogleGateway _googleGateway;
 
-    public UserOperator(ILogger<UserOperator> logger,
+    public UserOperator(IServerLogger<UserOperator> logger,
         IServiceProvider serviceProvider, IUserRepository userRepository,
         IGoogleGateway googleGateway)
     {
@@ -136,7 +135,7 @@ public class UserOperator
     {
         await Task.CompletedTask;
         var googleAuthUrl = _googleGateway.GetAuthUrl();
-        _logger.LogAppInformation($"googleLogInPageUrl: {googleAuthUrl}");
+        _logger.LogServerInformation($"googleLogInPageUrl: {googleAuthUrl}");
         return googleAuthUrl;
     }
 
@@ -240,9 +239,7 @@ public class UserOperator
         string bannerUrl = null)
     {
         roles ??= new List<UserRole> { UserRole.USER };
-        var id = await IdGenerator.GenerateNewIdAsync(
-            (id) => DoesUserIdentifierExistAsync(UserIdentifier.OfId(id)));
-        var user = await _userRepository.CreateUserAsync(id, username, state,
+        var user = await _userRepository.CreateUserAsync(username, state,
             roles, password, displayName, about, avatarUrl, bannerUrl);
         return user;
     }

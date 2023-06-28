@@ -12,7 +12,7 @@ public interface ICommentVoteRepository
         bool includeVoter = false, bool includeComment = false);
     public Task<CommentVote> GetCommentVoteAsync(ulong voterId,
         ulong commentId, bool includeVoter = false, bool includeComment = false);
-    public Task<CommentVote> CreateCommentVoteAsync(ulong id, ulong voterUserId,
+    public Task<CommentVote> CreateCommentVoteAsync(ulong voterUserId,
         Username voterUsername, ulong commentId, bool isUp);
     public Task<CommentVote> UpdateCommentVoteAsync(
         CommentVote commentVote);

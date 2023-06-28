@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Domain.Comments;
-using FireplaceApi.Domain.Common;
 using FireplaceApi.Presentation.Dtos;
 using System.Collections.Generic;
 
@@ -42,7 +41,7 @@ public static class CommentConverter
         }
 
         var commentDto = new CommentDto(comment.Id.IdEncode(),
-            comment.AuthorId.IdEncode(), comment.AuthorUsername,
+            comment.AuthorId.IdEncode(), comment.AuthorUsername.Value,
             comment.PostId.IdEncode(), comment.Vote,
             comment.RequestingUserVote,
             comment.Content, comment.CreationDate,

@@ -1,5 +1,6 @@
 ﻿using FireplaceApi.Infrastructure.Entities;
-using FireplaceApi.Infrastructure.Extensions;
+using FireplaceApi.Infrastructure.Loggers;
+using FireplaceApi.Infrastructure.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using System;
@@ -14,11 +15,11 @@ public static class ProjectInitializer
     public static void Initialize(string logConfigFilePath, string logRootDirectoryPath,
         string dbConnectionString, string environmentName)
     {
-        Logging.Initializer.Initialize(logConfigFilePath, logRootDirectoryPath);
+        Loggers.Initializer.Initialize(logConfigFilePath, logRootDirectoryPath);
         _logger = LogManager.GetCurrentClassLogger();
         CheckDbConnectionString(dbConnectionString);
         LoadConfigsFromTheDatabase(dbConnectionString, environmentName);
-        _logger.LogAppInformation($"Project '{nameof(Infrastructure)}' has initialized successfully.");
+        _logger.LogServerInformation($"Project '{nameof(Infrastructure)}' has initialized successfully.");
     }
 
     private static void CheckDbConnectionString(string dbConnectionString)
@@ -26,7 +27,7 @@ public static class ProjectInitializer
         if (string.IsNullOrWhiteSpace(dbConnectionString))
         {
             var message = "Please provide connection string!";
-            _logger.LogAppCritical(message: message);
+            _logger.LogServerCritical(message: message);
             Console.WriteLine($"Error: {message}");
             throw new Exception(message);
         }
@@ -34,7 +35,7 @@ public static class ProjectInitializer
 
     private static void LoadConfigsFromTheDatabase(string dbConnectionString, string environmentName)
     {
-        var dbContext = new ProjectDbContext(dbConnectionString);
+        var dbContext = new ApiDbContext(dbConnectionString);
 
         try
         {
@@ -45,7 +46,7 @@ public static class ProjectInitializer
         catch (Exception ex)
         {
             var serverMessage = "Can not get the configs from the database!!!";
-            _logger.LogAppCritical(serverMessage, parameters: new { environmentName }, ex: ex);
+            _logger.LogServerCritical(serverMessage, parameters: new { environmentName }, ex: ex);
             Configs.Current = Configs.Default;
             return;
         }
@@ -53,7 +54,7 @@ public static class ProjectInitializer
         if (ConfigsEntity.Current == null)
         {
             var serverMessage = "No configs are found in the database!!!";
-            _logger.LogAppCritical(serverMessage, parameters: new { environmentName });
+            _logger.LogServerCritical(serverMessage, parameters: new { environmentName });
             Configs.Current = Configs.Default;
             return;
         }

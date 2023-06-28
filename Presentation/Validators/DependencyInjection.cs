@@ -9,8 +9,6 @@ public static class DependencyInjection
     public static void AddValidators(this IServiceCollection services)
     {
         services.AddScoped<CommentValidator>();
-        services.AddScoped<CommunityValidator>();
-        services.AddScoped<CommunityMembershipValidator>();
         services.AddScoped<EmailValidator>();
         services.AddScoped<ErrorValidator>();
         services.AddScoped<FileValidator>();

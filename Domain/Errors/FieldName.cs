@@ -1,11 +1,11 @@
-﻿using FireplaceApi.Domain.Common;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace FireplaceApi.Domain.Errors;
 
 public class FieldName : Enumeration<FieldName>
 {
     public static readonly FieldName GENERAL = new();
+    public static readonly FieldName LIST_OF_IDS = new();
     public static readonly FieldName USER = new();
     public static readonly FieldName USER_ID = new();
     public static readonly FieldName USERNAME = new();
@@ -15,6 +15,7 @@ public class FieldName : Enumeration<FieldName>
     public static readonly FieldName COMMUNITY = new();
     public static readonly FieldName COMMUNITY_ID = new();
     public static readonly FieldName COMMUNITY_NAME = new();
+    public static readonly FieldName COMMUNITY_ID_OR_NAME = new();
     public static readonly FieldName COMMUNITY_MEMBERSHIP = new();
     public static readonly FieldName COMMUNITY_MEMBERSHIP_ID = new();
     public static readonly FieldName PASSWORD = new();

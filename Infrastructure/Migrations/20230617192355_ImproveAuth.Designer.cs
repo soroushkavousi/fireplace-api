@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FireplaceApi.Infrastructure.Migrations
 {
-    [DbContext(typeof(ProjectDbContext))]
+    [DbContext(typeof(ApiDbContext))]
     [Migration("20230617192355_ImproveAuth")]
     partial class ImproveAuth
     {
@@ -544,7 +544,7 @@ namespace FireplaceApi.Infrastructure.Migrations
                     b.Property<string>("ErrorField")
                         .HasColumnType("text");
 
-                    b.Property<string>("BaseErrorType")
+                    b.Property<string>("ErrorType")
                         .HasColumnType("text");
 
                     b.Property<string>("IP")

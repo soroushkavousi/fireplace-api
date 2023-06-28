@@ -18,7 +18,7 @@ public class EmailGatewayStub : IEmailGateway
     {
         var sw = Stopwatch.StartNew();
         string serverLog = $"Email has been sent to {toEmailAddress}! body: {body[..10]}...";
-        _logger.LogAppInformation(serverLog, sw);
+        _logger.LogServerInformation(serverLog, sw);
         return Task.CompletedTask;
     }
 }

@@ -1,7 +1,6 @@
 ﻿using FireplaceApi.Domain.Errors;
 using FireplaceApi.Domain.Users;
 using FireplaceApi.Presentation.Auth;
-using FireplaceApi.Presentation.Extensions;
 using FireplaceApi.Presentation.Interfaces;
 using FireplaceApi.Presentation.Swagger;
 using FireplaceApi.Presentation.Validators;
@@ -22,7 +21,7 @@ public class SignUpWithEmailInputBodyDto : IValidator
     [Required]
     public string EmailAddress { get; set; }
     [Required]
-    public Username Username { get; set; }
+    public string Username { get; set; }
     [Required]
     [Sensitive]
     public string Password { get; set; }
@@ -70,7 +69,6 @@ public class SignUpWithEmailOutputCookieDto : IOutputCookieDto
         return cookieCollection;
     }
 }
-
 
 [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
 public class LogInWithEmailInputBodyDto : IValidator
@@ -124,12 +122,11 @@ public class LogInWithEmailOutputCookieDto : IOutputCookieDto
     }
 }
 
-
 [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
 public class LogInWithUsernameInputBodyDto : IValidator
 {
     [Required]
-    public Username Username { get; set; }
+    public string Username { get; set; }
     [Required]
     [Sensitive]
     public string Password { get; set; }
@@ -174,7 +171,6 @@ public class LogInWithUsernameOutputCookieDto : IOutputCookieDto
     }
 }
 
-
 [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
 public class CreateRequestingUserPasswordInputBodyDto : IValidator
 {
@@ -198,7 +194,6 @@ public class CreateRequestingUserPasswordInputBodyDto : IValidator
     }
 }
 
-
 [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
 public class SendResetPasswordCodeInputBodyDto : IValidator
 {
@@ -220,7 +215,6 @@ public class SendResetPasswordCodeInputBodyDto : IValidator
         emailValidator.ValidateEmailAddressFormat(EmailAddress);
     }
 }
-
 
 [SwaggerSchemaFilter(typeof(TypeExampleProvider))]
 public class ResetPasswordWithCodeInputBodyDto : IValidator

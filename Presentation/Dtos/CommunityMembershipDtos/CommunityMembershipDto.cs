@@ -1,6 +1,4 @@
-﻿using FireplaceApi.Domain.Users;
-using FireplaceApi.Presentation.Controllers;
-using FireplaceApi.Presentation.Extensions;
+﻿using FireplaceApi.Presentation.Controllers;
 using FireplaceApi.Presentation.Swagger;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
@@ -18,7 +16,7 @@ public class CommunityMembershipDto
     [Required]
     public string UserId { get; set; }
     [Required]
-    public Username Username { get; set; }
+    public string Username { get; set; }
     [Required]
     public string CommunityId { get; set; }
     [Required]
@@ -78,7 +76,6 @@ public class CommunityMembershipDto
         [nameof(QueryResultDto<CommunityMembershipDto>.MoreItemIds).ToSnakeCase()] = QueryResultDto<CommunityMembershipDto>.MoreItemIdsExample1
     };
 
-
     public static IOpenApiAny Example { get; } = Example1;
     public static Dictionary<string, IOpenApiAny> ActionExamples { get; } = new Dictionary<string, IOpenApiAny>
     {
@@ -91,7 +88,7 @@ public class CommunityMembershipDto
 
     }
 
-    public CommunityMembershipDto(string id, string userId, Username username,
+    public CommunityMembershipDto(string id, string userId, string username,
         string communityId, string communityName, DateTime creationDate)
     {
         Id = id;

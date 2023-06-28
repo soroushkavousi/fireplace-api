@@ -11,7 +11,7 @@ public interface IGoogleUserRepository
     public Task<GoogleUser> GetGoogleUserByIdAsync(ulong id, bool includeUser = false);
     public Task<GoogleUser> GetGoogleUserByGmailAddressAsync(string gmailAddress,
         bool includeUser = false);
-    public Task<GoogleUser> CreateGoogleUserAsync(ulong id, ulong userId, string code,
+    public Task<GoogleUser> CreateGoogleUserAsync(ulong userId, string code,
         string accessToken, string tokenType, long accessTokenExpiresInSeconds,
         string refreshToken, string scope, string idToken,
         DateTime accessTokenIssuedTime, string gmailAddress, bool gmailVerified,

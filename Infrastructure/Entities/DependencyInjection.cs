@@ -8,7 +8,7 @@ public static class DependencyInjection
     public static void AddDatabase(this IServiceCollection services, string dbConnectionString)
     {
         var infrastructureAssemblyName = $"{nameof(FireplaceApi)}.{nameof(Infrastructure)}";
-        services.AddDbContext<ProjectDbContext>(
+        services.AddDbContext<ApiDbContext>(
             optionsBuilder => optionsBuilder.UseNpgsql(dbConnectionString,
                 optionsBuilder => optionsBuilder.MigrationsAssembly(infrastructureAssemblyName))
         );

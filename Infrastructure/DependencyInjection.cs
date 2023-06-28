@@ -2,6 +2,8 @@
 using FireplaceApi.Infrastructure.Entities;
 using FireplaceApi.Infrastructure.Gateways;
 using FireplaceApi.Infrastructure.Repositories;
+using FireplaceApi.Infrastructure.Serializers;
+using FireplaceApi.Infrastructure.Tools;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FireplaceApi.Infrastructure;
@@ -14,5 +16,9 @@ public static class DependencyInjection
         services.AddRepositories();
         services.AddCacheServices();
         services.AddGateways();
+        services.AddLoggers();
+        services.AddSerializers();
+        services.AddTools();
     }
+
 }

@@ -21,8 +21,8 @@ public static class CommunityMembershipConverter
 
         var communityMembershipEntity = new CommunityMembershipEntity(
             communityMembership.Id, communityMembership.UserId,
-            communityMembership.Username, communityMembership.CommunityId,
-            communityMembership.CommunityName, communityMembership.CreationDate,
+            communityMembership.Username.Value, communityMembership.CommunityId,
+            communityMembership.CommunityName.Value, communityMembership.CreationDate,
             communityMembership.ModifiedDate, userEntity, communityEntity);
 
         return communityMembershipEntity;
@@ -42,8 +42,8 @@ public static class CommunityMembershipConverter
             community = communityMembershipEntity.CommunityEntity.PureCopy().ToModel();
 
         var communityMembership = new CommunityMembership(communityMembershipEntity.Id,
-            communityMembershipEntity.UserEntityId, communityMembershipEntity.UserEntityUsername,
-            communityMembershipEntity.CommunityEntityId, communityMembershipEntity.CommunityEntityName,
+            communityMembershipEntity.UserEntityId, new Username(communityMembershipEntity.UserEntityUsername),
+            communityMembershipEntity.CommunityEntityId, new CommunityName(communityMembershipEntity.CommunityEntityName),
             communityMembershipEntity.CreationDate, communityMembershipEntity.ModifiedDate, user,
             community);
 

@@ -6,7 +6,7 @@ public static class DependencyInjection
 {
     public static void AddHostedServices(this IServiceCollection services)
     {
-        // Add a hosted service to check the API readiness
-        services.AddHostedService<ReadinessCheckerService>();
+        services.AddHostedService<ReadinessCheckerHostedService>();
+        services.AddHostedService<ServerInstanceHandlerHostedService>();
     }
 }

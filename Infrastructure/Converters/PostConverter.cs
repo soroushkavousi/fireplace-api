@@ -21,8 +21,8 @@ public static class PostConverter
             communityEntity = post.Community.PureCopy().ToEntity();
 
         var postEntity = new PostEntity(post.Id, post.AuthorId,
-            post.AuthorUsername, post.CommunityId,
-            post.CommunityName, post.Content,
+            post.AuthorUsername.Value, post.CommunityId,
+            post.CommunityName.Value, post.Content,
             post.Vote, post.RequestingUserVote,
             post.CreationDate, post.ModifiedDate,
             authorEntity, communityEntity);
@@ -44,8 +44,8 @@ public static class PostConverter
             community = postEntity.CommunityEntity.PureCopy().ToModel();
 
         var post = new Post(postEntity.Id,
-            postEntity.AuthorEntityId, postEntity.AuthorEntityUsername,
-            postEntity.CommunityEntityId, postEntity.CommunityEntityName,
+            postEntity.AuthorEntityId, new Username(postEntity.AuthorEntityUsername),
+            postEntity.CommunityEntityId, new CommunityName(postEntity.CommunityEntityName),
             postEntity.Vote, postEntity.RequestingUserVote,
             postEntity.Content, postEntity.CreationDate,
             postEntity.ModifiedDate, author, community);

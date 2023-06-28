@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Application.RequestTraces;
-using FireplaceApi.Domain.Configurations;
 using FireplaceApi.Domain.Errors;
 using FireplaceApi.Domain.RequestTraces;
 using FireplaceApi.Infrastructure.Converters;
@@ -16,16 +15,19 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories;
 
-public class RequestTraceRepository : IRequestTraceRepository
+public class RequestTraceRepository : IRequestTraceRepository, IRepository<IRequestTraceRepository>
 {
     private readonly ILogger<RequestTraceRepository> _logger;
-    private readonly ProjectDbContext _dbContext;
+    private readonly ApiDbContext _dbContext;
+    private readonly IIdGenerator _idGenerator;
     private readonly DbSet<RequestTraceEntity> _requestTraceEntities;
 
-    public RequestTraceRepository(ILogger<RequestTraceRepository> logger, ProjectDbContext dbContext)
+    public RequestTraceRepository(ILogger<RequestTraceRepository> logger, ApiDbContext dbContext,
+        IIdGenerator idGenerator)
     {
         _logger = logger;
         _dbContext = dbContext;
+        _idGenerator = idGenerator;
         _requestTraceEntities = dbContext.RequestTraceEntities;
     }
 
@@ -35,7 +37,7 @@ public class RequestTraceRepository : IRequestTraceRepository
         long? fromDuration = null, ErrorType errorType = null, FieldName errorField = null,
         DateTime? fromDate = null, bool? withAction = null)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT",
+        _logger.LogServerInformation(title: "DATABASE_INPUT",
             parameters: new
             {
                 method,
@@ -74,7 +76,7 @@ public class RequestTraceRepository : IRequestTraceRepository
             .Take(Configs.Current.QueryResult.TotalLimit)
             .ToListAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { requestTraceEntities = requestTraceEntities.Select(e => e.Id) });
         return requestTraceEntities.Select(RequestTraceConverter.ToModel).ToList();
     }
@@ -85,7 +87,7 @@ public class RequestTraceRepository : IRequestTraceRepository
         long? fromDuration = null, ErrorType errorType = null, FieldName errorField = null,
         DateTime? fromDate = null, bool? withAction = null)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT",
+        _logger.LogServerInformation(title: "DATABASE_INPUT",
             parameters: new
             {
                 method,
@@ -123,32 +125,31 @@ public class RequestTraceRepository : IRequestTraceRepository
             )
             .CountAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { count });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { count });
         return count;
     }
 
     public async Task<RequestTrace> GetRequestTraceByIdAsync(ulong id)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id });
         var sw = Stopwatch.StartNew();
         var requestTraceEntity = await _requestTraceEntities
             .AsNoTracking()
             .Where(e => e.Id == id)
             .SingleOrDefaultAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { requestTraceEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { requestTraceEntity });
         return requestTraceEntity.ToModel();
     }
 
-    public async Task<RequestTrace> CreateRequestTraceAsync(ulong id, string method,
+    public async Task<RequestTrace> CreateRequestTraceAsync(string method,
         string url, IPAddress ip, string country, string userAgent, ulong? userId,
         int statusCode, long duration, string action = null, ErrorType errorType = null,
         FieldName errorField = null)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT",
+        _logger.LogServerInformation(title: "DATABASE_INPUT",
             parameters: new
             {
-                id,
                 method,
                 url,
                 ip = ip?.ToString(),
@@ -162,6 +163,7 @@ public class RequestTraceRepository : IRequestTraceRepository
                 errorField
             });
         var sw = Stopwatch.StartNew();
+        var id = _idGenerator.GenerateNewId();
         var requestTraceEntity = new RequestTraceEntity(id, method, url,
             ip.ToString(), country, userAgent, userId, statusCode, duration,
             action, errorType?.Name, errorField?.Name);
@@ -169,13 +171,13 @@ public class RequestTraceRepository : IRequestTraceRepository
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { requestTraceEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { requestTraceEntity });
         return requestTraceEntity.ToModel();
     }
 
     public async Task<RequestTrace> UpdateRequestTraceAsync(RequestTrace requestTrace)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { requestTrace });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { requestTrace });
         var sw = Stopwatch.StartNew();
         var requestTraceEntity = requestTrace.ToEntity();
         _requestTraceEntities.Update(requestTraceEntity);
@@ -190,13 +192,13 @@ public class RequestTraceRepository : IRequestTraceRepository
                 parameters: requestTraceEntity, systemException: ex);
         }
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { requestTraceEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { requestTraceEntity });
         return requestTraceEntity.ToModel();
     }
 
     public async Task DeleteRequestTraceAsync(ulong id)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id });
         var sw = Stopwatch.StartNew();
         var requestTraceEntity = await _requestTraceEntities
             .Where(e => e.Id == id)
@@ -206,19 +208,19 @@ public class RequestTraceRepository : IRequestTraceRepository
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { requestTraceEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { requestTraceEntity });
     }
 
     public async Task<bool> DoesRequestTraceIdExistAsync(ulong id)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id });
         var sw = Stopwatch.StartNew();
         var doesExist = await _requestTraceEntities
             .AsNoTracking()
             .Where(e => e.Id == id)
             .AnyAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
         return doesExist;
     }
 }

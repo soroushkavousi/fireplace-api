@@ -21,7 +21,7 @@ public static class UserConverter
             sessionDtos = user.Sessions.Select(
                 session => session.PureCopy().ToDto()).ToList();
 
-        var userDto = new UserDto(user.Id.IdEncode(), user.Username,
+        var userDto = new UserDto(user.Id.IdEncode(), user.Username.Value,
             user.State.ToString(), user.Roles, user.CreationDate,
             user.DisplayName, user.About, user.AvatarUrl,
             user.BannerUrl, emailDto, sessionDtos);
@@ -34,7 +34,7 @@ public static class UserConverter
         if (user == null)
             return null;
 
-        var profileDto = new ProfileDto(user.Username, user.CreationDate,
+        var profileDto = new ProfileDto(user.Username.Value, user.CreationDate,
             user.DisplayName, user.About, user.AvatarUrl, user.BannerUrl);
 
         return profileDto;
@@ -45,7 +45,7 @@ public static class UserConverter
         if (profile == null)
             return null;
 
-        var profileDto = new ProfileDto(profile.Username, profile.CreationDate,
+        var profileDto = new ProfileDto(profile.Username.Value, profile.CreationDate,
             profile.DisplayName, profile.About, profile.AvatarUrl, profile.BannerUrl);
 
         return profileDto;

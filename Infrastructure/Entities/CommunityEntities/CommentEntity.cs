@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Domain.Users;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,7 @@ public class CommentEntity : BaseEntity
 {
     public ulong AuthorEntityId { get; set; }
     [Required]
-    public Username AuthorEntityUsername { get; set; }
+    public string AuthorEntityUsername { get; set; }
     public ulong PostEntityId { get; set; }
     public ulong? ParentCommentEntityId { get; set; }
     public int Vote { get; set; }
@@ -32,7 +31,7 @@ public class CommentEntity : BaseEntity
 
     private CommentEntity() : base() { }
 
-    public CommentEntity(ulong id, ulong authorEntityId, Username authorEntityUsername,
+    public CommentEntity(ulong id, ulong authorEntityId, string authorEntityUsername,
         ulong postEntityId, string content, ulong? parentCommentEntityId = null,
         int vote = 0, VoteType requestingUserVote = VoteType.NEUTRAL,
         DateTime? creationDate = null, DateTime? modifiedDate = null,

@@ -6,6 +6,7 @@ using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,23 +16,26 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories;
 
-public class CommentRepository : ICommentRepository
+public class CommentRepository : ICommentRepository, IRepository<ICommentRepository>
 {
     private readonly ILogger<CommentRepository> _logger;
-    private readonly ProjectDbContext _dbContext;
+    private readonly ApiDbContext _dbContext;
+    private readonly IIdGenerator _idGenerator;
     private readonly DbSet<CommentEntity> _commentEntities;
 
-    public CommentRepository(ILogger<CommentRepository> logger, ProjectDbContext dbContext)
+    public CommentRepository(ILogger<CommentRepository> logger, ApiDbContext dbContext,
+        IIdGenerator idGenerator)
     {
         _logger = logger;
         _dbContext = dbContext;
+        _idGenerator = idGenerator;
         _commentEntities = dbContext.CommentEntities;
     }
 
     public async Task<List<Comment>> ListPostCommentsAsync(ulong postId,
         CommentSortType sort, ulong? userId = null)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new
         {
             postId,
             sort,
@@ -60,7 +64,7 @@ public class CommentRepository : ICommentRepository
         if (userId != null)
             commentEntities.ForEach(e => e.CheckRequestingUserVote(userId));
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { commentEntities = commentEntities.Select(e => e.Id) });
         return commentEntities.Select(CommentConverter.ToModel).ToList();
     }
@@ -68,7 +72,7 @@ public class CommentRepository : ICommentRepository
     public async Task<List<Comment>> ListChildCommentAsync(ulong id, CommentSortType sort,
         ulong? userId = null)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new
         {
             id,
             sort,
@@ -91,7 +95,7 @@ public class CommentRepository : ICommentRepository
             commentEntity.CheckRequestingUserVote(userId);
 
         var childCommentEntities = commentEntity?.ChildCommentEntities;
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { childCommentEntities = childCommentEntities?.Select(e => e.Id) });
         return childCommentEntities.Select(CommentConverter.ToModel).ToList();
     }
@@ -99,7 +103,7 @@ public class CommentRepository : ICommentRepository
     public async Task<List<Comment>> ListCommentsByIdsAsync(List<ulong> Ids,
         CommentSortType sort, ulong? userId = null)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT",
+        _logger.LogServerInformation(title: "DATABASE_INPUT",
             parameters: new
             {
                 Ids,
@@ -128,7 +132,7 @@ public class CommentRepository : ICommentRepository
         commentEntities = new List<CommentEntity>();
         Ids.ForEach(id => commentEntities.Add(commentEntityDictionary[id]));
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { commentEntities = commentEntities.Select(e => e.Id) });
         return commentEntities.Select(CommentConverter.ToModel).ToList();
     }
@@ -136,7 +140,7 @@ public class CommentRepository : ICommentRepository
     public async Task<List<Comment>> ListSelfCommentsAsync(ulong authorId,
         CommentSortType sort)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new
         {
             authorId,
             sort
@@ -163,7 +167,7 @@ public class CommentRepository : ICommentRepository
 
         commentEntities.ForEach(e => e.CheckRequestingUserVote(authorId));
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { commentEntities = commentEntities.Select(e => e.Id) });
         return commentEntities.Select(CommentConverter.ToModel).ToList();
     }
@@ -172,7 +176,7 @@ public class CommentRepository : ICommentRepository
         bool includeAuthor = false, bool includePost = false,
         ulong? userId = null)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new
         {
             id,
             includeAuthor,
@@ -195,17 +199,16 @@ public class CommentRepository : ICommentRepository
         if (commentEntity != null && userId != null)
             commentEntity.CheckRequestingUserVote(userId);
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntity });
         return commentEntity.ToModel();
     }
 
-    public async Task<Comment> CreateCommentAsync(ulong id, ulong authorUserId,
+    public async Task<Comment> CreateCommentAsync(ulong authorUserId,
         Username authorUsername, ulong postId, string content,
         ulong? parentCommentId = null)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new
         {
-            id,
             authorUserId,
             authorUsername,
             postId,
@@ -213,20 +216,21 @@ public class CommentRepository : ICommentRepository
             parentCommentId
         });
         var sw = Stopwatch.StartNew();
+        var id = _idGenerator.GenerateNewId();
         var commentEntity = new CommentEntity(id, authorUserId,
-            authorUsername, postId, content, parentCommentId);
+            authorUsername.Value, postId, content, parentCommentId);
         _commentEntities.Add(commentEntity);
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { commentEntity });
         return commentEntity.ToModel();
     }
 
     public async Task<Comment> UpdateCommentAsync(Comment comment)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { comment });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { comment });
         var sw = Stopwatch.StartNew();
         var commentEntity = comment.ToEntity();
         _commentEntities.Update(commentEntity);
@@ -241,13 +245,13 @@ public class CommentRepository : ICommentRepository
                 parameters: commentEntity, systemException: ex);
         }
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntity });
         return commentEntity.ToModel();
     }
 
     public async Task DeleteCommentByIdAsync(ulong id)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id });
         var sw = Stopwatch.StartNew();
         var commentEntity = await _commentEntities
             .Where(e => e.Id == id)
@@ -257,20 +261,25 @@ public class CommentRepository : ICommentRepository
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { commentEntity });
     }
 
     public async Task<bool> DoesCommentIdExistAsync(ulong id)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id });
         var sw = Stopwatch.StartNew();
         var doesExist = await _commentEntities
             .AsNoTracking()
             .Where(e => e.Id == id)
             .AnyAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
         return doesExist;
+    }
+
+    public void InjectDependency(ServiceCollection services)
+    {
+        services.AddScoped<ICommentRepository, CommentRepository>();
     }
 }
 

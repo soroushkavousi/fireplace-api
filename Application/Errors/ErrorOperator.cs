@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Domain.Errors;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,11 +8,11 @@ namespace FireplaceApi.Application.Errors;
 
 public class ErrorOperator
 {
-    private readonly ILogger<ErrorOperator> _logger;
+    private readonly IServerLogger<ErrorOperator> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly IErrorRepository _errorRepository;
 
-    public ErrorOperator(ILogger<ErrorOperator> logger,
+    public ErrorOperator(IServerLogger<ErrorOperator> logger,
         IServiceProvider serviceProvider, IErrorRepository errorRepository)
     {
         _logger = logger;
@@ -47,7 +46,7 @@ public class ErrorOperator
         var error = await _errorRepository.GetErrorAsync(apiException.ErrorIdentifier);
         if (error == null)
         {
-            _logger.LogAppError("Can't fill error details from database!", sw, parameters: apiException);
+            _logger.LogServerError("Can't fill error details from database!", sw, parameters: apiException);
             var errorTypeGeneralIdentifier = ErrorIdentifier.OfTypeAndField(apiException.ErrorType, FieldName.GENERAL);
             error = await _errorRepository.GetErrorAsync(errorTypeGeneralIdentifier);
             error ??= Error.InternalServerError;
@@ -63,9 +62,7 @@ public class ErrorOperator
     public async Task<Error> CreateErrorAsync(int code, ErrorType type,
         FieldName field, string clientMessage, int httpStatusCode)
     {
-        var id = await IdGenerator.GenerateNewIdAsync(
-            (id) => DoesErrorExistAsync(ErrorIdentifier.OfId(id)));
-        var error = await _errorRepository.CreateErrorAsync(id, code,
+        var error = await _errorRepository.CreateErrorAsync(code,
             type, field, clientMessage, httpStatusCode);
         return error;
     }

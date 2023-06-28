@@ -2,6 +2,6 @@
 
 public enum CommunitySortType
 {
-    OLD,
+    CREATION,
     NEW,
 }

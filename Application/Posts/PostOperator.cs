@@ -3,7 +3,6 @@ using FireplaceApi.Application.Users;
 using FireplaceApi.Domain.Communities;
 using FireplaceApi.Domain.Posts;
 using FireplaceApi.Domain.Users;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,23 +10,23 @@ namespace FireplaceApi.Application.Posts;
 
 public class PostOperator
 {
-    private readonly ILogger<PostOperator> _logger;
+    private readonly IServerLogger<PostOperator> _logger;
     private readonly IPostRepository _postRepository;
     private readonly IPostVoteRepository _postVoteRepository;
     private readonly UserOperator _userOperator;
-    private readonly CommunityOperator _communityOperator;
+    private readonly ICommunityRepository _communityRepository;
 
-    public PostOperator(ILogger<PostOperator> logger,
+    public PostOperator(IServerLogger<PostOperator> logger,
         IPostRepository postRepository,
         IPostVoteRepository postVoteRepository,
         UserOperator userOperator,
-        CommunityOperator communityOperator)
+        ICommunityRepository communityRepository)
     {
         _logger = logger;
         _postRepository = postRepository;
         _postVoteRepository = postVoteRepository;
         _userOperator = userOperator;
-        _communityOperator = communityOperator;
+        _communityRepository = communityRepository;
     }
 
     public async Task<QueryResult<Post>> ListCommunityPostsAsync(CommunityIdentifier communityIdentifier,
@@ -84,17 +83,17 @@ public class PostOperator
         CommunityIdentifier communityIdentifier, string content)
     {
         ulong communityId = default;
-        string communityName = default;
+        CommunityName communityName = default;
         switch (communityIdentifier)
         {
             case CommunityIdIdentifier idIdentifier:
                 communityId = idIdentifier.Id;
-                communityName = await _communityOperator
+                communityName = await _communityRepository
                     .GetNameByIdAsync(communityId);
                 break;
             case CommunityNameIdentifier nameIdentifier:
                 communityName = nameIdentifier.Name;
-                communityId = await _communityOperator
+                communityId = await _communityRepository
                     .GetIdByNameAsync(communityName);
                 break;
         }
@@ -104,24 +103,21 @@ public class PostOperator
     }
 
     public async Task<Post> CreatePostAsync(ulong userId,
-        ulong communityId, string communityName, string content,
+        ulong communityId, CommunityName communityName, string content,
         Username username = null)
     {
-        var id = await IdGenerator.GenerateNewIdAsync(DoesPostIdExistAsync);
         username ??= await _userOperator.GetUsernameByIdAsync(userId);
         var post = await _postRepository.CreatePostAsync(
-            id, userId, username, communityId, communityName, content);
+            userId, username, communityId, communityName, content);
         return post;
     }
 
     public async Task<Post> VotePostAsync(ulong userId,
         ulong id, bool isUp, Username username = null)
     {
-        var postVoteId = await IdGenerator.GenerateNewIdAsync(
-            DoesPostVoteIdExistAsync);
         username ??= await _userOperator.GetUsernameByIdAsync(userId);
         var postVote = await _postVoteRepository.CreatePostVoteAsync(
-            postVoteId, userId, username, id, isUp);
+            userId, username, id, isUp);
         var voteChange = postVote.IsUp ? +1 : -1;
         var post = await PatchPostByIdAsync(userId,
             id, null, voteChange: voteChange);

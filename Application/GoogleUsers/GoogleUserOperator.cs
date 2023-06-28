@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Domain.GoogleUsers;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,12 +7,12 @@ namespace FireplaceApi.Application.GoogleUsers;
 
 public class GoogleUserOperator
 {
-    private readonly ILogger<GoogleUserOperator> _logger;
+    private readonly IServerLogger<GoogleUserOperator> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly IGoogleUserRepository _googleUserRepository;
     private readonly IGoogleGateway _googleUserGateway;
 
-    public GoogleUserOperator(ILogger<GoogleUserOperator> logger,
+    public GoogleUserOperator(IServerLogger<GoogleUserOperator> logger,
         IServiceProvider serviceProvider, IGoogleUserRepository googleUserRepository,
         IGoogleGateway googleUserGateway)
     {
@@ -53,8 +52,7 @@ public class GoogleUserOperator
         GoogleUserToken googleUserToken, string state,
         string authUser, string prompt, string redirectToUserUrl)
     {
-        var id = await IdGenerator.GenerateNewIdAsync(DoesGoogleUserIdExistAsync);
-        var googleUser = await _googleUserRepository.CreateGoogleUserAsync(id,
+        var googleUser = await _googleUserRepository.CreateGoogleUserAsync(
             userId, googleUserToken.Code, googleUserToken.AccessToken,
             googleUserToken.TokenType, googleUserToken.AccessTokenExpiresInSeconds,
             googleUserToken.RefreshToken, googleUserToken.Scope,

@@ -32,7 +32,7 @@ public class UserTests
         var sw = Stopwatch.StartNew();
         try
         {
-            _logger.LogAppInformation(title: "TEST_START");
+            _logger.LogServerInformation(title: "TEST_START");
 
             var narutoUser = await _clientPool.CreateNarutoUserAsync();
             var emailAddress = narutoUser.Email.Address;
@@ -53,11 +53,11 @@ public class UserTests
             var loggedInUserId = loggedInUser.Id.IdDecode();
             Assert.Equal(narutoUser.Id, loggedInUserId);
 
-            _logger.LogAppInformation(title: "TEST_END", sw: sw);
+            _logger.LogServerInformation(title: "TEST_END", sw: sw);
         }
         catch (Exception ex)
         {
-            _logger.LogAppCritical(title: "TEST_FAILED", sw: sw, ex: ex);
+            _logger.LogServerCritical(title: "TEST_FAILED", sw: sw, ex: ex);
             throw;
         }
     }

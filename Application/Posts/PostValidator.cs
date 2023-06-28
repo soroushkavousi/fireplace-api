@@ -1,9 +1,6 @@
-﻿using FireplaceApi.Application.Communities;
-using FireplaceApi.Application.Errors;
-using FireplaceApi.Domain.Communities;
+﻿using FireplaceApi.Domain.Communities;
 using FireplaceApi.Domain.Errors;
 using FireplaceApi.Domain.Posts;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,27 +9,24 @@ namespace FireplaceApi.Application.Posts;
 
 public class PostValidator : ApplicationValidator
 {
-    private readonly ILogger<PostValidator> _logger;
+    private readonly IServerLogger<PostValidator> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly PostOperator _postOperator;
-    private readonly CommunityValidator _communityValidator;
 
     public Post Post { get; private set; }
 
-    public PostValidator(ILogger<PostValidator> logger,
-        IServiceProvider serviceProvider, PostOperator postOperator,
-        CommunityValidator communityValidator)
+    public PostValidator(IServerLogger<PostValidator> logger,
+        IServiceProvider serviceProvider, PostOperator postOperator)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
         _postOperator = postOperator;
-        _communityValidator = communityValidator;
     }
 
     public async Task ValidateListCommunityPostsInputParametersAsync(CommunityIdentifier communityIdentifier,
         PostSortType? sort, ulong? userId)
     {
-        await _communityValidator.ValidateCommunityIdentifierExistsAsync(communityIdentifier);
+        //await _communityValidator.ValidateCommunityExistsAsync(communityIdentifier);
     }
 
     public async Task ValidateListPostsInputParametersAsync(string search, PostSortType? sort, ulong? userId)
@@ -60,7 +54,7 @@ public class PostValidator : ApplicationValidator
     public async Task ValidateCreatePostInputParametersAsync(
         ulong userId, CommunityIdentifier communityIdentifier, string content)
     {
-        await _communityValidator.ValidateCommunityIdentifierExistsAsync(communityIdentifier);
+        //await _communityValidator.ValidateCommunityExistsAsync(communityIdentifier);
     }
 
     public async Task ValidateVotePostInputParametersAsync(ulong userId,

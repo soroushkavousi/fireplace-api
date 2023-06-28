@@ -1,6 +1,4 @@
-﻿using FireplaceApi.Domain.Errors;
-using FireplaceApi.Infrastructure.Extensions;
-using FireplaceApi.Presentation.Dtos;
+﻿using FireplaceApi.Presentation.Dtos;
 using NLog;
 using System.Net;
 using System.Net.Http;
@@ -27,7 +25,7 @@ public static class TestExtensions
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
         var responseBody = await response.Content.ReadAsStringAsync();
-        _logger.LogAppInformation($"responseBody: {responseBody}", title: testName);
+        _logger.LogServerInformation($"responseBody: {responseBody}", title: testName);
 
         var actualError = responseBody.FromJson<ApiExceptionErrorDto>();
         Assert.NotNull(actualError.Code);
@@ -41,7 +39,7 @@ public static class TestExtensions
         [CallerMemberName] string testName = "")
     {
         var responseBody = await response.Content.ReadAsStringAsync();
-        _logger.LogAppInformation($"responseBody: {responseBody}", title: testName);
+        _logger.LogServerInformation($"responseBody: {responseBody}", title: testName);
 
         var actualError = responseBody.FromJson<ErrorDto>();
         Assert.NotEqual(notExpectedErrorType.Name, actualError.Type);

@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Presentation.Extensions;
+﻿using FireplaceApi.Infrastructure.Serializers;
 using FireplaceApi.Presentation.Swagger;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
@@ -19,7 +19,6 @@ public class QueryResultDto<T>
     [JsonPropertyName("more_item_ids")]
     [JsonPropertyOrder(100)]
     public List<string> MoreItemIds { get; set; }
-
 
     public static OpenApiObject PureExample1 { get; } = new OpenApiObject
     {

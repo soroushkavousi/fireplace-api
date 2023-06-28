@@ -2,7 +2,6 @@
 using FireplaceApi.Domain.Emails;
 using FireplaceApi.Domain.Users;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,13 +10,13 @@ namespace FireplaceApi.Application.Emails;
 
 public class EmailOperator
 {
-    private readonly ILogger<EmailOperator> _logger;
+    private readonly IServerLogger<EmailOperator> _logger;
 
     private readonly IServiceProvider _serviceProvider;
     private readonly IEmailRepository _emailRepository;
     private readonly IEmailGateway _emailGateway;
 
-    public EmailOperator(ILogger<EmailOperator> logger,
+    public EmailOperator(IServerLogger<EmailOperator> logger,
         IServiceProvider serviceProvider, IEmailRepository emailRepository,
         IEmailGateway emailGateway)
     {
@@ -62,9 +61,7 @@ public class EmailOperator
         ActivationStatus status = ActivationStatus.CREATED)
     {
         var activation = new Activation(status);
-        var id = await IdGenerator.GenerateNewIdAsync(
-            (id) => DoesEmailIdentifierExistAsync(EmailIdentifier.OfId(id)));
-        var email = await _emailRepository.CreateEmailAsync(id, userId,
+        var email = await _emailRepository.CreateEmailAsync(userId,
             address, activation);
         return email;
     }

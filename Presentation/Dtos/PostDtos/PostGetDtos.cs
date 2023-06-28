@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Domain.Communities;
-using FireplaceApi.Domain.Errors;
+﻿using FireplaceApi.Domain.Errors;
 using FireplaceApi.Domain.Posts;
 using FireplaceApi.Presentation.Interfaces;
 using FireplaceApi.Presentation.Swagger;
@@ -13,22 +12,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FireplaceApi.Presentation.Dtos;
 
-public class ListCommunityPostsInputRouteDto : IValidator
+public class ListCommunityPostsInputRouteDto
 {
     [Required]
     [FromRoute(Name = "id-or-name")]
     public string CommunityEncodedIdOrName { get; set; }
-
-    [BindNever]
-    public CommunityIdentifier CommunityIdentifier { get; set; }
-
-    public void Validate(IServiceProvider serviceProvider)
-    {
-        var presentationValidator = serviceProvider.GetService<CommunityValidator>();
-        var applicationValidator = presentationValidator.ApplicationValidator;
-
-        CommunityIdentifier = presentationValidator.ValidateEncodedIdOrName(CommunityEncodedIdOrName);
-    }
 }
 
 public class ListCommunityPostsInputQueryDto : IValidator
@@ -45,7 +33,7 @@ public class ListCommunityPostsInputQueryDto : IValidator
         var presentationValidator = serviceProvider.GetService<PostValidator>();
         var applicationValidator = presentationValidator.ApplicationValidator;
 
-        Sort = presentationValidator.ValidateInputEnum<PostSortType>(SortString);
+        Sort = SortString.ToNullableEnum<PostSortType>();
     }
 }
 
@@ -74,7 +62,7 @@ public class ListPostsInputQueryDto : IValidator
         if (string.IsNullOrWhiteSpace(EncodedIds))
             presentationValidator.ValidateFieldIsNotMissing(Search, FieldName.SEARCH);
 
-        Sort = presentationValidator.ValidateInputEnum<PostSortType>(SortString);
+        Sort = SortString.ToNullableEnum<PostSortType>();
 
         Ids = presentationValidator.ValidateIdsFormat(EncodedIds);
     }
@@ -94,7 +82,7 @@ public class ListSelfPostsInputQueryDto : IValidator
         var presentationValidator = serviceProvider.GetService<PostValidator>();
         var applicationValidator = presentationValidator.ApplicationValidator;
 
-        Sort = presentationValidator.ValidateInputEnum<PostSortType>(SortString);
+        Sort = SortString.ToNullableEnum<PostSortType>();
     }
 }
 

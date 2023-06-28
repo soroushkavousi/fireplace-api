@@ -14,23 +14,26 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories;
 
-public class GoogleUserRepository : IGoogleUserRepository
+public class GoogleUserRepository : IGoogleUserRepository, IRepository<IGoogleUserRepository>
 {
     private readonly ILogger<GoogleUserRepository> _logger;
-    private readonly ProjectDbContext _dbContext;
+    private readonly ApiDbContext _dbContext;
+    private readonly IIdGenerator _idGenerator;
     private readonly DbSet<GoogleUserEntity> _googleUserEntities;
 
-    public GoogleUserRepository(ILogger<GoogleUserRepository> logger, ProjectDbContext dbContext)
+    public GoogleUserRepository(ILogger<GoogleUserRepository> logger, ApiDbContext dbContext,
+        IIdGenerator idGenerator)
     {
         _logger = logger;
         _dbContext = dbContext;
+        _idGenerator = idGenerator;
         _googleUserEntities = dbContext.GoogleUserEntities;
     }
 
     public async Task<List<GoogleUser>> ListGoogleUsersAsync(
                 bool includeUser = false)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { includeUser });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { includeUser });
         var sw = Stopwatch.StartNew();
         var googleUserEntities = await _googleUserEntities
             .AsNoTracking()
@@ -39,14 +42,14 @@ public class GoogleUserRepository : IGoogleUserRepository
             )
             .ToListAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { googleUserEntities = googleUserEntities.Select(e => e.Id) });
         return googleUserEntities.Select(GoogleUserConverter.ToModel).ToList();
     }
 
     public async Task<GoogleUser> GetGoogleUserByIdAsync(ulong id, bool includeUser = false)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id, includeUser });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id, includeUser });
         var sw = Stopwatch.StartNew();
         var googleUserEntity = await _googleUserEntities
             .AsNoTracking()
@@ -56,14 +59,14 @@ public class GoogleUserRepository : IGoogleUserRepository
             )
             .SingleOrDefaultAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
         return googleUserEntity.ToModel();
     }
 
     public async Task<GoogleUser> GetGoogleUserByGmailAddressAsync(string gmailAddress,
         bool includeUser = false)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { gmailAddress, includeUser });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { gmailAddress, includeUser });
         var sw = Stopwatch.StartNew();
         var googleUserEntity = await _googleUserEntities
             .AsNoTracking()
@@ -73,11 +76,11 @@ public class GoogleUserRepository : IGoogleUserRepository
             )
             .SingleOrDefaultAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
         return googleUserEntity.ToModel();
     }
 
-    public async Task<GoogleUser> CreateGoogleUserAsync(ulong id, ulong userId,
+    public async Task<GoogleUser> CreateGoogleUserAsync(ulong userId,
         string code, string accessToken, string tokenType, long accessTokenExpiresInSeconds,
         string refreshToken, string scope, string idToken,
         DateTime accessTokenIssuedTime, string gmailAddress, bool gmailVerified,
@@ -85,10 +88,9 @@ public class GoogleUserRepository : IGoogleUserRepository
         string lastName, string locale, string pictureUrl, string state,
         string authUser, string prompt, string redirectToUserUrl)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT",
+        _logger.LogServerInformation(title: "DATABASE_INPUT",
             parameters: new
             {
-                id,
                 userId,
                 code = "(SENSITIVE)",
                 accessToken = "(SENSITIVE)",
@@ -112,6 +114,7 @@ public class GoogleUserRepository : IGoogleUserRepository
                 redirectToUserUrl
             });
         var sw = Stopwatch.StartNew();
+        var id = _idGenerator.GenerateNewId();
         var googleUserEntity = new GoogleUserEntity(id, userId, code, accessToken,
             tokenType, accessTokenExpiresInSeconds, refreshToken, scope, idToken,
             accessTokenIssuedTime, gmailAddress, gmailVerified, gmailIssuedTimeInSeconds,
@@ -121,13 +124,13 @@ public class GoogleUserRepository : IGoogleUserRepository
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
         return googleUserEntity.ToModel();
     }
 
     public async Task<GoogleUser> UpdateGoogleUserAsync(GoogleUser googleUser)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { googleUser });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { googleUser });
         var sw = Stopwatch.StartNew();
         var googleUserEntity = googleUser.ToEntity();
         _googleUserEntities.Update(googleUserEntity);
@@ -142,13 +145,13 @@ public class GoogleUserRepository : IGoogleUserRepository
                 parameters: googleUserEntity, systemException: ex);
         }
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
         return googleUserEntity.ToModel();
     }
 
     public async Task DeleteGoogleUserAsync(ulong id)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id });
         var sw = Stopwatch.StartNew();
         var googleUserEntity = await _googleUserEntities
             .Where(e => e.Id == id)
@@ -158,32 +161,32 @@ public class GoogleUserRepository : IGoogleUserRepository
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { googleUserEntity });
     }
 
     public async Task<bool> DoesGoogleUserIdExistAsync(ulong id)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id });
         var sw = Stopwatch.StartNew();
         var doesExist = await _googleUserEntities
             .AsNoTracking()
             .Where(e => e.Id == id)
             .AnyAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
         return doesExist;
     }
 
     public async Task<bool> DoesGoogleUserGmailAddressExistAsync(string gmailAddress)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { gmailAddress });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { gmailAddress });
         var sw = Stopwatch.StartNew();
         var doesExist = await _googleUserEntities
             .AsNoTracking()
             .Where(e => e.GmailAddress == gmailAddress)
             .AnyAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
         return doesExist;
     }
 }

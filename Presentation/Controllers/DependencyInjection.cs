@@ -6,7 +6,7 @@ namespace FireplaceApi.Presentation.Controllers;
 
 public static class DependencyInjection
 {
-    public static void AddControllers(this IServiceCollection services)
+    public static void AddApiControllers(this IServiceCollection services)
     {
         services.AddControllers(options =>
         {
@@ -18,7 +18,7 @@ public static class DependencyInjection
         }).AddJsonOptions(options =>
         {
             // Config serializers
-            options.JsonSerializerOptions.AddApplicationOptions();
+            options.JsonSerializerOptions.AddCommonOptions();
         });
 
         // Make url lowercase

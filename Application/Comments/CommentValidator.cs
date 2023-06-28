@@ -1,9 +1,7 @@
-﻿using FireplaceApi.Application.Errors;
-using FireplaceApi.Application.Posts;
+﻿using FireplaceApi.Application.Posts;
 using FireplaceApi.Domain.Comments;
 using FireplaceApi.Domain.Errors;
 using FireplaceApi.Domain.Posts;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,7 +10,7 @@ namespace FireplaceApi.Application.Comments;
 
 public class CommentValidator : ApplicationValidator
 {
-    private readonly ILogger<CommentValidator> _logger;
+    private readonly IServerLogger<CommentValidator> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly CommentOperator _commentOperator;
     private readonly PostValidator _postValidator;
@@ -21,7 +19,7 @@ public class CommentValidator : ApplicationValidator
     public Comment ParentComment { get; private set; }
     public Post Post { get; private set; }
 
-    public CommentValidator(ILogger<CommentValidator> logger,
+    public CommentValidator(IServerLogger<CommentValidator> logger,
         IServiceProvider serviceProvider, CommentOperator commentOperator,
         PostValidator postValidator)
     {

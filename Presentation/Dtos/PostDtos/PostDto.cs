@@ -1,6 +1,4 @@
-﻿using FireplaceApi.Domain.Users;
-using FireplaceApi.Presentation.Controllers;
-using FireplaceApi.Presentation.Extensions;
+﻿using FireplaceApi.Presentation.Controllers;
 using FireplaceApi.Presentation.Swagger;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
@@ -18,7 +16,7 @@ public class PostDto
     [Required]
     public string AuthorId { get; set; }
     [Required]
-    public Username AuthorUsername { get; set; }
+    public string AuthorUsername { get; set; }
     [Required]
     public string CommunityId { get; set; }
     [Required]
@@ -138,7 +136,7 @@ public class PostDto
 
     }
 
-    public PostDto(string id, string authorId, Username authorUsername, string communityId,
+    public PostDto(string id, string authorId, string authorUsername, string communityId,
         string communityName, int vote, VoteType requestingUserVote, string content,
         DateTime creationDate, DateTime? modifiedDate, ProfileDto author = null,
         CommunityDto community = null, QueryResultDto<CommentDto> comments = null)

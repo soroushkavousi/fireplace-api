@@ -19,8 +19,8 @@ public static class CommunityConverter
             postDtos = community.Posts.ToDto(PostConverter.ToDto);
         }
 
-        var communityDto = new CommunityDto(community.Id.IdEncode(), community.Name,
-            community.CreatorId.IdEncode(), community.CreatorUsername,
+        var communityDto = new CommunityDto(community.Id.IdEncode(), community.Name.Value,
+            community.CreatorId.IdEncode(), community.CreatorUsername.Value,
             community.CreationDate, postDtos);
 
         return communityDto;

@@ -37,6 +37,6 @@ public class AppSettings
     public static AppSettings LogConfigFilePath { get; } = new
     (
         key: "Log:ConfigFilePath",
-        @default: Path.Combine(Utils.ContentRootPath, "Logging", "nlog.config")
+        @default: Path.Combine(Utils.ContentRootPath, "Loggers", "nlog.config")
     );
 }

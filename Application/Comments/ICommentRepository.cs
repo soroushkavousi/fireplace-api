@@ -18,8 +18,8 @@ public interface ICommentRepository
     public Task<Comment> GetCommentByIdAsync(ulong id,
         bool includeAuthor = false, bool includePost = false,
         ulong? userId = null);
-    public Task<Comment> CreateCommentAsync(ulong id,
-        ulong authorUserId, Username authorUsername, ulong postId,
+    public Task<Comment> CreateCommentAsync(ulong authorUserId,
+        Username authorUsername, ulong postId,
         string content, ulong? parentCommentId = null);
     public Task<Comment> UpdateCommentAsync(Comment comment);
     public Task DeleteCommentByIdAsync(ulong id);

@@ -15,9 +15,9 @@ public interface IPostRepository
     public Task<List<Post>> ListSelfPostsAsync(ulong authorId, PostSortType sort);
     public Task<Post> GetPostByIdAsync(ulong id, bool includeAuthor = false,
         bool includeCommunity = false, ulong? userId = null);
-    public Task<Post> CreatePostAsync(ulong id, ulong authorUserId,
+    public Task<Post> CreatePostAsync(ulong authorUserId,
         Username authorUsername, ulong communityId,
-        string communityName, string content);
+        CommunityName communityName, string content);
     public Task<Post> UpdatePostAsync(Post post);
     public Task DeletePostByIdAsync(ulong id);
     public Task<bool> DoesPostIdExistAsync(ulong id);

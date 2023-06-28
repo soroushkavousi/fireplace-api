@@ -18,9 +18,6 @@ public static partial class Regexes
     public static Regex AuthorizationHeaderValue { get; } = AuthorizationHeaderValueRegex();
     public static Regex AccessTokenValue { get; } = AccessTokenValueRegex();
     public static Regex TextWithWhitespace { get; } = TextWithWhitespaceRegex();
-    public static Regex CommunityNameMinLength { get; } = CommunityNameMinLengthRegex();
-    public static Regex CommunityNameMaxLength { get; } = CommunityNameMaxLengthRegex();
-    public static Regex CommunityNameValidCharacters { get; } = CommunityNameValidCharactersRegex();
 
     [GeneratedRegex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")]
     private static partial Regex PasswordRegex();
@@ -63,12 +60,4 @@ public static partial class Regexes
     [GeneratedRegex("^\\S*$")]
     private static partial Regex TextWithWhitespaceRegex();
 
-    [GeneratedRegex("^.{3,}$")]
-    private static partial Regex CommunityNameMinLengthRegex();
-
-    [GeneratedRegex("^.{0,32}$")]
-    private static partial Regex CommunityNameMaxLengthRegex();
-
-    [GeneratedRegex("^[a-zA-Z0-9_-]+$")]
-    private static partial Regex CommunityNameValidCharactersRegex();
 }

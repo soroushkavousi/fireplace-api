@@ -1,11 +1,13 @@
 ﻿using FireplaceApi.Application.Communities;
 using FireplaceApi.Domain.Communities;
+using FireplaceApi.Domain.Errors;
 using FireplaceApi.Presentation.Auth;
 using FireplaceApi.Presentation.Converters;
 using FireplaceApi.Presentation.Dtos;
-using FireplaceApi.Presentation.Tools;
+using FireplaceApi.Presentation.ValueObjects;
 using HotChocolate;
 using HotChocolate.Types;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 
@@ -15,24 +17,24 @@ namespace FireplaceApi.Presentation.GraphQL.Resolvers.Queries;
 public class CommunityQueryResolvers
 {
     [AllowAnonymous]
-    public async Task<QueryResultDto<CommunityDto>> GetCommunitiesAsync(
-        [Service(ServiceKind.Resolver)] CommunityService communityService,
-        [Service(ServiceKind.Resolver)] Validators.CommunityValidator communityValidator,
+    public async Task<QueryResultDto<CommunityDto>> SearchCommunitiesAsync(
+        [Service(ServiceKind.Resolver)] ISender sender,
         [GraphQLNonNullType] string search, CommunitySortType? sort = null)
     {
-        var queryResult = await communityService.ListCommunitiesAsync(search, sort);
+        var query = new SearchCommunitiesQuery(search, sort);
+        var queryResult = await sender.Send(query);
         var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }
 
     [AllowAnonymous]
     public async Task<CommunityDto> GetCommunityAsync(
-        [Service(ServiceKind.Resolver)] CommunityService communityService,
-        [Service(ServiceKind.Resolver)] Validators.CommunityValidator communityValidator,
+        [Service(ServiceKind.Resolver)] ISender sender,
         [GraphQLNonNullType] string idOrName)
     {
-        var communityIdentifier = communityValidator.ValidateEncodedIdOrName(idOrName);
-        var community = await communityService.GetCommunityByIdentifierAsync(communityIdentifier);
+        var communityIdentifier = idOrName.ToCommunityIdentifier();
+        var query = new GetCommunityByIdOrNameQuery(communityIdentifier);
+        var community = await sender.Send(query);
         var communityDto = community.ToDto();
         return communityDto;
     }
@@ -43,12 +45,12 @@ public class PostCommunityQueryResolvers
 {
     [AllowAnonymous]
     public async Task<CommunityDto> GetCommunityAsync(
-        [Service(ServiceKind.Resolver)] CommunityService communityService,
-        [Service(ServiceKind.Resolver)] Validators.CommunityValidator communityValidator,
+        [Service(ServiceKind.Resolver)] ISender sender,
         [User] RequestingUser requestingUser, [Parent] PostDto post)
     {
-        var communityIdentifier = CommunityIdentifier.OfId(post.CommunityId.IdDecode());
-        var community = await communityService.GetCommunityByIdentifierAsync(communityIdentifier);
+        var communityIdentifier = CommunityIdentifier.OfId(post.CommunityId.ToId(FieldName.COMMUNITY_ID));
+        var query = new GetCommunityByIdOrNameQuery(communityIdentifier);
+        var community = await sender.Send(query);
         var communityDto = community.ToDto();
         return communityDto;
     }
@@ -59,12 +61,12 @@ public class UserCommunitiesQueryResolvers
 {
     [AllowAnonymous]
     public async Task<QueryResultDto<CommunityDto>> GetJoinedCommunitiesAsync(
-        [Service(ServiceKind.Resolver)] CommunityService communityService,
-        [Service(ServiceKind.Resolver)] Validators.CommunityValidator communityValidator,
+        [Service(ServiceKind.Resolver)] ISender sender,
         [User] RequestingUser requestingUser, [Parent] UserDto user,
         CommunitySortType? sort = null)
     {
-        var queryResult = await communityService.ListJoinedCommunitiesAsync(requestingUser.Id.Value, sort);
+        var query = new ListJoinedCommunitiesQuery(requestingUser.Id.Value, sort);
+        var queryResult = await sender.Send(query);
         var queryResultDto = queryResult.ToDto();
         return queryResultDto;
     }

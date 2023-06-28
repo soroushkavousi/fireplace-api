@@ -22,7 +22,7 @@ public class ClientPool
     private readonly ILogger<ClientPool> _logger;
     private readonly WebApplicationFactory<Program> _apiFactory;
     private readonly WebApplicationFactoryClientOptions _clientOptions;
-    private readonly ProjectDbContext _dbContext;
+    private readonly ApiDbContext _dbContext;
     private readonly IUserRepository _userRepository;
     private readonly IEmailRepository _emailRepository;
     private readonly UserOperator _userOperator;
@@ -42,7 +42,7 @@ public class ClientPool
             HandleCookies = true,
             MaxAutomaticRedirections = 7
         };
-        _dbContext = testFixture.ServiceProvider.GetRequiredService<ProjectDbContext>();
+        _dbContext = testFixture.ServiceProvider.GetRequiredService<ApiDbContext>();
         _userRepository = testFixture.ServiceProvider.GetRequiredService<IUserRepository>();
         _emailRepository = testFixture.ServiceProvider.GetRequiredService<IEmailRepository>();
         _userOperator = testFixture.ServiceProvider.GetRequiredService<UserOperator>();
@@ -98,21 +98,11 @@ public class ClientPool
             user.Email = await _emailOperator.ActivateEmailByIdentifierAsync(EmailIdentifier.OfId(user.Email.Id));
         user.State = UserState.VERIFIED;
 
-        //var id = await IdGenerator.GenerateNewIdAsync();
-        //var user = await _userRepository.CreateUserAsync(id, username,
-        //    state, roles, password, displayName: displayName);
-        //user.Password = password;
-
-        //var activationStatus = state == UserState.VERIFIED ? ActivationStatus.COMPLETED : ActivationStatus.SENT;
-        //var emailActivation = new Activation(activationStatus, activationCode, "Fireplace Email Activation", $"Code: {activationCode}");
-        //id = await IdGenerator.GenerateNewIdAsync();
-        //user.Email = await _emailRepository.CreateEmailAsync(id, user.Id, emailAddress, emailActivation);
-
         var httpClient = CreateHttpClient();
         var testUser = new TestUser(user, httpClient);
         await LogInUser(testUser);
 
-        _logger.LogAppInformation($"User {username} created successfully.", sw);
+        _logger.LogServerInformation($"User {username} created successfully.", sw);
         return testUser;
     }
 

@@ -1,6 +1,5 @@
 ﻿using FireplaceApi.Domain.Users;
 using FireplaceApi.Presentation.Controllers;
-using FireplaceApi.Presentation.Extensions;
 using FireplaceApi.Presentation.Swagger;
 using Microsoft.OpenApi.Any;
 using Newtonsoft.Json;
@@ -17,7 +16,7 @@ public class UserDto
     [Required]
     public string Id { get; set; }
     [Required]
-    public Username Username { get; set; }
+    public string Username { get; set; }
     [Required]
     public string State { get; set; }
     [JsonIgnore]
@@ -30,7 +29,6 @@ public class UserDto
     public string BannerUrl { get; set; }
     public EmailDto Email { get; set; }
     public List<SessionDto> Sessions { get; set; }
-
 
     public static OpenApiObject PureExample1 { get; } = new OpenApiObject
     {
@@ -118,7 +116,7 @@ public class UserDto
 
     }
 
-    public UserDto(string id, Username username, string state,
+    public UserDto(string id, string username, string state,
         List<UserRole> roles, DateTime creationDate, string displayName,
         string about, string avatarUrl, string bannerUrl,
         EmailDto email = null, List<SessionDto> sessions = null)

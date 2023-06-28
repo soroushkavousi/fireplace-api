@@ -1,6 +1,4 @@
-﻿using FireplaceApi.Domain.Users;
-using FireplaceApi.Presentation.Controllers;
-using FireplaceApi.Presentation.Extensions;
+﻿using FireplaceApi.Presentation.Controllers;
 using FireplaceApi.Presentation.Swagger;
 using Microsoft.OpenApi.Any;
 using Swashbuckle.AspNetCore.Annotations;
@@ -14,7 +12,7 @@ namespace FireplaceApi.Presentation.Dtos;
 public class ProfileDto
 {
     [Required]
-    public Username Username { get; set; }
+    public string Username { get; set; }
     [Required]
     public DateTime CreationDate { get; set; }
     public string DisplayName { get; set; }
@@ -80,7 +78,7 @@ public class ProfileDto
 
     }
 
-    public ProfileDto(Username username, DateTime creationDate,
+    public ProfileDto(string username, DateTime creationDate,
         string displayName, string about, string avatarUrl, string bannerUrl)
     {
         Username = username;

@@ -16,23 +16,26 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories;
 
-public class SessionRepository : ISessionRepository
+public class SessionRepository : ISessionRepository, IRepository<ISessionRepository>
 {
     private readonly ILogger<SessionRepository> _logger;
-    private readonly ProjectDbContext _dbContext;
+    private readonly ApiDbContext _dbContext;
+    private readonly IIdGenerator _idGenerator;
     private readonly DbSet<SessionEntity> _sessionEntities;
 
-    public SessionRepository(ILogger<SessionRepository> logger, ProjectDbContext dbContext)
+    public SessionRepository(ILogger<SessionRepository> logger, ApiDbContext dbContext,
+        IIdGenerator idGenerator)
     {
         _logger = logger;
         _dbContext = dbContext;
+        _idGenerator = idGenerator;
         _sessionEntities = dbContext.SessionEntities;
     }
 
     public async Task<List<Session>> ListSessionsAsync(ulong userId,
         SessionState? filterSessionState = null, bool includeUser = false)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT",
+        _logger.LogServerInformation(title: "DATABASE_INPUT",
             parameters: new { userId, filterSessionState, includeUser });
         var sw = Stopwatch.StartNew();
         Expression<Func<SessionEntity, bool>> filterSessionStateFunction;
@@ -50,14 +53,14 @@ public class SessionRepository : ISessionRepository
             )
             .ToListAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { sessionEntities = sessionEntities.Select(e => e.Id) });
         return sessionEntities.Select(SessionConverter.ToModel).ToList();
     }
 
     public async Task<Session> GetSessionByIdAsync(ulong id, bool includeUser = false)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id, includeUser });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id, includeUser });
         var sw = Stopwatch.StartNew();
         var sessionEntity = await _sessionEntities
             .AsNoTracking()
@@ -67,14 +70,14 @@ public class SessionRepository : ISessionRepository
             )
             .SingleOrDefaultAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { sessionEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { sessionEntity });
         return sessionEntity.ToModel();
     }
 
     public async Task<Session> FindSessionAsync(ulong userId, IPAddress ipAddress,
         bool includeTracking = false, bool includeUser = false)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT",
+        _logger.LogServerInformation(title: "DATABASE_INPUT",
             parameters: new { userId, ipAddress, includeTracking, includeUser });
         var sw = Stopwatch.StartNew();
         var sessionEntity = await _sessionEntities
@@ -85,29 +88,30 @@ public class SessionRepository : ISessionRepository
             )
             .SingleOrDefaultAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { sessionEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { sessionEntity });
         return sessionEntity.ToModel();
     }
 
-    public async Task<Session> CreateSessionAsync(ulong id, ulong userId, IPAddress ipAddress,
+    public async Task<Session> CreateSessionAsync(ulong userId, IPAddress ipAddress,
         SessionState state, string refreshToken)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT",
-            parameters: new { id, userId, ipAddress, state });
+        _logger.LogServerInformation(title: "DATABASE_INPUT",
+            parameters: new { userId, ipAddress, state });
         var sw = Stopwatch.StartNew();
+        var id = _idGenerator.GenerateNewId();
         var sessionEntity = new SessionEntity(id, userId, ipAddress.ToString(),
             state.ToString(), refreshToken);
         _sessionEntities.Add(sessionEntity);
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { sessionEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { sessionEntity });
         return sessionEntity.ToModel();
     }
 
     public async Task<Session> UpdateSessionAsync(Session session)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { session });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { session });
         var sw = Stopwatch.StartNew();
         var sessionEntity = session.ToEntity();
         _sessionEntities.Update(sessionEntity);
@@ -122,13 +126,13 @@ public class SessionRepository : ISessionRepository
                 parameters: sessionEntity, systemException: ex);
         }
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { sessionEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { sessionEntity });
         return sessionEntity.ToModel();
     }
 
     public async Task DeleteSessionAsync(ulong id)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id });
         var sw = Stopwatch.StartNew();
         var sessionEntity = await _sessionEntities
             .Where(e => e.Id == id)
@@ -138,19 +142,19 @@ public class SessionRepository : ISessionRepository
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { sessionEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { sessionEntity });
     }
 
     public async Task<bool> DoesSessionIdExistAsync(ulong id)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id });
         var sw = Stopwatch.StartNew();
         var doesExist = await _sessionEntities
             .AsNoTracking()
             .Where(e => e.Id == id)
             .AnyAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
         return doesExist;
     }
 }

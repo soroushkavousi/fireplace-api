@@ -29,9 +29,9 @@ public class ResolverLoggingFieldMiddleware
         var sw = Stopwatch.StartNew();
         var inputs = context.GetResolverInputs();
         var path = context.Path.ToString();
-        _logger.LogAppInformation(message: path, title: "RESOLVER_INPUT", parameters: inputs);
+        _logger.LogServerInformation(message: path, title: "RESOLVER_INPUT", parameters: inputs);
         await _next(context);
-        _logger.LogAppInformation(sw: sw, message: path, title: "RESOLVER_OUTPUT", parameters: context.Result);
+        _logger.LogServerInformation(sw: sw, message: path, title: "RESOLVER_OUTPUT", parameters: context.Result);
     }
 }
 

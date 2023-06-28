@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Application.GoogleUsers;
-using FireplaceApi.Domain.Configurations;
 using FireplaceApi.Domain.Errors;
 using FireplaceApi.Domain.GoogleUsers;
 using Google.Apis.Auth.OAuth2;
@@ -74,13 +73,13 @@ public class GoogleGateway : IGoogleGateway
                 idTokenPayload.GivenName, idTokenPayload.FamilyName,
                 idTokenPayload.Locale, idTokenPayload.Picture);
 
-            _logger.LogAppInformation(sw: sw, parameters: new { googleUser });
+            _logger.LogServerInformation(sw: sw, parameters: new { googleUser });
 
             return googleUser;
         }
         catch (Exception ex)
         {
-            _logger.LogAppError($"Problem", sw, ex: ex);
+            _logger.LogServerError($"Problem", sw, ex: ex);
             throw new InternalServerException("Can't exchange user code for access token",
                 parameters: new { code }, systemException: ex);
         }

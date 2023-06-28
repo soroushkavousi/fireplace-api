@@ -1,6 +1,5 @@
 ﻿using FireplaceApi.Application.Communities;
 using FireplaceApi.Domain.Communities;
-using FireplaceApi.Domain.Configurations;
 using FireplaceApi.Domain.Errors;
 using FireplaceApi.Domain.Users;
 using FireplaceApi.Infrastructure.Converters;
@@ -15,17 +14,19 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories;
 
-public class CommunityMembershipRepository : ICommunityMembershipRepository
+public class CommunityMembershipRepository : ICommunityMembershipRepository, IRepository<ICommunityMembershipRepository>
 {
     private readonly ILogger<CommunityMembershipRepository> _logger;
-    private readonly ProjectDbContext _dbContext;
+    private readonly ApiDbContext _dbContext;
+    private readonly IIdGenerator _idGenerator;
     private readonly DbSet<CommunityMembershipEntity> _communityMembershipEntities;
 
     public CommunityMembershipRepository(ILogger<CommunityMembershipRepository> logger,
-        ProjectDbContext dbContext)
+        ApiDbContext dbContext, IIdGenerator idGenerator)
     {
         _logger = logger;
         _dbContext = dbContext;
+        _idGenerator = idGenerator;
         _communityMembershipEntities = dbContext.CommunityMembershipEntities;
     }
 
@@ -33,7 +34,7 @@ public class CommunityMembershipRepository : ICommunityMembershipRepository
         UserIdentifier userIdentifier = null, CommunityIdentifier communityIdentifier = null,
         bool includeUser = false, bool includeCommunity = false)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT",
+        _logger.LogServerInformation(title: "DATABASE_INPUT",
             parameters: new { userIdentifier, communityIdentifier });
         var sw = Stopwatch.StartNew();
         var communityMembershipEntity = await _communityMembershipEntities
@@ -50,7 +51,7 @@ public class CommunityMembershipRepository : ICommunityMembershipRepository
             .Take(Configs.Current.QueryResult.TotalLimit)
             .ToListAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { ids = communityMembershipEntity.Select(e => e.Id) });
         return communityMembershipEntity.Select(
             CommunityMembershipConverter.ToModel).ToList();
@@ -60,7 +61,7 @@ public class CommunityMembershipRepository : ICommunityMembershipRepository
         CommunityMembershipIdentifier identifier, bool includeUser = false,
         bool includeCommunity = false)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT",
+        _logger.LogServerInformation(title: "DATABASE_INPUT",
             parameters: new { identifier, includeUser, includeCommunity });
         var sw = Stopwatch.StartNew();
         var communityMembershipEntity = await _communityMembershipEntities
@@ -76,31 +77,32 @@ public class CommunityMembershipRepository : ICommunityMembershipRepository
             )
             .SingleOrDefaultAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { communityMembershipEntity });
         return communityMembershipEntity.ToModel();
     }
 
-    public async Task<CommunityMembership> CreateCommunityMembershipAsync(ulong id,
-        ulong userId, Username username, ulong communityId, string communityName)
+    public async Task<CommunityMembership> CreateCommunityMembershipAsync(ulong userId,
+        Username username, ulong communityId, CommunityName communityName)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT",
-            parameters: new { id, userId, username, communityId, communityName });
+        _logger.LogServerInformation(title: "DATABASE_INPUT",
+            parameters: new { userId, username, communityId, communityName });
         var sw = Stopwatch.StartNew();
+        var id = _idGenerator.GenerateNewId();
         var communityMembershipEntity = new CommunityMembershipEntity(id, userId,
-            username, communityId, communityName);
+            username.Value, communityId, communityName.Value);
         _communityMembershipEntities.Add(communityMembershipEntity);
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityMembershipEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityMembershipEntity });
         return communityMembershipEntity.ToModel();
     }
 
     public async Task<CommunityMembership> UpdateCommunityMembershipAsync(
         CommunityMembership communityMembership)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { communityMembership });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { communityMembership });
         var sw = Stopwatch.StartNew();
         var communityMembershipEntity = communityMembership.ToEntity();
         _communityMembershipEntities.Update(communityMembershipEntity);
@@ -115,13 +117,13 @@ public class CommunityMembershipRepository : ICommunityMembershipRepository
                 parameters: communityMembershipEntity, systemException: ex);
         }
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityMembershipEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityMembershipEntity });
         return communityMembershipEntity.ToModel();
     }
 
     public async Task DeleteCommunityMembershipByIdentifierAsync(CommunityMembershipIdentifier identifier)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { identifier });
         var sw = Stopwatch.StartNew();
         var communityMembershipEntity = await _communityMembershipEntities
             .Search(
@@ -135,13 +137,12 @@ public class CommunityMembershipRepository : ICommunityMembershipRepository
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityMembershipEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { communityMembershipEntity });
     }
-
 
     public async Task<bool> DoesCommunityMembershipIdentifierExistAsync(CommunityMembershipIdentifier identifier)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { identifier });
         var sw = Stopwatch.StartNew();
         var doesExist = await _communityMembershipEntities
             .AsNoTracking()
@@ -152,7 +153,7 @@ public class CommunityMembershipRepository : ICommunityMembershipRepository
             )
             .AnyAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
         return doesExist;
     }
 }
@@ -199,7 +200,7 @@ public static class CommunityMembershipRepositoryExtensions
                     q = q.Where(e => e.UserEntityId == idIdentifier.Id);
                     break;
                 case UserUsernameIdentifier usernameIdentifier:
-                    q = q.Where(e => e.UserEntityUsername == usernameIdentifier.Username);
+                    q = q.Where(e => e.UserEntityUsername == usernameIdentifier.Username.Value);
                     break;
             }
         }
@@ -212,7 +213,7 @@ public static class CommunityMembershipRepositoryExtensions
                     q = q.Where(e => e.CommunityEntityId == idIdentifier.Id);
                     break;
                 case CommunityNameIdentifier nameIdentifier:
-                    q = q.Where(e => e.CommunityEntityName == nameIdentifier.Name);
+                    q = q.Where(e => e.CommunityEntityName == nameIdentifier.Name.Value);
                     break;
             }
         }

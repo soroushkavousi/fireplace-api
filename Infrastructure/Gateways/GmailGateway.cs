@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Application.Emails;
+using FireplaceApi.Infrastructure.Serializers;
 using FireplaceApi.Infrastructure.Tools;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;
@@ -42,7 +43,7 @@ public class GmailGateway : IEmailGateway
         }
         catch (IOException)
         {
-            _logger.LogAppInformation("The gmail token response file is being used by another process.");
+            _logger.LogServerInformation("The gmail token response file is being used by another process.");
             System.Threading.Thread.Sleep(50);
         }
     }
@@ -85,12 +86,12 @@ public class GmailGateway : IEmailGateway
         if (response != null)
         {
             string serverLog = $"Email has been sent to {toEmailAddress}! body: {body[..10]}...";
-            _logger.LogAppInformation(serverLog, sw);
+            _logger.LogServerInformation(serverLog, sw);
         }
         else
         {
             string serverLog = $"Can't send email from to {toEmailAddress}! body: {body[..10]}...";
-            _logger.LogAppError(serverLog, sw);
+            _logger.LogServerError(serverLog, sw);
         }
     }
 }

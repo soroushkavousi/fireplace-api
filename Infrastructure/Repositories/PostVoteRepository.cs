@@ -14,22 +14,25 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories;
 
-public class PostVoteRepository : IPostVoteRepository
+public class PostVoteRepository : IPostVoteRepository, IRepository<IPostVoteRepository>
 {
     private readonly ILogger<PostVoteRepository> _logger;
-    private readonly ProjectDbContext _dbContext;
+    private readonly ApiDbContext _dbContext;
+    private readonly IIdGenerator _idGenerator;
     private readonly DbSet<PostVoteEntity> _postVoteEntities;
 
-    public PostVoteRepository(ILogger<PostVoteRepository> logger, ProjectDbContext dbContext)
+    public PostVoteRepository(ILogger<PostVoteRepository> logger, ApiDbContext dbContext,
+        IIdGenerator idGenerator)
     {
         _logger = logger;
         _dbContext = dbContext;
+        _idGenerator = idGenerator;
         _postVoteEntities = dbContext.PostVoteEntities;
     }
 
     public async Task<List<PostVote>> ListPostVotesAsync(List<ulong> Ids)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { Ids });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { Ids });
         var sw = Stopwatch.StartNew();
         var postEntities = await _postVoteEntities
             .AsNoTracking()
@@ -41,7 +44,7 @@ public class PostVoteRepository : IPostVoteRepository
         postEntities = new List<PostVoteEntity>();
         Ids.ForEach(id => postEntities.Add(postEntityDictionary[id]));
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { postEntities = postEntities.Select(e => e.Id) });
         return postEntities.Select(PostVoteConverter.ToModel).ToList();
     }
@@ -49,7 +52,7 @@ public class PostVoteRepository : IPostVoteRepository
     public async Task<PostVote> GetPostVoteByIdAsync(ulong id,
         bool includeVoter = false, bool includePost = false)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new
         {
             id,
             includeVoter,
@@ -65,14 +68,14 @@ public class PostVoteRepository : IPostVoteRepository
             )
             .SingleOrDefaultAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
         return postEntity.ToModel();
     }
 
     public async Task<PostVote> GetPostVoteAsync(ulong voterId,
         ulong postId, bool includeVoter = false, bool includePost = false)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new
         {
             voterId,
             postId,
@@ -90,36 +93,36 @@ public class PostVoteRepository : IPostVoteRepository
             )
             .SingleOrDefaultAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
         return postEntity.ToModel();
     }
 
-    public async Task<PostVote> CreatePostVoteAsync(ulong id, ulong voterUserId,
+    public async Task<PostVote> CreatePostVoteAsync(ulong voterUserId,
         Username voterUsername, ulong postId, bool isUp)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new
         {
-            id,
             voterUserId,
             voterUsername,
             postId,
             isUp
         });
         var sw = Stopwatch.StartNew();
+        var id = _idGenerator.GenerateNewId();
         var postEntity = new PostVoteEntity(id, voterUserId,
-            voterUsername, postId, isUp);
+            voterUsername.Value, postId, isUp);
         _postVoteEntities.Add(postEntity);
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { postEntity });
         return postEntity.ToModel();
     }
 
     public async Task<PostVote> UpdatePostVoteAsync(PostVote postvote)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { postvote });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { postvote });
         var sw = Stopwatch.StartNew();
         var postEntity = postvote.ToEntity();
         _postVoteEntities.Update(postEntity);
@@ -134,13 +137,13 @@ public class PostVoteRepository : IPostVoteRepository
                 parameters: postvote, systemException: ex);
         }
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
         return postEntity.ToModel();
     }
 
     public async Task DeletePostVoteByIdAsync(ulong id)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id });
         var sw = Stopwatch.StartNew();
         var postEntity = await _postVoteEntities
             .Where(e => e.Id == id)
@@ -150,25 +153,25 @@ public class PostVoteRepository : IPostVoteRepository
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
     }
 
     public async Task<bool> DoesPostVoteIdExistAsync(ulong id)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id });
         var sw = Stopwatch.StartNew();
         var doesExist = await _postVoteEntities
             .AsNoTracking()
             .Where(e => e.Id == id)
             .AnyAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
         return doesExist;
     }
 
     public async Task<bool> DoesPostVoteIdExistAsync(ulong voterId, ulong postId)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { voterId, postId });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { voterId, postId });
         var sw = Stopwatch.StartNew();
         var doesExist = await _postVoteEntities
             .AsNoTracking()
@@ -176,7 +179,7 @@ public class PostVoteRepository : IPostVoteRepository
                 && e.PostEntityId == postId)
             .AnyAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
         return doesExist;
     }
 }

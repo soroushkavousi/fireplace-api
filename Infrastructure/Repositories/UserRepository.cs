@@ -13,17 +13,19 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository : IUserRepository, IRepository<IUserRepository>
 {
     private readonly ILogger<UserRepository> _logger;
-    private readonly ProjectDbContext _dbContext;
+    private readonly ApiDbContext _dbContext;
+    private readonly IIdGenerator _idGenerator;
     private readonly DbSet<UserEntity> _userEntities;
 
     public UserRepository(ILogger<UserRepository> logger,
-        ProjectDbContext dbContext)
+        ApiDbContext dbContext, IIdGenerator idGenerator)
     {
         _logger = logger;
         _dbContext = dbContext;
+        _idGenerator = idGenerator;
         _userEntities = dbContext.UserEntities;
     }
 
@@ -31,7 +33,7 @@ public class UserRepository : IUserRepository
         bool includeEmail = false, bool includeGoogleUser = false,
         bool includeSessions = false)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT",
+        _logger.LogServerInformation(title: "DATABASE_INPUT",
             parameters: new { includeEmail, includeGoogleUser, includeSessions });
         var sw = Stopwatch.StartNew();
         var userEntities = await _userEntities
@@ -43,7 +45,7 @@ public class UserRepository : IUserRepository
             )
             .ToListAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { userEntities = userEntities.Select(e => e.Id) });
         return userEntities.Select(UserConverter.ToModel).ToList();
     }
@@ -52,7 +54,7 @@ public class UserRepository : IUserRepository
         bool includeEmail = false, bool includeGoogleUser = false,
         bool includeSessions = false)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT",
+        _logger.LogServerInformation(title: "DATABASE_INPUT",
             parameters: new
             {
                 identifier,
@@ -73,14 +75,14 @@ public class UserRepository : IUserRepository
                 sessionEntities: includeSessions
             ).SingleOrDefaultAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { userEntity });
         return userEntity.ToModel();
     }
 
     public async Task<Username> GetUsernameByIdAsync(ulong id)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id });
         var sw = Stopwatch.StartNew();
         var username = (await _userEntities
             .AsNoTracking()
@@ -88,32 +90,31 @@ public class UserRepository : IUserRepository
             .SingleAsync(e => e.Id == id))
             .Username;
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { username });
-        return username;
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { username });
+        return new Username(username);
     }
 
     public async Task<ulong> GetIdByUsernameAsync(Username username)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { username });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { username });
         var sw = Stopwatch.StartNew();
         var userId = (await _userEntities
             .AsNoTracking()
             .Select(e => new { e.Id, e.Username })
-            .SingleAsync(e => string.Equals(e.Username, username)))
+            .SingleAsync(e => string.Equals(e.Username, username.Value)))
             .Id;
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { userId });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { userId });
         return userId;
     }
 
-    public async Task<User> CreateUserAsync(ulong id, Username username,
+    public async Task<User> CreateUserAsync(Username username,
         UserState state, List<UserRole> roles, Password password = null,
         string displayName = null, string about = null, string avatarUrl = null,
         string bannerUrl = null)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new
         {
-            id,
             username,
             state,
             roles,
@@ -124,8 +125,9 @@ public class UserRepository : IUserRepository
             bannerUrl
         });
         var sw = Stopwatch.StartNew();
+        var id = _idGenerator.GenerateNewId();
         var userEntityRoles = roles.Select(r => r.ToString()).ToList();
-        var userEntity = new UserEntity(id, username, state.ToString(),
+        var userEntity = new UserEntity(id, username.Value, state.ToString(),
             roles: userEntityRoles, displayName: displayName, about: about,
             avatarUrl: avatarUrl, bannerUrl: bannerUrl,
             passwordHash: password?.Hash);
@@ -133,14 +135,14 @@ public class UserRepository : IUserRepository
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { userEntity });
         return userEntity.ToModel();
     }
 
     public async Task<User> UpdateUserAsync(User user)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { user });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { user });
         var sw = Stopwatch.StartNew();
         var userEntity = user.ToEntity();
         _userEntities.Update(userEntity);
@@ -155,13 +157,13 @@ public class UserRepository : IUserRepository
                 parameters: userEntity, systemException: ex);
         }
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { userEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { userEntity });
         return userEntity.ToModel();
     }
 
     public async Task UpdateUsernameAsync(ulong id, Username newUsername)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id, newUsername });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id, newUsername });
         var sw = Stopwatch.StartNew();
         int rowAffectedCount = 0;
         try
@@ -176,12 +178,12 @@ public class UserRepository : IUserRepository
                 parameters: new { id, newUsername, rowAffectedCount }, systemException: ex);
         }
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { rowAffectedCount });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { rowAffectedCount });
     }
 
     public async Task DeleteUserByIdentifierAsync(UserIdentifier identifier)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { identifier });
         var sw = Stopwatch.StartNew();
         var userEntity = await _userEntities
             .Search(
@@ -193,12 +195,12 @@ public class UserRepository : IUserRepository
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { userEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { userEntity });
     }
 
     public async Task<bool> DoesUserIdentifierExistAsync(UserIdentifier identifier)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { identifier });
         var sw = Stopwatch.StartNew();
         var doesExist = await _userEntities
             .AsNoTracking()
@@ -207,7 +209,7 @@ public class UserRepository : IUserRepository
             )
             .AnyAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
         return doesExist;
     }
 }
@@ -241,7 +243,7 @@ public static class UserRepositoryExtensions
                     q = q.Where(e => e.Id == idIdentifier.Id);
                     break;
                 case UserUsernameIdentifier usernameIdentifier:
-                    q = q.Where(e => e.Username == usernameIdentifier.Username);
+                    q = q.Where(e => e.Username == usernameIdentifier.Username.Value);
                     break;
             }
         }

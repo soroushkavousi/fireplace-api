@@ -2,7 +2,6 @@
 using FireplaceApi.Domain.Emails;
 using FireplaceApi.Domain.Errors;
 using FireplaceApi.Domain.Users;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -10,11 +9,11 @@ namespace FireplaceApi.Application.Emails;
 
 public class EmailValidator : ApplicationValidator
 {
-    private readonly ILogger<EmailValidator> _logger;
+    private readonly IServerLogger<EmailValidator> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly EmailOperator _emailOperator;
 
-    public EmailValidator(ILogger<EmailValidator> logger,
+    public EmailValidator(IServerLogger<EmailValidator> logger,
         IServiceProvider serviceProvider, EmailOperator emailOperator)
     {
         _logger = logger;

@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Application.RequestTraces;
-using FireplaceApi.Domain.Common;
 using FireplaceApi.Infrastructure.Gateways;
 using System;
 using System.Net;
@@ -7,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.CacheService;
 
-public class RequestTraceCacheService : IRequestTraceCacheService
+public class RequestTraceCacheService : IRequestTraceCacheService, ICacheService<IRequestTraceCacheService>
 {
     private readonly RedisGateway _redisGateway;
 

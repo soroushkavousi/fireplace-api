@@ -32,7 +32,7 @@ public class FirewallFieldMiddleware
         var sw = Stopwatch.StartNew();
         AuthenticateRequestingUser(context);
         await _next(context);
-        _logger.LogAppInformation(sw: sw, title: "GRAPHQL_FIREWALL_MIDDLEWARE");
+        _logger.LogServerInformation(sw: sw, title: "GRAPHQL_FIREWALL_MIDDLEWARE");
     }
 
     private void AuthenticateRequestingUser(IMiddlewareContext context)

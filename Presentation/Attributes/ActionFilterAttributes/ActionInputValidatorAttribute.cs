@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Presentation.Exceptions;
+﻿using FireplaceApi.Presentation.Errors;
 using FireplaceApi.Presentation.Interfaces;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;

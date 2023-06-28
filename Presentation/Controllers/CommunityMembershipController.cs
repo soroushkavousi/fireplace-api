@@ -3,6 +3,7 @@ using FireplaceApi.Domain.Users;
 using FireplaceApi.Presentation.Auth;
 using FireplaceApi.Presentation.Converters;
 using FireplaceApi.Presentation.Dtos;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +18,11 @@ namespace FireplaceApi.Presentation.Controllers;
 [Produces("application/json")]
 public class CommunityMembershipController : ApiController
 {
-    private readonly CommunityMembershipService _communityMembershipService;
+    private readonly ISender _sender;
 
-    public CommunityMembershipController(CommunityMembershipService communityMembershipService)
+    public CommunityMembershipController(ISender sender)
     {
-        _communityMembershipService = communityMembershipService;
+        _sender = sender;
     }
 
     /// <summary>
@@ -37,8 +38,9 @@ public class CommunityMembershipController : ApiController
         [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] CreateCommunityMembershipInputRouteDto inputRouteDto)
     {
-        var communityMembership = await _communityMembershipService.CreateCommunityMembershipAsync(
-            requestingUser.Id.Value, inputRouteDto.CommunityIdentifier);
+        var communityIdentifier = inputRouteDto.CommunityEncodedIdOrName.ToCommunityIdentifier();
+        var command = new JoinCommunityCommand(requestingUser.Id.Value, communityIdentifier);
+        var communityMembership = await _sender.Send(command);
         var communityMembershipDto = communityMembership.ToDto();
         return communityMembershipDto;
     }
@@ -55,8 +57,9 @@ public class CommunityMembershipController : ApiController
         [BindNever][FromHeader] RequestingUser requestingUser,
         [FromRoute] DeleteCommunityMembershipByCommunityIdentifierInputRouteDto inputRouteDto)
     {
-        await _communityMembershipService.DeleteCommunityMembershipAsync(requestingUser.Id.Value,
-            inputRouteDto.CommunityIdentifier);
+        var communityIdentifier = inputRouteDto.CommunityEncodedIdOrName.ToCommunityIdentifier();
+        var command = new LeaveCommunityCommand(requestingUser.Id.Value, communityIdentifier);
+        await _sender.Send(command);
         return Ok();
     }
 }

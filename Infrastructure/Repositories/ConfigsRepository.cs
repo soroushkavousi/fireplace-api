@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Application.Configurations;
-using FireplaceApi.Domain.Configurations;
 using FireplaceApi.Domain.Errors;
 using FireplaceApi.Infrastructure.Converters;
 using FireplaceApi.Infrastructure.Entities;
@@ -12,22 +11,25 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories;
 
-public class ConfigsRepository : IConfigsRepository
+public class ConfigsRepository : IConfigsRepository, IRepository<IConfigsRepository>
 {
     private readonly ILogger<ConfigsRepository> _logger;
-    private readonly ProjectDbContext _dbContext;
+    private readonly ApiDbContext _dbContext;
+    private readonly IIdGenerator _idGenerator;
     private readonly DbSet<ConfigsEntity> _configsEntities;
 
-    public ConfigsRepository(ILogger<ConfigsRepository> logger, ProjectDbContext dbContext)
+    public ConfigsRepository(ILogger<ConfigsRepository> logger, ApiDbContext dbContext,
+        IIdGenerator idGenerator)
     {
         _logger = logger;
         _dbContext = dbContext;
+        _idGenerator = idGenerator;
         _configsEntities = dbContext.ConfigsEntities;
     }
 
     public async Task<Configs> GetConfigsByIdentifierAsync(ConfigsIdentifier identifier)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { identifier });
         var sw = Stopwatch.StartNew();
         var configsEntity = await _configsEntities
             .AsNoTracking()
@@ -36,27 +38,28 @@ public class ConfigsRepository : IConfigsRepository
             )
             .SingleOrDefaultAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { configsEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { configsEntity });
         return configsEntity.ToModel();
     }
 
     public async Task<Configs> CreateConfigsAsync(Configs configs)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT",
+        _logger.LogServerInformation(title: "DATABASE_INPUT",
             parameters: new { configs });
         var sw = Stopwatch.StartNew();
+        var id = _idGenerator.GenerateNewId();
         var configsEntity = configs.ToEntity();
         _configsEntities.Add(configsEntity);
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { configsEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { configsEntity });
         return configsEntity.ToModel();
     }
 
     public async Task<Configs> UpdateConfigsAsync(Configs configs)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { configs });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { configs });
         var sw = Stopwatch.StartNew();
         var configsEntity = configs.ToEntity();
         _configsEntities.Update(configsEntity);
@@ -71,13 +74,13 @@ public class ConfigsRepository : IConfigsRepository
                 parameters: configsEntity, systemException: ex);
         }
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { configsEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { configsEntity });
         return configsEntity.ToModel();
     }
 
     public async Task<bool> DoesConfigsIdentifierExistAsync(ConfigsIdentifier identifier)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { identifier });
         var sw = Stopwatch.StartNew();
         var doesExist = await _configsEntities
             .AsNoTracking()
@@ -86,7 +89,7 @@ public class ConfigsRepository : IConfigsRepository
             )
             .AnyAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
         return doesExist;
     }
 }

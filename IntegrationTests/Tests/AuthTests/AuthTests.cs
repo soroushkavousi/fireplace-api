@@ -1,7 +1,7 @@
 ﻿using FireplaceApi.Application.Errors;
 using FireplaceApi.IntegrationTests.Extensions;
 using FireplaceApi.IntegrationTests.Tools;
-using FireplaceApi.Presentation.Enums;
+using FireplaceApi.Presentation.Errors;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -33,7 +33,7 @@ public class AuthTests
         var sw = Stopwatch.StartNew();
         try
         {
-            _logger.LogAppInformation(title: "TEST_START");
+            _logger.LogServerInformation(title: "TEST_START");
 
             //Given
 
@@ -45,11 +45,11 @@ public class AuthTests
             //Then
             await response.EnsureResponseIsTheErrorAsync(ApplicationErrorType.AUTHENTICATION_FAILED, FieldName.ACCESS_TOKEN);
 
-            _logger.LogAppInformation(title: "TEST_END", sw: sw);
+            _logger.LogServerInformation(title: "TEST_END", sw: sw);
         }
         catch (Exception ex)
         {
-            _logger.LogAppCritical(title: "TEST_FAILED", sw: sw, ex: ex);
+            _logger.LogServerCritical(title: "TEST_FAILED", sw: sw, ex: ex);
             throw;
         }
     }
@@ -60,7 +60,7 @@ public class AuthTests
         var sw = Stopwatch.StartNew();
         try
         {
-            _logger.LogAppInformation(title: "TEST_START");
+            _logger.LogServerInformation(title: "TEST_START");
 
             //Given
             var request = new HttpRequestMessage(HttpMethod.Get, "/users/me");
@@ -73,11 +73,11 @@ public class AuthTests
             response.EnsureSuccessStatusCode();
             await response.EnsureResponseIsNotTheErrorAsync(ApplicationErrorType.AUTHENTICATION_FAILED, FieldName.ACCESS_TOKEN);
 
-            _logger.LogAppInformation(title: "TEST_END", sw: sw);
+            _logger.LogServerInformation(title: "TEST_END", sw: sw);
         }
         catch (Exception ex)
         {
-            _logger.LogAppCritical(title: "TEST_FAILED", sw: sw, ex: ex);
+            _logger.LogServerCritical(title: "TEST_FAILED", sw: sw, ex: ex);
             throw;
         }
     }
@@ -88,7 +88,7 @@ public class AuthTests
         var sw = Stopwatch.StartNew();
         try
         {
-            _logger.LogAppInformation(title: "TEST_START");
+            _logger.LogServerInformation(title: "TEST_START");
 
             //Given
             var narutoUser = await _clientPool.CreateNarutoUserAsync();
@@ -101,11 +101,11 @@ public class AuthTests
             await response.EnsureResponseIsTheErrorAsync(ApplicationErrorType.INCORRECT_VALUE,
                 PresentationFieldName.REQUEST_CONTENT_TYPE);
 
-            _logger.LogAppInformation(title: "TEST_END", sw: sw);
+            _logger.LogServerInformation(title: "TEST_END", sw: sw);
         }
         catch (Exception ex)
         {
-            _logger.LogAppCritical(title: "TEST_FAILED", sw: sw, ex: ex);
+            _logger.LogServerCritical(title: "TEST_FAILED", sw: sw, ex: ex);
             throw;
         }
     }
@@ -118,7 +118,7 @@ public class AuthTests
         var sw = Stopwatch.StartNew();
         try
         {
-            _logger.LogAppInformation(title: "TEST_START", parameters: new { jsonWithWrongFormat });
+            _logger.LogServerInformation(title: "TEST_START", parameters: new { jsonWithWrongFormat });
 
             //Given
             var narutoUser = await _clientPool.CreateNarutoUserAsync();
@@ -134,11 +134,11 @@ public class AuthTests
             await response.EnsureResponseIsTheErrorAsync(ErrorType.INVALID_FORMAT,
                 PresentationFieldName.REQUEST_BODY);
 
-            _logger.LogAppInformation(title: "TEST_END", sw: sw);
+            _logger.LogServerInformation(title: "TEST_END", sw: sw);
         }
         catch (Exception ex)
         {
-            _logger.LogAppCritical(title: "TEST_FAILED", sw: sw, ex: ex);
+            _logger.LogServerCritical(title: "TEST_FAILED", sw: sw, ex: ex);
             throw;
         }
     }

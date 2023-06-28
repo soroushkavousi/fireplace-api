@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Application.Communities;
+﻿using FireplaceApi.Domain.Communities;
 using FireplaceApi.IntegrationTests.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -15,7 +15,6 @@ public class CommunityCreateTests
     private readonly ApiIntegrationTestFixture _fixture;
     private readonly ILogger<CommunityCreateTests> _logger;
     private readonly ClientPool _clientPool;
-    private readonly CommunityOperator _communityOperator;
 
     public CommunityCreateTests(ApiIntegrationTestFixture fixture)
     {
@@ -23,7 +22,6 @@ public class CommunityCreateTests
         _fixture.CleanDatabase();
         _logger = _fixture.ServiceProvider.GetRequiredService<ILogger<CommunityCreateTests>>();
         _clientPool = _fixture.ClientPool;
-        _communityOperator = _fixture.ServiceProvider.GetRequiredService<CommunityOperator>();
     }
 
     [Fact]
@@ -32,11 +30,11 @@ public class CommunityCreateTests
         var sw = Stopwatch.StartNew();
         try
         {
-            _logger.LogAppInformation(title: "TEST_START");
+            _logger.LogServerInformation(title: "TEST_START");
 
             //Given
             var narutoUser = await _clientPool.CreateNarutoUserAsync();
-            var communityName = "test-community-name";
+            var communityName = new CommunityName("test-community-name");
 
             //When
             var createdCommunity = await CommunityUtils.CreateCommunityWithApiAsync(narutoUser, communityName);
@@ -45,11 +43,11 @@ public class CommunityCreateTests
             var retrievedCommunity = await CommunityUtils.GetCommunityWithApiAsync(narutoUser, communityName);
             Assert.Equal(createdCommunity.Id, retrievedCommunity.Id);
 
-            _logger.LogAppInformation(title: "TEST_END", sw: sw);
+            _logger.LogServerInformation(title: "TEST_END", sw: sw);
         }
         catch (Exception ex)
         {
-            _logger.LogAppCritical(title: "TEST_FAILED", sw: sw, ex: ex);
+            _logger.LogServerCritical(title: "TEST_FAILED", sw: sw, ex: ex);
             throw;
         }
     }

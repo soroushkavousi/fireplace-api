@@ -34,7 +34,7 @@ public class ApiExceptionHandlerMiddleware
             httpContext.Items[Tools.Constants.ErrorKey] = error;
             await ReportError(error, httpContext);
         }
-        _logger.LogAppTrace(sw: sw, title: "EXCEPTION_MIDDLEWARE");
+        _logger.LogServerTrace(sw: sw, title: "EXCEPTION_MIDDLEWARE");
     }
 
     private async Task ReportError(Error error, HttpContext httpContext)
@@ -43,13 +43,13 @@ public class ApiExceptionHandlerMiddleware
         httpContext.Response.StatusCode = error.HttpStatusCode;
 
         if (error.Type != ErrorType.INTERNAL_SERVER)
-            _logger.LogAppWarning(message: $"{error.Type}: {error.ServerMessage}", title: "CLIENT_ERROR", parameters: new { error.Field, error.Parameters });
+            _logger.LogServerWarning(message: $"{error.Type}: {error.ServerMessage}", title: "CLIENT_ERROR", parameters: new { error.Field, error.Parameters });
         else
         {
             if (error.Exception.GetType().IsSubclassOf(typeof(ApiException)))
-                _logger.LogAppError($"{error.Type}: {error.ServerMessage}", title: "SERVER_ERROR", parameters: new { error.Field, error.Parameters }, ex: error.Exception);
+                _logger.LogServerError($"{error.Type}: {error.ServerMessage}", title: "SERVER_ERROR", parameters: new { error.Field, error.Parameters }, ex: error.Exception);
             else
-                _logger.LogAppCritical($"{error.Type}: {error.ServerMessage}", title: "UNKNOWN_ERROR", parameters: new { error.Field, error.Parameters }, ex: error.Exception);
+                _logger.LogServerCritical($"{error.Type}: {error.ServerMessage}", title: "UNKNOWN_ERROR", parameters: new { error.Field, error.Parameters }, ex: error.Exception);
         }
 
         var apiExceptionErrorDto = error.ToApiExceptionDto();

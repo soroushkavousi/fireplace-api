@@ -15,23 +15,26 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories;
 
-public class PostRepository : IPostRepository
+public class PostRepository : IPostRepository, IRepository<IPostRepository>
 {
     private readonly ILogger<PostRepository> _logger;
-    private readonly ProjectDbContext _dbContext;
+    private readonly ApiDbContext _dbContext;
+    private readonly IIdGenerator _idGenerator;
     private readonly DbSet<PostEntity> _postEntities;
 
-    public PostRepository(ILogger<PostRepository> logger, ProjectDbContext dbContext)
+    public PostRepository(ILogger<PostRepository> logger, ApiDbContext dbContext,
+        IIdGenerator idGenerator)
     {
         _logger = logger;
         _dbContext = dbContext;
+        _idGenerator = idGenerator;
         _postEntities = dbContext.PostEntities;
     }
 
     public async Task<List<Post>> ListCommunityPostsAsync(CommunityIdentifier communityIdentifier,
         PostSortType sort, ulong? userId = null)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new
         {
             communityIdentifier,
             sort,
@@ -58,7 +61,7 @@ public class PostRepository : IPostRepository
         if (userId != null)
             postEntities.ForEach(e => e.CheckRequestingUserVote(userId));
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { postEntities = postEntities.Select(e => e.Id) });
         return postEntities.Select(PostConverter.ToModel).ToList();
     }
@@ -66,7 +69,7 @@ public class PostRepository : IPostRepository
     public async Task<List<Post>> ListPostsAsync(string search, PostSortType sort,
         ulong? userId = null)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new
         {
             search,
             sort,
@@ -93,7 +96,7 @@ public class PostRepository : IPostRepository
         if (userId != null)
             postEntities.ForEach(e => e.CheckRequestingUserVote(userId));
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { postEntities = postEntities.Select(e => e.Id) });
         return postEntities.Select(PostConverter.ToModel).ToList();
     }
@@ -101,7 +104,7 @@ public class PostRepository : IPostRepository
     public async Task<List<Post>> ListPostsByIdsAsync(List<ulong> Ids,
         ulong? userId = null)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new
         {
             Ids,
             userId
@@ -125,7 +128,7 @@ public class PostRepository : IPostRepository
         if (userId != null)
             postEntities.ForEach(e => e.CheckRequestingUserVote(userId));
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { postEntities = postEntities.Select(e => e.Id) });
         return postEntities.Select(PostConverter.ToModel).ToList();
     }
@@ -133,7 +136,7 @@ public class PostRepository : IPostRepository
     public async Task<List<Post>> ListSelfPostsAsync(ulong authorId,
         PostSortType sort)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new
         {
             authorId,
             sort
@@ -158,7 +161,7 @@ public class PostRepository : IPostRepository
 
         postEntities.ForEach(e => e.CheckRequestingUserVote(authorId));
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { postEntities = postEntities.Select(e => e.Id) });
         return postEntities.Select(PostConverter.ToModel).ToList();
     }
@@ -167,7 +170,7 @@ public class PostRepository : IPostRepository
         bool includeAuthor = false, bool includeCommunity = false,
         ulong? userId = null)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new
         {
             id,
             includeAuthor,
@@ -188,17 +191,16 @@ public class PostRepository : IPostRepository
         if (postEntity != null && userId != null)
             postEntity.CheckRequestingUserVote(userId);
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
         return postEntity.ToModel();
     }
 
-    public async Task<Post> CreatePostAsync(ulong id, ulong authorUserId,
-        Username authorUsername, ulong communityId, string communityName,
+    public async Task<Post> CreatePostAsync(ulong authorUserId,
+        Username authorUsername, ulong communityId, CommunityName communityName,
         string content)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new
         {
-            id,
             authorUserId,
             authorUsername,
             communityId,
@@ -206,20 +208,21 @@ public class PostRepository : IPostRepository
             content
         });
         var sw = Stopwatch.StartNew();
-        var postEntity = new PostEntity(id, authorUserId, authorUsername,
-            communityId, communityName, content);
+        var id = _idGenerator.GenerateNewId();
+        var postEntity = new PostEntity(id, authorUserId, authorUsername.Value,
+            communityId, communityName.Value, content);
         _postEntities.Add(postEntity);
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { postEntity });
         return postEntity.ToModel();
     }
 
     public async Task<Post> UpdatePostAsync(Post post)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { post });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { post });
         var sw = Stopwatch.StartNew();
         var postEntity = post.ToEntity();
         _postEntities.Update(postEntity);
@@ -234,13 +237,13 @@ public class PostRepository : IPostRepository
                 parameters: postEntity, systemException: ex);
         }
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
         return PostConverter.ToModel(postEntity);
     }
 
     public async Task DeletePostByIdAsync(ulong id)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id });
         var sw = Stopwatch.StartNew();
         var postEntity = await _postEntities
             .Where(e => e.Id == id)
@@ -250,19 +253,19 @@ public class PostRepository : IPostRepository
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { postEntity });
     }
 
     public async Task<bool> DoesPostIdExistAsync(ulong id)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { id });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { id });
         var sw = Stopwatch.StartNew();
         var doesExist = await _postEntities
             .AsNoTracking()
             .Where(e => e.Id == id)
             .AnyAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
         return doesExist;
     }
 }
@@ -307,7 +310,7 @@ public static class PostRepositoryExtensions
                     q = q.Where(e => e.CommunityEntityId == idIdentifier.Id);
                     break;
                 case CommunityNameIdentifier nameIdentifier:
-                    q = q.Where(e => e.CommunityEntityName == nameIdentifier.Name);
+                    q = q.Where(e => e.CommunityEntityName == nameIdentifier.Name.Value);
                     break;
             }
         }

@@ -3,7 +3,6 @@ using FireplaceApi.Domain.Emails;
 using FireplaceApi.Domain.Errors;
 using FireplaceApi.Domain.Users;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -12,14 +11,14 @@ namespace FireplaceApi.Application.Users;
 
 public class UserValidator : ApplicationValidator
 {
-    private readonly ILogger<UserValidator> _logger;
+    private readonly IServerLogger<UserValidator> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly UserOperator _userOperator;
 
     public User User { get; private set; }
     public UserIdentifier UserIdentifier { get; private set; }
 
-    public UserValidator(ILogger<UserValidator> logger,
+    public UserValidator(IServerLogger<UserValidator> logger,
         IServiceProvider serviceProvider, UserOperator userOperator)
     {
         _logger = logger;

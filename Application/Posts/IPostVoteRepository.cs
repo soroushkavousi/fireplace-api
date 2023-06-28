@@ -12,7 +12,7 @@ public interface IPostVoteRepository
         bool includeVoter = false, bool includePost = false);
     public Task<PostVote> GetPostVoteAsync(ulong voterId,
         ulong postId, bool includeVoter = false, bool includePost = false);
-    public Task<PostVote> CreatePostVoteAsync(ulong id, ulong voterUserId,
+    public Task<PostVote> CreatePostVoteAsync(ulong voterUserId,
         Username voterUsername, ulong postId, bool isUp);
     public Task<PostVote> UpdatePostVoteAsync(
         PostVote postVote);

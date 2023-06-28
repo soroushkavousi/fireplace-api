@@ -20,7 +20,7 @@ public class ServerAddressDocumentFilter : IDocumentFilter
         var pathBase = httpContextAccessor?.HttpContext?.Request?.PathBase;
         _swaggerDocHost = $"{scheme}://{host}{pathBase}";
         _httpContextAccessor = httpContextAccessor;
-        logger.LogAppInformation($"_swaggerDocHost : {_swaggerDocHost}");
+        logger.LogServerInformation($"_swaggerDocHost : {_swaggerDocHost}");
     }
 
     public void Apply(OpenApiDocument openapiDoc, DocumentFilterContext context)

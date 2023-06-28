@@ -23,7 +23,7 @@ public static class CommentVoteConverter
 
         var commentVoteEntity = new CommentVoteEntity(
             commentVote.Id, commentVote.VoterId,
-            commentVote.VoterUsername, commentVote.CommentId,
+            commentVote.VoterUsername.Value, commentVote.CommentId,
             commentVote.IsUp, commentVote.CreationDate,
             commentVote.ModifiedDate, voterEntity, commentEntity);
 
@@ -44,7 +44,7 @@ public static class CommentVoteConverter
             comment = commentVoteEntity.CommentEntity.PureCopy().ToModel();
 
         var commentVote = new CommentVote(commentVoteEntity.Id,
-            commentVoteEntity.VoterEntityId, commentVoteEntity.VoterEntityUsername,
+            commentVoteEntity.VoterEntityId, new Username(commentVoteEntity.VoterEntityUsername),
             commentVoteEntity.CommentEntityId, commentVoteEntity.IsUp,
             commentVoteEntity.CreationDate, commentVoteEntity.ModifiedDate,
             voter, comment);

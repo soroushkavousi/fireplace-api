@@ -29,7 +29,7 @@ public class AntiforgeryTokenGeneratorMiddleware
         //Inject CSRF token Before response has been started
         GenerateAndSetCsrfTokenAsCookie(httpContext, antiforgery);
         await _next(httpContext);
-        _logger.LogAppInformation(sw: sw, title: "ANTIFORGERY_MIDDLEWARE");
+        _logger.LogServerInformation(sw: sw, title: "ANTIFORGERY_MIDDLEWARE");
     }
 
     private static void GenerateAndSetCsrfTokenAsCookie(HttpContext httpContext, IAntiforgery antiforgery)

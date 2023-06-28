@@ -56,7 +56,7 @@ public class AddDataToResponseMiddleware
         }
         finally
         {
-            _logger.LogAppTrace(sw: sw);
+            _logger.LogServerTrace(sw: sw);
         }
     }
 }

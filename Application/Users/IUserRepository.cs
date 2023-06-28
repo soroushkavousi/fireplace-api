@@ -14,7 +14,7 @@ public interface IUserRepository
         bool includeSessions = false);
     public Task<Username> GetUsernameByIdAsync(ulong id);
     public Task<ulong> GetIdByUsernameAsync(Username username);
-    public Task<User> CreateUserAsync(ulong id, Username username, UserState state,
+    public Task<User> CreateUserAsync(Username username, UserState state,
         List<UserRole> roles, Password password = null, string displayName = null,
         string about = null, string avatarUrl = null, string bannerUrl = null);
     public Task<User> UpdateUserAsync(User user);

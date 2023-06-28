@@ -1,5 +1,4 @@
-﻿using FireplaceApi.Domain.Users;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,7 @@ public class CommunityEntity : BaseEntity
     public string Name { get; set; }
     public ulong CreatorEntityId { get; set; }
     [Required]
-    public Username CreatorEntityUsername { get; set; }
+    public string CreatorEntityUsername { get; set; }
     public UserEntity CreatorEntity { get; set; }
     public List<CommunityMembershipEntity> CommunityMemberEntities { get; set; }
     public List<PostEntity> PostEntities { get; set; }
@@ -24,7 +23,7 @@ public class CommunityEntity : BaseEntity
     private CommunityEntity() : base() { }
 
     public CommunityEntity(ulong id, string name, ulong creatorEntityId,
-        Username creatorEntityUsername, DateTime? creationDate = null, DateTime? modifiedDate = null,
+        string creatorEntityUsername, DateTime? creationDate = null, DateTime? modifiedDate = null,
         UserEntity creatorEntity = null, List<CommunityMembershipEntity> members = null,
         List<PostEntity> postEntities = null) : base(id, creationDate, modifiedDate)
     {

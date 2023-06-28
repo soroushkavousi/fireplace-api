@@ -1,12 +1,11 @@
 ﻿using FireplaceApi.Application.Communities;
-using FireplaceApi.Domain.Errors;
+using FireplaceApi.Domain.Communities;
 using FireplaceApi.Presentation.Auth;
 using FireplaceApi.Presentation.Converters;
 using FireplaceApi.Presentation.Dtos;
-using FireplaceApi.Presentation.Interfaces;
 using HotChocolate;
 using HotChocolate.Types;
-using Microsoft.Extensions.DependencyInjection;
+using MediatR;
 using System;
 using System.Threading.Tasks;
 
@@ -16,28 +15,19 @@ namespace FireplaceApi.Presentation.GraphQL;
 public class CommunityMutationResolvers
 {
     public async Task<CommunityDto> CreateCommunitiesAsync(
-        [Service(ServiceKind.Resolver)] CommunityService communityService,
+        [Service(ServiceKind.Resolver)] ISender sender,
         [Service] IServiceProvider serviceProvider,
         [User] RequestingUser requestingUser,
         [GraphQLNonNullType] CreateCommunityInput input)
     {
-        input.Validate(serviceProvider);
-        var community = await communityService.CreateCommunityAsync(requestingUser.Id.Value, input.Name);
+        var command = new CreateCommunityCommand(requestingUser.Id.Value, input.Name);
+        var community = await sender.Send(command);
         var communityDto = community.ToDto();
         return communityDto;
     }
 }
 
-public class CreateCommunityInput : IValidator
+public class CreateCommunityInput
 {
-    public string Name { get; set; }
-
-    public void Validate(IServiceProvider serviceProvider)
-    {
-        var presentationValidator = serviceProvider.GetService<Validators.CommunityValidator>();
-        var applicationValidator = presentationValidator.ApplicationValidator;
-
-        presentationValidator.ValidateFieldIsNotMissing(Name, FieldName.COMMUNITY_NAME);
-        applicationValidator.ValidateCommunityNameFormat(Name);
-    }
+    public CommunityName Name { get; set; }
 }

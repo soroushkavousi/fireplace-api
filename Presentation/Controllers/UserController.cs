@@ -57,7 +57,8 @@ public class UserController : ApiController
         [FromBody] SignUpWithEmailInputBodyDto inputBodyDto)
     {
         var user = await _userService.SignUpWithEmailAsync(inputHeaderDto.IpAddress,
-            inputBodyDto.EmailAddress, inputBodyDto.Username, inputBodyDto.PasswordValueObject);
+            inputBodyDto.EmailAddress, new Username(inputBodyDto.Username),
+            inputBodyDto.PasswordValueObject);
 
         var futureRequestingUser = new RequestingUser(user.Id,
             user.Sessions.First().Id, user.State, user.Roles);
@@ -132,8 +133,9 @@ public class UserController : ApiController
         [BindNever][FromHeader] InputHeaderDto inputHeaderDto,
         [FromBody] LogInWithUsernameInputBodyDto inputBodyDto)
     {
+        var username = new Username(inputBodyDto.Username);
         var user = await _userService.LogInWithUsernameAsync(inputHeaderDto.IpAddress,
-            inputBodyDto.Username, inputBodyDto.PasswordValueObject);
+            username, inputBodyDto.PasswordValueObject);
 
         var futureRequestingUser = new RequestingUser(user.Id,
             user.Sessions.First().Id, user.State, user.Roles);
@@ -247,7 +249,7 @@ public class UserController : ApiController
     {
         var user = await _userService.PatchRequestingUserAsync(requestingUser.Id.Value, inputBodyDto.DisplayName,
             inputBodyDto.About, inputBodyDto.AvatarUrl, inputBodyDto.BannerUrl,
-            inputBodyDto.Username);
+            new Username(inputBodyDto.Username));
         var userDto = user.ToDto();
         return userDto;
     }

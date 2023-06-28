@@ -1,15 +1,6 @@
-﻿using FireplaceApi.Application.Comments;
-using FireplaceApi.Application.Communities;
-using FireplaceApi.Application.Configurations;
-using FireplaceApi.Application.Emails;
-using FireplaceApi.Application.Errors;
-using FireplaceApi.Application.Files;
-using FireplaceApi.Application.GoogleUsers;
-using FireplaceApi.Application.Posts;
-using FireplaceApi.Application.RequestTraces;
-using FireplaceApi.Application.Sessions;
-using FireplaceApi.Application.Users;
+﻿using FireplaceApi.Domain.Errors;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 
 namespace FireplaceApi.Infrastructure.Repositories;
 
@@ -17,19 +8,15 @@ public static class DependencyInjection
 {
     public static void AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<ICommentRepository, CommentRepository>();
-        services.AddScoped<ICommentVoteRepository, CommentVoteRepository>();
-        services.AddScoped<ICommunityRepository, CommunityRepository>();
-        services.AddScoped<ICommunityMembershipRepository, CommunityMembershipRepository>();
-        services.AddScoped<IConfigsRepository, ConfigsRepository>();
-        services.AddScoped<IEmailRepository, EmailRepository>();
-        services.AddScoped<IErrorRepository, ErrorRepository>();
-        services.AddScoped<IFileRepository, FileRepository>();
-        services.AddScoped<IGoogleUserRepository, GoogleUserRepository>();
-        services.AddScoped<IPostRepository, PostRepository>();
-        services.AddScoped<IPostVoteRepository, PostVoteRepository>();
-        services.AddScoped<IRequestTraceRepository, RequestTraceRepository>();
-        services.AddScoped<ISessionRepository, SessionRepository>();
-        services.AddScoped<IUserRepository, UserRepository>();
+        var repositoryTypes = Tools.Utils.FindChildTypes<IRepository>();
+        foreach (var repositoryType in repositoryTypes)
+        {
+            var repositoryInterfaceType = repositoryType.GetInterfaces()
+                .Single(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IRepository<>));
+            var repositoryServiceType = repositoryInterfaceType.GetGenericArguments().Single();
+            if (!repositoryType.IsAssignableTo(repositoryServiceType))
+                throw new InternalServerException($"Interface is not correct. {repositoryType.Name} : {repositoryServiceType.Name}");
+            services.AddScoped(repositoryServiceType, repositoryType);
+        }
     }
 }

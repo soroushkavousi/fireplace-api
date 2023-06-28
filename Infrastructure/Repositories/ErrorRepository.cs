@@ -12,23 +12,26 @@ using System.Threading.Tasks;
 
 namespace FireplaceApi.Infrastructure.Repositories;
 
-public class ErrorRepository : IErrorRepository
+public class ErrorRepository : IErrorRepository, IRepository<IErrorRepository>
 {
     private readonly ILogger<ErrorRepository> _logger;
-    private readonly ProjectDbContext _dbContext;
+    private readonly ApiDbContext _dbContext;
+    private readonly IIdGenerator _idGenerator;
     private readonly DbSet<ErrorEntity> _errorEntities;
     private static readonly Dictionary<string, Error> _cache = new();
 
-    public ErrorRepository(ILogger<ErrorRepository> logger, ProjectDbContext dbContext)
+    public ErrorRepository(ILogger<ErrorRepository> logger, ApiDbContext dbContext,
+        IIdGenerator idGenerator)
     {
         _logger = logger;
         _dbContext = dbContext;
+        _idGenerator = idGenerator;
         _errorEntities = dbContext.ErrorEntities;
     }
 
     public async Task<List<Error>> ListErrorsAsync()
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: null);
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: null);
         var sw = Stopwatch.StartNew();
         var errorEntites = await _errorEntities
             .AsNoTracking()
@@ -40,17 +43,17 @@ public class ErrorRepository : IErrorRepository
             .OrderBy(e => e.Code)
             .ToListAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT",
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT",
             parameters: new { errorEntites = errorEntites.Select(e => e.Id) });
         return errorEntites.Select(ErrorConverter.ToModel).ToList();
     }
 
     public async Task<Error> GetErrorAsync(ErrorIdentifier identifier)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { identifier });
         if (_cache.TryGetValue(identifier.Key, out Error cachedError))
         {
-            _logger.LogAppInformation(title: "CACHED_DATABASE_OUTPUT", parameters: new { cachedError });
+            _logger.LogServerInformation(title: "CACHED_DATABASE_OUTPUT", parameters: new { cachedError });
             return cachedError;
         }
         var sw = Stopwatch.StartNew();
@@ -63,31 +66,32 @@ public class ErrorRepository : IErrorRepository
             )
             .SingleOrDefaultAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { errorEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { errorEntity });
         var error = errorEntity.ToModel();
         _cache.Add(identifier.Key, error);
         return error;
     }
 
-    public async Task<Error> CreateErrorAsync(ulong id, int code, ErrorType type,
+    public async Task<Error> CreateErrorAsync(int code, ErrorType type,
         FieldName field, string clientMessage, int httpStatusCode)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT",
-            parameters: new { id, code, type, field, clientMessage, httpStatusCode });
+        _logger.LogServerInformation(title: "DATABASE_INPUT",
+            parameters: new { code, type, field, clientMessage, httpStatusCode });
         var sw = Stopwatch.StartNew();
+        var id = _idGenerator.GenerateNewId();
         var errorEntity = new ErrorEntity(id, code, type.Name, field.Name,
             clientMessage, httpStatusCode);
         _errorEntities.Add(errorEntity);
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { errorEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { errorEntity });
         return errorEntity.ToModel();
     }
 
     public async Task<Error> UpdateErrorAsync(Error error)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { error });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { error });
         var sw = Stopwatch.StartNew();
         var errorEntity = error.ToEntity();
         _errorEntities.Update(errorEntity);
@@ -102,13 +106,13 @@ public class ErrorRepository : IErrorRepository
                 parameters: errorEntity, systemException: ex);
         }
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { errorEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { errorEntity });
         return errorEntity.ToModel();
     }
 
     public async Task DeleteErrorAsync(ErrorIdentifier identifier)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { identifier });
         var sw = Stopwatch.StartNew();
         var errorEntity = await _errorEntities
             .Search(
@@ -120,12 +124,12 @@ public class ErrorRepository : IErrorRepository
         await _dbContext.SaveChangesAsync();
         _dbContext.DetachAllEntries();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { errorEntity });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { errorEntity });
     }
 
     public async Task<bool> DoesErrorExistAsync(ErrorIdentifier identifier)
     {
-        _logger.LogAppInformation(title: "DATABASE_INPUT", parameters: new { identifier });
+        _logger.LogServerInformation(title: "DATABASE_INPUT", parameters: new { identifier });
         var sw = Stopwatch.StartNew();
         var doesExist = await _errorEntities
             .AsNoTracking()
@@ -134,7 +138,7 @@ public class ErrorRepository : IErrorRepository
             )
             .AnyAsync();
 
-        _logger.LogAppInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
+        _logger.LogServerInformation(sw: sw, title: "DATABASE_OUTPUT", parameters: new { doesExist });
         return doesExist;
     }
 }

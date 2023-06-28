@@ -1,10 +1,5 @@
-﻿using FireplaceApi.Domain.Comments;
-using FireplaceApi.Domain.Communities;
-using FireplaceApi.Domain.Errors;
-using FireplaceApi.Domain.Posts;
-using FireplaceApi.Presentation.Enums;
-using FireplaceApi.Presentation.Exceptions;
-using System;
+﻿using FireplaceApi.Domain.Errors;
+using FireplaceApi.Presentation.Errors;
 using System.Collections.Generic;
 
 namespace FireplaceApi.Presentation.Validators;
@@ -39,40 +34,19 @@ public class ApplicationValidator
         }
     }
 
-    public TEnum? ValidateInputEnum<TEnum>(string inputString) where TEnum : struct
-    {
-        if (string.IsNullOrWhiteSpace(inputString))
-            return default;
-
-        if (!Enum.TryParse(inputString, true, out TEnum result))
-        {
-            throw typeof(TEnum).Name switch
-            {
-                nameof(CommunitySortType) => new CommunitySortIncorrectValueException(inputString),
-                nameof(PostSortType) => new PostSortIncorrectValueException(inputString),
-                nameof(CommentSortType) => new CommentSortIncorrectValueException(inputString),
-                _ => new InternalServerException("Not known enum type!"),
-            };
-        }
-
-        return result;
-    }
-
     public ulong? ValidateEncodedIdFormat(string encodedId, FieldName field, bool throwException = true)
     {
-        if (IdGenerator.IsEncodedIdFormatValid(encodedId))
-            return encodedId.IdDecode();
-
-        if (throwException)
+        try
         {
-            throw field.Name switch
-            {
-                nameof(FieldName.POST_ID) => new PostEncodedIdInvalidFormatException(encodedId),
-                nameof(FieldName.COMMENT_ID) => new CommentEncodedIdInvalidFormatException(encodedId),
-                _ => new InternalServerException("Not known encoded id field!"),
-            };
+            var id = encodedId.IdDecode();
+            return id;
         }
-        return default;
+        catch (ApiException)
+        {
+            if (throwException)
+                throw;
+            return default;
+        }
     }
 
     public List<ulong> ValidateIdsFormat(string stringOfEncodedIds)

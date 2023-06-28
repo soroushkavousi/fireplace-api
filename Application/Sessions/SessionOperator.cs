@@ -1,5 +1,4 @@
 ﻿using FireplaceApi.Domain.Sessions;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -9,11 +8,11 @@ namespace FireplaceApi.Application.Sessions;
 
 public class SessionOperator
 {
-    private readonly ILogger<SessionOperator> _logger;
+    private readonly IServerLogger<SessionOperator> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly ISessionRepository _sessionRepository;
 
-    public SessionOperator(ILogger<SessionOperator> logger,
+    public SessionOperator(IServerLogger<SessionOperator> logger,
         IServiceProvider serviceProvider, ISessionRepository sessionRepository)
     {
         _logger = logger;
@@ -53,9 +52,8 @@ public class SessionOperator
 
     public async Task<Session> CreateSessionAsync(ulong userId, IPAddress ipAddress)
     {
-        var id = await IdGenerator.GenerateNewIdAsync(DoesSessionIdExistAsync);
         var refreshToken = GenerateNewRefreshToken();
-        var session = await _sessionRepository.CreateSessionAsync(id, userId, ipAddress,
+        var session = await _sessionRepository.CreateSessionAsync(userId, ipAddress,
             SessionState.ACTIVE, refreshToken);
         return session;
     }

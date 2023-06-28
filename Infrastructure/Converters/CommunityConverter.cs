@@ -15,8 +15,8 @@ public static class CommunityConverter
         if (community.Creator != null)
             creatorEntity = community.Creator.PureCopy().ToEntity();
 
-        var communityEntity = new CommunityEntity(community.Id, community.Name,
-            community.CreatorId, community.CreatorUsername, community.CreationDate,
+        var communityEntity = new CommunityEntity(community.Id, community.Name.Value,
+            community.CreatorId, community.CreatorUsername.Value, community.CreationDate,
             community.ModifiedDate, creatorEntity);
 
         return communityEntity;
@@ -31,8 +31,8 @@ public static class CommunityConverter
         if (communityEntity.CreatorEntity != null)
             creator = communityEntity.CreatorEntity.PureCopy().ToModel();
 
-        var community = new Community(communityEntity.Id, communityEntity.Name,
-            communityEntity.CreatorEntityId, communityEntity.CreatorEntityUsername,
+        var community = new Community(communityEntity.Id, new CommunityName(communityEntity.Name),
+            communityEntity.CreatorEntityId, new Username(communityEntity.CreatorEntityUsername),
             communityEntity.CreationDate, communityEntity.ModifiedDate, creator);
 
         return community;

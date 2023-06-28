@@ -1,8 +1,5 @@
-﻿using FireplaceApi.Application.Errors;
-using FireplaceApi.Domain.Configurations;
-using FireplaceApi.Domain.Errors;
+﻿using FireplaceApi.Domain.Errors;
 using FireplaceApi.Domain.RequestTraces;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -12,12 +9,12 @@ namespace FireplaceApi.Application.RequestTraces;
 
 public class RequestTraceOperator
 {
-    private readonly ILogger<RequestTraceOperator> _logger;
+    private readonly IServerLogger<RequestTraceOperator> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly IRequestTraceRepository _repository;
     private readonly IRequestTraceCacheService _cacheService;
 
-    public RequestTraceOperator(ILogger<RequestTraceOperator> logger,
+    public RequestTraceOperator(IServerLogger<RequestTraceOperator> logger,
         IServiceProvider serviceProvider, IRequestTraceRepository repository,
         IRequestTraceCacheService cacheService)
     {
@@ -77,9 +74,8 @@ public class RequestTraceOperator
         int statusCode, long duration, string action = null,
         ErrorType errorType = null, FieldName errorField = null)
     {
-        var id = await IdGenerator.GenerateNewIdAsync(DoesRequestTraceIdExistAsync);
         var country = await FindCountryName(ip);
-        var requestTrace = await _repository.CreateRequestTraceAsync(id,
+        var requestTrace = await _repository.CreateRequestTraceAsync(
             method, url, ip, country, userAgent, userId, statusCode, duration,
             action, errorType, errorField);
 

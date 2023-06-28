@@ -1,6 +1,5 @@
 ﻿using FireplaceApi.Application.Errors;
 using FireplaceApi.Domain.Sessions;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -8,11 +7,11 @@ namespace FireplaceApi.Application.Sessions;
 
 public class SessionValidator : ApplicationValidator
 {
-    private readonly ILogger<SessionValidator> _logger;
+    private readonly IServerLogger<SessionValidator> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly SessionOperator _sessionOperator;
 
-    public SessionValidator(ILogger<SessionValidator> logger,
+    public SessionValidator(IServerLogger<SessionValidator> logger,
         IServiceProvider serviceProvider, SessionOperator sessionOperator)
     {
         _logger = logger;

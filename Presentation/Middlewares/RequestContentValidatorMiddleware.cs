@@ -1,4 +1,4 @@
-﻿using FireplaceApi.Presentation.Exceptions;
+﻿using FireplaceApi.Presentation.Errors;
 using FireplaceApi.Presentation.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -25,7 +25,7 @@ public class RequestContentValidatorMiddleware
         var sw = Stopwatch.StartNew();
         await ControlRequestBody(httpContext);
         await _next(httpContext);
-        _logger.LogAppInformation(sw: sw, title: "REQUEST_CONTENT_VALIDATOR_MIDDLEWARE");
+        _logger.LogServerInformation(sw: sw, title: "REQUEST_CONTENT_VALIDATOR_MIDDLEWARE");
     }
 
     private async Task ControlRequestBody(HttpContext httpContext)

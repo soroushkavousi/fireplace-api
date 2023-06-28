@@ -1,6 +1,5 @@
 ﻿using FireplaceApi.Domain.Communities;
 using FireplaceApi.Domain.Errors;
-using FireplaceApi.Presentation.Extensions;
 using FireplaceApi.Presentation.Interfaces;
 using FireplaceApi.Presentation.Swagger;
 using FireplaceApi.Presentation.Validators;
@@ -25,10 +24,7 @@ public class CreatePostInputRouteDto : IValidator
 
     public void Validate(IServiceProvider serviceProvider)
     {
-        var presentationValidator = serviceProvider.GetService<CommunityValidator>();
-        var applicationValidator = presentationValidator.ApplicationValidator;
-
-        CommunityIdentifier = presentationValidator.ValidateEncodedIdOrName(CommunityIdOrName);
+        CommunityIdentifier = CommunityIdOrName.ToCommunityIdentifier();
     }
 }
 

@@ -1,4 +1,5 @@
 ﻿using FireplaceApi.Presentation.Auth;
+using FireplaceApi.Presentation.Controllers;
 using FireplaceApi.Presentation.GraphQL;
 using FireplaceApi.Presentation.HostedServices;
 using FireplaceApi.Presentation.Swagger;
@@ -14,7 +15,7 @@ public static class DependencyInjection
     public static void AddPresentation(this IServiceCollection services)
     {
         services.AddUtilities();
-        services.AddControllers();
+        services.AddApiControllers();
         services.AddGraphQL();
         services.AddHostedServices();
         services.AddAuth();

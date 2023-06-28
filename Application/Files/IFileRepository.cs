@@ -9,7 +9,7 @@ public interface IFileRepository
 {
     public Task<List<File>> ListFilesAsync();
     public Task<File> GetFileByIdAsync(ulong id);
-    public Task<File> CreateFileAsync(ulong id, string name,
+    public Task<File> CreateFileAsync(string name,
         string realName, Uri uri, string physicalPath);
     public Task<File> UpdateFileAsync(File file);
     public Task DeleteFileAsync(ulong id);
